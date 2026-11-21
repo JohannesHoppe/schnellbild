@@ -256,7 +256,7 @@ struct ShortcutsHelpView: View {
                             ForEach(group.shortcuts) { shortcut in
                                 HStack(alignment: .top, spacing: 16) {
                                     KeyCapsView(shortcut.caps, style: .help)
-                                        .frame(width: 190, alignment: .leading)
+                                        .frame(width: 230, alignment: .leading)
                                     Text(verbatim: shortcut.action)
                                         .font(.callout)
                                     Spacer(minLength: 0)
@@ -271,7 +271,7 @@ struct ShortcutsHelpView: View {
                 .padding()
             }
         }
-        .frame(width: 540, height: 580)
+        .frame(width: 600, height: 580)
     }
 
     // MARK: Printing
