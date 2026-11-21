@@ -9,42 +9,22 @@
   960,
   540
  ],
- "holes": [
+ "still": [
   [
-   168,
-   496,
-   792,
-   540
-  ],
-  [
-   348,
-   0,
-   613,
-   48
-  ]
- ],
- "drawn": [
-  [
-   235,
-   506,
-   628,
-   531
-  ],
-  [
-   359,
-   26,
-   602,
-   41
+   390,
+   7,
+   571,
+   25
   ]
  ],
  "files": {
   "light": {
-   "960": "video-motion-light-960.webp",
-   "480": "video-motion-light-480.webp"
+   "webm": "video-motion-light.webm",
+   "mp4": "video-motion-light.mp4"
   },
   "dark": {
-   "960": "video-motion-dark-960.webp",
-   "480": "video-motion-dark-480.webp"
+   "webm": "video-motion-dark.webm",
+   "mp4": "video-motion-dark.mp4"
   }
  }
 }

@@ -48,6 +48,7 @@ import json
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 from pathlib import Path
 
 from PIL import Image, ImageChops, ImageFilter, ImageStat
@@ -142,12 +143,12 @@ def fit_gamma(still, frame, h):
 def overlay(still, frame, w, h, top):
     """The rectangle where the still differs from the video in the top or the
     bottom third: the badge or the bar (solid areas only: what is thinner than
-    5 px, the water's glitter caught a frame apart, is left out)."""
+    9 px, the water's glitter caught a frame apart, is left out)."""
     mask = ImageChops.difference(still, frame).convert("L").point(lambda v: 255 if v > DIFFERS else 0)
     y0, y1 = (0, h // 3) if top else (h * 2 // 3, h)
-    box = mask.filter(ImageFilter.MinFilter(5)).crop((0, y0, w, y1)).getbbox()
-    # the filter takes 2 px off each side
-    return box and [box[0] - 2, box[1] + y0 - 2, box[2] + 2, box[3] + y0 + 2]
+    box = mask.filter(ImageFilter.MinFilter(9)).crop((0, y0, w, y1)).getbbox()
+    # the filter takes 4 px off each side
+    return box and [box[0] - 4, box[1] + y0 - 4, box[2] + 4, box[3] + y0 + 4]
 
 
 def coverage(box, radius):
@@ -474,8 +475,10 @@ def main():
                 box = overlay(still, frame, w, h, top)
                 if box:
                     found[name].append(box)
-        rects = {name: [min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes)]
-                 for name, boxes in found.items()}
+        # the rectangle most stills show: where the overlay's ground is near the
+        # video's colours a still shows less of it, where a glitter stroke touches
+        # it more (the check below makes sure it fits every still)
+        rects = {name: list(Counter(map(tuple, boxes)).most_common(1)[0][0]) for name, boxes in found.items()}
         print(f"video at {x},{y} {w}x{h}; gamma {gamma}; badge {rects['badge']}, bar {rects['bar']}; "
               f"largest mean difference {worst:.1f}")
 
@@ -522,7 +525,10 @@ def main():
         kept = []
         for name, rect in rects.items():
             r = tuple(rect)
-            boxes = [ImageChops.difference(laid.crop(r), still.crop(r)).convert("L").point(lambda v: 255 if v > FITS else 0).getbbox()
+            # (only where the overlay covers a pixel wholly: around it is the video)
+            inside = covers[name].point(lambda v: 255 if v == 255 else 0)
+            boxes = [ImageChops.multiply(ImageChops.difference(laid.crop(r), still.crop(r)).convert("L")
+                                         .point(lambda v: 255 if v > FITS else 0), inside).getbbox()
                      for theme in THEMES for _, laid, still in differing(theme)]
             boxes = [b for b in boxes if b]
             if boxes:
