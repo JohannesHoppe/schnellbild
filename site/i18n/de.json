@@ -122,7 +122,7 @@
   "safe": [
     [
       "In Apples App Sandbox.",
-      "Kein Netzwerk, startet von sich aus keine Programme, sieht nur die Ordner, die du freigibst, dazu Bilder."
+      "Kein Netzwerk, startet von sich aus keine Programme, sieht nur die Ordner, die du freigibst, dazu Bilder. Das setzt macOS durch, wir könnten also nicht einmal schummeln, wenn wir wollten: Ins Internet kommt die App schlicht nicht."
     ],
     [
       "Nur lesen.",

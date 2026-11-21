@@ -122,7 +122,7 @@
   "safe": [
     [
       "Na App Sandbox da Apple.",
-      "Nenhum acesso à rede, não inicia programas por conta própria, só vê as pastas que você abrir para ele, além de Imagens."
+      "Nenhum acesso à rede, não inicia programas por conta própria, só vê as pastas que você abrir para ele, além de Imagens. Quem garante isso é o macOS, então não teríamos como trapacear nem se quiséssemos: o app simplesmente não consegue acessar a internet."
     ],
     [
       "Somente leitura.",

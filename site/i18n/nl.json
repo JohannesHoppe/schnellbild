@@ -122,7 +122,7 @@
   "safe": [
     [
       "In de App Sandbox van Apple.",
-      "Helemaal geen netwerk, start uit zichzelf geen programma’s, ziet alleen de mappen die je zelf voor hem opent, plus Afbeeldingen."
+      "Helemaal geen netwerk, start uit zichzelf geen programma’s, ziet alleen de mappen die je zelf voor hem opent, plus Afbeeldingen. macOS dwingt dat af, dus we zouden niet eens kunnen valsspelen als we wilden: de app kan het internet gewoon niet op."
     ],
     [
       "Alleen lezen.",

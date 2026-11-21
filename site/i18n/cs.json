@@ -122,7 +122,7 @@
   "safe": [
     [
       "V App Sandboxu od Applu.",
-      "Vůbec žádná síť, sám od sebe nespouští žádné programy, vidí jen složky, které mu otevřete, a k tomu Obrázky."
+      "Vůbec žádná síť, sám od sebe nespouští žádné programy, vidí jen složky, které mu otevřete, a k tomu Obrázky. Hlídá to macOS, takže bychom nemohli podvádět, ani kdybychom chtěli: aplikace se k internetu prostě nedostane."
     ],
     [
       "Pouze čtení.",

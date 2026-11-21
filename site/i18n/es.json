@@ -122,7 +122,7 @@
   "safe": [
     [
       "En la App Sandbox de Apple.",
-      "Sin ninguna conexión de red, no abre programas por su cuenta, solo ve las carpetas que tú le abres, además de Imágenes."
+      "Sin ninguna conexión de red, no abre programas por su cuenta, solo ve las carpetas que tú le abres, además de Imágenes. Lo impone macOS, así que no podríamos hacer trampa aunque quisiéramos: la app sencillamente no puede conectarse a internet."
     ],
     [
       "Solo lectura.",

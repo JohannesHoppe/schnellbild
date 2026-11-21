@@ -122,7 +122,7 @@
   "safe": [
     [
       "Apple’ın App Sandbox’ında.",
-      "Hiçbir ağ erişimi yok, kendiliğinden hiçbir program başlatmaz, yalnızca ona açtığınız klasörleri ve Resimler klasörünü görür."
+      "Hiçbir ağ erişimi yok, kendiliğinden hiçbir program başlatmaz, yalnızca ona açtığınız klasörleri ve Resimler klasörünü görür. Bunu macOS zorunlu kılar, yani istesek bile hile yapamayız: uygulama internete basitçe erişemez."
     ],
     [
       "Yalnızca okuma.",

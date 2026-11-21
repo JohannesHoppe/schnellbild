@@ -122,7 +122,7 @@
   "safe": [
     [
       "In Apple's App Sandbox.",
-      "No network at all, starts no programs by itself, sees only the folders you open to it plus Pictures."
+      "No network at all, starts no programs by itself, sees only the folders you open to it plus Pictures. macOS enforces this, so we couldn't cheat even if we wanted to: the app simply can't reach the internet."
     ],
     [
       "Only reading.",

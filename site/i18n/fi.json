@@ -122,7 +122,7 @@
   "safe": [
     [
       "Applen App Sandboxissa.",
-      "Ei lainkaan verkkoyhteyttä, ei käynnistä itse ohjelmia, näkee vain kansiot, jotka avaat sille, sekä Kuvat."
+      "Ei lainkaan verkkoyhteyttä, ei käynnistä itse ohjelmia, näkee vain kansiot, jotka avaat sille, sekä Kuvat. Tämän valvoo macOS, joten emme voisi huijata, vaikka haluaisimme: sovellus ei yksinkertaisesti pääse internetiin."
     ],
     [
       "Vain lukeminen.",

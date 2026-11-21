@@ -122,7 +122,7 @@
   "safe": [
     [
       "Dans l’App Sandbox d’Apple.",
-      "Aucun accès réseau, aucun programme lancé de sa propre initiative, accès aux seuls dossiers que vous lui ouvrez, plus Images."
+      "Aucun accès réseau, aucun programme lancé de sa propre initiative, accès aux seuls dossiers que vous lui ouvrez, plus Images. C’est macOS qui l’impose : même si nous le voulions, nous ne pourrions pas tricher. L’app ne peut tout simplement pas accéder à Internet."
     ],
     [
       "En lecture seule.",

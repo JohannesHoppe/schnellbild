@@ -122,7 +122,7 @@
   "safe": [
     [
       "I Apples App Sandbox.",
-      "Ingen nätverksåtkomst alls, startar inga program på egen hand, ser bara de mappar du öppnar för den samt Bilder."
+      "Ingen nätverksåtkomst alls, startar inga program på egen hand, ser bara de mappar du öppnar för den samt Bilder. Det är macOS som ser till det, så vi skulle inte kunna fuska ens om vi ville: appen kommer helt enkelt inte ut på internet."
     ],
     [
       "Läser bara.",

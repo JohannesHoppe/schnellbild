@@ -122,7 +122,7 @@
   "safe": [
     [
       "Nell’App Sandbox di Apple.",
-      "Nessun accesso alla rete, nessun programma avviato di sua iniziativa, solo le cartelle che gli apri tu, più Immagini."
+      "Nessun accesso alla rete, nessun programma avviato di sua iniziativa, solo le cartelle che gli apri tu, più Immagini. Lo impone macOS, quindi non potremmo barare nemmeno volendo: l’app semplicemente non può accedere a Internet."
     ],
     [
       "Solo lettura.",
