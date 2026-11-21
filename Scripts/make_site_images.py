@@ -24,8 +24,10 @@ uploads (one artifact per language, unpacked into a folder each):
 
     docs/screenshots/<name>.webp   cwebp -lossless -z 9: English all of them (README),
                                    every other language only those the website shows
-                                   (HERO_SHOT, GLOBE_SHOT, FEATURE_SHOTS) and the light ones the
-                                   App Store shows (STORE_SHOTS)
+                                   (HERO_SHOT, GLOBE_SHOT, VIEW_SHOTS, FEATURE_SHOTS) and the
+                                   light ones the App Store shows (STORE_SHOTS); never the
+                                   control bar's times (bartime-*, which only
+                                   Scripts/make_video_animation.py reads, from the artifact)
 
 Their variants, so a phone loads a small file and a large screen the full width:
 
@@ -70,6 +72,8 @@ LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb"
 HERO_SHOT = "grid"
 # The Atlas view's globe: the maps alternatives' picture (site_alternatives.py)
 GLOBE_SHOT = "atlas-globe"
+# The app's four views, side by side under the home page's hero, in this order
+VIEW_SHOTS = ["grid", "list", "atlas", "atlas-globe"]
 # The website's feature pictures, in the order of the features (site/i18n); a feature
 # whose picture has no master in docs/screenshots yet is shown as text alone
 FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
@@ -175,7 +179,9 @@ def shots():
 def kept(name):
     """Whether a screenshot, <motif>-<light|dark>[-<lang>], goes into docs/screenshots."""
     motif, mode, language = re.fullmatch(r"(.+?)-(light|dark)(?:-(.+))?", name).groups()
-    return not language or motif in [HERO_SHOT, GLOBE_SHOT, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light")
+    if motif.startswith("bartime-"):
+        return False
+    return not language or motif in [HERO_SHOT, GLOBE_SHOT, *VIEW_SHOTS, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light")
 
 
 def import_shots(folders):

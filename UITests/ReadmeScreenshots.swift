@@ -65,6 +65,26 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         }
     }
 
+    /// The video's control bar in the middle of each of the sample video's
+    /// six seconds, paused ("bartime-1" … "bartime-6": 0:01 / −0:06 …
+    /// 0:06 / −0:01): Scripts/make_video_animation.py takes the times from
+    /// them, so the bar counts along with the website's moving video. Left
+    /// paused within the last seconds, so the video isn't resumed there later.
+    private func shootVideoTimes() {
+        // Paused (it may have reached its end by now, which pauses it too)
+        let playPause = element("videoBar.playPause").firstMatch
+        XCTAssertTrue(playPause.waitForExistence(timeout: 5))
+        if playPause.label != "Play" { playPause.click() }
+        eventually("the video pauses") { playPause.label == "Play" }
+        let position = element("videoBar.position").firstMatch
+        XCTAssertTrue(position.waitForExistence(timeout: 5))
+        for second in 1...6 {
+            position.adjust(toNormalizedSliderPosition: (CGFloat(second) - 0.5) / 6)
+            element("video.avkit").hover()   // the pointer off the slider
+            shoot("bartime-\(second)", settle: 1)
+        }
+    }
+
     func testReadmeScreenshots() throws {
         launchOnTempDir(waitFor: "Lofoten")
         tile("Fjord at Sunset.jpg").click()
@@ -132,6 +152,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         element("video.avkit").hover()   // the control bar shows
         XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
         shoot("video", settle: 0.5)
+        if uiLanguage == "en" { shootVideoTimes() }
 
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("s", modifierFlags: [])   // the whole library, full screen
