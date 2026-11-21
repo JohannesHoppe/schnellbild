@@ -53,7 +53,7 @@ final class AtlasLabelUITests: SchnellbildUITestCase {
             let table = strings(language)
             launch(open: tempDir.path, language: language)
             XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), language)
-            app.typeKey("w", modifierFlags: [])
+            showAtlasFromTheGrid()
             let count = element("atlasCount")
             let onMap = String(format: table["%lld on the map"] ?? "%lld on the map", 13)
             eventually("\(language): the places are read", timeout: 20) { self.text(of: count) == onMap }

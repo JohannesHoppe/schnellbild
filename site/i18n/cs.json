@@ -73,7 +73,7 @@
     },
     {
       "title": "Vaše fotky na mapě a na glóbu",
-      "text": "<p><kbd>W</kbd> ukáže fotky a videa ze složky a jejích podsložek tam, kde vznikly. Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu.</p><ul><li>Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část</li><li><kbd>T</kbd> přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund</li><li>Mapa je přímo v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> přepíná z mřížky na seznam a dál na atlas. Ten ukáže fotky a videa ze složky a jejích podsložek tam, kde vznikly. Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu.</p><ul><li>Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část</li><li><kbd>T</kbd> přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund</li><li>Mapa je přímo v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac</li></ul>",
       "alt": "Fotky z cesty na glóbu, v zobrazení atlasu"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Všechny klávesy po ruce",
-      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data, velikosti nebo vzdálenosti od místa, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka, seznam nebo atlas (<kbd>L</kbd>), řazení podle názvu, druhu, data, velikosti nebo vzdálenosti od místa, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
       "alt": "Seznam kláves (F1)"
     },
     {

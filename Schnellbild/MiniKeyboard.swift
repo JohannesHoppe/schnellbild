@@ -88,7 +88,7 @@ struct MiniKeyboard: View {
                 Key(.largerThumbnails, "+", word: "Zoom in"),
                 Key(.smallerThumbnails, "-", word: "Zoom out"),
                 Key(.startTour, "t", word: "Tour"),
-                Key(.toggleAtlas, "w", word: "Grid"),
+                Key(.toggleList, "l", word: "Grid"),
                 Key(.info, "i", word: "Info"),
                 Key(.search, "@f", word: "Search"),
                 Key(.help, "f1", word: "Help"),

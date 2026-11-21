@@ -264,7 +264,7 @@ enum ShortcutAction: String, CaseIterable {
     // Slideshow
     case startSlideshow, showPause, playlist, listUp, listDown, listShow, listTakeOut, endSlideshow
     // Atlas
-    case toggleAtlas, startTour, tourPause, tourPrevious, tourNext, endTour
+    case startTour, tourPause, tourPrevious, tourNext, endTour
     // Dual pane and marking
     case toggleDual, switchPane, copyToOther, moveToOther, mark, markAll
     // Search field
@@ -355,7 +355,6 @@ enum ShortcutAction: String, CaseIterable {
         case .endSlideshow:      return Spec(group: .slideshow, scope: .show, standard: ["escape", "s", "return", "delete"],
                                              phiewer: ["escape", "~@s", "return", "delete"], performer: "escape")
 
-        case .toggleAtlas:       return Spec(group: .atlas, scope: Self.gridAndFull, standard: ["w"], performer: "w")
         case .startTour:         return Spec(group: .atlas, scope: .grid, standard: ["t"], performer: "t")
         case .tourPause:         return Spec(group: .atlas, scope: .tour, standard: ["space"], performer: "space")
         case .tourPrevious:      return Spec(group: .atlas, scope: .tour, standard: ["left"], performer: "left")
@@ -451,8 +450,7 @@ enum ShortcutAction: String, CaseIterable {
         case .gridBack:          return String(localized: "Back, or the enclosing folder")
         case .gridFirst:         return String(localized: "First item")
         case .gridLast:          return String(localized: "Last item")
-        case .toggleList:        return String(localized: "Grid or list")
-        case .toggleAtlas:       return String(localized: "Atlas (map)")
+        case .toggleList:        return String(localized: "Next view (grid, list, Atlas)")
         case .startTour:         return String(localized: "Play the tour")
         case .tourPause:         return String(localized: "Tour: pause / resume")
         case .tourPrevious:      return String(localized: "Tour: previous place")

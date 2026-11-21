@@ -175,7 +175,7 @@
 "Archive" = "Archief";
 "as Grid" = "als raster";
 "as List" = "als lijst";
-"Grid or list (a click on a column sorts by it)" = "Raster of lijst (een klik op een kolom sorteert erop)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Volgende weergave: raster, lijst, atlas (een klik op een kolom sorteert erop)";
 "Back (where you were, also a search); without history the enclosing folder" = "Terug (waar je was, ook naar een zoekopdracht); zonder geschiedenis naar de bovenliggende map";
 "Click to rename this folder" = "Klik om deze map een andere naam te geven";
 "Privacy Policy" = "Privacybeleid";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Belichting, contrast, verzadiging en scherpte met de hand (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Diavoorstelling van alle afbeeldingen en video’s in deze map en de submappen; tijdens het zoeken: van de resultaten (%@)";
 "Sort by (%@; press again to reverse)" = "Sorteer op (%@; nogmaals om om te draaien)";
-"Grid or list (%@)" = "Raster of lijst (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Minitoetsenbord: de toetsen van wat er op het scherm staat, klikbaar (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Bladwijzers (%1$@: deze map; %2$@: openen)";
 "Close the playlist (%@)" = "Afspeellijst sluiten (%@)";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "Stop (%@ vraagt eerst)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Baastoets: meteen verborgen en stil; %@ of het Dock-symbool haalt het terug";
 "⌘-click" = "⌘-klik";
-"Grid or list" = "Raster of lijst";
+"Next view (grid, list, Atlas)" = "Volgende weergave (raster, lijst, atlas)";
 "General" = "Algemeen";
 "no key" = "geen toets";
 "Back, or the enclosing folder" = "Terug, of de bovenliggende map";
@@ -570,14 +569,13 @@
 "Route" = "Route";
 "Date Source" = "Bron van de datum";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (kaart)";
 "Play the tour" = "Reis afspelen";
 "Tour: pause / resume" = "Reis: pauzeren / verder";
 "Tour: previous place" = "Reis: vorige plek";
 "Tour: next place" = "Reis: volgende plek";
 "End the tour" = "Reis beëindigen";
 "as Atlas" = "als atlas";
-"Grid or list (%@), Atlas (%@)" = "Raster of lijst (%1$@), atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Volgende weergave: raster, lijst, atlas (%@)";
 "Play Tour" = "Reis afspelen";
 "Left" = "Links";
 "Up" = "Omhoog";
@@ -603,7 +601,7 @@
 "End of the range" = "Einde van het bereik";
 "Resume" = "Doorgaan";
 "Place %lld of %lld" = "Plek %1$lld van %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas: de foto's en video's op de kaart; nogmaals: terug naar raster of lijst";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Vanuit de lijst: de atlas, de foto's en video's op de kaart; vanuit de atlas: terug naar het raster";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: naar het dichtstbijzijnde item op de kaart in die richting; omlaag naar de strook zonder locatie";
 "Atlas: zoom the map in / out" = "Atlas: kaart in- / uitzoomen";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: op meerdere items inzoomen tot ze uit elkaar gaan; op één item openen";

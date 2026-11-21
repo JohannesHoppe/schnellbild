@@ -175,7 +175,7 @@
 "Archive" = "Arkiv";
 "as Grid" = "som rutenett";
 "as List" = "som liste";
-"Grid or list (a click on a column sorts by it)" = "Rutenett eller liste (et klikk på en kolonne sorterer etter den)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Neste visning: rutenett, liste, atlas (et klikk på en kolonne sorterer etter den)";
 "Back (where you were, also a search); without history the enclosing folder" = "Tilbake (dit du var, også til et søk); uten historikk til overordnet mappe";
 "Click to rename this folder" = "Klikk for å gi mappen nytt navn";
 "Privacy Policy" = "Personvernerklæring";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Eksponering, kontrast, metning og skarphet for hånd (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Lysbildefremvisning av alle bilder og videoer i denne mappen og undermappene; under søk: av treffene (%@)";
 "Sort by (%@; press again to reverse)" = "Sorter etter (%@; trykk igjen for å snu)";
-"Grid or list (%@)" = "Rutenett eller liste (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Minitastatur: tastene for det som er på skjermen, klikkbare (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Bokmerker (%1$@: denne mappen; %2$@: åpne)";
 "Close the playlist (%@)" = "Lukk spillelisten (%@)";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "Avslutt (%@ spør først)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Sjefstast: skjult og stille med en gang; %@ eller symbolet i Dock henter det tilbake";
 "⌘-click" = "⌘-klikk";
-"Grid or list" = "Rutenett eller liste";
+"Next view (grid, list, Atlas)" = "Neste visning (rutenett, liste, atlas)";
 "General" = "Generelt";
 "no key" = "ingen tast";
 "Back, or the enclosing folder" = "Tilbake, eller den overordnede mappen";
@@ -570,14 +569,13 @@
 "Route" = "Rute";
 "Date Source" = "Datoens kilde";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (kart)";
 "Play the tour" = "Spill av turen";
 "Tour: pause / resume" = "Tur: pause / fortsett";
 "Tour: previous place" = "Tur: forrige sted";
 "Tour: next place" = "Tur: neste sted";
 "End the tour" = "Avslutt turen";
 "as Atlas" = "som atlas";
-"Grid or list (%@), Atlas (%@)" = "Rutenett eller liste (%1$@), atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Neste visning: rutenett, liste, atlas (%@)";
 "Play Tour" = "Spill av tur";
 "Left" = "Venstre";
 "Up" = "Opp";
@@ -603,7 +601,7 @@
 "End of the range" = "Slutt på perioden";
 "Resume" = "Fortsett";
 "Place %lld of %lld" = "Sted %1$lld av %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas: bildene og videoene på kartet; igjen: tilbake til rutenett eller liste";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Fra listen: atlaset, bildene og videoene på kartet; fra atlaset: tilbake til rutenettet";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: til nærmeste objekt på kartet i den retningen; ned i stripen med objekter uten sted";
 "Atlas: zoom the map in / out" = "Atlas: zoom kartet inn / ut";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flere objekter zoom inn til de skilles; på ett åpne det";

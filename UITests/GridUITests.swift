@@ -290,7 +290,7 @@ final class GridUITests: SchnellbildUITestCase {
 
     /// L shows the list: whole names in rows; a click anywhere on a column's
     /// header sorts by it (again: the other way), like the sort menu; a double
-    /// click opens the picture.
+    /// click opens the picture. L again: the Atlas, then the grid.
     func testTheListView() throws {
         try put("huge.jpg", at: "d-large.jpg")
         launchOnTempDir()
@@ -312,7 +312,9 @@ final class GridUITests: SchnellbildUITestCase {
         open(element("row.b.jpg").firstMatch, until: "the picture opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("l", modifierFlags: [])
-        XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "tiles again")
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 5), "after the list: the Atlas")
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "after the Atlas: tiles again")
     }
 
     /// ⌘-click marks one more item, ⇧-click the range from the last one,

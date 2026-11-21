@@ -167,13 +167,14 @@ final class ShortcutsTests: XCTestCase {
         // don't read, reserved keys, a key two actions claim
         defaults.set("someday", forKey: Shortcuts.presetKey)
         defaults.set(["noSuchAction": ["j"], "subtitles": "v", "mark": ["@q", "f11", "y", "y"],
-                      "listShow": ["@d"], "toggleList": ["l"]], forKey: Shortcuts.customKey)
+                      "listShow": ["@d"], "toggleList": ["l"], "toggleAtlas": ["g"]], forKey: Shortcuts.customKey)
         let read = Shortcuts(defaults: defaults)
         XCTAssertEqual(read.preset, .schnellbild)
         XCTAssertEqual(read.keys(.subtitles), [chord("v")], "not a list: left out")
         XCTAssertEqual(read.keys(.mark), [chord("y")], "reserved, unreadable and doubled keys left out")
         XCTAssertEqual(read.keys(.listShow), [chord("@d")], "the playlist's key and the bookmark's never meet: both keep it")
         XCTAssertEqual(read.keys(.bookmark), [chord("@d")])
+        XCTAssertEqual(read.resolve(chord("g"), in: .grid), .free, "an action that is gone takes no key with it")
         defaults.set(["gridOpen": ["l"]], forKey: Shortcuts.customKey)
         let claimed = Shortcuts(defaults: defaults)
         XCTAssertEqual(claimed.keys(.gridOpen), [chord("l")], "the changed action keeps the key")
@@ -222,6 +223,8 @@ final class ShortcutsTests: XCTestCase {
         // Schnellbild's keys as ever
         XCTAssertTrue(w.typeKey(.char("l")))
         XCTAssertEqual(m.viewMode, .list)
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertEqual(m.viewMode, .atlas)
         XCTAssertTrue(w.typeKey(.char("l")))
         XCTAssertEqual(m.viewMode, .grid)
 
@@ -300,7 +303,7 @@ final class ShortcutsTests: XCTestCase {
         func helpKeys(_ action: String) -> String? {
             ShortcutsHelpView.groups(s).flatMap(\.shortcuts).first { $0.action == String(localized: String.LocalizationValue(action)) }?.keys
         }
-        XCTAssertEqual(helpKeys("Grid or list (a click on a column sorts by it)"), "L")
+        XCTAssertEqual(helpKeys("Next view: grid, list, Atlas (a click on a column sorts by it)"), "L")
         XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / − · ⌘+ / ⌘−")
         XCTAssertEqual(helpKeys("Previous / next item"), "← →")
         XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘1 … ⌘6")
@@ -308,7 +311,7 @@ final class ShortcutsTests: XCTestCase {
         s.assign(chord("j"), to: .toggleList, replacing: chord("l"))
         s.remove(chord("right"), from: .gridNext)
         s.assign(chord("^@1"), to: .sortName, replacing: chord("@1"))
-        XCTAssertEqual(helpKeys("Grid or list (a click on a column sorts by it)"), "J")
+        XCTAssertEqual(helpKeys("Next view: grid, list, Atlas (a click on a column sorts by it)"), "J")
         XCTAssertEqual(helpKeys("Previous / next item"), "←")
         XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌃⌘1 ⌘2 ⌘3 ⌘4 ⌘5 ⌘6")
         XCTAssertNotNil(ShortcutsHelpView.groups(s).flatMap(\.shortcuts).first { $0.action == String(localized: "Quit (F10 asks first)") })

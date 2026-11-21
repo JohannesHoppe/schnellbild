@@ -418,7 +418,8 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(defaults.string(forKey: "rightPane.lastFolderPath"), two.path)
     }
 
-    /// L: the list view, per pane and remembered; ↑↓ step one row.
+    /// L: grid, list, Atlas, grid again; per pane and remembered; in the
+    /// list ↑↓ step one row.
     func testLSwitchesToTheList() async throws {
         let tree = try TempTree(self)
         for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
@@ -435,6 +436,22 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(BrowserModel(defaults: defaults).viewMode, .list, "remembered")
         XCTAssertEqual(BrowserModel(defaults: defaults, settingsPrefix: "rightPane.").viewMode, .grid, "per pane")
         m.handleKey(.char("L"), command: false)
+        XCTAssertEqual(m.viewMode, .atlas, "after the list: the Atlas")
+        XCTAssertEqual(BrowserModel(defaults: defaults).viewMode, .atlas, "remembered")
+        m.handleKey(.char("l"), command: false)
+        XCTAssertEqual(m.viewMode, .grid, "after the Atlas: the grid")
+        XCTAssertFalse(m.handleKey(.char("w"), command: false), "W is no view's key")
+        XCTAssertEqual(m.viewMode, .grid)
+    }
+
+    /// L without a folder (nothing open yet) goes from the list back to the
+    /// grid: the Atlas shows a folder's places.
+    func testLSkipsTheAtlasWithoutAFolder() {
+        let m = BrowserModel(defaults: makeTestDefaults())
+        XCTAssertNil(m.folderURL)
+        m.nextViewMode()
+        XCTAssertEqual(m.viewMode, .list)
+        m.nextViewMode()
         XCTAssertEqual(m.viewMode, .grid)
     }
 

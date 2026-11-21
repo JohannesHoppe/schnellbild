@@ -175,7 +175,7 @@
 "Archive" = "Archive";
 "as Grid" = "en grille";
 "as List" = "en liste";
-"Grid or list (a click on a column sorts by it)" = "Grille ou liste (un clic sur une colonne trie selon elle)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Vue suivante : grille, liste, atlas (un clic sur une colonne trie selon elle)";
 "Back (where you were, also a search); without history the enclosing folder" = "Retour (là où vous étiez, aussi à une recherche) ; sans historique, au dossier parent";
 "Click to rename this folder" = "Cliquez pour renommer ce dossier";
 "Privacy Policy" = "Politique de confidentialité";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Exposition, contraste, saturation et netteté à la main (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Diaporama de toutes les images et vidéos de ce dossier et de ses sous-dossiers ; pendant une recherche : des résultats (%@)";
 "Sort by (%@; press again to reverse)" = "Trier par (%@ ; appuyer à nouveau pour inverser)";
-"Grid or list (%@)" = "Grille ou liste (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Mini-clavier : les touches de ce qui est à l’écran, cliquables (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Signets (%1$@ : ce dossier ; %2$@ : ouvrir)";
 "Close the playlist (%@)" = "Fermer la liste de lecture (%@)";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "Quitter (%@ demande d’abord)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Touche patron : masqué et muet aussitôt ; %@ ou l’icône du Dock le fait revenir";
 "⌘-click" = "⌘-clic";
-"Grid or list" = "Grille ou liste";
+"Next view (grid, list, Atlas)" = "Vue suivante (grille, liste, atlas)";
 "General" = "Général";
 "no key" = "aucune touche";
 "Back, or the enclosing folder" = "Retour, ou le dossier parent";
@@ -570,14 +569,13 @@
 "Route" = "Itinéraire";
 "Date Source" = "Source de la date";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (carte)";
 "Play the tour" = "Lire le voyage";
 "Tour: pause / resume" = "Voyage : pause / reprise";
 "Tour: previous place" = "Voyage : lieu précédent";
 "Tour: next place" = "Voyage : lieu suivant";
 "End the tour" = "Terminer le voyage";
 "as Atlas" = "en atlas";
-"Grid or list (%@), Atlas (%@)" = "Grille ou liste (%1$@), atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Vue suivante : grille, liste, atlas (%@)";
 "Play Tour" = "Lire le voyage";
 "Left" = "Gauche";
 "Up" = "Haut";
@@ -603,7 +601,7 @@
 "End of the range" = "Fin de la période";
 "Resume" = "Reprendre";
 "Place %lld of %lld" = "Lieu %1$lld sur %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas : les photos et vidéos sur la carte ; encore : retour à la grille ou à la liste";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Depuis la liste : l'atlas, les photos et vidéos sur la carte ; depuis l'atlas : retour à la grille";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas : vers l'élément le plus proche sur la carte dans ce sens ; vers le bas, la bande des éléments sans lieu";
 "Atlas: zoom the map in / out" = "Atlas : zoom avant / arrière sur la carte";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas : sur plusieurs éléments, zoomer jusqu'à les séparer ; sur un seul, l'ouvrir";

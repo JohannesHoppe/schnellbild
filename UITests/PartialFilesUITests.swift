@@ -72,6 +72,9 @@ final class PartialFilesUITests: SchnellbildUITestCase {
         XCTAssertTrue(element("row.film.mp4.part").waitForExistence(timeout: 10), "the list view")
         _ = try? screenStats(of: app.windows.firstMatch.frame)
         // Inside the archive cut off: the picture it cuts is marked as incomplete
+        // (L: the Atlas after the list, then the grid)
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         app.typeKey("l", modifierFlags: [])
         openTile("photos.rar.part", showing: tile("Day 1"))
         openTile("Day 1", showing: tile("big.jpg"))

@@ -73,7 +73,7 @@
     },
     {
       "title": "Kuvasi kartalla ja maapallolla",
-      "text": "<p><kbd>W</kbd> näyttää kansion ja sen alikansioiden kuvat ja videot siellä, missä ne on otettu. Kaukaa katsottuna kartta on maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi.</p><ul><li>Aikajana järjestää matkan ajan mukaan: vedä jakson yli, niin kartta näyttää vain sen osan</li><li><kbd>T</kbd> toistaa matkan: kartta liukuu paikasta toiseen, kuvat näkyvät suurina, videot pyörivät muutaman sekunnin</li><li>Kartta on sovelluksessa: mitään ei haeta verkosta, eikä mikään sijainti lähde Macistasi</li></ul>",
+      "text": "<p><kbd>L</kbd> vaihtaa ruudukosta luetteloon ja siitä kartastoon. Kartasto näyttää kansion ja sen alikansioiden kuvat ja videot siellä, missä ne on otettu. Kaukaa katsottuna kartta on maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi.</p><ul><li>Aikajana järjestää matkan ajan mukaan: vedä jakson yli, niin kartta näyttää vain sen osan</li><li><kbd>T</kbd> toistaa matkan: kartta liukuu paikasta toiseen, kuvat näkyvät suurina, videot pyörivät muutaman sekunnin</li><li>Kartta on sovelluksessa: mitään ei haeta verkosta, eikä mikään sijainti lähde Macistasi</li></ul>",
       "alt": "Matkan kuvat maapallolla atlasnäkymässä"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Kaikki näppäimet käden ulottuvilla",
-      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko tai luettelo (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän, koon tai etäisyyden mukaan valitusta paikasta, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko, luettelo tai kartasto (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän, koon tai etäisyyden mukaan valitusta paikasta, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
       "alt": "Näppäinten luettelo (F1)"
     },
     {

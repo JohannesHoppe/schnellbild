@@ -3775,22 +3775,25 @@ final class BrowserModel: ObservableObject {
         lastKeyPress = KeyPress(key: key, command: command, shift: shift)
     }
 
-    /// Tiles, a list (L) or the Atlas (W, the map): per pane, remembered.
+    /// Tiles, a list or the Atlas (the map): per pane, remembered; L goes
+    /// from one to the next.
     enum ViewMode: String { case grid, list, atlas }
     @Published var viewMode: ViewMode = .grid {
         didSet {
             defaults.set(viewMode.rawValue, forKey: settingsPrefix + "viewMode")
             if viewMode == .list { columnCount = 1 }
-            if viewMode != .atlas, oldValue != .atlas { viewModeBeforeAtlas = viewMode }
             if viewMode == .atlas { updateDeep(); atlasFollow() } else if oldValue == .atlas { updateDeep(); atlasIfMade?.pause() }
         }
     }
-    /// What W goes back to from the Atlas.
-    private var viewModeBeforeAtlas: ViewMode = .grid
-
-    /// W: the Atlas, or back to the grid or list it came from.
-    func toggleAtlas() {
-        viewMode = viewMode == .atlas ? viewModeBeforeAtlas : .atlas
+    /// L: the next view, grid → list → Atlas → grid. The Atlas only with a
+    /// folder open (it shows the folder's places), else the list goes back
+    /// to the grid.
+    func nextViewMode() {
+        switch viewMode {
+        case .grid: viewMode = .list
+        case .list: viewMode = folderURL != nil ? .atlas : .grid
+        case .atlas: viewMode = .grid
+        }
     }
 
     /// The Atlas view's state (made when first shown).
@@ -4220,10 +4223,7 @@ final class BrowserModel: ObservableObject {
         case "e" where !command: enhance.toggle(); return true
         case "a" where !command: showAdjustments.toggle(); return true
         case "k" where !command: showMiniKeyboard.toggle(); return true
-        case "l" where !command: viewMode = viewMode == .list ? .grid : .list; return true
-        case "w" where !command:
-            guard folderURL != nil else { return false }
-            toggleAtlas(); return true
+        case "l" where !command: nextViewMode(); return true
         case "t" where !command:
             guard mode == .grid, folderURL != nil else { return false }
             startTour(); return true
