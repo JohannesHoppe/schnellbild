@@ -226,13 +226,14 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     /// The Atlas's globe close up over the Norway trip, for the website's four
     /// views: tilted towards the horizon, the relief exaggerated as the app
     /// shows it, the Sun low on a June evening, the trip's photos on the fjords.
-    static let nearCameras = ["61.2,6.6,6.0,60,0", "60.9,6.8,6.5,65,0", "61.0,6.6,5.6,70,0",
-                              "61.4,6.2,6.2,55,330", "60.8,7.0,6.8,60,20", "61.2,6.6,5.0,72,0"]
+    static let nearCameras = [("61.0,6.9,6.8,62,0", "2026-06-16T13:00:00Z"), ("61.0,6.9,6.8,62,0", "2026-06-16T16:30:00Z"),
+                              ("60.7,7.0,7.0,66,10", "2026-06-16T15:00:00Z"), ("61.3,6.6,6.6,58,340", "2026-06-16T15:00:00Z"),
+                              ("60.9,6.4,6.8,64,30", "2026-06-16T15:00:00Z"), ("60.6,7.3,7.0,70,350", "2026-06-16T16:00:00Z")]
 
     func testAtlasGlobeNearScreenshots() throws {
-        for (index, camera) in Self.nearCameras.enumerated() {
+        for (index, (camera, date)) in Self.nearCameras.enumerated() {
             launch(open: tempDir.appendingPathComponent("Norway").path,
-                   extra: ["--globe-camera=\(camera)", "--globe-date=2026-06-16T18:30:00Z"])
+                   extra: ["--globe-camera=\(camera)", "--globe-date=\(date)"])
             XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
             app.typeKey("w", modifierFlags: [])
             XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
