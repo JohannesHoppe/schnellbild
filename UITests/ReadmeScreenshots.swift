@@ -223,6 +223,27 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
     }
 
+    /// The Atlas's globe close up over the Norway trip, for the website's four
+    /// views: tilted towards the horizon, the relief exaggerated as the app
+    /// shows it, the Sun low on a June evening, the trip's photos on the fjords.
+    static let nearCameras = ["61.2,6.6,6.0,60,0", "60.9,6.8,6.5,65,0", "61.0,6.6,5.6,70,0",
+                              "61.4,6.2,6.2,55,330", "60.8,7.0,6.8,60,20", "61.2,6.6,5.0,72,0"]
+
+    func testAtlasGlobeNearScreenshots() throws {
+        for (index, camera) in Self.nearCameras.enumerated() {
+            launch(open: tempDir.appendingPathComponent("Norway").path,
+                   extra: ["--globe-camera=\(camera)", "--globe-date=2026-06-16T18:30:00Z"])
+            XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
+            app.typeKey("w", modifierFlags: [])
+            XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+            let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
+            let deadline = Date().addingTimeInterval(20)
+            while tiles.count < 3, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+            shoot("atlas-globe-near-\(index + 1)", settle: 6)
+            app.terminate()
+        }
+    }
+
     /// The globe for the website's hero: the world trip (`WORLD_DIR`, real
     /// photographs from Scripts/build_world_photos.py) in the Atlas view,
     /// seen from low orbit over the Mediterranean as the Sun rises behind

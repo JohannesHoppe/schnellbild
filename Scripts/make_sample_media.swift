@@ -82,15 +82,15 @@ enum SampleScenes {
     static func with(_ scene: Scene, seed: UInt64) -> Scene { var s = scene; s.seed = seed; return s }
 
     /// Timelapse videos: 6 s, 1280×720, 30 fps. The sunset is the one the
-    /// website shows playing (Scripts/make_video_animation.py): the sun comes
-    /// down from above the picture and sets behind the ridges while the sky
-    /// deepens, clouds drift by and the water glitters; its first frames
-    /// dissolve from the scene after its end into its own (the sun out of
-    /// sight in both), so it loops without a jump.
+    /// website shows playing (Scripts/make_video_animation.py): the sun sets
+    /// calmly from mid-sky (below the position badge) behind the ridges while
+    /// the sky deepens, clouds drift by and the water glitters; its first
+    /// frames dissolve from the scene after its end (the sun set) into its
+    /// own, so it loops without a jump.
     static let sunsetVideo: Scene = {
         var s = fjord
-        s.sun = (0.62, 1.12, 0.055, (255, 220, 150))
-        s.sunDrift = 0.8
+        s.sun = (0.62, 0.7, 0.055, (255, 220, 150))
+        s.sunDrift = 0.38
         s.lateSky = [(26, 14, 58), (172, 54, 104), (255, 128, 70)]
         s.clouds = 7
         s.glitter = true
