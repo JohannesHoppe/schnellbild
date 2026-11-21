@@ -5,9 +5,9 @@ import QuartzCore
 extension GlobeRenderer {
     /// One renderer per map, made off the main thread (compiling the shaders
     /// and loading the globe's data take a moment) and kept while a globe
-    /// view of that map is in a window. Its textures (the world and detail
-    /// textures, the sky, the city lights, the satellite picture: about
-    /// 300 MB of memory shared with the GPU) go with it `keepUnused` after
+    /// view of that map is in a window. Its textures (the world textures and
+    /// tiles, the sky, the city lights, the satellite picture and its tiles:
+    /// at most about 500 MB of memory shared with the GPU) go with it `keepUnused` after
     /// the last such view left its window; the next globe makes them again.
     @MainActor private static var made: [ObjectIdentifier?: GlobeRenderer] = [:]
     @MainActor private static var waiting: [ObjectIdentifier?: [(GlobeRenderer?) -> Void]] = [:]
@@ -349,7 +349,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
 
     /// On the flat map within `prewarmSteps` of the flat zoom: the globe's
     /// textures for the camera zoomed out to just below the flat zoom (the
-    /// world and detail textures, the satellite tiles) are made ahead.
+    /// world texture, the map's and the satellite picture's tiles) are made ahead.
     private func prewarm() {
         guard let renderer, !flatOnly, bounds.width > 0, bounds.height > 0 else { return }
         let flatZoom = projection.flatZoom
@@ -411,7 +411,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
                   let buffer = renderer.queue.makeCommandBuffer(), bounds.width > 0 else { return }
             let scene = scene
             let ready = renderer.textures.isReady(for: scene)
-            renderer.textures.prepare(for: scene)
+            renderer.textures.prepare(for: scene, ahead: ahead())
             renderer.encode(scene, pass: pass, into: buffer)
             if revealPending, ready {
                 // This frame shows the globe whole: the flat map goes once it is on screen
@@ -431,6 +431,26 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     }
 
     // MARK: Moving
+
+    /// Where the view is going: a throw's camera half way and at its end
+    /// (the speed falls off over `throwDecay`, so it carries speed × decay),
+    /// a drag's in its speed of the last tenth of a second, a glide's target.
+    /// The globe's tiles there are made after the view's own.
+    func ahead() -> [MapCamera] {
+        if let g = glide { return [g.to] }
+        var v = velocity
+        if v == nil, dragStart != nil, !dragTilts, let first = dragSteps.first, let last = dragSteps.last, dragSteps.count >= 2,
+           ProcessInfo.processInfo.systemUptime - last.0 < 0.1 {
+            let span = max(0.016, last.0 - first.0)
+            v = (dragSteps.reduce(0) { $0 + $1.1 } / span, dragSteps.reduce(0) { $0 + $1.2 } / span)
+        }
+        guard let v, hypot(v.x, v.y) > 150 else { return [] }
+        let reach = Self.throwDecay
+        return [pan(by: v.x * reach / 2, v.y * reach / 2), pan(by: v.x * reach, v.y * reach)].map(held)
+    }
+
+    /// How fast a throw slows down: its speed falls by e every this many seconds
+    static let throwDecay = 0.3
 
     /// The camera after a move by the user.
     private func moved(to next: MapCamera) {
@@ -477,7 +497,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
             let before = camera
             moved(to: pan(by: v.x * dt, v.y * dt))
             if camera != before { MapMotion.threw(hypot(v.x * dt, v.y * dt)) }
-            let decay = exp(-dt / 0.3)
+            let decay = exp(-dt / Self.throwDecay)
             let next = (x: v.x * decay, y: v.y * decay)
             velocity = hypot(next.x, next.y) < 20 ? nil : next
         }
