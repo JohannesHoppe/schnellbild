@@ -17,6 +17,8 @@ never block the main thread.
 - Everything (code, comments, UI source strings, docs, commits) is in **English**;
   the UI is translated (see Localization). The user converses in **German**.
 
+**Every format shows (Johannes' rule).** Schnellbild aims to show every picture and every video, whatever its format: that is its strength. A format that turns up and doesn't show (as an "other file" or not at all) is a gap to close, not an accepted limit: first with what macOS draws (ImageIO, PDFKit, AVFoundation, AppKit) or a preview the file carries inside, then with a decoder from outside (proposed to Johannes with name, version, licence, maintenance, security and App Store fit; nothing is added without his consent, see the global rule on installs). The only exception is a format so rare it is hardly used: then write him an assessment (how common, who makes such files, what showing it would take) and let him decide; never drop one silently. Every format the app shows is listed in the README and on the website (`site/i18n`, all languages); a format added or found missing updates both.
+
 ## Architecture & key files
 
 SwiftPM **executableTarget** `Schnellbild` (sources in `Schnellbild/*.swift`).
