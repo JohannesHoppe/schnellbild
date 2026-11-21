@@ -675,3 +675,6 @@
 "“%@” is no longer in the Trash." = "“%@” is no longer in the Trash.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” couldn't be taken out of the Trash and is still there. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Undo / redo renaming, trashing, moving, copying, a new folder";
+"Copy Path" = "Copy Path";
+"Copy Path of Selected Item" = "Copy Path of Selected Item";
+"Right-click to copy" = "Right-click to copy";

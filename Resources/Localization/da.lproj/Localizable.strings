@@ -675,3 +675,6 @@
 "“%@” is no longer in the Trash." = "“%@” er ikke længere i papirkurven.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” kunne ikke tages ud af papirkurven og ligger der stadig. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Fortryd / gentag: omdøbning, flytning til papirkurven, flytning, kopiering, ny mappe";
+"Copy Path" = "Kopiér sti";
+"Copy Path of Selected Item" = "Kopiér stien til det valgte emne";
+"Right-click to copy" = "Højreklik for at kopiere";

@@ -675,3 +675,6 @@
 "“%@” is no longer in the Trash." = "「%@」已不在垃圾桶中。";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "無法將「%@」從垃圾桶取出，它仍在垃圾桶中。%@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "還原 / 重做：重新命名、丟到垃圾桶、搬移、拷貝、新增檔案夾";
+"Copy Path" = "拷貝路徑";
+"Copy Path of Selected Item" = "拷貝所選項目的路徑";
+"Right-click to copy" = "按右鍵以拷貝";

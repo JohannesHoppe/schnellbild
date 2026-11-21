@@ -675,3 +675,6 @@
 "“%@” is no longer in the Trash." = "„%@” nie ma już w koszu.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Nie można wyjąć „%@” z kosza, więc nadal tam jest. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Cofnij / przywróć: zmianę nazwy, przeniesienie do kosza, przeniesienie, kopiowanie, nowy folder";
+"Copy Path" = "Kopiuj ścieżkę";
+"Copy Path of Selected Item" = "Kopiuj ścieżkę zaznaczonego elementu";
+"Right-click to copy" = "Kliknij prawym przyciskiem, aby skopiować";

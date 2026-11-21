@@ -36,9 +36,18 @@ struct FolderWalk {
     /// What the walk itself reads of each item (with `keys`).
     private static let ownKeys: Set<URLResourceKey> = [.isHiddenKey, .isDirectoryKey, .isSymbolicLinkKey]
 
+    /// Level by level: a folder's own items, then those of each of its
+    /// subfolders, then theirs. A walk after the first few hits meets the
+    /// shallowest ones first, so a large subtree without them (a project's
+    /// `node_modules`, a camera's database) doesn't use up `limit` before a
+    /// folder beside it with pictures is reached. Else depth first, as the
+    /// directory enumerator lists.
+    var breadthFirst = false
+
     /// Visits every item the walk lists until `visit` returns false.
     @discardableResult
     func run(cancelled: () -> Bool = { false }, _ visit: (URL) -> Bool) -> Ending {
+        if breadthFirst, deep { return runLevelByLevel(cancelled: cancelled, visit) }
         // (a package's flag only while AppleDouble files are read in each folder walked into)
         let doubles = shown && appleDoubles
         let mine = doubles && deep ? Self.ownKeys.union([.isPackageKey]) : Self.ownKeys
@@ -77,6 +86,44 @@ struct FolderWalk {
             }
             if let ending { return ending }
         }
+    }
+
+    /// `run` level by level, with the same rules: hidden items as `HiddenFiles`
+    /// says (hidden folders not walked into), no packages walked into, no
+    /// links followed, the AppleDouble files while shown, `limit` items at
+    /// most. A folder that can't be read is passed over.
+    private func runLevelByLevel(cancelled: () -> Bool, _ visit: (URL) -> Bool) -> Ending {
+        let mine = Self.ownKeys.union([.isPackageKey])
+        let doubles = shown && appleDoubles
+        var folders: [URL] = [root]
+        var next = 0
+        var looked = 0
+        while next < folders.count {
+            if cancelled() { return .cancelled }
+            let folder = folders[next]
+            next += 1
+            // (the folders done are let go: a wide tree keeps only those still to walk)
+            if next > 4096 { folders.removeFirst(next); next = 0 }
+            let ending: Ending? = autoreleasepool {
+                guard let listed = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: Array(keys.union(mine)),
+                                                                                options: []) else { return nil }
+                let items = doubles ? HiddenFiles.appleDoubleItems(in: folder, besides: listed) + listed : listed
+                for url in items {
+                    if cancelled() { return .cancelled }
+                    looked += 1
+                    if looked > limit { return .gaveUp }
+                    let values = try? url.resourceValues(forKeys: mine)
+                    guard HiddenFiles.lists(url, values: values, shown: shown) else { continue }
+                    if !visit(url) { return .stopped }
+                    if values?.isDirectory == true, values?.isSymbolicLink != true, values?.isPackage != true {
+                        folders.append(url)
+                    }
+                }
+                return nil
+            }
+            if let ending { return ending }
+        }
+        return .whole
     }
 
     /// A folder's own items (hidden ones as `HiddenFiles` says, or those in

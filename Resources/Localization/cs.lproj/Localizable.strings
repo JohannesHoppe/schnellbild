@@ -675,3 +675,6 @@
 "“%@” is no longer in the Trash." = "„%@“ už v koši není.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "„%@“ se nepodařilo vyjmout z koše a zůstává v něm. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Odvolat / znovu: přejmenování, přesun do koše, přesun, kopírování, novou složku";
+"Copy Path" = "Kopírovat cestu";
+"Copy Path of Selected Item" = "Kopírovat cestu vybrané položky";
+"Right-click to copy" = "Kopírování pravým kliknutím";

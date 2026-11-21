@@ -272,7 +272,24 @@ struct FolderTile: View {
     private func loadPreviews() async {
         // (what the tile shows stays until the new previews are there: no flicker)
         guard previews, let folder else { previewImages = []; return }
-        let files = await FolderPreviewCache.shared.files(in: folder)
+        var files = await FolderPreviewCache.shared.files(in: folder)
+        if files.isEmpty {
+            let found = await FolderPreviewCache.shared.containsMedia(folder)
+            guard !Task.isCancelled else { return }
+            // (not known: the walk gave up, not greyed)
+            if let found { model.noteFolder(folder, empty: !found) }
+            guard found == true else { previewImages = []; return }
+            // Media below but none listed: listed again once (the cache let
+            // an older listing go); an archive holding them gives none
+            files = await FolderPreviewCache.shared.files(in: folder)
+            guard !Task.isCancelled else { return }
+        } else {
+            model.noteFolder(folder, empty: false)
+        }
+        await showPreviews(of: files)
+    }
+
+    private func showPreviews(of files: [URL]) async {
         let thumbSide = side * 0.4
         // Requested together: on a network volume one after another would
         // take three round-trips.
@@ -292,12 +309,6 @@ struct FolderTile: View {
         }
         guard !Task.isCancelled else { return }
         previewImages = files.indices.compactMap { loaded[$0] }
-        if files.isEmpty {
-            guard let found = await FolderPreviewCache.shared.containsMedia(folder), !Task.isCancelled else { return }
-            model.noteFolder(folder, empty: !found)
-        } else {
-            model.noteFolder(folder, empty: false)
-        }
     }
 }
 
@@ -421,11 +432,22 @@ final class FolderPreviewCache {
         }
         let started = generation
         // The preview listing usually answers it already
-        guard let found = await files(in: folder).isEmpty ? await BrowserModel.containsMedia(folder) : true else { return nil }
-        if generation == started {
-            hasMedia.setObject(Known(found, stamp: files.object(forKey: key)?.stamp), forKey: key)
+        let listed = await files(in: folder)
+        guard !listed.isEmpty else {
+            guard let found = await BrowserModel.containsMedia(folder) else { return nil }
+            if generation == started {
+                hasMedia.setObject(Known(found, stamp: files.object(forKey: key)?.stamp), forKey: key)
+                // Media below, yet no previews listed: the listing is older
+                // than what arrived deeper down (a folder's date changes only
+                // with what it holds directly), so the next ask lists again
+                if found, files.object(forKey: key)?.value.isEmpty == true { files.removeObject(forKey: key) }
+            }
+            return found
         }
-        return found
+        if generation == started {
+            hasMedia.setObject(Known(true, stamp: files.object(forKey: key)?.stamp), forKey: key)
+        }
+        return true
     }
 
     /// What a search's walk found out (it went through the folder anyway).
