@@ -61,6 +61,7 @@ enum FormatFixtures {
 
     // MARK: By hand
 
+    private static func join(_ parts: [UInt8]...) -> [UInt8] { parts.flatMap { $0 } }
     private static func be16(_ v: Int) -> [UInt8] { [UInt8((v >> 8) & 0xFF), UInt8(v & 0xFF)] }
     private static func be32(_ v: Int) -> [UInt8] { [24, 16, 8, 0].map { UInt8((v >> $0) & 0xFF) } }
     private static func le16(_ v: Int) -> [UInt8] { [UInt8(v & 0xFF), UInt8((v >> 8) & 0xFF)] }
@@ -104,13 +105,13 @@ enum FormatFixtures {
     /// SGI image (Paul Haeberli's "The SGI Image File Format" 1.00):
     /// uncompressed, 8 bits, three channels one after the other, rows from the bottom.
     static func sgi() -> Data {
-        var bytes = be16(474) + [0, 1] + be16(3) + be16(width) + be16(height) + be16(3)
-        bytes += be32(0) + be32(255) + [0, 0, 0, 0] + [UInt8](repeating: 0, count: 80) + be32(0)
+        var bytes = join(be16(474), [0, 1], be16(3), be16(width), be16(height), be16(3))
+        bytes += join(be32(0), be32(255), [0, 0, 0, 0], [UInt8](repeating: 0, count: 80), be32(0))
         bytes += [UInt8](repeating: 0, count: 512 - bytes.count)
         let rows = rgbRows()
         for channel in 0..<3 {
             for row in rows.reversed() {
-                bytes += (0..<width).map { row[$0 * 3 + channel] }
+                bytes += join((0..<width).map { row[$0 * 3 + channel] })
             }
         }
         return Data(bytes)
@@ -120,11 +121,13 @@ enum FormatFixtures {
     /// 1 (PSD) or 2 (PSB, the large document format: 8-byte layer and mask
     /// length), RGB, 8 bits, the composite image uncompressed.
     static func photoshop(large: Bool) -> Data {
-        var bytes = Array("8BPS".utf8) + be16(large ? 2 : 1) + [UInt8](repeating: 0, count: 6)
-        bytes += be16(3) + be32(height) + be32(width) + be16(8) + be16(3)
+        let version = be16(large ? 2 : 1)
+        var bytes = join(Array("8BPS".utf8), version, [UInt8](repeating: 0, count: 6))
+        bytes += join(be16(3), be32(height), be32(width), be16(8), be16(3))
         bytes += be32(0)                                  // colour mode data
         bytes += be32(0)                                  // image resources
-        bytes += large ? be32(0) + be32(0) : be32(0)      // layer and mask information
+        bytes += be32(0)                                  // layer and mask information (8 bytes in a PSB)
+        if large { bytes += be32(0) }
         bytes += be16(0)                                  // raw image data
         let rows = rgbRows()
         for channel in 0..<3 {
@@ -139,10 +142,10 @@ enum FormatFixtures {
     static func dds() -> Data {
         var bytes = Array("DDS ".utf8)
         // caps, height, width, pitch, pixel format flags
-        bytes += le32(124) + le32(0x1 | 0x2 | 0x4 | 0x8 | 0x1000) + le32(height) + le32(width) + le32(width * 4) + le32(0) + le32(0)
+        bytes += join(le32(124), le32(0x1 | 0x2 | 0x4 | 0x8 | 0x1000), le32(height), le32(width), le32(width * 4), le32(0), le32(0))
         bytes += [UInt8](repeating: 0, count: 44)
-        bytes += le32(32) + le32(0x41) + le32(0) + le32(32) + le32(0x00FF_0000) + le32(0x0000_FF00) + le32(0x0000_00FF) + le32(0xFF00_0000)
-        bytes += le32(0x1000) + le32(0) + le32(0) + le32(0) + le32(0)
+        bytes += join(le32(32), le32(0x41), le32(0), le32(32), le32(0x00FF_0000), le32(0x0000_FF00), le32(0x0000_00FF), le32(0xFF00_0000))
+        bytes += join(le32(0x1000), le32(0), le32(0), le32(0), le32(0))
         for row in rgbRows() {
             for x in 0..<width { bytes += [row[x * 3 + 2], row[x * 3 + 1], row[x * 3], 255] }
         }
@@ -167,12 +170,12 @@ enum FormatFixtures {
     /// rectangle painted over it.
     static func pict() -> Data {
         var bytes = [UInt8](repeating: 0, count: 512)
-        let frame = be16(0) + be16(0) + be16(10) + be16(10)
-        bytes += be16(0) + frame
-        bytes += be16(0x0011) + be16(0x02FF)                                // version 2
-        bytes += be16(0x0C00) + be16(0xFFFE) + be16(0) + be32(0x0048_0000) + be32(0x0048_0000) + frame + be32(0)
-        bytes += be16(0x001A) + be16(0xFFFF) + be16(0) + be16(0)            // foreground colour red
-        bytes += be16(0x0031) + frame                                       // paint rect
+        let frame = join(be16(0), be16(0), be16(10), be16(10))
+        bytes += join(be16(0), frame)
+        bytes += join(be16(0x0011), be16(0x02FF))                                // version 2
+        bytes += join(be16(0x0C00), be16(0xFFFE), be16(0), be32(0x0048_0000), be32(0x0048_0000), frame, be32(0))
+        bytes += join(be16(0x001A), be16(0xFFFF), be16(0), be16(0))            // foreground colour red
+        bytes += join(be16(0x0031), frame)                                       // paint rect
         bytes += be16(0x00FF)                                               // end of picture
         return Data(bytes)
     }
@@ -185,22 +188,22 @@ enum FormatFixtures {
             var value = value
             if value.count % 2 == 1 { value.append(vr == "UI" ? 0 : 0x20) }
             let long = ["OB", "OW", "UN", "SQ", "UT"].contains(vr)
-            return le16(group) + le16(item) + Array(vr.utf8)
-                + (long ? [0, 0] + le32(value.count) : le16(value.count)) + value
+            let length: [UInt8] = long ? join([0, 0], le32(value.count)) : le16(value.count)
+            return join(le16(group), le16(item), Array(vr.utf8), length, value)
         }
         let syntax = Array("1.2.840.10008.1.2.1".utf8)
         let mediaClass = Array("1.2.840.10008.5.1.4.1.1.7".utf8)   // secondary capture
         let instance = Array("1.2.3.4".utf8)
         var meta = element(0x0002, 0x0001, "OB", [0, 1])
-        meta += element(0x0002, 0x0002, "UI", mediaClass) + element(0x0002, 0x0003, "UI", instance)
+        meta += join(element(0x0002, 0x0002, "UI", mediaClass), element(0x0002, 0x0003, "UI", instance))
         meta += element(0x0002, 0x0010, "UI", syntax)
-        var bytes = [UInt8](repeating: 0, count: 128) + Array("DICM".utf8)
-        bytes += element(0x0002, 0x0000, "UL", le32(meta.count)) + meta
-        bytes += element(0x0008, 0x0016, "UI", mediaClass) + element(0x0008, 0x0018, "UI", instance)
-        bytes += element(0x0028, 0x0002, "US", le16(1)) + element(0x0028, 0x0004, "CS", Array("MONOCHROME2".utf8))
-        bytes += element(0x0028, 0x0010, "US", le16(height)) + element(0x0028, 0x0011, "US", le16(width))
-        bytes += element(0x0028, 0x0100, "US", le16(8)) + element(0x0028, 0x0101, "US", le16(8))
-        bytes += element(0x0028, 0x0102, "US", le16(7)) + element(0x0028, 0x0103, "US", le16(0))
+        var bytes = join([UInt8](repeating: 0, count: 128), Array("DICM".utf8))
+        bytes += join(element(0x0002, 0x0000, "UL", le32(meta.count)), meta)
+        bytes += join(element(0x0008, 0x0016, "UI", mediaClass), element(0x0008, 0x0018, "UI", instance))
+        bytes += join(element(0x0028, 0x0002, "US", le16(1)), element(0x0028, 0x0004, "CS", Array("MONOCHROME2".utf8)))
+        bytes += join(element(0x0028, 0x0010, "US", le16(height)), element(0x0028, 0x0011, "US", le16(width)))
+        bytes += join(element(0x0028, 0x0100, "US", le16(8)), element(0x0028, 0x0101, "US", le16(8)))
+        bytes += join(element(0x0028, 0x0102, "US", le16(7)), element(0x0028, 0x0103, "US", le16(0)))
         bytes += element(0x7FE0, 0x0010, "OB", (0..<height).flatMap { _ in (0..<width).map { UInt8($0 < width / 2 ? 76 : 29) } })
         return Data(bytes)
     }
@@ -290,7 +293,7 @@ enum FormatFixtures {
         let ps = [UInt8](postScript)
         let header = 30
         var bytes: [UInt8] = [0xC5, 0xD0, 0xD3, 0xC6]
-        bytes += le32(header) + le32(ps.count) + le32(0) + le32(0) + le32(header + ps.count) + le32(tiff.count) + [0xFF, 0xFF]
+        bytes += join(le32(header), le32(ps.count), le32(0), le32(0), le32(header + ps.count), le32(tiff.count), [0xFF, 0xFF])
         return Data(bytes + ps) + tiff
     }
 
