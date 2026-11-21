@@ -22,6 +22,8 @@ public struct GlobeScene: Equatable, Sendable {
     /// its air (the website's hero, laid over the page; `snapshot` keeps the
     /// alpha, premultiplied)
     public var transparent = false
+    /// The camera's tilt and heading as given at every zoom (`GlobeProjection.freeTilt`: rendered pictures)
+    public var freeTilt = false
 
     public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date(),
                 clouds: Double = 0) {
@@ -49,7 +51,7 @@ public struct GlobeScene: Equatable, Sendable {
         return 40 * pow(6.0 / 40, close)
     }
 
-    public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size, lens: lens) }
+    public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size, lens: lens, freeTilt: freeTilt) }
 
     /// How visible the night sky is: fully while the Earth is small in the
     /// view, gone once it fills it (and while the map flattens).
@@ -457,7 +459,7 @@ public final class GlobeTextures: @unchecked Sendable {
         let z = scene.camera.zoom
         guard z >= 2.5, scene.projection.flatness < 1 else { return nil }
         // Tilted, the ground near the camera lies closer than the centre: the full size half a step earlier
-        let level = z >= (scene.camera.pitch > 30 ? 4.0 : 4.5) ? 2 : 1
+        let level = z >= (scene.projection.shownPitch > 30 ? 4.0 : 4.5) ? 2 : 1
         let columns = level == 1 ? 8 : 16, rows = columns / 2
         // Tilted, the ground nearest the camera (the view's lower middle) needs the detail most; the
         // 2 × 2 tiles around the point between it and the centre cover both
@@ -620,12 +622,16 @@ public final class GlobeTextures: @unchecked Sendable {
 
     /// The detail texture a scene wants: 8 × 8 tiles of the zoom shown
     /// (rounded up, from 4 to the flat zoom's) around the centre; none
-    /// below zoom 3, where the world texture is sharp enough.
+    /// below zoom 3, where the world texture is sharp enough. Beyond the
+    /// flat zoom (a tilted camera straightening on its way into the flat
+    /// map, `GlobeProjection.straightZoom`) the zoom shown rounded down, so
+    /// the tiles are as sharp as the flat map's it hands over to.
     static func detailKey(for scene: GlobeScene) -> DetailKey? {
         let z = scene.camera.zoom
         guard z > Double(baseZoom) else { return nil }
         let projection = scene.projection
-        let zoom = max(baseZoom + 1, min(Int(ceil(projection.flatZoom - 1e-9)), Int(ceil(z - 1e-9))))
+        let flatTiles = Int(ceil(projection.flatZoom - 1e-9))
+        let zoom = max(baseZoom + 1, z > Double(flatTiles) && !projection.isFlat ? max(flatTiles, Int(floor(z))) : Int(ceil(z - 1e-9)))
         let n = 1 << zoom
         let u = WebMercator.unitPoint(scene.camera.center)
         let x0 = Int((Double(u.x) * Double(n)).rounded()) - 4

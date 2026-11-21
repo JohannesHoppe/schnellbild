@@ -93,6 +93,46 @@ final class AtlasTests: XCTestCase {
                           MapViewport.minZoom(for: atlas.mapSize))
     }
 
+    /// Tilted, + / −, a cluster's double click and the fit go on past low
+    /// orbit into the flat map; the tilt chosen stays and shows again
+    /// zoomed out; the clusters and places follow the projection shown.
+    func testZoomingInTiltedIsNotHeldAtLowOrbit() {
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        atlas.load(trip)
+        atlas.mapSize = CGSize(width: 960, height: 600)
+        atlas.moveByUser(to: MapCamera(center: Coordinate(latitude: 61, longitude: 7), zoom: 6, pitch: 60, heading: 20))
+        for zoom in [7.0, 8, 9, 10] {
+            atlas.zoomStep(1)
+            XCTAssertEqual(atlas.camera.zoom, zoom, accuracy: 1e-9)
+            XCTAssertEqual(atlas.camera.pitch, 60, "the tilt chosen stays")
+        }
+        XCTAssertFalse(atlas.showsGlobe, "the flat map, straight down")
+        atlas.clusterNow()
+        let asFlat = AtlasClustering.clusters(of: trip.compactMap { item in item.coordinate.map { (id: item.url, coordinate: $0) } }, zoom: 10)
+        XCTAssertEqual(Set(atlas.clusters.map { Set($0.ids) }), Set(asFlat.map { Set($0.ids) }), "clustered as the flat map")
+        let flat = MapViewport(camera: MapCamera(center: atlas.camera.center, zoom: 10), size: atlas.mapSize)
+        let bryggen = Coordinate(latitude: 60.3975, longitude: 5.3245)
+        XCTAssertEqual(atlas.point(for: bryggen)?.x ?? 0, flat.point(for: bryggen).x, accuracy: 1e-6)
+        for zoom in [9.0, 8, 7, 6] {
+            atlas.zoomStep(-1)
+            XCTAssertEqual(atlas.camera.zoom, zoom, accuracy: 1e-9)
+        }
+        XCTAssertTrue(atlas.showsGlobe)
+        XCTAssertEqual(GlobeProjection(camera: atlas.camera, size: atlas.mapSize).shownPitch, 60, accuracy: 1e-9, "the tilt back in full")
+        // A cluster's double click zooms on in tilted
+        atlas.moveByUser(to: MapCamera(center: Coordinate(latitude: 61, longitude: 7), zoom: 6.5, pitch: 60))
+        atlas.clusterNow()
+        let crowded = try! XCTUnwrap(atlas.clusters.filter { $0.count > 1 }.first)
+        atlas.zoom(into: crowded)
+        XCTAssertGreaterThan(atlas.camera.zoom, GlobeProjection.fullTiltZoom + 1)
+        XCTAssertEqual(atlas.camera.pitch, 60)
+        // The fit keeps the tilt chosen, whatever its zoom
+        atlas.fitAll()
+        XCTAssertEqual(atlas.camera.pitch, 60)
+        XCTAssertEqual(atlas.camera.zoom, MapCamera.fitting(atlas.placed.compactMap(\.coordinate), in: atlas.mapSize, padding: 70, maxZoom: 11)!.zoom,
+                       accuracy: 1e-9)
+    }
+
     func testAClusterStandsInTheMiddleOfItsItems() {
         let a = Coordinate(latitude: 60, longitude: 10), b = Coordinate(latitude: 60, longitude: 10.01)
         let clusters = AtlasClustering.clusters(of: [(URL(fileURLWithPath: "/a"), a), (URL(fileURLWithPath: "/b"), b)], zoom: 5)

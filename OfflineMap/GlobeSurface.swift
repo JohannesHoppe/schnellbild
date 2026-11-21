@@ -347,15 +347,17 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
         }
     }
 
-    /// On the flat map within `prewarmSteps` of the flat zoom: the globe's
-    /// textures for the camera zoomed out to just below the flat zoom (the
-    /// world and detail textures, the satellite tiles) are made ahead.
+    /// On the flat map within `prewarmSteps` of the zoom where the globe
+    /// shows again (`GlobeProjection.globeZoom`: the flat zoom, or with a
+    /// tilt chosen where it starts to show): the globe's textures for the
+    /// camera zoomed out to just below it (the world and detail textures,
+    /// the satellite tiles) are made ahead.
     private func prewarm() {
         guard let renderer, !flatOnly, bounds.width > 0, bounds.height > 0 else { return }
-        let flatZoom = projection.flatZoom
-        guard camera.zoom < flatZoom + Self.prewarmSteps else { return }
+        let globeZoom = projection.globeZoom
+        guard camera.zoom < globeZoom + Self.prewarmSteps else { return }
         var next = scene
-        next.camera.zoom = flatZoom - 0.01
+        next.camera.zoom = globeZoom - 0.01
         renderer.textures.prepare(for: next)
     }
 
@@ -587,23 +589,28 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     }
 
     /// Tilts the view by `degrees` (towards the horizon when positive) and
-    /// turns it by `turn` degrees clockwise. A tilt from straight down
-    /// beyond the tilted camera's zoom glides in to it first.
+    /// turns it by `turn` degrees clockwise: the tilt and heading chosen,
+    /// of which the zoom shows its share (`GlobeProjection.tiltShare`).
+    /// Tilting towards the horizon where less than half of the tilt would
+    /// show (zoomed in beyond the middle of `fullTiltZoom` … `straightZoom`,
+    /// the flat map too) glides out to `fullTiltZoom`, where it shows in full.
     func tilt(by degrees: Double, turn: Double = 0) {
         stopMotion()
         var next = camera
         next.pitch = min(GlobeProjection.maxPitch, max(0, camera.pitch + degrees))
         next.heading = camera.heading + turn
-        if next.pitch > 0 && camera.zoom > GlobeProjection.tiltedMaxZoom {
-            next.zoom = GlobeProjection.tiltedMaxZoom
+        if degrees > 0, next.pitch > 0, GlobeProjection.tiltShare(zoom: camera.zoom) < 0.5 {
+            next.zoom = GlobeProjection.fullTiltZoom
             move(to: next)
             return
         }
         moved(to: next)
     }
 
-    /// The tilt button: from straight down to the tilted view near the
-    /// horizon, and back to straight down with north up.
+    /// The tilt button: with no tilt chosen, the view tilted near the
+    /// horizon, gliding out to `fullTiltZoom` when zoomed in further (the
+    /// flat map too), where the tilt shows in full; with a tilt chosen
+    /// (shown or eased out by the zoom), back to straight down with north up.
     func toggleTilt() {
         var next = camera
         if camera.pitch > 1 {
@@ -611,7 +618,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
             next.heading = 0
         } else {
             next.pitch = 60
-            next.zoom = min(camera.zoom, GlobeProjection.tiltedMaxZoom)
+            next.zoom = min(camera.zoom, GlobeProjection.fullTiltZoom)
         }
         move(to: next)
     }

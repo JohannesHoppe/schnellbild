@@ -307,6 +307,97 @@ final class GlobeSurfaceTests: XCTestCase {
         XCTAssertEqual(surface.camera.zoom, GlobeProjection.minZoom(for: size), accuracy: 1e-9)
     }
 
+    /// The tilt is a setting: zooming in tilted goes on into the flat map
+    /// (the tilt eased out, kept on the camera); the tilt button and ⌥ on
+    /// the flat map glide out to where the tilt shows in full.
+    func testZoomingInTiltedGoesOnIntoTheFlatMap() throws {
+        let reduce = MapMotion.reduceOverride
+        MapMotion.reduceOverride = true
+        defer { MapMotion.reduceOverride = reduce }
+        let surface = GlobeSurfaceView(map: nil)
+        surface.frame = NSRect(x: 0, y: 0, width: 800, height: 500)
+        let middle = CGPoint(x: 400, y: 250)
+        let alps = Coordinate(latitude: 46, longitude: 9)
+        surface.camera = MapCamera(center: alps, zoom: 6, pitch: 60, heading: 30)
+        // Pinch, the wheel and + zoom on past low orbit, the tilt chosen kept
+        surface.pinch(by: 1, at: middle)
+        XCTAssertEqual(surface.camera.zoom, 7, accuracy: 1e-9)
+        surface.pinch(by: 1, at: middle)
+        XCTAssertEqual(surface.camera.zoom, 8, accuracy: 1e-9, "no stop at low orbit")
+        surface.scroll(dx: 0, dy: 4, precise: false, command: false, at: middle)
+        XCTAssertEqual(surface.camera.zoom, 9, accuracy: 1e-9)
+        surface.zoom(by: 1)
+        XCTAssertEqual(surface.camera.zoom, 10, accuracy: 1e-9)
+        XCTAssertEqual(surface.camera.pitch, 60)
+        XCTAssertTrue(surface.projection.isFlat, "the flat map")
+        // Zoomed out again the tilt comes back
+        surface.zoom(by: -4)
+        XCTAssertEqual(surface.camera.zoom, 6, accuracy: 1e-9)
+        XCTAssertEqual(surface.projection.shownPitch, 60, accuracy: 1e-9)
+        XCTAssertEqual(surface.projection.shownHeading, 30, accuracy: 1e-9)
+
+        // On the flat map with a tilt chosen, the button looks straight down (north up), staying there
+        surface.zoom(by: 4)
+        surface.toggleTilt()
+        XCTAssertEqual(surface.camera.pitch, 0)
+        XCTAssertEqual(surface.camera.heading, 0)
+        XCTAssertEqual(surface.camera.zoom, 10, accuracy: 1e-9)
+        // Without one it tilts, out at low orbit where the tilt shows in full
+        surface.toggleTilt()
+        XCTAssertEqual(surface.camera.pitch, 60)
+        XCTAssertEqual(surface.camera.zoom, GlobeProjection.fullTiltZoom, accuracy: 1e-9)
+        XCTAssertEqual(surface.projection.shownPitch, 60, accuracy: 1e-9)
+        // Closer in than low orbit the button keeps the zoom
+        surface.toggleTilt()
+        surface.camera = MapCamera(center: alps, zoom: 6.5)
+        surface.toggleTilt()
+        XCTAssertEqual(surface.camera.zoom, 6.5, accuracy: 1e-9)
+
+        // ⌥-drag towards the horizon on the flat map: out to low orbit too
+        surface.camera = MapCamera(center: alps, zoom: 11)
+        surface.tilt(by: 10)
+        XCTAssertEqual(surface.camera.pitch, 10)
+        XCTAssertEqual(surface.camera.zoom, GlobeProjection.fullTiltZoom, accuracy: 1e-9)
+        // Where most of the tilt shows it tilts in place, the zoom kept
+        surface.camera = MapCamera(center: alps, zoom: 7.3, pitch: 20)
+        surface.tilt(by: 10, turn: 5)
+        XCTAssertEqual(surface.camera.pitch, 30)
+        XCTAssertEqual(surface.camera.heading, 5)
+        XCTAssertEqual(surface.camera.zoom, 7.3, accuracy: 1e-9)
+        // Back towards straight down it never moves the zoom
+        surface.camera = MapCamera(center: alps, zoom: 11, pitch: 40)
+        surface.tilt(by: -10)
+        XCTAssertEqual(surface.camera.pitch, 30)
+        XCTAssertEqual(surface.camera.zoom, 11, accuracy: 1e-9)
+    }
+
+    /// Tilted, the globe shows below `straightZoom` and the flat map from it on, in a window.
+    func testATiltedGlobeHandsOverToTheFlatMapFurtherIn() throws {
+        let renderer = try GlobeRenderTests.renderer()
+        let reduce = MapMotion.reduceOverride
+        MapMotion.reduceOverride = true
+        defer { MapMotion.reduceOverride = reduce }
+        let size = CGSize(width: 800, height: 500)
+        let window = NSWindow(contentRect: NSRect(origin: .zero, size: size), styleMask: [.borderless], backing: .buffered, defer: false)
+        let surface = GlobeSurfaceView(map: renderer.textures.map)
+        surface.attach(renderer)
+        window.contentView = surface
+        surface.frame = NSRect(origin: .zero, size: size)
+        let metal = try XCTUnwrap(surface.subviews.last)
+        let alps = Coordinate(latitude: 46, longitude: 9)
+        surface.camera = MapCamera(center: alps, zoom: 7.8, pitch: 60)
+        XCTAssertFalse(metal.isHidden, "the globe, tilted beyond the flat zoom")
+        XCTAssertTrue(surface.flat.isHidden)
+        surface.move(to: MapCamera(center: alps, zoom: 9, pitch: 60), animated: false)
+        XCTAssertFalse(surface.flat.isHidden, "the flat map once straight down")
+        wait(10) { surface.flat.allTilesShown && metal.isHidden }
+        XCTAssertTrue(metal.isHidden, "the globe hands over")
+        surface.move(to: MapCamera(center: alps, zoom: 8, pitch: 60), animated: false)
+        XCTAssertFalse(metal.isHidden, "the tilted globe again")
+        wait(GlobeSurfaceView.revealTimeout + 2) { surface.flat.isHidden }
+        XCTAssertTrue(surface.flat.isHidden)
+    }
+
     func testPinchAndScrollZoomOrTurn() throws {
         let surface = GlobeSurfaceView(map: nil)
         surface.frame = NSRect(x: 0, y: 0, width: 800, height: 500)

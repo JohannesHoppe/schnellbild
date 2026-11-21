@@ -231,7 +231,7 @@ final class GlobeMathTests: XCTestCase {
         let held = GlobeProjection.held(MapCamera(center: c, zoom: 10, pitch: 90, heading: 190), size: size)
         XCTAssertEqual(held.pitch, GlobeProjection.maxPitch)
         XCTAssertEqual(held.heading, -170, accuracy: 1e-9)
-        XCTAssertEqual(held.zoom, GlobeProjection.tiltedMaxZoom, "a tilted camera comes no closer than low orbit")
+        XCTAssertEqual(held.zoom, 10, "a tilted camera goes on into the flat map, its tilt eased out")
         XCTAssertEqual(GlobeProjection.held(MapCamera(center: c, zoom: 10, pitch: -5), size: size).pitch, 0)
         XCTAssertEqual(GlobeProjection.held(MapCamera(center: c, zoom: 10), size: size).zoom, 10, "straight down to the flat map")
     }
@@ -246,6 +246,84 @@ final class GlobeMathTests: XCTestCase {
             XCTAssertEqual(next.camera.heading, heading)
             XCTAssertEqual(next.point(for: fixed).x, anchor.x, accuracy: 0.5, "\(pitch)° \(zoom) → \(to)")
             XCTAssertEqual(next.point(for: fixed).y, anchor.y, accuracy: 0.5, "\(pitch)° \(zoom) → \(to)")
+        }
+    }
+
+    func testTheTiltShowsInFullFarOutAndEasesOutZoomingIn() {
+        let alps = Coordinate(latitude: 46, longitude: 9)
+        func shown(_ zoom: Double, pitch: Double = 60, heading: Double = 40) -> GlobeProjection {
+            GlobeProjection(camera: MapCamera(center: alps, zoom: zoom, pitch: pitch, heading: heading), size: size)
+        }
+        // In full up to low orbit
+        for zoom in [2.0, 5.4, GlobeProjection.fullTiltZoom] {
+            XCTAssertEqual(shown(zoom).shownPitch, 60, accuracy: 1e-9, "zoom \(zoom)")
+            XCTAssertEqual(shown(zoom).shownHeading, 40, accuracy: 1e-9, "zoom \(zoom)")
+            XCTAssertEqual(shown(zoom).flatness, 0, accuracy: 1e-9)
+        }
+        // Straight down, north up and flat from `straightZoom` on: the flat map, as without a tilt
+        for zoom in [GlobeProjection.straightZoom, 10, MapViewport.maxZoom] {
+            let p = shown(zoom)
+            XCTAssertEqual(p.shownPitch, 0, accuracy: 1e-9)
+            XCTAssertEqual(p.shownHeading, 0, accuracy: 1e-9)
+            XCTAssertTrue(p.isFlat, "zoom \(zoom)")
+            let flat = MapViewport(camera: MapCamera(center: alps, zoom: zoom), size: size)
+            let c = Coordinate(latitude: 46.05, longitude: 9.1)
+            XCTAssertEqual(p.point(for: c).x, flat.point(for: c).x, accuracy: 1e-6)
+            XCTAssertEqual(p.point(for: c).y, flat.point(for: c).y, accuracy: 1e-6)
+        }
+        // In between it eases out zooming in and comes back zooming out, the same at each zoom either way
+        let zooms = stride(from: 6.5, through: 9.0, by: 0.05).map { $0 }
+        let inward = zooms.map { shown($0).shownPitch }, outward = zooms.reversed().map { shown($0).shownPitch }
+        XCTAssertEqual(inward, outward.reversed())
+        for (a, b) in zip(inward, inward.dropFirst()) { XCTAssertLessThanOrEqual(b, a + 1e-12, "never tilts further zooming in") }
+        let middle = shown((GlobeProjection.fullTiltZoom + GlobeProjection.straightZoom) / 2)
+        XCTAssertEqual(middle.shownPitch, 30, accuracy: 1e-9)
+        XCTAssertEqual(middle.shownHeading, 20, accuracy: 1e-9)
+        // A heading beyond half a turn eases out the short way
+        XCTAssertEqual(shown(8, heading: 300).shownHeading, -60 * GlobeProjection.tiltShare(zoom: 8), accuracy: 1e-9)
+        // The camera keeps the tilt chosen: zooming in far and back out shows it again
+        let far = shown(5).zoomed(to: 11, keeping: CGPoint(x: 480, y: 320))
+        XCTAssertEqual(far.zoom, 11, accuracy: 1e-9, "not held at low orbit")
+        XCTAssertEqual(far.pitch, 60)
+        XCTAssertTrue(GlobeProjection(camera: far, size: size).isFlat)
+        let back = GlobeProjection(camera: far, size: size).zoomed(to: 6, keeping: CGPoint(x: 480, y: 320))
+        XCTAssertEqual(back.pitch, 60)
+        XCTAssertEqual(GlobeProjection(camera: back, size: size).shownPitch, 60, accuracy: 1e-9)
+        XCTAssertEqual(back.heading, 40, accuracy: 1e-9)
+        // Without a tilt nothing changes; a rendered picture's camera keeps its tilt at any zoom
+        XCTAssertEqual(shown(8, pitch: 0, heading: 0).shownPitch, 0)
+        XCTAssertTrue(shown(8, pitch: 0, heading: 0).isFlat)
+        var free = shown(8)
+        free.freeTilt = true
+        XCTAssertEqual(free.shownPitch, 60)
+        XCTAssertEqual(free.flatness, 0, accuracy: 1e-9)
+        // The globe shows below the flat zoom straight down, below `straightZoom` with a tilt chosen
+        XCTAssertEqual(shown(10, pitch: 0, heading: 0).globeZoom, GlobeProjection.flatZoom(for: size))
+        XCTAssertEqual(shown(10).globeZoom, GlobeProjection.straightZoom)
+    }
+
+    /// Zooming through the range in small steps moves every place on screen
+    /// a little each step, never with a jump (globe, tilt, flattening and
+    /// the hand-over to the flat map), in both directions.
+    func testTheTiltEasesOutWithoutAJump() {
+        let alps = Coordinate(latitude: 46, longitude: 9)
+        let places = [Coordinate(latitude: 46.2, longitude: 9.3), Coordinate(latitude: 45.9, longitude: 8.8), Coordinate(latitude: 46.05, longitude: 8.95)]
+        for (pitch, heading) in [(60.0, 0.0), (72.0, 48.0), (25.0, -150.0)] {
+            let zooms = stride(from: 6.8, through: 8.7, by: 0.002).map { $0 }
+            for direction in [zooms, zooms.reversed()] {
+                var last: [CGPoint]?
+                for zoom in direction {
+                    let p = GlobeProjection(camera: MapCamera(center: alps, zoom: zoom, pitch: pitch, heading: heading), size: size)
+                    let points = places.map { p.point(for: $0) }
+                    for c in places { XCTAssertTrue(p.isVisible(c), "\(c) at \(zoom)") }
+                    if let last {
+                        for (a, b) in zip(last, points) {
+                            XCTAssertLessThan(hypot(Double(b.x - a.x), Double(b.y - a.y)), 2, "\(pitch)° \(heading)° at zoom \(zoom)")
+                        }
+                    }
+                    last = points
+                }
+            }
         }
     }
 

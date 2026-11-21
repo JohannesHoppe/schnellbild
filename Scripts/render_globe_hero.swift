@@ -65,6 +65,8 @@ if let distance = argument("distance").flatMap(Double.init) {
     scene.camera.zoom = log2(2 * .pi * focal / (WebMercator.tileSize * distance))
 }
 scene.transparent = CommandLine.arguments.contains("--transparent")
+// The tilt as given at any distance (the app eases it out zoomed in)
+scene.freeTilt = true
 let projection = scene.projection
 
 // The photos and where they were taken (their GPS in the metadata)

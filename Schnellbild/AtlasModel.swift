@@ -565,7 +565,9 @@ final class AtlasModel: ObservableObject {
     }
 
     /// The camera within the map's limits: zoomed out, the globe's
-    /// (`GlobeProjection.minZoom`); from the flat zoom on, the flat map's.
+    /// (`GlobeProjection.minZoom`); where the flat map shows (from the flat
+    /// zoom straight down, from `GlobeProjection.straightZoom` with a tilt
+    /// chosen), the flat map's. A tilt chosen stays at every zoom.
     func held(_ c: MapCamera) -> MapCamera {
         guard mapSize.width > 0, mapSize.height > 0 else { return c }
         var next = GlobeProjection.held(c, size: mapSize)
@@ -608,7 +610,7 @@ final class AtlasModel: ObservableObject {
             self.fitting = false
             guard inputs == self.fitInputs else { self.fitIfNeeded(); return }
             guard self.wantsFit, let fitted else { return }
-            self.setCamera(self.held(fitted))
+            self.setCamera(self.held(self.keepingTilt(fitted)))
             if self.isComplete && !self.walking { self.needsFit = false }
         }
     }
@@ -628,7 +630,16 @@ final class AtlasModel: ObservableObject {
         }
         work.walked(placed.count)
         guard let fitted = MapCamera.fitting(placed.compactMap(\.coordinate), in: mapSize, padding: 70, maxZoom: 11) else { return }
-        setCamera(held(fitted))
+        setCamera(held(keepingTilt(fitted)))
+    }
+
+    /// A fitted camera with the tilt and heading chosen (the tilt is a
+    /// setting: what of it shows follows the fitted zoom, `GlobeProjection.tiltShare`).
+    private func keepingTilt(_ fitted: MapCamera) -> MapCamera {
+        var next = fitted
+        next.pitch = camera.pitch
+        next.heading = camera.heading
+        return next
     }
 
     /// The screenshots' camera: `--globe-camera=<latitude>,<longitude>,<zoom>,<pitch>,<heading>` (UI tests only).

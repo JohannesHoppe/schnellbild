@@ -164,12 +164,16 @@ public enum GlobeGeometry {
 /// Tilted (`MapCamera.pitch`, 0 … `maxPitch`°) the camera is a perspective
 /// one: it looks at the centre from the south (heading 0), from a distance
 /// that gives the centre the same scale as the sphere's radius, through a
-/// lens of `fieldOfView`; the horizon and the curve of the Earth show, and
-/// zooming in brings the camera down to low orbit (`tiltedMaxZoom`). The
-/// first `perspectiveRamp`° of tilt blend the orthographic picture into the
-/// perspective one, and the same ramp holds the flattening back: a tilted
-/// globe never flattens, and tilting back to straight down at a flat zoom
-/// flattens it.
+/// lens of `fieldOfView`; the horizon and the curve of the Earth show. The
+/// camera's pitch and heading are the tilt and turn chosen; the picture
+/// shows them in full up to `fullTiltZoom` (low orbit) and eases them out
+/// towards straight down with north up by `straightZoom` (`shownPitch`,
+/// `shownHeading`, `tiltShare`), so zooming in tilted goes on into the flat
+/// map without a stop, and zooming out brings the tilt chosen back. The
+/// first `perspectiveRamp`° of the tilt shown blend the orthographic picture
+/// into the perspective one, and the same ramp holds the flattening back: a
+/// globe shown tilted doesn't flatten, and as the tilt shown goes to
+/// straight down at a flat zoom it flattens.
 public struct GlobeProjection: Equatable, Sendable {
     public var camera: MapCamera
     public var size: CGSize
@@ -177,10 +181,16 @@ public struct GlobeProjection: Equatable, Sendable {
     /// wider for a rendered picture (Scripts/render_globe_hero.sh).
     public var lens: Double
 
-    public init(camera: MapCamera, size: CGSize, lens: Double = GlobeProjection.fieldOfView) {
+    /// The camera's tilt and heading shown as they are at every zoom (a
+    /// picture rendered outside the app, Scripts/render_globe_hero.sh), not
+    /// eased out between `fullTiltZoom` and `straightZoom`.
+    public var freeTilt: Bool
+
+    public init(camera: MapCamera, size: CGSize, lens: Double = GlobeProjection.fieldOfView, freeTilt: Bool = false) {
         self.camera = camera
         self.size = size
         self.lens = lens
+        self.freeTilt = freeTilt
     }
 
     /// The most the camera tilts from straight down (degrees).
@@ -189,9 +199,21 @@ public struct GlobeProjection: Equatable, Sendable {
     public static let fieldOfView = 40.0
     /// The tilt over which the picture turns from orthographic to perspective (degrees).
     public static let perspectiveRamp = 10.0
-    /// How far in a tilted camera comes: low orbit (zoom 7: about 600 km
-    /// above the ground at the largest tilt).
-    public static let tiltedMaxZoom = 7.0
+    /// Up to this zoom the tilt chosen shows in full: low orbit (zoom 7:
+    /// about 600 km above the ground at the largest tilt).
+    public static let fullTiltZoom = 7.0
+    /// From this zoom on the camera looks straight down with north up,
+    /// whatever tilt and heading are chosen. Between `fullTiltZoom` and here
+    /// they ease out (smoothstep) over one and a half zoom steps; the
+    /// flattening (the last `perspectiveRamp`° of tilt shown) comes at the
+    /// end, over about the last half step at a large tilt.
+    public static let straightZoom = 8.5
+
+    /// How much of the tilt and heading chosen a camera at `zoom` shows: 1 up
+    /// to `fullTiltZoom`, 0 from `straightZoom` on, smoothly in between.
+    public static func tiltShare(zoom: Double) -> Double {
+        1 - smoothstep((zoom - fullTiltZoom) / (straightZoom - fullTiltZoom))
+    }
 
     /// From this zoom on the map is flat (the flat map view takes over);
     /// at least 1.5 steps above the flat map's smallest zoom for the view.
@@ -215,8 +237,15 @@ public struct GlobeProjection: Equatable, Sendable {
         return c * c * (3 - 2 * c)
     }
 
-    /// How much the picture is a perspective one: 0 straight down, 1 from `perspectiveRamp`° of tilt on.
-    public var perspective: Double { Self.smoothstep(camera.pitch / Self.perspectiveRamp) }
+    /// The share of the tilt and heading chosen the picture shows (`tiltShare`; 1 with `freeTilt`).
+    public var tiltShare: Double { freeTilt ? 1 : Self.tiltShare(zoom: camera.zoom) }
+    /// The tilt the picture shows (degrees): the camera's, eased out with the zoom.
+    public var shownPitch: Double { camera.pitch * tiltShare }
+    /// The heading the picture shows (degrees clockwise from north): the camera's, eased towards north the short way.
+    public var shownHeading: Double { freeTilt ? camera.heading : Astronomy.wrap180(camera.heading) * tiltShare }
+
+    /// How much the picture is a perspective one: 0 straight down, 1 from `perspectiveRamp`° of tilt shown on.
+    public var perspective: Double { Self.smoothstep(shownPitch / Self.perspectiveRamp) }
 
     /// How flat the map is: 0 a sphere, 1 the flat map (smoothstep between
     /// the zooms; held back by the tilt).
@@ -229,9 +258,14 @@ public struct GlobeProjection: Equatable, Sendable {
     /// The flat map's width in points at this zoom.
     public var worldSize: Double { WebMercator.worldSize(zoom: camera.zoom) }
 
-    /// The sphere's radius in points (the scale in the middle of the view).
+    /// The sphere's radius in points (the scale in the middle of the view):
+    /// the flat map's width / 2π, turning to the Mercator scale of the
+    /// centre's latitude (÷ cos latitude) as the map flattens, and with a
+    /// tilt chosen as the tilt eases out between `fullTiltZoom` and
+    /// `straightZoom`: the globe has the flat map's scale before it
+    /// flattens there, so the flattening at the end changes no scale.
     public var radius: Double {
-        let t = flatness
+        let t = max(flatness, 1 - tiltShare)
         return worldSize / (2 * .pi) / (1 + (cos(camera.center.latitude * .pi / 180) - 1) * t)
     }
 
@@ -251,7 +285,7 @@ public struct GlobeProjection: Equatable, Sendable {
 
     public var frame: Frame {
         let (east, north, up) = GlobeGeometry.basis(camera.center)
-        let psi = camera.heading * .pi / 180, theta = camera.pitch * .pi / 180
+        let psi = shownHeading * .pi / 180, theta = shownPitch * .pi / 180
         // Ahead (the heading on the ground) and to the right
         let ahead = north * cos(psi) + east * sin(psi)
         let right = east * cos(psi) - north * sin(psi)
@@ -337,8 +371,8 @@ public struct GlobeProjection: Equatable, Sendable {
         let t = flatness, w = worldSize, r = radius
         let cosLat = max(0.05, cos(camera.center.latitude * .pi / 180))
         // The drag in the view's directions (right, ahead), ahead foreshortened by the tilt
-        let psi = camera.heading * .pi / 180
-        let alongRight = -dx, alongAhead = dy / max(0.3, cos(camera.pitch * .pi / 180 * perspective))
+        let psi = shownHeading * .pi / 180
+        let alongRight = -dx, alongAhead = dy / max(0.3, cos(shownPitch * .pi / 180 * perspective))
         let toEast = alongRight * cos(psi) + alongAhead * sin(psi)
         let toNorth = -alongRight * sin(psi) + alongAhead * cos(psi)
         // Points per radian at the centre, east and north
@@ -351,14 +385,15 @@ public struct GlobeProjection: Equatable, Sendable {
     }
 
     /// The camera at `zoom` (held between the globe's smallest zoom and the
-    /// flat map's largest, a tilted camera's at `tiltedMaxZoom`), with the
-    /// coordinate under `anchor` kept there.
+    /// flat map's largest, tilted or not), with the coordinate under
+    /// `anchor` kept there; the tilt and heading chosen stay (what of them
+    /// shows follows the zoom).
     public func zoomed(to zoom: Double, keeping anchor: CGPoint) -> MapCamera {
         var held = camera
         held.zoom = zoom
         held = Self.held(held, size: size)
         let z = held.zoom
-        var next = GlobeProjection(camera: held, size: size, lens: lens)
+        var next = GlobeProjection(camera: held, size: size, lens: lens, freeTilt: freeTilt)
         guard let fixed = coordinate(at: anchor) else { return next.camera }
         if isFlat && next.isFlat {
             var flat = MapViewport(camera: camera, size: size).zoomed(to: z, keeping: anchor)
@@ -375,7 +410,7 @@ public struct GlobeProjection: Equatable, Sendable {
         } else if let center = Self.solve(start: sphereCenter ?? camera.center, target: anchor, { c in
             var moved = held
             moved.center = c
-            return GlobeProjection(camera: moved, size: size, lens: lens).project(fixed).point
+            return GlobeProjection(camera: moved, size: size, lens: lens, freeTilt: freeTilt).project(fixed).point
         }) {
             next.camera.center = Coordinate(latitude: min(85, max(-85, center.latitude)), longitude: Astronomy.wrap180(center.longitude))
         }
@@ -389,16 +424,22 @@ public struct GlobeProjection: Equatable, Sendable {
     }
 
     /// The camera within the globe's limits: the zoom between the globe's
-    /// smallest and the flat map's largest (a tilted camera's at
-    /// `tiltedMaxZoom`), the tilt within 0 … `maxPitch`, the heading in
-    /// -180 ..< 180.
+    /// smallest and the flat map's largest (tilted too: the tilt shown eases
+    /// out on the way, `tiltShare`), the tilt within 0 … `maxPitch`, the
+    /// heading in -180 ..< 180.
     public static func held(_ c: MapCamera, size: CGSize) -> MapCamera {
         var next = c
         next.pitch = min(maxPitch, max(0, c.pitch))
         next.heading = Astronomy.wrap180(c.heading)
-        let top = next.pitch > 0 ? tiltedMaxZoom : MapViewport.maxZoom
-        next.zoom = min(top, max(minZoom(for: size), c.zoom))
+        next.zoom = min(MapViewport.maxZoom, max(minZoom(for: size), c.zoom))
         return next
+    }
+
+    /// Below this zoom the camera shows the globe, from it on the flat map:
+    /// `flatZoom` straight down, `straightZoom` with a tilt chosen (the
+    /// flat zoom when that is larger).
+    public var globeZoom: Double {
+        camera.pitch > 0 && !freeTilt ? max(flatZoom, Self.straightZoom) : flatZoom
     }
 
     /// The camera (straight down, north up) at `zoom` that shows `q` at the
@@ -427,7 +468,7 @@ public struct GlobeProjection: Equatable, Sendable {
     /// sphere or no centre does it. Of the two latitudes that do, the one
     /// nearer the camera's.
     func sphereCenter(placing q: Coordinate, at p: CGPoint) -> Coordinate? {
-        let r = radius, psi = camera.heading * .pi / 180
+        let r = radius, psi = shownHeading * .pi / 180
         let sx = (Double(p.x) - Double(size.width) / 2) / r, sy = -(Double(p.y) - Double(size.height) / 2) / r
         // The view's axes are east and north turned by the heading
         let x = sx * cos(psi) + sy * sin(psi), y = -sx * sin(psi) + sy * cos(psi)
