@@ -51,14 +51,23 @@ final class KeyGlyphsUITests: SchnellbildUITestCase {
         photograph(app.menuBars.menuBarItems["Go"].firstMatch.descendants(matching: .menu).firstMatch, as: "menu-glyphs-go")
         app.typeKey(.escape, modifierFlags: [])
 
-        // The app's own: F1's list and the mini keyboard
-        app.typeKey(.F1, modifierFlags: [])
-        XCTAssertTrue(app.buttons["printCheatSheet"].firstMatch.waitForExistence(timeout: 5), "the help")
-        photograph(app.windows.firstMatch, as: "key-caps-help")
-        app.typeKey(.escape, modifierFlags: [])
-        eventually("the help closes") { !self.app.buttons["printCheatSheet"].firstMatch.exists }
-        app.typeKey("k", modifierFlags: [])
-        XCTAssertTrue(element("miniKeyboard").waitForExistence(timeout: 5), "the mini keyboard")
-        photograph(app.windows.firstMatch, as: "key-caps-mini-keyboard")
+    }
+
+    /// The app's own keys as caps: F1's list and the mini keyboard, light
+    /// and dark (`key-caps-help-light-*.png` …).
+    func testTheAppsOwnKeysAreCaps() {
+        for appearance in ["light", "dark"] {
+            launch(open: tempDir.path, extra: ["--appearance=\(appearance)"])
+            XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15), "the grid")
+            app.typeKey(.F1, modifierFlags: [])
+            XCTAssertTrue(app.buttons["printCheatSheet"].firstMatch.waitForExistence(timeout: 5), "the help")
+            photograph(app.windows.firstMatch, as: "key-caps-help-\(appearance)")
+            app.typeKey(.escape, modifierFlags: [])
+            eventually("the help closes") { !self.app.buttons["printCheatSheet"].firstMatch.exists }
+            app.typeKey("k", modifierFlags: [])
+            XCTAssertTrue(element("miniKeyboard").waitForExistence(timeout: 5), "the mini keyboard")
+            photograph(app.windows.firstMatch, as: "key-caps-mini-keyboard-\(appearance)")
+            app.terminate()
+        }
     }
 }
