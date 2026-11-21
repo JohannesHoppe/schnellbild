@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "“%@”已不在废纸篓中。";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "无法将“%@”从废纸篓中取出，它仍在废纸篓中。%@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "撤销 / 重做：重新命名、移到废纸篓、移动、拷贝、新建文件夹";
+"%@, embedded preview" = "%@，内嵌预览";

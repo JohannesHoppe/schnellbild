@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "„%@“ ist nicht mehr im Papierkorb.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "„%@“ konnte nicht aus dem Papierkorb genommen werden und liegt weiter dort. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Widerrufen / wiederholen: Umbenennen, in den Papierkorb legen, Bewegen, Kopieren, neuer Ordner";
+"%@, embedded preview" = "%@, eingebettete Vorschau";

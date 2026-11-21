@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "“%@” não está mais no Lixo.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Não foi possível tirar “%@” do Lixo, e o item continua lá. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Desfazer / refazer: renomear, mover para o Lixo, mover, copiar, nova pasta";
+"%@, embedded preview" = "%@, pré-visualização incorporada";

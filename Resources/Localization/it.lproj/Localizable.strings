@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "«%@» non è più nel Cestino.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "«%@» non è stato tolto dal Cestino e si trova ancora lì. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Annulla / ripeti: rinomina, spostamento nel Cestino, spostamento, copia, nuova cartella";
+"%@, embedded preview" = "%@, anteprima incorporata";

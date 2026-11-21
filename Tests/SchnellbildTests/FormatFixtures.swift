@@ -48,7 +48,7 @@ enum FormatFixtures {
             ("cur", cursor()), ("dib", written(UTType.bmp.identifier)), ("bmp", written(UTType.bmp.identifier)),
             ("tga", written("com.truevision.tga-image")), ("ico", written(UTType.ico.identifier, square: true)),
             ("icns", written(UTType.icns.identifier, square: true)), ("exr", written("com.ilm.openexr-image")),
-            ("dds", written("com.microsoft.dds", square: true)), ("astc", written("org.khronos.astc")), ("ktx", written("org.khronos.ktx")),
+            ("dds", dds()), ("astc", written("org.khronos.astc")), ("ktx", written("org.khronos.ktx")),
             ("ktx2", written("org.khronos.ktx2")), ("pvr", written("public.pvr", square: true)), ("atx", written("com.apple.atx")),
             ("jp2", jp2), ("jpf", jp2), ("jpx", jp2), ("j2k", jp2),
             ("avif", written("public.avif")), ("avifs", written("public.avif", frames: 2)),
@@ -129,6 +129,22 @@ enum FormatFixtures {
         let rows = rgbRows()
         for channel in 0..<3 {
             for row in rows { bytes += (0..<width).map { row[$0 * 3 + channel] } }
+        }
+        return Data(bytes)
+    }
+
+    /// DirectDraw Surface (Microsoft's "DDS Programming Guide": "DDS ", the
+    /// 124-byte header with its pixel format): 32-bit BGRA, uncompressed.
+    /// ImageIO's own DDS writer gives nothing readable back.
+    static func dds() -> Data {
+        var bytes = Array("DDS ".utf8)
+        // caps, height, width, pitch, pixel format flags
+        bytes += le32(124) + le32(0x1 | 0x2 | 0x4 | 0x8 | 0x1000) + le32(height) + le32(width) + le32(width * 4) + le32(0) + le32(0)
+        bytes += [UInt8](repeating: 0, count: 44)
+        bytes += le32(32) + le32(0x41) + le32(0) + le32(32) + le32(0x00FF_0000) + le32(0x0000_FF00) + le32(0x0000_00FF) + le32(0xFF00_0000)
+        bytes += le32(0x1000) + le32(0) + le32(0) + le32(0) + le32(0)
+        for row in rgbRows() {
+            for x in 0..<width { bytes += [row[x * 3 + 2], row[x * 3 + 1], row[x * 3], 255] }
         }
         return Data(bytes)
     }

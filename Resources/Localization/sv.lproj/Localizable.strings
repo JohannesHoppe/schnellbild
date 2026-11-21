@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "”%@” finns inte längre i papperskorgen.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "”%@” kunde inte tas ut ur papperskorgen och ligger kvar där. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Ångra / gör om: byta namn, flytta till papperskorgen, flytta, kopiera, ny mapp";
+"%@, embedded preview" = "%@, inbäddad förhandsvisning";

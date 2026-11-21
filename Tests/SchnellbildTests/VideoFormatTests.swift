@@ -40,6 +40,25 @@ final class VideoFormatTests: XCTestCase {
     func testFLV() async throws { try await assertFrame("flv") }
     func testOGV() async throws { try await assertFrame("ogv") }
     func testDV() async throws { try await assertFrame("dv") }
+    func testF4V() async throws { try await assertFrame("f4v") }
+    func testDivX() async throws { try await assertFrame("divx") }
+    func testM2T() async throws { try await assertFrame("m2t") }
+    func testM1V() async throws { try await assertFrame("m1v") }
+    func testOGM() async throws { try await assertFrame("ogm") }
+    func testRM() async throws { try await assertFrame("rm") }
+    func testRMVB() async throws { try await assertFrame("rmvb") }
+    func testMXF() async throws { try await assertFrame("mxf") }
+
+    /// RealMedia and MXF go to FFmpeg held to their one format, by their
+    /// first bytes also under another name.
+    func testRealMediaAndMXFAreReadByTheirContent() throws {
+        for (ext, format) in [("rm", "rm"), ("mxf", "mxf")] {
+            let head = try XCTUnwrap(VLCSafety.head(of: try clip(ext)))
+            let reader = try XCTUnwrap(VLCSafety.reader(for: URL(fileURLWithPath: "/x/a.xyz"), head: head))
+            XCTAssertEqual(reader.demux, "avformat", ext)
+            XCTAssertEqual(reader.ffmpegFormat, format, ext)
+        }
+    }
 
     /// A new video extension needs a reader and a clip, or it would list
     /// videos VLC refuses to open.

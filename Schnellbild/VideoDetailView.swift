@@ -379,7 +379,7 @@ struct VideoDetailView: View {
     /// Schnellbild's own (picture only, for thumbnails) or another app's
     /// extension, once one is turned on. A transport stream (".ts", a TV
     /// recording) plays through VLC too, which reads every such stream.
-    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "vob", "ts"]
+    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "ogm", "vob", "ts", "rm", "rmvb"]
     static func playsInVLC(_ url: URL) -> Bool { vlcFormats.contains(BrowserModel.shownExtension(of: url)) }
 
     /// Turned a quarter, the fitted video's now-swapped box is scaled to fit

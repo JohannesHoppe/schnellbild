@@ -1316,6 +1316,8 @@ enum MediaData {
     /// (an archive's entry unpacked whole; 0 for a file on disk, which
     /// ImageIO reads as it needs).
     static func picture(_ url: URL) async -> (source: CGImageSource, inMemory: Int)? {
+        // PostScript, ZIP documents, Netpbm bitmaps: the picture they carry
+        if EmbeddedPreview.showsPreview(url) { return await EmbeddedPreview.picture(url) }
         if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
             guard let data = try? await ArchiveStore.shared.data(of: url),
                   let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }

@@ -1,14 +1,14 @@
 Schnellbild est une visionneuse photo et un lecteur vidéo pour Mac, sans rien à importer : ouvrez un dossier, parcourez les vignettes, affichez une image en grand, feuilletez au clavier. Elle reste rapide, même avec de gros dossiers et sur les partages réseau.
 
 IMAGES
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF et photos RAW des appareils que macOS connaît
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS et photos RAW des appareils que macOS connaît
 • Grille, liste et affichage en grand, diaporama à travers tous les sous-dossiers
 • Ce que lit le diaporama, c’est la liste de lecture : P l’ouvre pour changer l’ordre et faire le tri
 • Zoom, rotation, amélioration automatique (exposition, contraste, saturation, netteté), pour l’affichage seulement : vos fichiers restent tels quels
 • Infos du fichier avec format, codecs et débit; un avertissement quand l’extension ne correspond pas au contenu
 
 VIDÉOS
-• MP4 et MOV, plus les formats que macOS ne lit pas : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo, AVCHD
+• MP4 et MOV, plus les formats que macOS ne lit pas : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo, AVCHD, RealMedia, MXF
 • Parcourez les vidéos avec les flèches, comme vous feuilletez les photos
 
 VOS PHOTOS SUR LA CARTE ET LE GLOBE

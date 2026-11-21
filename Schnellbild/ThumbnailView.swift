@@ -90,6 +90,14 @@ final class ThumbnailCache {
             keep(image, side: side, modified: modified, for: url)
             return image
         }
+        // PostScript, Illustrator, ZIP documents, Netpbm bitmaps: what the app
+        // shows of them (QuickLook draws an Illustrator file's placeholder
+        // page, or only an icon)
+        if EmbeddedPreview.extensions.contains(DownloadName.finalExtension(of: url)) || EmbeddedPreview.showsPreview(url) {
+            guard let image = await Self.pictureThumbnail(of: url, side: side), !Task.isCancelled else { return nil }
+            keep(image, side: side, modified: modified, for: url)
+            return image
+        }
         let rep = await Self.quickLook(request)
         guard !Task.isCancelled else { return nil }
         var image = rep?.nsImage
@@ -206,11 +214,15 @@ final class ThumbnailCache {
             answer.finish()
         }
     }
-    /// A picture scaled down by ImageIO, off the main thread.
+    /// A picture scaled down by ImageIO (a vector picture drawn at the
+    /// size), off the main thread.
     private static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
         let maxPixel = Int(side * NSScreen.mainBackingScale)
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
-            guard !VectorPicture.isVector(url), let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+            if VectorPicture.isVector(url) {
+                return await VectorPicture.render(url, longestSide: maxPixel).map { NSImage(pixels: $0.0) }
+            }
+            guard let source = await MediaData.imageSource(url),
                   let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
             return NSImage(pixels: cg)
         }

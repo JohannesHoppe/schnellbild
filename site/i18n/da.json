@@ -78,7 +78,7 @@
     },
     {
       "title": "Videoer, også MKV og andre, som macOS ikke kan afspille",
-      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>⌘→ til næste video og ⌘← tilbage: den første fortsætter, hvor den slap</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem til midt i, står den igangværende linje der med det samme, og ASS-undertekster beholder placering, farver og skrifter</li><li>Finder og funktionen Vis får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>⌘→ til næste video og ⌘← tilbage: den første fortsætter, hvor den slap</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem til midt i, står den igangværende linje der med det samme, og ASS-undertekster beholder placering, farver og skrifter</li><li>Finder og funktionen Vis får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video, der afspilles i Schnellbild"
     },
     {

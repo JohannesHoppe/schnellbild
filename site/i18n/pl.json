@@ -78,7 +78,7 @@
     },
     {
       "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
-      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>⌘→ do następnego filmu i ⌘← z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
+      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>⌘→ do następnego filmu i ⌘← z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },
     {

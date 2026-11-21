@@ -122,6 +122,15 @@ make clip.wmv  -c:v wmv2 -q:v 8
 make clip.asf  -c:v wmv2 -q:v 8 -f asf
 make clip.flv  -c:v flv1 -q:v 8
 make clip.ogv  -c:v libvpx -crf 30 -b:v 200k -f ogg
+make clip.ogm  -c:v libvpx -crf 30 -b:v 200k -f ogg
+make clip.f4v  -c:v libx264 -pix_fmt yuv420p -f f4v
+make clip.divx -c:v mpeg4 -q:v 8 -vtag DX50 -f avi
+make clip.m2t  -c:v mpeg2video -q:v 8 -f mpegts
+make clip.m1v  -c:v mpeg1video -q:v 8 -f mpeg1video
+make clip.rm   -c:v rv20 -q:v 8 -f rm
+make clip.mxf  -c:v mpeg2video -q:v 8 -pix_fmt yuv422p -f mxf
+# RealMedia's variable-bitrate name: the same file
+cp "$OUT/clip.rm" "$OUT/clip.rmvb"
 # DV is always full PAL size: three pictures only
 "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -frames:v 3 -an -vf scale=720:576,setsar=16/15 -r 25 -c:v dvvideo -pix_fmt yuv420p -f dv "$OUT/clip.dv"
 

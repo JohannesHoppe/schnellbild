@@ -78,7 +78,7 @@
     },
     {
       "title": "Vídeos, até MKV e AVI, que o macOS não reproduz",
-      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>⌘→ para o próximo vídeo e ⌘← de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>⌘→ para o próximo vídeo e ⌘← de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Um vídeo sendo reproduzido no Schnellbild"
     },
     {

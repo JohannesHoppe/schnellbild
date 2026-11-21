@@ -1795,17 +1795,25 @@ final class BrowserModel: ObservableObject {
     private var sortKeyKey: String { settingsPrefix + Self.sortKeyKey }
     private var sortAscendingKey: String { settingsPrefix + Self.sortAscendingKey }
 
+    /// Pictures by their extension: ImageIO's formats (`SystemFormatsTests`
+    /// prints the types it reads on each CI runner, `ImageFormatTests` draws
+    /// each one), SVG (AppKit; ".svgz" unpacked first) and PDF (PDFKit). PostScript, Illustrator
+    /// files and ZIP documents are pictures by their content
+    /// (`EmbeddedPreview`).
     nonisolated static let imageExtensions: Set<String> = [
-        "jpg", "jpeg", "jpe", "png", "gif", "heic", "heif", "hif", "heics", "avif", "jxl",
-        "tiff", "tif", "bmp", "webp", "psd", "pdf", "jp2", "j2k", "exr", "hdr", "tga",
-        "ico", "icns", "mpo", "dds", "svg",
+        "jpg", "jpeg", "jpe", "png", "apng", "gif", "heic", "heif", "hif", "heics", "avci", "avif", "avifs", "jxl",
+        "tiff", "tif", "bmp", "dib", "webp", "psd", "psb", "pdf", "jp2", "j2k", "j2c", "jpf", "jpx", "exr", "hdr", "tga",
+        "ico", "cur", "icns", "mpo", "svg", "svgz", "pict", "pct", "sgi", "pbm", "pgm", "ppm", "pnm", "pfm", "dcm", "dicom",
+        // textures
+        "dds", "astc", "ktx", "ktx2", "pvr", "atx",
         // camera RAW formats ImageIO reads
-        "cr2", "cr3", "crw", "nef", "nrw", "arw", "sr2", "srf", "dng", "raf", "orf",
-        "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq"
+        "cr2", "cr3", "crw", "nef", "nefx", "nrw", "arw", "axr", "sr2", "srf", "dng", "raf", "orf",
+        "ori", "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq", "dxo"
     ]
     nonisolated static let videoExtensions: Set<String> = [
-        "mp4", "mov", "qt", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
-        "mpg", "mpeg", "m2v", "vob", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
+        "mp4", "mov", "qt", "m4v", "f4v", "avi", "divx", "mkv", "webm", "m2ts", "mts", "m2t",
+        "mpg", "mpeg", "m2v", "m1v", "vob", "3gp", "3g2", "dv", "wmv", "asf", "flv", "ogv", "ogm",
+        "rm", "rmvb", "mxf"
         // (".ts" by its content: `isTransportStream`)
     ]
 
@@ -1821,6 +1829,8 @@ final class BrowserModel: ObservableObject {
         if imageExtensions.contains(ext) { return .image }
         if videoExtensions.contains(ext) { return .video }
         if ext == "ts" { return isTransportStream(url) ? .video : nil }
+        // PostScript, Illustrator, ZIP documents: by what their first bytes hold
+        if EmbeddedPreview.extensions.contains(ext) { return EmbeddedPreview.isPicture(url, ext: ext) ? .image : nil }
         return ContentSniffer.shared.known(url)?.mediaKind
     }
 
@@ -1839,7 +1849,8 @@ final class BrowserModel: ObservableObject {
     /// JPEG named "IMG"), else its own.
     nonisolated static func shownExtension(of url: URL) -> String {
         let ext = DownloadName.finalExtension(of: url)
-        if imageExtensions.contains(ext) || videoExtensions.contains(ext) || ext == "ts" { return ext }
+        if imageExtensions.contains(ext) || videoExtensions.contains(ext) || ext == "ts"
+            || EmbeddedPreview.extensions.contains(ext) { return ext }
         return ContentSniffer.shared.known(url)?.fileExtension ?? ext
     }
 
@@ -5502,6 +5513,8 @@ final class BrowserModel: ObservableObject {
         let ext = DownloadName.finalExtension(of: new)
         if imageExtensions.contains(ext) { return kind == .image }
         if videoExtensions.contains(ext) { return kind == .video }
+        // Shown by their content (a PDF inside, a preview): only under their own extension
+        if EmbeddedPreview.extensions.contains(ext) { return kind == .image && ext == DownloadName.finalExtension(of: old) }
         return ext == DownloadName.finalExtension(of: old)
     }
 

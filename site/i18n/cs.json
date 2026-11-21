@@ -78,7 +78,7 @@
     },
     {
       "title": "Videa, i MKV a další, která macOS neumí přehrát",
-      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>⌘→ na další video a ⌘← zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
+      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>⌘→ na další video a ⌘← zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
     {

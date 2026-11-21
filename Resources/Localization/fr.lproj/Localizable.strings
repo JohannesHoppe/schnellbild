@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "« %@ » n’est plus dans la corbeille.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "« %@ » n’a pas pu être sorti de la corbeille et s’y trouve toujours. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Annuler / rétablir : renommage, placement dans la corbeille, déplacement, copie, nouveau dossier";
+"%@, embedded preview" = "%@, aperçu intégré";

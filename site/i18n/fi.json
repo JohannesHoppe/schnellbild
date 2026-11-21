@@ -78,7 +78,7 @@
     },
     {
       "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
-      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>⌘→ seuraavaan videoon ja ⌘← takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
+      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>⌘→ seuraavaan videoon ja ⌘← takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
     {

@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "«%@» ya no está en la papelera.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "No se ha podido sacar «%@» de la papelera y sigue allí. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Deshacer / rehacer: renombrar, trasladar a la papelera, trasladar, copiar, nueva carpeta";
+"%@, embedded preview" = "%@, vista previa incrustada";

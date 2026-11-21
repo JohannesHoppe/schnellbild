@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "“%@” artık Çöp Sepeti’nde değil.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” Çöp Sepeti’nden çıkarılamadı ve orada duruyor. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Geri al / yinele: yeniden adlandırma, Çöp Sepeti’ne taşıma, taşıma, kopyalama, yeni klasör";
+"%@, embedded preview" = "%@, gömülü önizleme";

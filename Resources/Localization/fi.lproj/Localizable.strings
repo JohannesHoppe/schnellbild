@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "”%@” ei ole enää roskakorissa.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Kohdetta ”%@” ei voitu ottaa pois roskakorista, joten se on yhä siellä. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Kumoa / tee uudelleen: nimeäminen, siirto roskakoriin, siirto, kopiointi, uusi kansio";
+"%@, embedded preview" = "%@, upotettu esikatselu";

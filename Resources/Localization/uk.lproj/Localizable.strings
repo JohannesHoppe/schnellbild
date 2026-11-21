@@ -671,3 +671,4 @@
 "“%@” is no longer in the Trash." = "«%@» більше немає в Смітнику.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Не вдалося вийняти «%@» зі Смітника, об’єкт залишається там. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Скасувати / повторити: перейменування, переміщення в Смітник, переміщення, копіювання, нову папку";
+"%@, embedded preview" = "%@, вбудований попередній перегляд";

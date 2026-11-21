@@ -306,6 +306,10 @@ public enum VLCSafety {
         if at(0, [0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11]) { return ("asf", nil) }
         if ascii(0, "FLV") { return ("avformat", "flv") }
         if ascii(0, "OggS") { return ("ogg", nil) }
+        // RealMedia (".RMF") and MXF (the header partition pack's key,
+        // SMPTE 377M) through FFmpeg, held to that one format
+        if ascii(0, ".RMF") { return ("avformat", "rm") }
+        if at(0, [0x06, 0x0E, 0x2B, 0x34, 0x02, 0x05, 0x01, 0x01, 0x0D, 0x01, 0x02]) { return ("avformat", "mxf") }
         return nil
     }
 
@@ -319,15 +323,17 @@ public enum VLCSafety {
     static func reader(forExtension ext: String) -> Reader? {
         switch ext.lowercased() {
         case "mkv", "webm":                                  return ("mkv", nil)
-        case "avi":                                          return ("avi", nil)
-        case "mp4", "m4v", "mov", "qt", "3gp", "3g2":        return ("mp4", nil)
+        case "avi", "divx":                                  return ("avi", nil)
+        case "mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v": return ("mp4", nil)
         case "mpg", "mpeg", "vob":                           return ("ps", nil)
-        case "ts", "m2ts", "mts":                            return ("ts", nil)
-        case "m2v":                                          return ("mpgv", nil)   // an MPEG video stream on its own
+        case "ts", "m2ts", "mts", "m2t":                     return ("ts", nil)
+        case "m2v", "m1v":                                   return ("mpgv", nil)   // an MPEG video stream on its own
         case "wmv", "asf":                                   return ("asf", nil)
-        case "ogv", "ogg":                                   return ("ogg", nil)
+        case "ogv", "ogg", "ogm":                            return ("ogg", nil)
         case "dv":                                           return ("rawdv", nil)
         case "flv":                                          return ("avformat", "flv")
+        case "rm", "rmvb":                                   return ("avformat", "rm")
+        case "mxf":                                          return ("avformat", "mxf")
         default:                                             return nil
         }
     }

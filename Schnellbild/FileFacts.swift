@@ -32,11 +32,24 @@ struct FileFacts: Equatable, Sendable {
         // Models often name their make already ("Canon EOS R6")
         let camera = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
         facts.camera = camera.isEmpty ? nil : camera
-        if let identifier = CGImageSourceGetType(source) as String?, let type = UTType(identifier) {
+        if EmbeddedPreview.isPreview(url) {
+            // The picture shown is the one the file carries: the file's own
+            // format, and no other extension to recommend
+            facts.format = previewFormat(of: url)
+            facts.camera = nil
+        } else if let identifier = CGImageSourceGetType(source) as String?, let type = UTType(identifier) {
             facts.format = type.localizedDescription
             facts.recommendedExtension = recommendedExtension(for: DownloadName.finalExtension(of: url), content: type)
         }
         return facts
+    }
+
+    /// "Encapsulated PostScript, embedded preview": the format its name
+    /// says, and that what is shown is the preview it carries.
+    static func previewFormat(of url: URL) -> String {
+        let ext = DownloadName.finalExtension(of: url)
+        let name = UTType(filenameExtension: ext).flatMap { $0.isDynamic ? nil : $0.localizedDescription } ?? ext.uppercased()
+        return String(localized: "\(name), embedded preview")
     }
 
     /// The extension for a picture whose content is `content` but whose
@@ -57,6 +70,13 @@ struct FileFacts: Equatable, Sendable {
             "public.heic": ["heif", "hif"],
             "public.heif": ["heic", "hif"],
             "public.heics": ["heic", "heif"],
+            "public.avif": ["avifs"],
+            "public.avis": ["avifs", "avif"],
+            "public.png": ["apng"],
+            "public.pbm": ["pnm"],
+            "public.jpeg-2000": ["j2c", "jpf", "jpx", "j2k"],
+            "com.adobe.photoshop-image": ["psb"],
+            "org.nema.dicom": ["dcm", "dicom"],
         ]
         if alike[content.identifier]?.contains(ext) == true { return nil }
         return content.preferredFilenameExtension ?? extensions.first
@@ -83,16 +103,21 @@ struct FileFacts: Equatable, Sendable {
         case "ts":
             // 192-byte packets (a time code before each): Blu-ray / AVCHD
             let timecoded = head.count > 4 && head[head.startIndex + 4] == 0x47 && head.first != 0x47
-            return Container(name: "MPEG-TS", extensions: timecoded ? ["m2ts", "mts", "ts"] : ["ts", "m2ts", "mts"])
+            return Container(name: "MPEG-TS", extensions: timecoded ? ["m2ts", "mts", "ts"] : ["ts", "m2ts", "mts", "m2t"])
         case "mp4":
             let quickTime = b.count >= 12 && String(decoding: b[8..<12], as: UTF8.self) == "qt  "
             return Container(name: quickTime ? "QuickTime" : "MPEG-4",
-                             extensions: quickTime ? ["mov", "qt", "mp4", "m4v"] : ["mp4", "m4v", "mov", "qt", "3gp", "3g2"])
-        case "avi":      return Container(name: "AVI", extensions: ["avi"])
+                             extensions: quickTime ? ["mov", "qt", "mp4", "m4v"] : ["mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v"])
+        case "avi":      return Container(name: "AVI", extensions: ["avi", "divx"])
         case "ps":       return Container(name: "MPEG-PS", extensions: ["mpg", "mpeg", "vob"])
         case "asf":      return Container(name: "ASF / WMV", extensions: ["wmv", "asf"])
-        case "avformat": return Container(name: "FLV", extensions: ["flv"])
-        case "ogg":      return Container(name: "Ogg", extensions: ["ogv", "ogg"])
+        case "ogg":      return Container(name: "Ogg", extensions: ["ogv", "ogg", "ogm"])
+        case "avformat":
+            switch reader.ffmpegFormat {
+            case "rm":  return Container(name: "RealMedia", extensions: ["rm", "rmvb"])
+            case "mxf": return Container(name: "MXF", extensions: ["mxf"])
+            default:    return Container(name: "FLV", extensions: ["flv"])
+            }
         default:         return nil
         }
     }
@@ -418,7 +443,8 @@ final class ContentSniffer: @unchecked Sendable {
         let final = DownloadName.finalName(of: name)
         let ext = (final as NSString).pathExtension.lowercased()
         if ext.isEmpty { return true }
-        if BrowserModel.imageExtensions.contains(ext) || BrowserModel.videoExtensions.contains(ext) || ext == "ts" { return false }
+        if BrowserModel.imageExtensions.contains(ext) || BrowserModel.videoExtensions.contains(ext) || ext == "ts"
+            || EmbeddedPreview.extensions.contains(ext) { return false }
         if ArchiveName.format(of: name) != nil || !ArchiveName.firstVolumeNames(of: final).isEmpty { return false }
         if ["bin", "dat", "data", "tmp", "temp", "file", "unknown"].contains(ext) { return true }
         guard let type = UTType(filenameExtension: ext) else { return true }

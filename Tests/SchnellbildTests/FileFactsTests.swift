@@ -18,7 +18,8 @@ final class FileFactsTests: XCTestCase {
     private func named(_ name: String) -> URL { URL(fileURLWithPath: "/tmp/\(name)") }
 
     func testAVideoUnderItsOwnExtensionIsFine() throws {
-        for ext in ["mkv", "webm", "mp4", "mov", "m4v", "avi", "ts", "m2ts", "mts", "mpg", "vob", "wmv", "flv", "ogv"] {
+        for ext in ["mkv", "webm", "mp4", "mov", "m4v", "avi", "ts", "m2ts", "mts", "mpg", "vob", "wmv", "flv", "ogv",
+                    "f4v", "divx", "m2t", "ogm", "rm", "rmvb", "mxf"] {
             let facts = FileFacts.video(head: try head(ext), named: named("a.\(ext)"))
             XCTAssertNotNil(facts.format, ext)
             XCTAssertNil(facts.recommendedExtension, "\(ext): \(facts)")
