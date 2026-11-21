@@ -676,7 +676,7 @@ struct PaneView: View {
             } else {
                 Spacer(minLength: 0)
             }
-            // Tiles, a list (L) or the Atlas (W)
+            // Tiles, a list or the Atlas (L: the next one)
             Picker("", selection: $model.viewMode) {
                 Image(systemName: "square.grid.2x2").tag(BrowserModel.ViewMode.grid)
                     .accessibilityLabel(Text("as Grid"))
@@ -688,9 +688,9 @@ struct PaneView: View {
             .pickerStyle(.segmented)
             .labelsHidden()
             .fixedSize()
-            .help(String(localized: "Grid or list (\(shortcuts.hint(.toggleList))), Atlas (\(shortcuts.hint(.toggleAtlas)))"))
+            .help(String(localized: "Next view: grid, list, Atlas (\(shortcuts.hint(.toggleList)))"))
             .accessibilityIdentifier("viewModePicker")
-            if let key = shortcuts.keys(model.viewMode == .atlas ? .toggleAtlas : .toggleList).first { KeyCap(key.capText) }
+            if let key = shortcuts.keys(.toggleList).first { KeyCap(key.capText) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {

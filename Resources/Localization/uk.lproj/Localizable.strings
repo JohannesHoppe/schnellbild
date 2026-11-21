@@ -175,7 +175,7 @@
 "Archive" = "Архів";
 "as Grid" = "сіткою";
 "as List" = "списком";
-"Grid or list (a click on a column sorts by it)" = "Сітка або список (клік по стовпцю сортує за ним)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Наступний вигляд: сітка, список, атлас (клік по стовпцю сортує за ним)";
 "Back (where you were, also a search); without history the enclosing folder" = "Назад (де ви були, і до пошуку); без історії у папку вище";
 "Click to rename this folder" = "Клацніть, щоб перейменувати папку";
 "Privacy Policy" = "Політика конфіденційності";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Експозиція, контраст, насиченість і різкість вручну (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Слайд-шоу з усіх зображень і відео в цій папці та її підпапках; під час пошуку: з результатів (%@)";
 "Sort by (%@; press again to reverse)" = "Сортувати за (%@; повторне натискання змінює порядок)";
-"Grid or list (%@)" = "Сітка або список (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Міні-клавіатура: клавіші того, що на екрані, натискаються клацанням (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Закладки (%1$@: ця папка; %2$@: відкрити)";
 "Close the playlist (%@)" = "Закрити плейлист (%@)";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "Вийти (%@ спершу питає)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Клавіша «бос»: одразу приховано й без звуку; %@ або значок у Dock повертає";
 "⌘-click" = "⌘-клацання";
-"Grid or list" = "Сітка або список";
+"Next view (grid, list, Atlas)" = "Наступний вигляд (сітка, список, атлас)";
 "General" = "Загальні";
 "no key" = "немає клавіші";
 "Back, or the enclosing folder" = "Назад або папка рівнем вище";
@@ -570,14 +569,13 @@
 "Route" = "Маршрут";
 "Date Source" = "Джерело дати";
 "Atlas" = "Атлас";
-"Atlas (map)" = "Атлас (мапа)";
 "Play the tour" = "Відтворити подорож";
 "Tour: pause / resume" = "Подорож: пауза / продовжити";
 "Tour: previous place" = "Подорож: попереднє місце";
 "Tour: next place" = "Подорож: наступне місце";
 "End the tour" = "Завершити подорож";
 "as Atlas" = "атласом";
-"Grid or list (%@), Atlas (%@)" = "Сітка або список (%1$@), атлас (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Наступний вигляд: сітка, список, атлас (%@)";
 "Play Tour" = "Відтворити подорож";
 "Left" = "Ліворуч";
 "Up" = "Вгору";
@@ -603,7 +601,7 @@
 "End of the range" = "Кінець періоду";
 "Resume" = "Продовжити";
 "Place %lld of %lld" = "Місце %1$lld з %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Атлас: фото й відео на мапі; ще раз: назад до сітки або списку";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Зі списку: атлас, фото й відео на мапі; з атласу: назад до сітки";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Атлас: до найближчого об'єкта на мапі в цьому напрямку; вниз, у смугу об'єктів без місця";
 "Atlas: zoom the map in / out" = "Атлас: наблизити / віддалити мапу";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Атлас: на кількох об'єктах наближати, доки вони не розійдуться; на одному відкрити його";

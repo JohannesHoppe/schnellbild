@@ -100,7 +100,7 @@ struct ShortcutsHelpView: View {
                 Row(.action(.gridOpen), action: "Open picture or video · open folder or archive"),
                 Row(.action(.gridBack), action: "Back (where you were, also a search); without history the enclosing folder"),
                 Row(.pair(.gridFirst, .gridLast, " / "), action: "First / last item"),
-                Row(.action(.toggleList), action: "Grid or list (a click on a column sorts by it)"),
+                Row(.action(.toggleList), action: "Next view: grid, list, Atlas (a click on a column sorts by it)"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails, " / "), action: "Larger / smaller thumbnails"),
                 Row(.action(.gridRename), action: s.keys(.moveToOther).contains(KeyChord(.f6)) ? "Rename (F6 too in a single pane)" : "Rename"),
                 Row(.action(.newFolder), action: "New folder: type its name, ↩ creates it, Esc creates none"),
@@ -146,7 +146,7 @@ struct ShortcutsHelpView: View {
                     : String(localized: "End the slideshow (\(closers) close the playlist first)")),
             ]),
             ("Atlas", [
-                Row(.action(.toggleAtlas), action: "Atlas: the photos and videos on the map; again: back to the grid or list"),
+                Row(.action(.toggleList), action: "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid"),
                 Row(.words("arrows"), action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails, " / "), action: "Atlas: zoom the map in / out"),
                 Row(.words("double-click"), action: "Atlas: on several items, zoom in until they part; on one, open it"),

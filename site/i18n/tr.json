@@ -73,7 +73,7 @@
     },
     {
       "title": "Fotoğraflarınız haritada ve küre üzerinde",
-      "text": "<p><kbd>W</kbd>, bir klasörün ve alt klasörlerinin fotoğraflarını ve videolarını çekildikleri yerde gösterir. Çok uzaktan bakınca harita, yıldızlı gökyüzünün önünde bir küredir; isterseniz gece ve gündüzüyle, gece tarafında şehirlerin ışıklarıyla. Yaklaştıkça düz haritaya dönüşür.</p><ul><li>Zaman çizelgesi geziyi zamana göre dizer: bir bölümün üzerinden sürükleyin, harita yalnızca o kısmı göstersin</li><li><kbd>T</kbd> geziyi oynatır: harita yerden yere kayar, fotoğraflar büyük görünür, videolar birkaç saniye oynar</li><li>Harita uygulamanın içindedir: hiçbir şey internete çıkmaz, hiçbir konum Mac’inizden ayrılmaz</li></ul>",
+      "text": "<p><kbd>L</kbd> ızgaradan listeye, oradan Atlas’a geçer. Atlas, bir klasörün ve alt klasörlerinin fotoğraflarını ve videolarını çekildikleri yerde gösterir. Çok uzaktan bakınca harita, yıldızlı gökyüzünün önünde bir küredir; isterseniz gece ve gündüzüyle, gece tarafında şehirlerin ışıklarıyla. Yaklaştıkça düz haritaya dönüşür.</p><ul><li>Zaman çizelgesi geziyi zamana göre dizer: bir bölümün üzerinden sürükleyin, harita yalnızca o kısmı göstersin</li><li><kbd>T</kbd> geziyi oynatır: harita yerden yere kayar, fotoğraflar büyük görünür, videolar birkaç saniye oynar</li><li>Harita uygulamanın içindedir: hiçbir şey internete çıkmaz, hiçbir konum Mac’inizden ayrılmaz</li></ul>",
       "alt": "Bir gezinin fotoğrafları küre üzerinde, Atlas görünümünde"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Her tuş elinizin altında",
-      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe, boyuta veya bir yere uzaklığa göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara, liste veya Atlas (<kbd>L</kbd>), ada, türe, tarihe, boyuta veya bir yere uzaklığa göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
       "alt": "Tuş listesi (F1)"
     },
     {

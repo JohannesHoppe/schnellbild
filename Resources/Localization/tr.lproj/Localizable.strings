@@ -175,7 +175,7 @@
 "Archive" = "Arşiv";
 "as Grid" = "Izgara Olarak";
 "as List" = "Liste Olarak";
-"Grid or list (a click on a column sorts by it)" = "Izgara veya liste (bir sütuna tıklamak ona göre sıralar)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Sonraki görünüm: ızgara, liste, Atlas (bir sütuna tıklamak ona göre sıralar)";
 "Back (where you were, also a search); without history the enclosing folder" = "Geri (bulunduğunuz yere, bir aramaya da); geçmiş yoksa üst klasöre";
 "Click to rename this folder" = "Bu klasörü yeniden adlandırmak için tıklayın";
 "Privacy Policy" = "Gizlilik Politikası";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Pozlama, kontrast, doygunluk ve keskinlik elle (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Bu klasördeki ve alt klasörlerindeki tüm resim ve videoların slayt gösterisi; arama sırasında: sonuçların (%@)";
 "Sort by (%@; press again to reverse)" = "Sıralama ölçütü (%@; ters çevirmek için tekrar basın)";
-"Grid or list (%@)" = "Izgara veya liste (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Mini klavye: ekrandakinin tuşları, tıklanabilir (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Yer işaretleri (%1$@: bu klasör; %2$@: aç)";
 "Close the playlist (%@)" = "Oynatma listesini kapat (%@)";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "Çık (%@ önce sorar)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Patron tuşu: anında gizli ve sessiz; %@ veya Dock’taki simge geri getirir";
 "⌘-click" = "⌘-tıklama";
-"Grid or list" = "Izgara veya liste";
+"Next view (grid, list, Atlas)" = "Sonraki görünüm (ızgara, liste, Atlas)";
 "General" = "Genel";
 "no key" = "tuş yok";
 "Back, or the enclosing folder" = "Geri veya üst klasör";
@@ -570,14 +569,13 @@
 "Route" = "Rota";
 "Date Source" = "Tarih kaynağı";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (harita)";
 "Play the tour" = "Geziyi oynat";
 "Tour: pause / resume" = "Gezi: duraklat / sürdür";
 "Tour: previous place" = "Gezi: önceki yer";
 "Tour: next place" = "Gezi: sonraki yer";
 "End the tour" = "Geziyi bitir";
 "as Atlas" = "Atlas olarak";
-"Grid or list (%@), Atlas (%@)" = "Izgara veya liste (%1$@), Atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Sonraki görünüm: ızgara, liste, Atlas (%@)";
 "Play Tour" = "Geziyi Oynat";
 "Left" = "Sol";
 "Up" = "Yukarı";
@@ -603,7 +601,7 @@
 "End of the range" = "Aralığın sonu";
 "Resume" = "Sürdür";
 "Place %lld of %lld" = "Yer %1$lld / %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas: fotoğraflar ve videolar haritada; tekrar: ızgaraya veya listeye dön";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Listeden: Atlas, fotoğraflar ve videolar haritada; Atlas'tan: ızgaraya dön";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: haritada o yöndeki en yakın ögeye; aşağı: konumsuz ögeler şeridine";
 "Atlas: zoom the map in / out" = "Atlas: haritayı yakınlaştır / uzaklaştır";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: birden çok ögede ayrılana dek yakınlaştır; tek ögede aç";

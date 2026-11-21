@@ -73,7 +73,7 @@
     },
     {
       "title": "Your photos on the map and the globe",
-      "text": "<p><kbd>W</kbd> shows the photos and videos of a folder and its subfolders where they were taken. Zoomed far out, the map is a globe in front of the stars, with day and night if you like and the cities lit on its night side; zoom in and it flattens into the map.</p><ul><li>The timeline lays the trip out by time: drag across it, and the map shows only that part</li><li><kbd>T</kbd> plays the tour: the map glides from place to place, the photos show large, the videos play a few seconds</li><li>The map is inside the app: nothing goes online, no location leaves your Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> goes from the grid to the list and on to the Atlas. It shows the photos and videos of a folder and its subfolders where they were taken. Zoomed far out, the map is a globe in front of the stars, with day and night if you like and the cities lit on its night side; zoom in and it flattens into the map.</p><ul><li>The timeline lays the trip out by time: drag across it, and the map shows only that part</li><li><kbd>T</kbd> plays the tour: the map glides from place to place, the photos show large, the videos play a few seconds</li><li>The map is inside the app: nothing goes online, no location leaves your Mac</li></ul>",
       "alt": "The photos of a trip on the globe, in the Atlas view"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Every key at hand",
-      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid or list (<kbd>L</kbd>), sort by name, kind, date, size or distance from a place, several windows, and a boss key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid, list or Atlas (<kbd>L</kbd>), sort by name, kind, date, size or distance from a place, several windows, and a boss key (<kbd>X</kbd>).</p>",
       "alt": "The list of keys (F1)"
     },
     {

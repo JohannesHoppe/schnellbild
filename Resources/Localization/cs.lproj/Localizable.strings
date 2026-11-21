@@ -175,7 +175,7 @@
 "Archive" = "Archiv";
 "as Grid" = "jako mřížka";
 "as List" = "jako seznam";
-"Grid or list (a click on a column sorts by it)" = "Mřížka nebo seznam (klik na sloupec podle něj seřadí)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Další zobrazení: mřížka, seznam, atlas (klik na sloupec podle něj seřadí)";
 "Back (where you were, also a search); without history the enclosing folder" = "Zpět (kde jste byli, i k hledání); bez historie do nadřazené složky";
 "Click to rename this folder" = "Kliknutím složku přejmenujete";
 "Privacy Policy" = "Zásady ochrany osobních údajů";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Expozice, kontrast, sytost a ostrost ručně (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Prezentace všech obrázků a videí v této složce a jejích podsložkách; při hledání: výsledků (%@)";
 "Sort by (%@; press again to reverse)" = "Řadit podle (%@; dalším stisknutím obrátíte)";
-"Grid or list (%@)" = "Mřížka nebo seznam (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Miniklávesnice: klávesy pro to, co je na obrazovce, klikací (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Záložky (%1$@: tato složka; %2$@: otevřít)";
 "Close the playlist (%@)" = "Zavřít playlist (%@)";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "Ukončit (%@ se nejdřív zeptá)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Šéfovo tlačítko: hned skryté a ztlumené; %@ nebo ikona v Docku vše vrátí";
 "⌘-click" = "⌘-kliknutí";
-"Grid or list" = "Mřížka nebo seznam";
+"Next view (grid, list, Atlas)" = "Další zobrazení (mřížka, seznam, atlas)";
 "General" = "Obecné";
 "no key" = "bez klávesy";
 "Back, or the enclosing folder" = "Zpět, nebo nadřazená složka";
@@ -570,14 +569,13 @@
 "Route" = "Trasa";
 "Date Source" = "Zdroj data";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (mapa)";
 "Play the tour" = "Přehrát cestu";
 "Tour: pause / resume" = "Cesta: pozastavit / pokračovat";
 "Tour: previous place" = "Cesta: předchozí místo";
 "Tour: next place" = "Cesta: další místo";
 "End the tour" = "Ukončit cestu";
 "as Atlas" = "jako atlas";
-"Grid or list (%@), Atlas (%@)" = "Mřížka nebo seznam (%1$@), atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Další zobrazení: mřížka, seznam, atlas (%@)";
 "Play Tour" = "Přehrát cestu";
 "Left" = "Vlevo";
 "Up" = "Nahoru";
@@ -603,7 +601,7 @@
 "End of the range" = "Konec rozsahu";
 "Resume" = "Pokračovat";
 "Place %lld of %lld" = "Místo %1$lld z %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas: fotky a videa na mapě; znovu: zpět na mřížku nebo seznam";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Ze seznamu: atlas, fotky a videa na mapě; z atlasu: zpět na mřížku";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: k nejbližší položce na mapě tím směrem; dolů do pruhu položek bez polohy";
 "Atlas: zoom the map in / out" = "Atlas: přiblížit / oddálit mapu";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: na více položkách přiblížit, až se oddělí; na jedné ji otevřít";

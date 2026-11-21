@@ -175,7 +175,7 @@
 "Archive" = "封存檔";
 "as Grid" = "以網格顯示";
 "as List" = "以列表顯示";
-"Grid or list (a click on a column sorts by it)" = "網格或列表（按一下某欄依其排序）";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "下一個檢視：網格、列表、地圖集（按一下某欄依其排序）";
 "Back (where you were, also a search); without history the enclosing folder" = "返回（之前的位置，也包括搜尋）；沒有歷史時前往上一層檔案夾";
 "Click to rename this folder" = "按一下以重新命名此檔案夾";
 "Privacy Policy" = "隱私權政策";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "手動調整曝光、對比、飽和度和銳利度（%@）";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "此檔案夾及其子檔案夾中所有影像和影片的幻燈片秀；搜尋時：搜尋結果（%@）";
 "Sort by (%@; press again to reverse)" = "排序方式（%@；再按一次則反轉）";
-"Grid or list (%@)" = "網格或列表（%@）";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "迷你鍵盤：螢幕上內容的按鍵，可點按（%@）";
 "Bookmarks (%@: this folder; %@: go)" = "書籤（%1$@：此檔案夾；%2$@：打開）";
 "Close the playlist (%@)" = "關閉播放列表（%@）";
@@ -406,7 +405,7 @@
 "Quit (%@ asks first)" = "結束（%@ 會先詢問）";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "老闆鍵：立即隱藏並靜音；%@ 或按一下 Dock 圖像恢復";
 "⌘-click" = "⌘-按一下";
-"Grid or list" = "網格或列表";
+"Next view (grid, list, Atlas)" = "下一個檢視（網格、列表、地圖集）";
 "General" = "一般";
 "no key" = "無按鍵";
 "Back, or the enclosing folder" = "返回，或上層檔案夾";
@@ -570,14 +569,13 @@
 "Route" = "路線";
 "Date Source" = "日期來源";
 "Atlas" = "地圖集";
-"Atlas (map)" = "地圖集（地圖）";
 "Play the tour" = "播放旅程";
 "Tour: pause / resume" = "旅程：暫停 / 繼續";
 "Tour: previous place" = "旅程：上一個地點";
 "Tour: next place" = "旅程：下一個地點";
 "End the tour" = "結束旅程";
 "as Atlas" = "以地圖集顯示";
-"Grid or list (%@), Atlas (%@)" = "格狀或列表（%1$@），地圖集（%2$@）";
+"Next view: grid, list, Atlas (%@)" = "下一個檢視：網格、列表、地圖集（%@）";
 "Play Tour" = "播放旅程";
 "Left" = "向左";
 "Up" = "向上";
@@ -603,7 +601,7 @@
 "End of the range" = "範圍終點";
 "Resume" = "繼續";
 "Place %lld of %lld" = "地點 %1$lld / %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "地圖集：在地圖上顯示照片和影片；再按一次：回到格狀或列表";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "從列表：地圖集，在地圖上顯示照片和影片；從地圖集：回到網格";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "地圖集：移到該方向上地圖中最近的項目；向下進入無位置項目列";
 "Atlas: zoom the map in / out" = "地圖集：放大 / 縮小地圖";
 "Atlas: on several items, zoom in until they part; on one, open it" = "地圖集：在多個項目上放大直到分開；在單個項目上打開它";

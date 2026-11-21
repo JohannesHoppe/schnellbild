@@ -32,7 +32,7 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
 
     private func openAtlas() {
         launchOnTempDir(waitFor: "Day 3")
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         eventually("every day's places", timeout: 30) { self.count().contains("14 on the map") }
     }
@@ -58,7 +58,7 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: .command)
         waitForBadge(containing: "norway-14-trollstigen.jpg")   // on into the next folder
         app.typeKey(.escape, modifierFlags: [])
-        app.typeKey("w", modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
         eventually("the grid again") { self.tile("Day 5").exists }
         waitForSelected("Day 5")
     }
@@ -71,7 +71,7 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         let log = testLog("app.log")
         launch(open: tempDir.path, extra: ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(app.staticTexts["Day 3"].waitForExistence(timeout: 15))
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         eventually("every day's places", timeout: 30) { self.count().contains("14 on the map") }
         app.typeKey("t", modifierFlags: [])
