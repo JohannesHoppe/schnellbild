@@ -254,7 +254,7 @@ struct ShortcutsHelpView: View {
                                 .font(.headline)
                                 .foregroundStyle(.secondary)
                             ForEach(group.shortcuts) { shortcut in
-                                HStack(alignment: .firstTextBaseline, spacing: 16) {
+                                HStack(alignment: .top, spacing: 16) {
                                     KeyCapsView(shortcut.caps, style: .help)
                                         .frame(width: 190, alignment: .leading)
                                     Text(verbatim: shortcut.action)
@@ -339,7 +339,7 @@ private struct CheatSheetPage: View {
                     Text(group.title).font(.system(size: 11, weight: .bold))
                         .padding(.bottom, 1)
                     ForEach(group.shortcuts) { shortcut in
-                        HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        HStack(alignment: .top, spacing: 6) {
                             KeyCapsView(shortcut.caps, style: .print)
                                 .frame(width: 92, alignment: .leading)
                             Text(verbatim: shortcut.action)
