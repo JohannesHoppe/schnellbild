@@ -55,7 +55,8 @@ final class ShortcutsUITests: SchnellbildUITestCase {
 
         // F1 lists the keys as set
         app.typeKey(XCUIKeyboardKey.F1.rawValue, modifierFlags: [])
-        XCTAssertTrue(app.staticTexts["J / E"].waitForExistence(timeout: 5), "the help shows J / E for the list")
+        // (the keys as caps: one element, labelled as the keys read)
+        XCTAssertTrue(app.descendants(matching: .any)["J / E"].firstMatch.waitForExistence(timeout: 5), "the help shows J / E for the list")
         app.typeKey(.escape, modifierFlags: [])
 
         // Kept: after a new launch J still shows the list

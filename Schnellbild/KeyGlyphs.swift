@@ -169,6 +169,7 @@ struct KeyCapsView: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: caps.text))
+        .accessibilityAddTraits(.isStaticText)
     }
 
     @ViewBuilder
