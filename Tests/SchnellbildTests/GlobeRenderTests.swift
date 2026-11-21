@@ -398,6 +398,9 @@ final class GlobeSurfaceTests: XCTestCase {
         XCTAssertFalse(metal.isHidden, "the tilted globe again")
         wait(GlobeSurfaceView.revealTimeout + 2) { surface.flat.isHidden }
         XCTAssertTrue(surface.flat.isHidden)
+        // Its textures made (the shared renderer makes one detail texture at a time; the next test asks for its own)
+        wait(30) { renderer.textures.isReady(for: surface.scene) }
+        XCTAssertTrue(renderer.textures.isReady(for: surface.scene), "the tilted globe's textures")
     }
 
     func testPinchAndScrollZoomOrTurn() throws {
