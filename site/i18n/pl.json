@@ -17,6 +17,25 @@
   "storeSoon": "wkrótce, na wsparcie projektu",
   "fineprint": "Obie wersje to ta sama aplikacja ze wszystkimi funkcjami; kto kupi ją w App Store, wspiera jej rozwój. Dziękujemy! 🖤",
   "shotAlt": "Schnellbild: foldery z podglądami i miniatury zdjęć",
+  "viewsLabel": "Cztery widoki",
+  "views": [
+    {
+      "caption": "Siatka",
+      "alt": "Siatka: foldery z podglądem, zdjęcia i filmy jako miniatury"
+    },
+    {
+      "caption": "Lista",
+      "alt": "Lista: nazwa, rodzaj, daty i rozmiar każdego elementu, sortowane kliknięciem w kolumnę"
+    },
+    {
+      "caption": "Mapa",
+      "alt": "Mapa: zdjęcia z podróży po Norwegii tam, gdzie zostały zrobione, poniżej oś czasu"
+    },
+    {
+      "caption": "Globus",
+      "alt": "Globus: ta sama podróż, mocno oddalona"
+    }
+  ],
   "stats": [
     [
       "0",

@@ -17,6 +17,25 @@
   "storeSoon": "snart, för att stödja utvecklingen",
   "fineprint": "Båda versionerna är samma app med alla funktioner; den som köper den i App Store stöder utvecklingen. Tack så mycket! 🖤",
   "shotAlt": "Schnellbild: mappar med förhandsvisningar och miniatyrer av bilder",
+  "viewsLabel": "De fyra vyerna",
+  "views": [
+    {
+      "caption": "Rutnät",
+      "alt": "Rutnätet: mappar med förhandsvisning, foton och videor som miniatyrer"
+    },
+    {
+      "caption": "Lista",
+      "alt": "Listan: namn, typ, datum och storlek för varje objekt, sorterade med ett klick på en kolumn"
+    },
+    {
+      "caption": "Karta",
+      "alt": "Kartan: fotona från en resa genom Norge där de togs, tidslinjen nedanför"
+    },
+    {
+      "caption": "Jordglob",
+      "alt": "Jordgloben: samma resa, långt utzoomad"
+    }
+  ],
   "stats": [
     [
       "0",

@@ -139,7 +139,7 @@ if ("IntersectionObserver" in window) {
 // Screenshots open large in a dialog: ← → step through all of them, a click or Esc closes.
 // The video's still opens with the video moving over it, as on the page.
 (() => {
-  const shots = [...document.querySelectorAll(".shot img, .media img:not(.motion)")];
+  const shots = [...document.querySelectorAll(".shot img, .views img, .media img:not(.motion)")];
   if (!shots.length || !("HTMLDialogElement" in window)) return;
   const labels = document.body.dataset;
   const dialog = document.createElement("dialog");
@@ -177,11 +177,8 @@ if ("IntersectionObserver" in window) {
     moving.hidden = !motion;
     if (motion) {
       moving.style.cssText = motion.style.cssText;
-      moving.sizes = "96vw";
-      moving.srcset = motion.srcset;
-      moving.src = motion.src;
+      moving.src = widest(motion);
     } else {
-      moving.removeAttribute("srcset");
       moving.removeAttribute("src");
     }
   }

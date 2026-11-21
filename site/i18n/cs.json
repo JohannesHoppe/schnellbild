@@ -17,6 +17,25 @@
   "storeSoon": "brzy, na podporu projektu",
   "fineprint": "Obě verze jsou stejná aplikace se všemi funkcemi; kdo si ji koupí v App Storu, podpoří její vývoj. Děkujeme! 🖤",
   "shotAlt": "Schnellbild: složky s náhledy a miniatury fotek",
+  "viewsLabel": "Čtyři zobrazení",
+  "views": [
+    {
+      "caption": "Mřížka",
+      "alt": "Mřížka: složky s náhledem, fotky a videa jako miniatury"
+    },
+    {
+      "caption": "Seznam",
+      "alt": "Seznam: název, druh, data a velikost každé položky, řazené kliknutím na sloupec"
+    },
+    {
+      "caption": "Mapa",
+      "alt": "Mapa: fotky z cesty po Norsku tam, kde vznikly, pod ní časová osa"
+    },
+    {
+      "caption": "Glóbus",
+      "alt": "Glóbus: stejná cesta z velké dálky"
+    }
+  ],
   "stats": [
     [
       "0",

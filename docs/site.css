@@ -217,6 +217,15 @@ a.github { display: inline-flex; align-items: center; gap: 6px; }
   will-change: transform;
 }
 
+/* The app's four views under the hero: four in a row, two by two on phones,
+   each named below its picture; a click opens it large like every screenshot */
+.views { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.views figure { margin: 0; }
+.views img { width: 100%; height: auto; }
+/* the caption up into the window shadow's transparent margin (56 of the shot's 1072 px) */
+.views figcaption { margin-top: -3%; font-size: 15px; font-weight: 600; color: var(--text); }
+@media (max-width: 700px) { .views { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
 /* Numbers */
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding-top: 64px; padding-bottom: 8px; text-align: center; }
 .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px 12px 20px; box-shadow: var(--raise); }
@@ -356,6 +365,7 @@ h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 
 /* Screenshots open large (site.js): one at a time, ← → step through them, a click or Esc closes */
 .zoomable { cursor: zoom-in; }
+.zoomable:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 10px; }
 .media img { max-height: 540px; width: auto; margin-inline: auto; }
 /* The demo video in a feature's place: the app's window content, so it gets the
    corners and the shadow the screenshots' windows have (build_site.py demo) */

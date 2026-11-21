@@ -17,6 +17,25 @@
   "storeSoon": "pian, 0,99 € kehityksen tukemiseksi",
   "fineprint": "Molemmat versiot ovat sama ohjelma kaikkine ominaisuuksineen; App Storesta ostava tukee sen kehitystä. Kiitos! 🖤",
   "shotAlt": "Schnellbild: kansiot esikatseluineen ja kuvien miniatyyrit",
+  "viewsLabel": "Neljä näkymää",
+  "views": [
+    {
+      "caption": "Ruudukko",
+      "alt": "Ruudukko: kansiot esikatseluineen, kuvat ja videot pienoiskuvina"
+    },
+    {
+      "caption": "Luettelo",
+      "alt": "Luettelo: jokaisen kohteen nimi, laji, päivämäärät ja koko, lajiteltuna sarakkeen napsautuksella"
+    },
+    {
+      "caption": "Kartta",
+      "alt": "Kartta: Norjan-matkan kuvat siellä, missä ne otettiin, alla aikajana"
+    },
+    {
+      "caption": "Karttapallo",
+      "alt": "Karttapallo: sama matka kaukaa katsottuna"
+    }
+  ],
   "stats": [
     [
       "0",

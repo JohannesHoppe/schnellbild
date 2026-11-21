@@ -17,6 +17,25 @@
   "storeSoon": "snart, for at støtte udviklingen",
   "fineprint": "Begge versioner er den samme app med alle funktioner; den, der køber den i App Store, støtter udviklingen. Mange tak! 🖤",
   "shotAlt": "Schnellbild: mapper med eksempelbilleder og miniaturer af fotos",
+  "viewsLabel": "De fire visninger",
+  "views": [
+    {
+      "caption": "Gitter",
+      "alt": "Gitteret: mapper med forhåndsvisning, fotos og videoer som miniaturer"
+    },
+    {
+      "caption": "Liste",
+      "alt": "Listen: navn, art, datoer og størrelse for hvert emne, sorteret med et klik på en kolonne"
+    },
+    {
+      "caption": "Kort",
+      "alt": "Kortet: fotos fra en rejse gennem Norge, der hvor de blev taget, med tidslinjen nedenunder"
+    },
+    {
+      "caption": "Globus",
+      "alt": "Globussen: den samme rejse, zoomet langt ud"
+    }
+  ],
   "stats": [
     [
       "0",

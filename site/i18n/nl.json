@@ -17,6 +17,25 @@
   "storeSoon": "binnenkort, € 0,99 om het te steunen",
   "fineprint": "Beide versies zijn dezelfde app met alle functies; wie hem in de App Store koopt, steunt de ontwikkeling. Hartelijk dank! 🖤",
   "shotAlt": "Schnellbild: mappen met voorvertoningen en fotominiaturen",
+  "viewsLabel": "De vier weergaven",
+  "views": [
+    {
+      "caption": "Raster",
+      "alt": "Het raster: mappen met voorbeeld, foto’s en video’s als miniaturen"
+    },
+    {
+      "caption": "Lijst",
+      "alt": "De lijst: naam, soort, datums en grootte van elk onderdeel, gesorteerd met een klik op een kolom"
+    },
+    {
+      "caption": "Kaart",
+      "alt": "De kaart: de foto’s van een reis door Noorwegen op de plek waar ze zijn gemaakt, eronder de tijdlijn"
+    },
+    {
+      "caption": "Wereldbol",
+      "alt": "De wereldbol: dezelfde reis, ver uitgezoomd"
+    }
+  ],
   "stats": [
     [
       "0",

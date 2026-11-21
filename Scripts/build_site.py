@@ -33,7 +33,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
 from site_alternatives import Alternatives, breadcrumb_list, merge_translation  # noqa: E402
-from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
+from make_site_images import FEATURE_SHOTS, HERO_SHOT, VIEW_SHOTS, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 I18N = ROOT / "site" / "i18n"
@@ -52,6 +52,8 @@ LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb"
 # column of .feature (one column up to 820 px, there at most 540 px high).
 HERO_SIZES = "(max-width: 1112px) calc(100vw - 40px), 1072px"
 FEATURE_SIZES = "(max-width: 820px) min(calc(100vw - 40px), 770px), (max-width: 1080px) calc(58.4vw - 56px), 574px"
+# The four views under the hero: four in a row of .wrap (16 px apart), two on phones (12 px apart).
+VIEW_SIZES = "(max-width: 700px) calc(50vw - 26px), (max-width: 1080px) calc(25vw - 22px), 248px"
 
 WHY_ICONS = [
     '<path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c5 0 9 4.5 10 7a13 13 0 0 1-3.1 4.2M6.6 6.6A13 13 0 0 0 2 12c1 2.5 5 7 10 7a9.9 9.9 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
@@ -117,17 +119,18 @@ def srcset(master):
     return ", ".join(f"/{path.relative_to(DOCS)} {width}w" for width, path in variants)
 
 
-def shot(name, code, alt, extra="", first=False):
+def shot(name, code, alt, extra="", first=False, sizes=None):
     """A screenshot, light or dark as the page is (the media query of its dark
     source; site.js sets it when the visitor picked one): the language's own
     where there is one, else English. WebP variants as wide as the place needs
-    (sizes), the lossless master as the img's src. The hero (or the picture a
-    page shows `first`) loads first, the others when they come near."""
+    (sizes: the hero's or a feature's unless given), the lossless master as the
+    img's src. The hero (or the picture a page shows `first`) loads first, the
+    others (also a picture given its own sizes) when they come near."""
     tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
     light, dark = DOCS / "screenshots" / f"{name}-light{tag}.webp", DOCS / "screenshots" / f"{name}-dark{tag}.webp"
     width, height = png_size(light)
-    hero = first or name == HERO_SHOT
-    sizes = HERO_SIZES if hero else FEATURE_SIZES
+    hero = first or (name == HERO_SHOT and not sizes)
+    sizes = sizes or (HERO_SIZES if hero else FEATURE_SIZES)
     size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if hero else ' loading="lazy" decoding="async"')
     img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'
     sources = []
@@ -149,31 +152,38 @@ MOTION = ROOT / "site" / "video-motion.json"
 
 
 def motion(name):
-    """The moving video laid over the video's still, the same for every
-    language and theme (Scripts/make_video_animation.py: the WebPs, where
-    the video lies in the still and the holes the badge and the control bar
-    keep, so they stay in front)."""
+    """The moving video laid over the video's still, one for each theme (the
+    control bar's progress and times move along in it, drawn as the theme
+    shows them), the same for every language (Scripts/make_video_animation.py:
+    the WebPs, where the video lies in the still, the holes the badge and the
+    control bar keep, so they stay in front, and the part of the bar the
+    animation draws itself)."""
     if name != "video" or not MOTION.exists():
         return ""
     m = json.loads(MOTION.read_text())
     (shot_w, shot_h), (x, y, w, h) = m["shot"], m["area"]
     def pct(value, of):
         return f"{100 * value / of:.3f}".rstrip("0").rstrip(".") + "%"
-    # The video's rectangle, each hole as a ring of its own (even-odd)
+    # The video's rectangle, each hole as a ring of its own and each part drawn
+    # inside a hole as one more (even-odd)
     ring = ["0 0", "100% 0", "100% 100%", "0 100%", "0 0"]
-    for x0, y0, x1, y1 in m["holes"]:
+    for x0, y0, x1, y1 in m["holes"] + m["drawn"]:
         a, b, c, d = pct(x0, w), pct(y0, h), pct(x1, w), pct(y1, h)
         ring += [f"{a} {b}", f"{c} {b}", f"{c} {d}", f"{a} {d}", f"{a} {b}", "0 0"]
-    files = sorted(((int(width), file) for width, file in m["files"].items()))
-    for _, file in files:
-        if not (DOCS / "screenshots" / file).exists():
-            problems.append(f"docs/screenshots/{file} (Scripts/make_video_animation.py)")
-    srcset = ", ".join(f"/screenshots/{file} {width}w" for width, file in files)
+    def srcset(theme):
+        files = sorted((int(width), file) for width, file in m["files"][theme].items())
+        for _, file in files:
+            if not (DOCS / "screenshots" / file).exists():
+                problems.append(f"docs/screenshots/{file} (Scripts/make_video_animation.py)")
+        return ", ".join(f"/screenshots/{file} {width}w" for width, file in files), files[-1][1]
+    dark, _ = srcset("dark")
+    light, largest = srcset("light")
     style = (f"left:{pct(x, shot_w)};top:{pct(y, shot_h)};width:{pct(w, shot_w)};height:{pct(h, shot_h)};"
              f"clip-path:polygon(evenodd,{','.join(ring)})")
-    return (f'<img class="motion" src="/screenshots/{files[-1][1]}" srcset="{srcset}" '
-            f'sizes="{FEATURE_SIZES}" width="{w}" height="{h}" alt="" '
-            f'loading="lazy" decoding="async" style="{style}">')
+    return (f'<picture><source type="image/webp" media="(prefers-color-scheme: dark)" srcset="{dark}" sizes="{FEATURE_SIZES}">'
+            f'<source type="image/webp" srcset="{light}" sizes="{FEATURE_SIZES}">'
+            f'<img class="motion" src="/screenshots/{largest}" width="{w}" height="{h}" alt="" '
+            f'loading="lazy" decoding="async" style="{style}"></picture>')
 
 
 
@@ -383,6 +393,25 @@ def globe_band():
             f'</picture></div>')
 
 
+def views(code, t):
+    """The app's four views side by side under the hero (VIEW_SHOTS), two by two
+    on phones, each named below its picture as the app names it: the captions in
+    site/i18n are checked against the app's own translations (Grid, the list of
+    "Grid or list", the Atlas's Map and Globe)."""
+    assert len(t["views"]) == len(VIEW_SHOTS), f"{code}: {len(t['views'])} views, {len(VIEW_SHOTS)} pictures"
+    captions = [v["caption"] for v in t["views"]]
+    for caption, key in zip(captions, ["Grid", None, "Map", "Globe"]):
+        if key and caption != app_string(code, key):
+            missing.append(f"{code}: views caption {caption!r} isn't the app's {key!r}, {app_string(code, key)!r}")
+    if captions[1].casefold() not in app_string(code, "Grid or list").casefold():
+        missing.append(f"{code}: views caption {captions[1]!r} isn't in the app's 'Grid or list'")
+    items = "".join(
+        f'<li data-reveal style="--i:{i}"><figure>{shot(name, code, v["alt"], sizes=VIEW_SIZES)}'
+        f'<figcaption>{esc(v["caption"])}</figcaption></figure></li>'
+        for i, (name, v) in enumerate(zip(VIEW_SHOTS, t["views"])))
+    return f'<ul class="views" aria-label="{esc(t["viewsLabel"])}">{items}</ul>'
+
+
 def home(code, t):
     path_of = home_path
     stats = "".join(
@@ -427,6 +456,7 @@ def home(code, t):
     <p class="fineprint">{fineprint(t['fineprint'])}</p>
   </div>
   <div class="wrap wide"><div class="shot">{shot(HERO_SHOT, code, t['shotAlt'])}</div></div>
+  <div class="wrap">{views(code, t)}</div>
 </div>
 
 <div class="wrap stats">{stats}</div>

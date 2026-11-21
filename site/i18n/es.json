@@ -17,6 +17,25 @@
   "storeSoon": "pronto, por 0,99 € para apoyarlo",
   "fineprint": "Las dos versiones son la misma app con todas las funciones; quien la compra en la tienda apoya su desarrollo. ¡Muchas gracias! 🖤",
   "shotAlt": "Schnellbild: carpetas con previsualizaciones y miniaturas de fotos",
+  "viewsLabel": "Las cuatro vistas",
+  "views": [
+    {
+      "caption": "Cuadrícula",
+      "alt": "La cuadrícula: carpetas con vista previa, fotos y vídeos en miniatura"
+    },
+    {
+      "caption": "Lista",
+      "alt": "La lista: nombre, tipo, fechas y tamaño de cada elemento, ordenados con un clic en una columna"
+    },
+    {
+      "caption": "Mapa",
+      "alt": "El mapa: las fotos de un viaje por Noruega donde se tomaron, con la línea de tiempo debajo"
+    },
+    {
+      "caption": "Globo terráqueo",
+      "alt": "El globo terráqueo: el mismo viaje visto desde muy lejos"
+    }
+  ],
   "stats": [
     [
       "0",

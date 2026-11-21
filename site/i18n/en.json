@@ -17,6 +17,25 @@
   "storeSoon": "soon, €0.99 to support it",
   "fineprint": "Both versions are the same app with every feature; whoever buys it in the Store supports its development. Thank you! 🖤",
   "shotAlt": "Schnellbild: folders with previews and photo thumbnails",
+  "viewsLabel": "The four views",
+  "views": [
+    {
+      "caption": "Grid",
+      "alt": "The grid: folders with previews, photos and videos as thumbnails"
+    },
+    {
+      "caption": "List",
+      "alt": "The list: name, kind, dates and size of each item, sorted by a click on a column"
+    },
+    {
+      "caption": "Map",
+      "alt": "The map: the photos of a trip through Norway where they were taken, the timeline below"
+    },
+    {
+      "caption": "Globe",
+      "alt": "The globe: the same trip, zoomed far out"
+    }
+  ],
   "stats": [
     [
       "0",
