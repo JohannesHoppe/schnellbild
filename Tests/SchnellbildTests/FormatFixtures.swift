@@ -219,8 +219,8 @@ enum FormatFixtures {
         context.setFillColor(CGColor(srgbRed: 1, green: 0, blue: 0, alpha: 1))
         context.fill(box)
         if let text {
-            // Text as a page carries it (PDFKit reads it back with `string`)
-            let attributes = [kCTFontAttributeName: CTFontCreateWithName("Helvetica" as CFString, 10, nil)] as CFDictionary
+            // Text as a page carries it (PDFKit reads it back with `string`), small enough to fit the page
+            let attributes = [kCTFontAttributeName: CTFontCreateWithName("Helvetica" as CFString, 3, nil)] as CFDictionary
             let line = CTLineCreateWithAttributedString(CFAttributedStringCreate(nil, text as CFString, attributes)!)
             context.textPosition = CGPoint(x: 4, y: size.height / 2)
             CTLineDraw(line, context)
