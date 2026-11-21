@@ -76,7 +76,8 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | ⌘N | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
 | ⌘D | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
 | ⌃1 … ⌃9 | open bookmark 1 … 9 |
-| X | boss key: every window turns invisible and every video silent at once; X X X typed with Schnellbild in front (⌘-Tab, which shows no window meanwhile) or a click on its Dock icon brings them back (in full screen again, if it was); ⌘Q still quits |
+| X | boss key on: every window turns invisible and every video silent at once (the first time, a note says how to come back); a click on the Dock icon or ⌘-Tab brings Schnellbild to the front with every window still invisible |
+| X X X | boss key off: X three times within a second, with Schnellbild in front (⌘-Tab), shows every window again (in full screen again, if it was); ⌘Q still quits while it is on |
 | ⌘A / Esc | mark all / unmark; Esc with nothing marked clears the search |
 | M / Insert | mark or unmark the selected item and move on to the next |
 

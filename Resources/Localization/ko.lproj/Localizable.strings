@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "종료(%@은 먼저 확인)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "보스 키: 즉시 숨기고 음소거; %@ 또는 Dock 아이콘으로 다시 표시";
 "⌘-click" = "⌘-클릭";
 "Next view (grid, list, Atlas)" = "다음 보기(격자, 목록, 아틀라스)";
 "General" = "일반";
 "no key" = "키 없음";
 "Back, or the enclosing folder" = "뒤로 또는 상위 폴더";
 "Boss key" = "보스 키";
+"Boss key on" = "보스 키 켜기";
+"Boss key off" = "보스 키 끄기";
+"Boss key on: every window turns invisible and every video silent at once" = "보스 키 켜기: 모든 윈도우가 즉시 보이지 않게 되고 모든 비디오가 음소거됨";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "보스 키 끄기: Schnellbild를 앞으로 가져온 상태에서(⌘-Tab) 1초 안에 세 번 누름";
+"Every window turns invisible and every video silent at once." = "모든 윈도우가 즉시 보이지 않게 되고 모든 비디오가 음소거됩니다.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Schnellbild를 앞으로 가져온 상태에서(⌘-Tab) 보스 키를 1초 안에 세 번 누르십시오.";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild가 즉시 사라지고 모든 비디오가 음소거됩니다. Dock 아이콘을 클릭해도 다시 표시되지 않습니다. 다시 표시하려면 Schnellbild로 전환하고(⌘-Tab) 1초 안에 %@ 키를 세 번 누르십시오.";
 "End the slideshow" = "슬라이드 쇼 끝내기";
 "First item" = "처음 항목";
 "Last item" = "마지막 항목";

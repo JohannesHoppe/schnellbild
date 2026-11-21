@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "退出（%@ 会先询问）";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "老板键：立即隐藏并静音；%@ 或点按程序坞图标恢复";
 "⌘-click" = "⌘-点按";
 "Next view (grid, list, Atlas)" = "下一个视图（网格、列表、地图集）";
 "General" = "通用";
 "no key" = "无按键";
 "Back, or the enclosing folder" = "返回，或上层文件夹";
 "Boss key" = "老板键";
+"Boss key on" = "老板键：开启";
+"Boss key off" = "老板键：关闭";
+"Boss key on: every window turns invisible and every video silent at once" = "老板键开启：所有窗口立即隐藏，所有视频立即静音";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "老板键关闭：将 Schnellbild 置于前台（⌘-Tab），在一秒内按三次";
+"Every window turns invisible and every video silent at once." = "所有窗口立即隐藏，所有视频立即静音。";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "将 Schnellbild 置于前台（⌘-Tab），在一秒内按三次老板键。";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild 会立即消失，所有视频立即静音。点按程序坞图标不会让它恢复。要恢复，请切换到 Schnellbild（⌘-Tab），然后在一秒内按三次 %@。";
 "End the slideshow" = "结束幻灯片放映";
 "First item" = "第一个项目";
 "Last item" = "最后一个项目";

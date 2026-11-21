@@ -3414,6 +3414,67 @@ final class BossKeyTests: XCTestCase {
         XCTAssertFalse(c.typed(x: true, at: t + 3.5))
         XCTAssertTrue(c.typed(x: true, at: t + 4))
     }
+
+    /// The keys as they come from the key monitor: the boss key as set, a
+    /// key held down (its repeats) neither counting nor starting over, ⇧
+    /// with the letter counting as the letter.
+    @MainActor
+    func testTheBossKeyAsTypedBringsTheAppBack() {
+        let shortcuts = Shortcuts(defaults: makeTestDefaults())
+        let x = KeyChord(.char("x")), shiftX = KeyChord(.char("x"), shift: true), y = KeyChord(.char("y"))
+        let t = Date()
+        var c = BossKey.Counter()
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: x, repeating: true, at: t + 0.2, shortcuts: shortcuts), "held down a moment")
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t + 0.4, shortcuts: shortcuts))
+        XCTAssertTrue(c.typed(key: x, repeating: false, at: t + 0.6, shortcuts: shortcuts), "three X, the repeat in between left out")
+        XCTAssertFalse(c.typed(key: shiftX, repeating: false, at: t + 2, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t + 2.3, shortcuts: shortcuts))
+        XCTAssertTrue(c.typed(key: shiftX, repeating: false, at: t + 2.6, shortcuts: shortcuts), "⇧X counts as X")
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t + 4, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: y, repeating: false, at: t + 4.2, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t + 4.4, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: nil, repeating: false, at: t + 4.5, shortcuts: shortcuts), "a key no shortcut can use")
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t + 4.6, shortcuts: shortcuts), "another key started over")
+        // The user's own boss key: B B B, X no longer
+        shortcuts.assign(KeyChord(.char("b")), to: .bossKey, replacing: x)
+        let b = KeyChord(.char("b"))
+        XCTAssertFalse(c.typed(key: x, repeating: false, at: t + 6, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: b, repeating: false, at: t + 6.2, shortcuts: shortcuts))
+        XCTAssertFalse(c.typed(key: b, repeating: false, at: t + 6.4, shortcuts: shortcuts))
+        XCTAssertTrue(c.typed(key: b, repeating: false, at: t + 6.6, shortcuts: shortcuts))
+    }
+
+    /// The first use explains the boss key once, with its key as set; UI
+    /// tests see it only when they ask for it.
+    @MainActor
+    func testTheFirstUseIsExplainedOnce() {
+        let defaults = makeTestDefaults()
+        XCTAssertTrue(BossKey.needsExplaining(defaults: defaults, testing: false, asked: false))
+        XCTAssertFalse(BossKey.needsExplaining(defaults: defaults, testing: true, asked: false), "UI tests aren't held up")
+        XCTAssertTrue(BossKey.needsExplaining(defaults: defaults, testing: true, asked: true))
+        defaults.set(true, forKey: BossKey.explainedKey)
+        XCTAssertFalse(BossKey.needsExplaining(defaults: defaults, testing: false, asked: false), "never again")
+        let shortcuts = Shortcuts(defaults: makeTestDefaults())
+        XCTAssertTrue(BossKey.explanation(shortcuts).contains("press X three times"))
+        shortcuts.assign(KeyChord(.char("b")), to: .bossKey, replacing: KeyChord(.char("x")))
+        XCTAssertTrue(BossKey.explanation(shortcuts).contains("press B three times"))
+    }
+
+    /// F1 lists the boss key on (its key) and off (its key three times),
+    /// following the user's key.
+    @MainActor
+    func testTheHelpListsTheBossKeyOnAndOff() {
+        let shortcuts = Shortcuts(defaults: makeTestDefaults())
+        func row(_ prefix: String) -> HelpShortcut? {
+            ShortcutsHelpView.groups(shortcuts).flatMap(\.shortcuts).first { $0.action.hasPrefix(prefix) }
+        }
+        XCTAssertEqual(row("Boss key on:")?.keys, "X")
+        XCTAssertEqual(row("Boss key off:")?.keys, "X X X")
+        shortcuts.assign(KeyChord(.char("b")), to: .bossKey, replacing: KeyChord(.char("x")))
+        XCTAssertEqual(row("Boss key on:")?.keys, "B")
+        XCTAssertEqual(row("Boss key off:")?.keys, "B B B")
+    }
 }
 
 /// Folder bookmarks: set and removed by the same action, remembered, they

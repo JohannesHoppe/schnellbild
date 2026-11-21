@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Esci (%@ chiede prima)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Tasto capo: subito nascosto e muto; %@ o l’icona nel Dock lo riporta";
 "⌘-click" = "⌘-clic";
 "Next view (grid, list, Atlas)" = "Vista successiva (griglia, elenco, atlante)";
 "General" = "Generali";
 "no key" = "nessun tasto";
 "Back, or the enclosing folder" = "Indietro, o la cartella superiore";
 "Boss key" = "Tasto capo";
+"Boss key on" = "Tasto capo attivo";
+"Boss key off" = "Tasto capo disattivo";
+"Boss key on: every window turns invisible and every video silent at once" = "Tasto capo attivo: ogni finestra diventa invisibile e ogni video muto all’istante";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Tasto capo disattivo: premilo tre volte entro un secondo con Schnellbild in primo piano (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Ogni finestra diventa invisibile e ogni video muto all’istante.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Premi il tasto capo tre volte entro un secondo con Schnellbild in primo piano (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild scompare all’istante e ogni video tace. Un clic sull’icona nel Dock non lo riporta. Per riportarlo, passa a Schnellbild (⌘-Tab) e premi %@ tre volte entro un secondo.";
 "End the slideshow" = "Termina la presentazione";
 "First item" = "Primo elemento";
 "Last item" = "Ultimo elemento";

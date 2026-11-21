@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Stop (%@ vraagt eerst)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Baastoets: meteen verborgen en stil; %@ of het Dock-symbool haalt het terug";
 "⌘-click" = "⌘-klik";
 "Next view (grid, list, Atlas)" = "Volgende weergave (raster, lijst, atlas)";
 "General" = "Algemeen";
 "no key" = "geen toets";
 "Back, or the enclosing folder" = "Terug, of de bovenliggende map";
 "Boss key" = "Baastoets";
+"Boss key on" = "Baastoets aan";
+"Boss key off" = "Baastoets uit";
+"Boss key on: every window turns invisible and every video silent at once" = "Baastoets aan: elk venster wordt meteen onzichtbaar en elke video stil";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Baastoets uit: druk er binnen een seconde drie keer op met Schnellbild vooraan (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Elk venster wordt meteen onzichtbaar en elke video stil.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Druk binnen een seconde drie keer op de baastoets met Schnellbild vooraan (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild verdwijnt meteen en elke video wordt stil. Een klik op het Dock-symbool haalt het niet terug. Om het terug te halen, ga je naar Schnellbild (⌘-Tab) en druk je binnen een seconde drie keer op %@.";
 "End the slideshow" = "Beëindig de diavoorstelling";
 "First item" = "Eerste onderdeel";
 "Last item" = "Laatste onderdeel";

@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Quit (%@ asks first)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Boss key: hidden and silent at once; %@ or the Dock icon brings it back";
 "⌘-click" = "⌘-click";
 "Next view (grid, list, Atlas)" = "Next view (grid, list, Atlas)";
 "General" = "General";
 "no key" = "no key";
 "Back, or the enclosing folder" = "Back, or the enclosing folder";
 "Boss key" = "Boss key";
+"Boss key on" = "Boss key on";
+"Boss key off" = "Boss key off";
+"Boss key on: every window turns invisible and every video silent at once" = "Boss key on: every window turns invisible and every video silent at once";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Every window turns invisible and every video silent at once.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Press the boss key three times within a second with Schnellbild in front (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second.";
 "End the slideshow" = "End the slideshow";
 "First item" = "First item";
 "Last item" = "Last item";

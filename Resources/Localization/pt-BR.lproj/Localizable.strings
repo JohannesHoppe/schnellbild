@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Encerrar (%@ pergunta antes)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Tecla do chefe: oculto e mudo na hora; %@ ou o ícone no Dock traz de volta";
 "⌘-click" = "⌘-clique";
 "Next view (grid, list, Atlas)" = "Próxima visualização (grade, lista, atlas)";
 "General" = "Geral";
 "no key" = "nenhuma tecla";
 "Back, or the enclosing folder" = "Voltar, ou a pasta acima";
 "Boss key" = "Tecla do chefe";
+"Boss key on" = "Tecla do chefe ativada";
+"Boss key off" = "Tecla do chefe desativada";
+"Boss key on: every window turns invisible and every video silent at once" = "Tecla do chefe ativada: cada janela fica invisível e cada vídeo mudo na hora";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Tecla do chefe desativada: pressione-a três vezes em um segundo com o Schnellbild na frente (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Cada janela fica invisível e cada vídeo mudo na hora.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Pressione a tecla do chefe três vezes em um segundo com o Schnellbild na frente (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "O Schnellbild some na hora e cada vídeo fica mudo. Um clique no ícone do Dock não o traz de volta. Para trazê-lo de volta, mude para o Schnellbild (⌘-Tab) e pressione %@ três vezes em um segundo.";
 "End the slideshow" = "Encerrar a apresentação";
 "First item" = "Primeiro item";
 "Last item" = "Último item";

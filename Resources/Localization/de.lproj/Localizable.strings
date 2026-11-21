@@ -403,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Beenden (%@ fragt vorher)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Boss-Key: sofort unsichtbar und stumm; %@ oder das Dock-Symbol holt es zurück";
 "⌘-click" = "⌘-Klick";
 "Next view (grid, list, Atlas)" = "Nächste Ansicht (Raster, Liste, Atlas)";
 "General" = "Allgemein";
 "no key" = "keine Taste";
 "Back, or the enclosing folder" = "Zurück oder der übergeordnete Ordner";
 "Boss key" = "Boss-Key";
+"Boss key on" = "Boss-Key an";
+"Boss key off" = "Boss-Key aus";
+"Boss key on: every window turns invisible and every video silent at once" = "Boss-Key an: jedes Fenster wird sofort unsichtbar und jedes Video stumm";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Boss-Key aus: drück ihn dreimal innerhalb einer Sekunde, mit Schnellbild im Vordergrund (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Jedes Fenster wird sofort unsichtbar und jedes Video stumm.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Drück den Boss-Key dreimal innerhalb einer Sekunde, mit Schnellbild im Vordergrund (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild verschwindet sofort und jedes Video verstummt. Ein Klick auf das Dock-Symbol holt es nicht zurück. Um es zurückzuholen, wechsle zu Schnellbild (⌘-Tab) und drück dreimal innerhalb einer Sekunde %@.";
 "End the slideshow" = "Diashow beenden";
 "First item" = "Erstes Objekt";
 "Last item" = "Letztes Objekt";
