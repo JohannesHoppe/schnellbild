@@ -374,8 +374,8 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
-    /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥
-    /// ↖ ↘, the arrows as the running macOS draws them, `KeyGlyphs`) where
+    /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥,
+    /// the arrows, Home and End as macOS's menus draw them, `KeyGlyphs`) where
     /// Apple has them, and the space bar by its name in each language. The
     /// actions' keys and the F1 help's own keys (`HelpKeys.fixed`, chords)
     /// are drawn by `KeyChord.caps`

@@ -296,42 +296,36 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertEqual(Shortcuts.keySearch("esc"), "⎋")
         XCTAssertEqual(found("⌘ + R"), found("⌘R"), "as a tooltip writes it")
         XCTAssertTrue(found(chord("@up").compactText).contains(.enclosingFolder))
-        XCTAssertEqual(Shortcuts.keySearch("cmd up", glyphs: .triangles), "⌘▲")
-        XCTAssertEqual(Shortcuts.keySearch("⌘↑", glyphs: .triangles), "⌘▲", "either version's arrows")
-        XCTAssertEqual(Shortcuts.keySearch("⌘▲", glyphs: .arrows), "⌘↑")
-        XCTAssertEqual(Shortcuts.keySearch("home", glyphs: .arrows), "↖")
+        XCTAssertEqual(Shortcuts.keySearch("cmd up"), "⌘▲")
+        XCTAssertEqual(Shortcuts.keySearch("⌘↑"), "⌘▲", "a plain arrow typed finds the glyph shown")
+        XCTAssertEqual(Shortcuts.keySearch("home"), "⤒")
+        XCTAssertEqual(Shortcuts.keySearch("↖"), "⤒")
     }
 
     // MARK: Glyphs and caps
 
-    func testTheGlyphsAreTheMenusOfTheRunningMacOS() {
-        XCTAssertEqual(KeyGlyphs.forMacOS(15), .arrows)
-        XCTAssertEqual(KeyGlyphs.forMacOS(26), .triangles)
-        XCTAssertEqual(KeyGlyphs.forMacOS(27), .triangles, "later versions as 26")
-        XCTAssertEqual(KeyGlyphs.current, KeyGlyphs.forMacOS(ProcessInfo.processInfo.operatingSystemVersion.majorVersion))
-        let keys: [(String, String, String)] = [
-            ("left", "←", "◀"), ("right", "→", "▶"), ("up", "↑", "▲"), ("down", "↓", "▼"), ("home", "↖", "↖"), ("end", "↘", "↘"),
-            ("return", "↩", "↩"), ("delete", "⌫", "⌫"), ("escape", "⎋", "⎋"), ("tab", "⇥", "⇥"), ("f1", "F1", "F1"), ("x", "X", "X"),
+    /// As macOS 15's and 26's menus draw them (`KeyGlyphsUITests`' pictures).
+    func testTheGlyphsAreTheMenus() {
+        XCTAssertEqual(KeyGlyphs.current, .menus)
+        let keys: [(String, String)] = [
+            ("left", "◀"), ("right", "▶"), ("up", "▲"), ("down", "▼"), ("home", "⤒"), ("end", "⤓"),
+            ("return", "↩"), ("delete", "⌫"), ("escape", "⎋"), ("tab", "⇥"), ("f1", "F1"), ("x", "X"),
         ]
-        for (stored, on15, on26) in keys {
-            XCTAssertEqual(chord(stored).keyText(.arrows), on15, stored)
-            XCTAssertEqual(chord(stored).keyText(.triangles), on26, stored)
+        for (stored, glyph) in keys {
+            XCTAssertEqual(chord(stored).keyText(.current), glyph, stored)
         }
-        XCTAssertEqual(KeyCaps.chord(chord("@up"), glyphs: .triangles).text, "⌘ + ▲", "the Go menu's Enclosing Folder")
-        XCTAssertEqual(KeyCaps.chord(chord("@up"), glyphs: .arrows).text, "⌘ + ↑")
+        XCTAssertEqual(chord("@up").text, "⌘ + ▲", "as the Go menu's Enclosing Folder")
         XCTAssertEqual(chord("right").idText, "→", "the mini keyboard's identifiers stay")
         XCTAssertEqual(chord("@up").idText, "⌘↑")
     }
 
     func testHomeAndEndSayHowToTypeThemWithFn() {
-        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .triangles).text, "↖ (fn + ◀)")
-        XCTAssertEqual(KeyCaps.chord(chord("end"), glyphs: .triangles).text, "↘ (fn + ▶)")
-        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .arrows).text, "↖ (fn + ←)")
-        XCTAssertEqual(KeyCaps.chord(chord("end"), glyphs: .arrows).text, "↘ (fn + →)")
-        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .arrows).parts,
-                       [.cap("↖"), .open, .cap("fn"), .plus, .cap("←"), .close])
-        XCTAssertEqual(KeyCaps.chord(chord("$end"), glyphs: .arrows).text, "⇧ + ↘ (⇧ + fn + →)", "with the modifiers")
-        XCTAssertEqual(KeyCaps.chord(chord("left"), glyphs: .arrows).text, "←", "other keys need no fn")
+        XCTAssertEqual(chord("home").text, "⤒ (fn + ◀)")
+        XCTAssertEqual(chord("end").text, "⤓ (fn + ▶)")
+        XCTAssertEqual(chord("home").caps.parts, [.cap("⤒"), .open, .cap("fn"), .plus, .cap("◀"), .close])
+        XCTAssertEqual(chord("$end").text, "⇧ + ⤓ (⇧ + fn + ▶)", "with the modifiers")
+        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .arrows).text, "↖ (fn + ←)", "in the glyphs given")
+        XCTAssertEqual(chord("left").text, "◀", "other keys need no fn")
     }
 
     func testEachKeyIsItsOwnCap() {
@@ -362,7 +356,7 @@ final class ShortcutsTests: XCTestCase {
         let glyphs = KeyGlyphs.current
         XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / − · ⌘ + + / ⌘ + −")
         XCTAssertEqual(helpKeys("Previous / next item"), "\(glyphs.left) / \(glyphs.right)")
-        XCTAssertEqual(helpKeys("First / last item"), "↖ (fn + \(glyphs.left)) / ↘ (fn + \(glyphs.right))")
+        XCTAssertEqual(helpKeys("First / last item"), "⤒ (fn + ◀) / ⤓ (fn + ▶)")
         XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘ + 1 … ⌘ + 6")
         XCTAssertEqual(helpKeys("Copy / move the marked items into the other pane's folder"), "⇧ + ⌘ + C / ⇧ + ⌘ + M · F5 / F6")
         XCTAssertEqual(helpKeys("Undo / redo renaming, trashing, moving, copying, a new folder"), "⌘ + Z / ⇧ + ⌘ + Z")

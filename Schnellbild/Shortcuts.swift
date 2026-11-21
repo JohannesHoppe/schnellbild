@@ -91,11 +91,11 @@ struct KeyChord: Hashable {
 
     // MARK: Shown
 
-    /// As plain text, for tooltips and sentences: each key as the running
-    /// macOS's menus draw it (`KeyGlyphs`), modifiers in Apple's order
+    /// As plain text, for tooltips and sentences: each key as macOS's menus
+    /// draw it (`KeyGlyphs`), modifiers in Apple's order
     /// ⌃ ⌥ ⇧ ⌘, joined by "+" ("⇧ + ⌘ + N"); letters in capitals, the space
     /// bar by its name in the user's language; Home / End with the way to
-    /// type them on a Mac keyboard ("↖ (fn + ◀)").
+    /// type them on a Mac keyboard ("⤒ (fn + ◀)").
     var text: String { caps.text }
 
     /// The keys as caps (`KeyCapsView`), each key its own.
@@ -109,9 +109,9 @@ struct KeyChord: Hashable {
     /// what a search in Settings → Keyboard is compared with.
     var compactText: String { modifierGlyphs.joined() + keyText(.current) }
 
-    /// The same with words in English where `text` has words, and macOS
-    /// 15's arrows on every version: stable, for the mini keyboard's
-    /// accessibility identifiers.
+    /// The same with words in English where `text` has words, and the
+    /// plain arrows: stable, for the mini keyboard's accessibility
+    /// identifiers ("key.→").
     var idText: String {
         let modifiers = modifierGlyphs.joined()
         switch key {
@@ -588,8 +588,8 @@ final class Shortcuts: ObservableObject {
     }
 
     /// Typed keys as `KeyChord.compactText` writes them: names of modifiers
-    /// and keys become glyphs (an arrow typed as either macOS version draws
-    /// it becomes `glyphs`'), spaces and the "+" between keys go, capitals.
+    /// and keys become `glyphs` (also a plain arrow typed, ← for ◀), spaces
+    /// and the "+" between keys go, capitals.
     static func keySearch(_ typed: String, glyphs: KeyGlyphs = .current) -> String {
         let names: [(String, String)] = [
             ("command", "⌘"), ("cmd", "⌘"), ("option", "⌥"), ("opt", "⌥"), ("alt", "⌥"), ("control", "⌃"), ("ctrl", "⌃"),
@@ -606,9 +606,10 @@ final class Shortcuts: ObservableObject {
         let order = ["⌃", "⌥", "⇧", "⌘"]
         let modifiers = order.filter { glyph in named.contains { $0.contains(glyph) && $0.count == 1 } }
         var text = modifiers.joined() + named.filter { !(order.contains($0)) }.joined()
-        // An arrow as the other macOS version draws it
-        for other in [KeyGlyphs.arrows, .triangles] where other != glyphs {
-            for (from, to) in [(other.left, glyphs.left), (other.right, glyphs.right), (other.up, glyphs.up), (other.down, glyphs.down)] {
+        // The plain arrows typed (←, ↖) for the glyphs shown (◀, ⤒)
+        for other in [KeyGlyphs.arrows, .menus] where other != glyphs {
+            for (from, to) in [(other.left, glyphs.left), (other.right, glyphs.right), (other.up, glyphs.up), (other.down, glyphs.down),
+                               (other.home, glyphs.home), (other.end, glyphs.end)] {
                 text = text.replacingOccurrences(of: from, with: to)
             }
         }

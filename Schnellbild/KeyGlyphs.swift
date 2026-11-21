@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// The glyphs for keys that type no character, as macOS draws them in its
-/// menus on the running version (`KeyGlyphsUITests` photographs a menu of
-/// every such key on macOS 15 and 26), so the app's own texts show a key as
-/// the menu beside them does. Modifiers (⌃ ⌥ ⇧ ⌘), ↩ ⌫ ⎋ ⇥ and the F-keys
-/// look alike on both.
+/// The glyphs for the arrow keys, Home and End, as macOS draws them in its
+/// menus, so the app's own texts show a key as the menu beside them does:
+/// ◀ ▶ ▲ ▼ ⤒ ⤓, the same on macOS 15 and 26 (`KeyGlyphsUITests`
+/// photographs a menu of every key on both; ⌃ ⌥ ⇧ ⌘, ⎋ ⇥ and the F-keys
+/// look there as the app writes them too).
 struct KeyGlyphs: Equatable {
     let left: String
     let right: String
@@ -13,16 +13,14 @@ struct KeyGlyphs: Equatable {
     let home: String
     let end: String
 
-    /// macOS 15's menus.
+    /// What macOS's menus draw.
+    static let menus = KeyGlyphs(left: "◀", right: "▶", up: "▲", down: "▼", home: "⤒", end: "⤓")
+    /// The plain arrows: what people type when they search for a key, and
+    /// the mini keyboard's identifiers (`KeyChord.idText`).
     static let arrows = KeyGlyphs(left: "←", right: "→", up: "↑", down: "↓", home: "↖", end: "↘")
-    /// macOS 26's menus.
-    static let triangles = KeyGlyphs(left: "◀", right: "▶", up: "▲", down: "▼", home: "↖", end: "↘")
 
-    /// The menus' glyphs on macOS `major` (later versions as 26's).
-    static func forMacOS(_ major: Int) -> KeyGlyphs { major >= 26 ? .triangles : .arrows }
-
-    /// The running system's.
-    static let current = forMacOS(ProcessInfo.processInfo.operatingSystemVersion.majorVersion)
+    /// The glyphs the app shows.
+    static let current = menus
 
     /// The key's glyph; nil for keys these don't cover.
     func glyph(_ key: BrowserModel.KeyInput) -> String? {
@@ -51,7 +49,7 @@ struct KeyGlyphs: Equatable {
 /// are joined by "+" ([⇧] + [⌘] + [N]), keys that do the same are
 /// separated by " / " ([Space] / [F3]), keys pressed one after another
 /// stand side by side ([X] [X] [X]), a range runs "…" ([⌘] + [1] … [⌘] + [5]).
-/// Home and End add how to type them without those keys: [↖] ([fn] + [◀]).
+/// Home and End add how to type them without those keys: [⤒] ([fn] + [◀]).
 struct KeyCaps: Equatable {
     enum Part: Equatable {
         /// One key.
@@ -78,7 +76,7 @@ struct KeyCaps: Equatable {
 
     var isEmpty: Bool { parts.isEmpty }
 
-    /// As plain text, for tooltips and sentences: "⇧ + ⌘ + N", "↖ (fn + ◀)".
+    /// As plain text, for tooltips and sentences: "⇧ + ⌘ + N", "⤒ (fn + ◀)".
     var text: String {
         parts.map { part in
             switch part {

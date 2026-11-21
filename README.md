@@ -63,7 +63,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | <kbd>Backspace</kbd> | back to where you were, also to a search and its results (with no history yet: up a level) |
 | <kbd>⌘</kbd> + <kbd>▲</kbd> / `..` | up one folder level; above `/` lie all drives, the Mac's own disks, external ones and network shares (opened, never renamed or trashed) |
 | <kbd>⌘</kbd> + <kbd>R</kbd> | read the folder again (View → Reload) |
-| <kbd>↖</kbd> (<kbd>fn</kbd> + <kbd>◀</kbd>) / <kbd>↘</kbd> (<kbd>fn</kbd> + <kbd>▶</kbd>) | first / last item |
+| <kbd>⤒</kbd> (<kbd>fn</kbd> + <kbd>◀</kbd>) / <kbd>⤓</kbd> (<kbd>fn</kbd> + <kbd>▶</kbd>) | first / last item |
 | <kbd>+</kbd> / <kbd>−</kbd> (or <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd>, or a trackpad pinch) | larger / smaller thumbnails |
 | <kbd>⌘</kbd> + <kbd>[</kbd> / <kbd>⌘</kbd> + <kbd>]</kbd> | back / forward, restoring the folder, the search and the selection |
 | <kbd>f</kbd> / <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>F</kbd> | full screen |
@@ -107,7 +107,7 @@ The times and places come from the same sources as sorting by date taken and by 
 | <kbd>Space</kbd> / double-click | open the item; on a tile of several, a double click zooms in |
 | click | on a tile of photos taken at one place: the next of them (<kbd>▶</kbd> / <kbd>◀</kbd> too) |
 | <kbd>+</kbd> / <kbd>−</kbd> | zoom the map in / out |
-| <kbd>↖</kbd> (<kbd>fn</kbd> + <kbd>◀</kbd>) / <kbd>↘</kbd> (<kbd>fn</kbd> + <kbd>▶</kbd>) | the first / last item in time |
+| <kbd>⤒</kbd> (<kbd>fn</kbd> + <kbd>◀</kbd>) / <kbd>⤓</kbd> (<kbd>fn</kbd> + <kbd>▶</kbd>) | the first / last item in time |
 | <kbd>t</kbd> | play the tour |
 | <kbd>Space</kbd> | in the tour: pause / resume |
 | <kbd>◀</kbd> / <kbd>▶</kbd> | in the tour: previous / next place |
