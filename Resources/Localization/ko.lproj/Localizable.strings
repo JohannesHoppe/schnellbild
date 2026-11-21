@@ -671,3 +671,6 @@
 "“%@” is no longer in the Trash." = "‘%@’이(가) 더 이상 휴지통에 없습니다.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "‘%@’을(를) 휴지통에서 꺼낼 수 없어 휴지통에 그대로 있습니다. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "실행 취소 / 실행 복귀: 이름 변경, 휴지통으로 이동, 이동, 복사, 새로운 폴더";
+"Copy Path" = "경로 복사";
+"Copy Path of Selected Item" = "선택한 항목의 경로 복사";
+"Right-click to copy" = "오른쪽 클릭하여 복사";

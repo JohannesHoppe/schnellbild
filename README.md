@@ -47,9 +47,10 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 ### Browse folders
 
 - **Open** a folder with ⌘O or by dragging it onto the window; a single file dropped opens straight in the full view. Schnellbild reopens the last folder on launch (the very first launch opens Pictures), and ⌘N opens another window.
-- **Folders first**, each previewing its first pictures or videos like the Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
-- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos.
+- **Folders first**, each previewing its first pictures or videos like the Finder (from its subfolders, however deep, when it has none of its own; from an archive inside when that is all it holds), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
+- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos. An SVG or PDF Quick Look has no picture of, Schnellbild draws itself.
 - **Always current:** what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection jumping; ⌘R reads the folder again. An ejected drive takes its windows back to the list of drives.
+- **The path** of the folder shown sits at the bottom right of the status bar. Right-click it (or ⌃-click) for Copy Path, Copy Path of Selected Item and Reveal in Finder; inside an archive the path runs through it (`…/Holiday.zip/Day 1`).
 - **Other files** (not pictures, videos or archives) are listed by name under the grid, so a folder never looks empty when it isn't. A folder that can't be read says so, with the reason.
 - **Links** count by what they point to: a link to a folder opens that folder, while renaming or trashing it acts on the link, as in the Finder.
 

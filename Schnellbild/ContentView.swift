@@ -668,11 +668,7 @@ struct PaneView: View {
             }
             if model.accessLimited { accessLimitedNote }
             if path {
-                Text(model.folderURL?.path ?? "")
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-                    .truncationMode(.head)
-                    .frame(minWidth: 60, idealWidth: 60, maxWidth: .infinity, alignment: .trailing)
+                folderPath
             } else {
                 Spacer(minLength: 0)
             }
@@ -701,6 +697,39 @@ struct PaneView: View {
             .help(String(localized: "Mini keyboard: the keys of what's on screen, clickable (\(shortcuts.hint(.miniKeyboard)))"))
             .accessibilityIdentifier("keyboardButton")
         }
+    }
+
+    /// The folder's path, cut at its start; right-click (or ⌃-click) copies
+    /// it or reveals the folder, the tooltip shows it whole. VoiceOver gets
+    /// the same items as actions.
+    private var folderPath: some View {
+        let shown = model.shownPath ?? ""
+        return Text(verbatim: shown)
+            .foregroundStyle(.tertiary)
+            .lineLimit(1)
+            .truncationMode(.head)
+            .frame(minWidth: 60, idealWidth: 60, maxWidth: .infinity, alignment: .trailing)
+            .contentShape(Rectangle())
+            .help(Text(verbatim: shown + "\n") + Text("Right-click to copy"))
+            .contextMenu { pathMenu }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Path"))
+            .accessibilityValue(Text(verbatim: shown))
+            .accessibilityAction(named: Text("Copy Path")) { model.copyFolderPath() }
+            .accessibilityAction(named: Text("Copy Path of Selected Item")) { model.copySelectedItemPath() }
+            .accessibilityAction(named: Text("Reveal in Finder")) { model.revealFolderInFinder() }
+            .accessibilityIdentifier("statusPath")
+    }
+
+    /// The path's context menu.
+    @ViewBuilder private var pathMenu: some View {
+        Button("Copy Path") { model.copyFolderPath() }
+            .disabled(model.shownPath == nil)
+        Button("Copy Path of Selected Item") { model.copySelectedItemPath() }
+            .disabled(model.selectedItemPath == nil)
+        Divider()
+        Button("Reveal in Finder") { model.revealFolderInFinder() }
+            .disabled(!model.canRevealFolder)
     }
 
     private var statusText: String { statusParts.joined(separator: " · ") }

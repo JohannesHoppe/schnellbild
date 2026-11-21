@@ -671,3 +671,6 @@
 "“%@” is no longer in the Trash." = "« %@ » n’est plus dans la corbeille.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "« %@ » n’a pas pu être sorti de la corbeille et s’y trouve toujours. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Annuler / rétablir : renommage, placement dans la corbeille, déplacement, copie, nouveau dossier";
+"Copy Path" = "Copier le chemin";
+"Copy Path of Selected Item" = "Copier le chemin de l’élément sélectionné";
+"Right-click to copy" = "Clic droit pour copier";

@@ -3,6 +3,7 @@ import Combine
 import AppKit
 import ImageIO
 import CoreImage
+import QuickLookThumbnailing
 @testable import Schnellbild
 
 // MARK: - Helpers
@@ -40,6 +41,8 @@ final class TempTree {
 @MainActor
 final class FileActionsSpy {
     var revealed: [URL] = []
+    /// What Copy Path put on the pasteboard.
+    var copiedTexts: [String] = []
     var opened: [URL] = []
     var trashed: [URL] = []
     var moved: [(URL, URL)] = []
@@ -71,6 +74,7 @@ final class FileActionsSpy {
         FileActions(
             reveal: { self.revealed.append($0) },
             openInDefaultApp: { self.opened.append($0) },
+            copyText: { self.copiedTexts.append($0) },
             confirmTrash: { names, detail in
                 self.confirmNames.append(names)
                 self.confirmDetails.append(detail)
@@ -1538,6 +1542,43 @@ final class FileActionTests: XCTestCase {
         m.openInDefaultApp()
         XCTAssertEqual(spy.revealed.map(\.lastPathComponent), [a.lastPathComponent])
         XCTAssertEqual(spy.opened.map(\.lastPathComponent), [a.lastPathComponent])
+    }
+
+    /// The status bar's path menu: Copy Path (the folder's POSIX path), Copy
+    /// Path of Selected Item (not ".."), Reveal in Finder (the folder;
+    /// nothing at the drives' level).
+    func testTheStatusBarPathIsCopiedAndRevealed() async throws {
+        let tree = try TempTree(self)
+        try tree.file("sub folder/a.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        let folder = tree.root.appendingPathComponent("sub folder", isDirectory: true)
+        await openAndWait(m, folder)
+        m.copyFolderPath()
+        XCTAssertEqual(spy.copiedTexts.count, 1)
+        XCTAssertTrue(BrowserModel.samePath(URL(fileURLWithPath: spy.copiedTexts[0]), folder), spy.copiedTexts[0])
+        XCTAssertFalse(spy.copiedTexts[0].hasPrefix("file:"), "a POSIX path, not a URL")
+        XCTAssertFalse(spy.copiedTexts[0].hasSuffix("/"))
+
+        m.select(0)   // ".."
+        XCTAssertNil(m.selectedItemPath)
+        m.copySelectedItemPath()
+        XCTAssertEqual(spy.copiedTexts.count, 1, "nothing for ..")
+        m.selectEntry(named: "a.jpg")
+        m.copySelectedItemPath()
+        XCTAssertEqual(spy.copiedTexts.last.map { URL(fileURLWithPath: $0).lastPathComponent }, "a.jpg")
+
+        XCTAssertTrue(m.canRevealFolder)
+        m.revealFolderInFinder()
+        XCTAssertEqual(spy.revealed.count, 1)
+        XCTAssertTrue(spy.revealed.first.map { BrowserModel.samePath($0, folder) } == true)
+
+        await openAndWait(m, URL(fileURLWithPath: "/Volumes", isDirectory: true))
+        XCTAssertFalse(m.canRevealFolder)
+        m.revealFolderInFinder()
+        XCTAssertEqual(spy.revealed.count, 1, "the drives' level isn't revealed")
+        m.copyFolderPath()
+        XCTAssertEqual(spy.copiedTexts.last, "/Volumes")
     }
 
     func testTrashRemovesItemAndItStaysGoneAfterSearch() async throws {
@@ -3098,6 +3139,51 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertEqual(inspected, CGSize(width: 200, height: 100), "the Inspector's resolution")
     }
 
+    /// An SVG's tile and folder preview are a picture of it: QuickLook's,
+    /// else drawn by the app as the full view draws it (QuickLook may answer
+    /// with the icon or not at all). The test log says what QuickLook gave.
+    func testAnSVGGetsAPictureAsItsThumbnail() async throws {
+        let tree = try TempTree(self)
+        let svg = try tree.file("A/B/logo.svg")
+        try Data(##"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="#ff0000"/></svg>"##.utf8).write(to: svg)
+        let request = QLThumbnailGenerator.Request(fileAt: svg, size: CGSize(width: 64, height: 64), scale: 2, representationTypes: .all)
+        let rep = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+        print("QuickLook for an SVG on macOS \(ProcessInfo.processInfo.operatingSystemVersionString): "
+              + (rep.map { $0.type == .thumbnail ? "thumbnail" : $0.type == .icon ? "icon" : "low-quality thumbnail" } ?? "nothing"))
+
+        let picture = await ThumbnailCache.pictureThumbnail(of: svg, side: 64)
+        let drawn = try XCTUnwrap(picture, "drawn by the app")
+        let pixels = try XCTUnwrap(drawn.cgImage(forProposedRect: nil, context: nil, hints: nil))
+        XCTAssertEqual(max(pixels.width, pixels.height), Int(64 * NSScreen.mainBackingScale))
+        let stats = try XCTUnwrap(PictureStats.of(CIImage(cgImage: pixels)))
+        XCTAssertGreaterThan(stats.mean, 0.2, "drawn, not empty")
+
+        let preview = await ThumbnailCache(megabytes: 8).thumbnail(for: svg, side: 64)
+        XCTAssertNotNil(preview)
+        XCTAssertNotEqual(preview?.accessibilityDescription, ThumbnailCache.fileIcon, "a picture, not the file's icon")
+    }
+
+    /// One rule for a folder tile: what the greying-out walk counts as media
+    /// (blue), the previews' walk finds previews for, and the reverse.
+    func testAFolderTileWithMediaFindsPreviewsAndTheWalksAgree() async throws {
+        let tree = try TempTree(self)
+        let layouts = ["svg2/B/a.svg", "svg3/B/C/a.svg", "jpg2/B/a.jpg", "jpg3/B/C/a.jpg", "video/B/C/D/E/clip.mp4",
+                       "none/B/C/notes.txt", "hidden/.B/a.jpg", "pkg/Tool.app/Contents/a.jpg"]
+        for path in layouts { try tree.file(path) }
+        try tree.folder("empty/B/C")
+        for name in ["svg2", "svg3", "jpg2", "jpg3", "video", "none", "hidden", "pkg", "empty"] {
+            let folder = tree.root.appendingPathComponent(name)
+            let previews = await BrowserModel.folderPreviewFiles(in: folder)
+            let hasMedia = await BrowserModel.containsMedia(folder)
+            XCTAssertEqual(hasMedia, !previews.isEmpty, name)
+            XCTAssertEqual(previews.isEmpty, ["none", "hidden", "pkg", "empty"].contains(name), name)
+        }
+        for (name, file) in [("svg2", "a.svg"), ("svg3", "a.svg"), ("jpg2", "a.jpg"), ("jpg3", "a.jpg")] {
+            let previews = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent(name))
+            XCTAssertEqual(previews.map(\.lastPathComponent), [file], name)
+        }
+    }
+
     /// A package (".app", ".photoslibrary") is one item to the user, as in
     /// the Finder: not listed as a folder, not walked by the slideshow or the
     /// search, the same as for the greyed-out check.
@@ -3127,6 +3213,76 @@ final class ReviewFixTests: XCTestCase {
         try tree.file("top/sub/y.jpg")
         let top = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent("top"))
         XCTAssertEqual(top.map(\.lastPathComponent), ["x.png"], "the folder's own first")
+    }
+
+    /// A folder holding only a folder holding the pictures previews them,
+    /// at any depth, SVGs as well as JPEGs and PNGs.
+    func testAFolderOfAFolderPreviewsThePicturesInside() async throws {
+        let tree = try TempTree(self)
+        try tree.file("A/B/a.jpg")
+        try tree.file("A/B/b.png")
+        try tree.file("Vectors/Inner/logo.svg")
+        try tree.file("Deep/B/C/D/pic.svg")
+        try tree.file("Deep/B/C/D/photo.jpg")
+        let a = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent("A"))
+        XCTAssertEqual(Set(a.map(\.lastPathComponent)), ["a.jpg", "b.png"])
+        let vectors = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent("Vectors"))
+        XCTAssertEqual(vectors.map(\.lastPathComponent), ["logo.svg"])
+        let deep = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent("Deep"))
+        XCTAssertEqual(Set(deep.map(\.lastPathComponent)), ["pic.svg", "photo.jpg"])
+        for folder in ["A", "Vectors", "Deep"] {
+            let found = await FolderPreviewCache().containsMedia(tree.root.appendingPathComponent(folder))
+            XCTAssertEqual(found, true, folder)
+        }
+    }
+
+    /// The walk for the previews goes level by level: a large subtree with
+    /// no pictures (a project's node_modules) doesn't use up the walk's
+    /// limit before the folder beside it with pictures is reached.
+    func testThePreviewWalkReachesShallowPicturesBeforeALargeSubtree() async throws {
+        let tree = try TempTree(self)
+        for i in 0..<60 { try tree.file("P/main/node_modules/pkg\(i / 10)/f\(i).js") }
+        try tree.file("P/main/icons/logo.svg")
+        try tree.file("P/main/.hidden/x.png")
+        let root = tree.root.appendingPathComponent("P")
+        var found: [String] = []
+        let ending = FolderWalk(root: root, keys: [.isRegularFileKey], limit: 20, shown: false, appleDoubles: false, breadthFirst: true)
+            .run { url in
+                if BrowserModel.mediaKind(of: url) != nil { found.append(url.lastPathComponent) }
+                return true
+            }
+        XCTAssertEqual(ending, .gaveUp)
+        XCTAssertEqual(found, ["logo.svg"], "level 3 before the files at level 4; no hidden folder walked into")
+        // Walked whole, level by level visits what the depth-first walk visits
+        func visited(_ breadthFirst: Bool) -> Set<String> {
+            var all: Set<String> = []
+            FolderWalk(root: root, shown: false, breadthFirst: breadthFirst).run { all.insert($0.lastPathComponent); return true }
+            return all
+        }
+        XCTAssertEqual(visited(true), visited(false))
+        // main, node_modules, six packages, 60 files, icons, logo.svg
+        XCTAssertEqual(visited(true).count, 70)
+    }
+
+    /// A preview listing made before the pictures arrived deeper down (the
+    /// folder's own date stays the same) is let go once the folder is found
+    /// to hold media, so the tile lists again and shows them.
+    func testAnEmptyPreviewListingIsListedAgainWhenMediaTurnUpBelow() async throws {
+        let tree = try TempTree(self)
+        try tree.folder("A/B/C")
+        let top = tree.root.appendingPathComponent("A")
+        let cache = FolderPreviewCache()
+        let before = await cache.files(in: top)
+        XCTAssertEqual(before, [])
+        let date = try XCTUnwrap(try top.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
+        try tree.file("A/B/C/x.svg")
+        try FileManager.default.setAttributes([.modificationDate: date], ofItemAtPath: top.path)
+        let cached = await cache.files(in: top)
+        XCTAssertEqual(cached, [], "the folder's own date is the same: the listing holds")
+        let found = await cache.containsMedia(top)
+        XCTAssertEqual(found, true)
+        let again = await cache.files(in: top)
+        XCTAssertEqual(again.map(\.lastPathComponent), ["x.svg"])
     }
 
     func testFolderPreviewListIsCachedPerFolder() async throws {

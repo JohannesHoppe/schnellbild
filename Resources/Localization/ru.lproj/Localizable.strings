@@ -671,3 +671,6 @@
 "“%@” is no longer in the Trash." = "«%@» больше нет в Корзине.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Не удалось извлечь «%@» из Корзины, объект остается там. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Отменить / повторить: переименование, перемещение в Корзину, перемещение, копирование, новую папку";
+"Copy Path" = "Скопировать путь";
+"Copy Path of Selected Item" = "Скопировать путь выбранного объекта";
+"Right-click to copy" = "Правый клик — скопировать";

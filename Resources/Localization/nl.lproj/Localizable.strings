@@ -671,3 +671,6 @@
 "“%@” is no longer in the Trash." = "‘%@’ staat niet meer in de prullenmand.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "‘%@’ kon niet uit de prullenmand worden gehaald en staat er nog. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Herstel / opnieuw: naam wijzigen, naar prullenmand verplaatsen, verplaatsen, kopiëren, nieuwe map";
+"Copy Path" = "Kopieer pad";
+"Copy Path of Selected Item" = "Kopieer pad van geselecteerd onderdeel";
+"Right-click to copy" = "Klik met de rechtermuisknop om te kopiëren";

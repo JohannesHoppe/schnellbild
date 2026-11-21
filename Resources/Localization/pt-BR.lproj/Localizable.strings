@@ -671,3 +671,6 @@
 "“%@” is no longer in the Trash." = "“%@” não está mais no Lixo.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Não foi possível tirar “%@” do Lixo, e o item continua lá. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Desfazer / refazer: renomear, mover para o Lixo, mover, copiar, nova pasta";
+"Copy Path" = "Copiar caminho";
+"Copy Path of Selected Item" = "Copiar caminho do item selecionado";
+"Right-click to copy" = "Clique com o botão direito para copiar";
