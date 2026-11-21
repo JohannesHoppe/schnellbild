@@ -223,26 +223,23 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
     }
 
-    /// The Atlas's globe close up over the Norway trip, for the website's four
-    /// views: tilted towards the horizon, the relief exaggerated as the app
-    /// shows it, the Sun low on a June evening, the trip's photos on the fjords.
-    static let nearCameras = [("61.0,6.9,6.8,62,0", "2026-06-16T13:00:00Z"), ("61.0,6.9,6.8,62,0", "2026-06-16T16:30:00Z"),
-                              ("60.7,7.0,7.0,66,10", "2026-06-16T15:00:00Z"), ("61.3,6.6,6.6,58,340", "2026-06-16T15:00:00Z"),
-                              ("60.9,6.4,6.8,64,30", "2026-06-16T15:00:00Z"), ("60.6,7.3,7.0,70,350", "2026-06-16T16:00:00Z")]
-
-    func testAtlasGlobeNearScreenshots() throws {
-        for (index, (camera, date)) in Self.nearCameras.enumerated() {
-            launch(open: tempDir.appendingPathComponent("Norway").path,
-                   extra: ["--globe-camera=\(camera)", "--globe-date=\(date)"])
-            XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
-            app.typeKey("w", modifierFlags: [])
-            XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
-            let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
-            let deadline = Date().addingTimeInterval(20)
-            while tiles.count < 3, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
-            shoot("atlas-globe-near-\(index + 1)", settle: 6)
-            app.terminate()
-        }
+    /// The Atlas's globe close up over the Norway trip (`atlas-globe-near`,
+    /// the website's four views and its maps alternatives): tilted towards
+    /// the horizon over the fjords, the relief exaggerated as the app shows
+    /// it, the June Sun of the early afternoon from the south-west, the trip's
+    /// photos on the coast.
+    func testAtlasGlobeNearScreenshot() throws {
+        launch(open: tempDir.appendingPathComponent("Norway").path,
+               extra: ["--globe-camera=61.0,6.9,6.8,62,0", "--globe-date=2026-06-16T13:00:00Z"])
+        XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
+        app.typeKey("w", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+        let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
+        let deadline = Date().addingTimeInterval(20)
+        while tiles.count < 2, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+        XCTAssertGreaterThanOrEqual(tiles.count, 2, "the trip's photos on the globe: \(text(of: element("atlasMapState")))")
+        shoot("atlas-globe-near", settle: 6)
+        app.terminate()
     }
 
     /// The globe for the website's hero: the world trip (`WORLD_DIR`, real

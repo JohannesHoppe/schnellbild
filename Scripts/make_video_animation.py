@@ -1,46 +1,48 @@
 #!/usr/bin/env python3
 """The website's moving video: the sample video (Scripts/make_sample_media.swift)
-as an animated WebP that docs/site.css lays over the video in the still
-screenshots video-light[-<lang>].webp / video-dark[-<lang>].webp, with the
-control bar's position and times and the badge's line and time left moving
-along. One animation per theme serves
-every language: the video has no words, the bar none but its times, and the
-window's layout is the same in all of them.
+with the app's badge and control bar over it, as the app shows it playing, for
+docs/site.css to lay over the video in the still screenshots
+video-light[-<lang>].webp / video-dark[-<lang>].webp. The control bar's
+position and times and the badge's line and time left move along. One video
+per theme serves every language: the video has no words, the bar none but its
+times, and the window's layout is the same in all of them.
 
     python3 Scripts/make_video_animation.py <folder> [<Sunset Timelapse.mp4>]
 
 <folder> holds screenshots.yml's English pictures (the artifact
 screenshots-en): bartime-<n>-light.png / -dark.png, the paused bar in the
 middle of the video's n-th second, give the times. Without a video it draws
-the sample media into a temporary folder. Needs ffmpeg and img2webp (libwebp)
+the sample media into a temporary folder. Needs ffmpeg (libsvtav1, libx264)
 and Pillow. Writes
 
-    docs/screenshots/video-motion-<light|dark>-960.webp, -480.webp
-    site/video-motion.json   where the video lies in the stills (pixels of
-                             the 1072 x 752 shot), the holes the badge and
-                             the control bar need and the part of the bar
-                             the animation draws itself (pixels of the
-                             video), for Scripts/build_site.py
+    docs/screenshots/video-motion-<light|dark>.webm   AV1
+    docs/screenshots/video-motion-<light|dark>.mp4    H.264, for browsers without AV1
+    site/video-motion.json   where the video lies in the stills (pixels of the
+                             1072 x 752 shot) and the files, for Scripts/build_site.py
 
-Where the video lies and what covers it is read from the stills in
-docs/screenshots: the black letterbox around it, then each still against the
-video's frames (the one it shows); what differs there is the badge and the
-control bar, taken together over every still. The colours follow the stills
-too: AVKit shows the untagged video brighter than ffmpeg decodes it (BT.601),
-so each channel gets the power curve that matches the stills best.
+Where the video lies is read from the stills in docs/screenshots (the black
+letterbox around it), and so are the colours: AVKit shows the untagged video
+brighter than ffmpeg decodes it (BT.601), so each channel gets the power curve
+that matches the stills best, and the result is tagged BT.709, as a browser
+shows it.
 
-The bar's middle (the time played, the position slider, the time left) is
-drawn into every frame from the pictures themselves, so it matches the still
-pixel for pixel: the bar's flat ground and the slider's track from the
-English still (its filled and its empty part, column by column), the knob
-cut out of it, placed where the slider puts it for the frame's moment (a
-line fitted through the knob in the bartime pictures), and the two times
-from the bartime picture of that second. The badge's line and time left the
-same way: the line filled up to where a line through the bartime pictures'
-ends of the filled part puts it, the time from the bartime picture. The
-bar's and the badge's ground is one flat colour around these parts in every
-still and bartime picture (checked), so what is drawn meets the still
-around it.
+The badge and the bar are the English still's own pixels, laid over every
+frame of the video (30 a second): what differs between each still and the
+video frame it shows is the badge at the top and the bar at the bottom, two
+rectangles with the app's rounded corners (CORNERS); inside them the still,
+outside the video, and in a corner's partly covered pixels the still with the
+video's change since its frame added for the part not covered. Their middles
+move: the time played, the position slider and the time left in the bar, the
+line and the time left in the badge, drawn from the pictures themselves so they
+match the still pixel for pixel: the flat ground, the slider's track and the
+badge's line from the English still (their filled and their empty part, column
+by column), the knob cut out of it, placed where the slider puts it for the
+frame's moment (a line fitted through the knob in the bartime pictures), the
+badge's line filled up to where a line through the bartime pictures' ends puts
+it, and the times from the bartime picture of that second. Every other still
+of the theme, laid over its own frame the same way, must come out as itself
+(checked, outside the moving parts), and the ground is one flat colour around
+the drawn parts in every still and bartime picture (checked).
 """
 import json
 import subprocess
@@ -54,13 +56,18 @@ ROOT = Path(__file__).resolve().parent.parent
 SHOTS = ROOT / "docs" / "screenshots"
 GEOMETRY = ROOT / "site" / "video-motion.json"
 VIDEO_NAME = "Sunset Timelapse.mp4"
-FPS = 10
 SECONDS = 6        # the sample video's length: the bartime pictures cover each second
 THEMES = ("light", "dark")
-WIDTHS = {960: 90, 480: 90}  # width: WebP quality (lower ones leave blocks in the sky)
 DIFFERS = 40       # a pixel differing this much from the frame is the app's, not the video's
-PAD = 2            # around each hole
-MARGIN = 3         # around the bar's part drawn here
+PAD = 2            # around each overlay's rectangle, where the drawn parts look for their ground
+MARGIN = 3         # around the bar's and the badge's parts drawn here
+# The overlays' corner radii in points (1 px in the shots): the badge's
+# RoundedRectangle(cornerRadius: 14) in ContentView.positionBadge, the bar's
+# 12 in VideoControlBar
+CORNERS = {"badge": 14, "bar": 12}
+# Still and video differ by this much at most where only the video is (the
+# screenshot's and ffmpeg's decoding): more, and the overlay doesn't fit
+FITS = 24
 
 
 def run(*args, **kw):
@@ -132,41 +139,60 @@ def fit_gamma(still, frame, h):
     return best
 
 
-def holes(still, frame, w, h):
-    """The rectangles where the still differs from the video: the badge at
-    the top, the control bar at the bottom (solid areas: what is thinner than
-    5 px, the water's glitter caught a frame apart, is left out); and, apart
-    from them, rows along the top or the bottom edge that differ across the
-    whole width (a line the window draws over the video's edge)."""
+def overlay(still, frame, w, h, top):
+    """The rectangle where the still differs from the video in the top or the
+    bottom third: the badge or the bar (solid areas only: what is thinner than
+    5 px, the water's glitter caught a frame apart, is left out)."""
     mask = ImageChops.difference(still, frame).convert("L").point(lambda v: 255 if v > DIFFERS else 0)
-    edges = []
-    for rows in (range(0, 3), range(h - 1, h - 4, -1)):
-        lined = [r for r in rows if sum(mask.getpixel((x, r)) > 0 for x in range(w)) > 0.9 * w]
-        for r in lined:
-            mask.paste(0, (0, r, w, r + 1))
-            edges.append([0, r, w, r + 1])
-    solid = mask.filter(ImageFilter.MinFilter(5))
-    found = []
-    for y0, y1 in ((0, h // 3), (h * 2 // 3, h)):
-        box = solid.crop((0, y0, w, y1)).getbbox()
-        if box:
-            grow = 2 + PAD   # what the filter took off each side, and the pad
-            found.append([max(box[0] - grow, 0), max(box[1] + y0 - grow, 0),
-                          min(box[2] + grow, w), min(box[3] + y0 + grow, h)])
-    return found, edges
+    y0, y1 = (0, h // 3) if top else (h * 2 // 3, h)
+    box = mask.filter(ImageFilter.MinFilter(5)).crop((0, y0, w, y1)).getbbox()
+    # the filter takes 2 px off each side
+    return box and [box[0] - 2, box[1] + y0 - 2, box[2] + 2, box[3] + y0 + 2]
 
 
-def union(boxes):
-    """Boxes overlapping each other merged."""
-    merged = []
-    for box in sorted(boxes):
-        for m in merged:
-            if box[0] < m[2] and m[0] < box[2] and box[1] < m[3] and m[1] < box[3]:
-                m[:] = [min(m[0], box[0]), min(m[1], box[1]), max(m[2], box[2]), max(m[3], box[3])]
-                break
-        else:
-            merged.append(list(box))
-    return merged
+def coverage(box, radius):
+    """How much of each pixel of the box the rounded rectangle covers, 0 … 255,
+    sampled 8 x 8 per pixel."""
+    x0, y0, x1, y1 = box
+    image = Image.new("L", (x1 - x0, y1 - y0), 255)
+    n = 8
+    for cx, cy, sx, sy in ((0, 0, 1, 1), (x1 - x0 - 1, 0, -1, 1), (0, y1 - y0 - 1, 1, -1), (x1 - x0 - 1, y1 - y0 - 1, -1, -1)):
+        for i in range(radius):
+            for j in range(radius):
+                inside = 0
+                for a in range(n):
+                    for b in range(n):
+                        # distance from the corner's centre, the pixel's sample point measured from the outer edge
+                        u, v = radius - (i + (a + 0.5) / n), radius - (j + (b + 0.5) / n)
+                        inside += u <= 0 or v <= 0 or u * u + v * v <= radius * radius
+                image.putpixel((cx + sx * i, cy + sy * j), round(255 * inside / (n * n)))
+    return image
+
+
+def laid_over(still, still_frame, frame, cover):
+    """The still's overlay on another frame of the video: the still where it
+    covers, the frame where it doesn't, and in between the still with the
+    frame's change since the still's own frame for the part not covered."""
+    out = Image.composite(still, frame, cover.point(lambda v: 255 if v == 255 else 0))
+    px, s, f0, f1, c = out.load(), still.load(), still_frame.load(), frame.load(), cover.load()
+    for yy in range(cover.height):
+        for xx in range(cover.width):
+            a = c[xx, yy] / 255
+            if 0 < a < 1:
+                px[xx, yy] = tuple(max(0, min(255, round(s[xx, yy][k] + (1 - a) * (f1[xx, yy][k] - f0[xx, yy][k])))) for k in range(3))
+    return out
+
+
+def encode(pictures, out, kind):
+    """The frames as AV1 in WebM or H.264 in MP4, BT.709, no sound."""
+    common = ["ffmpeg", "-v", "error", "-y", "-framerate", "30", "-i", str(pictures / "%03d.png"),
+              "-vf", "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p",
+              "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv", "-an"]
+    if kind == "webm":
+        run(*common, "-c:v", "libsvtav1", "-preset", "4", "-crf", "26", "-g", "180", str(out))
+    else:
+        run(*common, "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-profile:v", "high", "-level:v", "3.1",
+            "-movflags", "+faststart", str(out))
 
 
 # The control bar's middle
@@ -436,23 +462,29 @@ def main():
         gamma = fit_gamma(reference, closest(reference, decoded, h), h)
         decoded = [f.point(sum((curve(g) for g in gamma), [])) for f in decoded]
 
-        boxes, lines, worst = [], [], 0.0
+        # Each still's frame; the badge and the bar where any still shows them
+        matched, worst = {}, 0.0
+        found = {"badge": [], "bar": []}
         for path in all_stills:
             still = crop(path)
             frame = closest(still, decoded, h)
+            matched[path] = (still, frame)
             worst = max(worst, max(ImageStat.Stat(ImageChops.difference(middle(still, h), middle(frame, h))).mean))
-            found, edges = holes(still, frame, w, h)
-            boxes += found
-            lines += [e for e in edges if e not in lines]
-        cut = union(boxes)
-        print(f"video at {x},{y} {w}x{h}; gamma {gamma}; holes {cut}, lines {lines}; largest mean difference {worst:.1f}")
+            for name, top in (("badge", True), ("bar", False)):
+                box = overlay(still, frame, w, h, top)
+                if box:
+                    found[name].append(box)
+        rects = {name: [min(b[0] for b in boxes), min(b[1] for b in boxes), max(b[2] for b in boxes), max(b[3] for b in boxes)]
+                 for name, boxes in found.items()}
+        print(f"video at {x},{y} {w}x{h}; gamma {gamma}; badge {rects['badge']}, bar {rects['bar']}; "
+              f"largest mean difference {worst:.1f}")
 
-        # The parts drawn here: the control bar's slider and times in its hole (the
-        # lower one), the badge's line and time left in its hole; each in the same
-        # place in every still and bartime picture, on one flat ground there
+        # The parts drawn here, in each overlay's rectangle with PAD around it
+        holes = {name: [r[0] - PAD, r[1] - PAD, r[2] + PAD, r[3] + PAD] for name, r in rects.items()}
         parts = []
-        for hole, reader, frames_of, what in ((max(cut, key=lambda b: b[1]), Slider, bar_frames, "control bar's slider and times"),
-                                             (min(cut, key=lambda b: b[1]), Line, badge_frames, "badge's line and time left")):
+        for name, reader, frames_of, what in (("bar", Slider, bar_frames, "control bar's slider and times"),
+                                              ("badge", Line, badge_frames, "badge's line and time left")):
+            hole = holes[name]
             of = lambda image, hole=hole: image.crop(tuple(hole))
             pictures = {path: of(crop(path)) for path in all_stills + sorted(folder.glob("bartime-*.png"))}
             regions = [reader(picture).region() for picture in pictures.values()]
@@ -465,15 +497,62 @@ def main():
                     sys.exit(f"{path.name}: the ground isn't one colour around the {what}")
             parts.append((hole, of, box, frames_of, what))
 
-        # Each frame at its moment (half a frame on, so a time is never a whole second)
-        # (every frame for the stills above, which show any of them; FPS of them here)
-        step = round(len(decoded) / (SECONDS * FPS))
-        decoded = decoded[::step]
-        moments = [(i + 0.5) / FPS for i in range(len(decoded))]
-        if moments[-1] >= SECONDS:
-            sys.exit(f"the video lasts longer than {SECONDS} s")
+        covers = {name: coverage(rect, CORNERS[name]) for name, rect in rects.items()}
+
+        def lay(still, still_frame, frame):
+            """The still's badge and bar over a frame."""
+            image = frame.copy()
+            for name, rect in rects.items():
+                r = tuple(rect)
+                image.paste(laid_over(still.crop(r), still_frame.crop(r), frame.crop(r), covers[name]), r[:2])
+            return image
+
+        moving = [(hole[0] + box[0], hole[1] + box[1], hole[0] + box[2], hole[1] + box[3]) for hole, _, box, _, _ in parts]
+        # What differs between the languages in the badge and the bar (the title's
+        # font in Chinese and Japanese) stays the still's own: a rectangle on the
+        # flat ground around it, where the page lets the still show through
+        def differing(theme):
+            reference, reference_frame = matched[SHOTS / f"video-{theme}.webp"]
+            for path, (still, frame) in matched.items():
+                if path.name.startswith(f"video-{theme}"):
+                    laid = lay(reference, reference_frame, frame)
+                    for r in moving:
+                        laid.paste(still.crop(r), r[:2])
+                    yield path, laid, still
+        kept = []
+        for name, rect in rects.items():
+            r = tuple(rect)
+            boxes = [ImageChops.difference(laid.crop(r), still.crop(r)).convert("L").point(lambda v: 255 if v > FITS else 0).getbbox()
+                     for theme in THEMES for _, laid, still in differing(theme)]
+            boxes = [b for b in boxes if b]
+            if boxes:
+                kept.append([r[0] + min(b[0] for b in boxes) - MARGIN, r[1] + min(b[1] for b in boxes) - MARGIN,
+                             r[0] + max(b[2] for b in boxes) + MARGIN, r[1] + max(b[3] for b in boxes) + MARGIN])
+        for k in kept:
+            for path, (still, _) in matched.items():
+                region = still.crop(tuple(k))
+                edge = [region.getpixel((i, j)) for i in range(region.width) for j in (0, region.height - 1)]
+                edge += [region.getpixel((i, j)) for j in range(region.height) for i in (0, region.width - 1)]
+                if len(set(edge)) != 1:
+                    sys.exit(f"{path.name}: the ground isn't one colour around {k}, which differs between the languages")
+        print(f"the still's own: {kept}")
+
         files = {}
         for theme in THEMES:
+            reference, reference_frame = matched[SHOTS / f"video-{theme}.webp"]
+            # Every still of the theme laid over its own frame from the English one: itself
+            off = 0
+            for path, laid, still in differing(theme):
+                for k in kept:
+                    laid.paste(still.crop(tuple(k)), tuple(k[:2]))
+                for rect in rects.values():
+                    r = tuple(rect)
+                    diff = ImageChops.difference(laid.crop(r), still.crop(r))
+                    off = max(off, max(e[1] for e in diff.getextrema()))
+            print(f"{theme}: the badge and bar laid over each still's own frame differ from it by at most {off}")
+            if off > FITS:
+                sys.exit(f"{theme}: the badge and the bar don't fit the stills (difference {off})")
+
             paths = []
             for second in range(1, SECONDS + 1):
                 path = folder / f"bartime-{second}-{theme}.png"
@@ -483,41 +562,29 @@ def main():
             drawers = []
             for hole, of, box, frames_of, what in parts:
                 bartimes = {second: of(crop(path)) for second, path in enumerate(paths, 1)}
-                draw, off = frames_of(of(crop(SHOTS / f"video-{theme}.webp")), bartimes, box)
+                draw, off = frames_of(of(reference), bartimes, box)
                 print(f"{theme}: the still's {what} drawn again differ by at most {off} (outside the times)")
                 drawers.append((draw, (hole[0] + box[0], hole[1] + box[1])))
             composed = tmp / f"composed-{theme}"
             composed.mkdir()
-            for i, (frame, t) in enumerate(zip(decoded, moments)):
-                image = frame.copy()
+            for i, frame in enumerate(decoded):
+                t = (i + 0.5) / 30   # the frame's moment, half a frame on: never a whole second
+                image = lay(reference, reference_frame, frame)
                 for draw, place in drawers:
                     image.paste(draw(t), place)
                 image.save(composed / f"{i:03d}.png")
             files[theme] = {}
-            for width, quality in WIDTHS.items():
-                pictures = sorted(composed.glob("*.png"))
-                if width != w:
-                    smaller = tmp / f"w{width}-{theme}"
-                    smaller.mkdir()
-                    for p in pictures:
-                        Image.open(p).resize((width, round(h * width / w)), Image.LANCZOS).save(smaller / p.name)
-                    pictures = sorted(smaller.glob("*.png"))
-                name = f"video-motion-{theme}-{width}.webp"
-                out = SHOTS / name
-                run("img2webp", "-loop", "0", "-lossy", "-q", str(quality), "-m", "6",
-                    "-d", str(round(1000 / FPS)), *map(str, pictures), "-o", str(out),
-                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                files[theme][str(width)] = name
-                print(f"{out.relative_to(ROOT)}: {len(pictures)} frames, {out.stat().st_size // 1024} KB")
+            for kind in ("webm", "mp4"):
+                name = f"video-motion-{theme}.{kind}"
+                encode(composed, SHOTS / name, kind)
+                files[theme][kind] = name
+                print(f"docs/screenshots/{name}: {len(decoded)} frames, {(SHOTS / name).stat().st_size // 1024} KB")
 
-        for old in SHOTS.glob("video-motion-*.webp"):
+        for old in SHOTS.glob("video-motion-*"):
             if old.name not in [n for f in files.values() for n in f.values()]:
                 old.unlink()
                 print("deleted", old.relative_to(ROOT))
-        drawn = [[hole[0] + box[0], hole[1] + box[1], hole[0] + box[2], hole[1] + box[3]] for hole, _, box, _, _ in parts]
-        GEOMETRY.write_text(json.dumps({
-            "shot": list(first.size), "area": [x, y, w, h], "holes": cut + lines, "drawn": drawn,
-            "files": files}, indent=1) + "\n")
+        GEOMETRY.write_text(json.dumps({"shot": list(first.size), "area": [x, y, w, h], "still": kept, "files": files}, indent=1) + "\n")
         print(f"{GEOMETRY.relative_to(ROOT)} written")
 
 

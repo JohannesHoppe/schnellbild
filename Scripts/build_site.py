@@ -149,48 +149,41 @@ def icon(name, size, alt="", attributes=""):
 
 
 MOTION = ROOT / "site" / "video-motion.json"
-# How far a hole's corners are cut off (video pixels): outside the badge's and the
-# bar's rounded corners (radius 10 and 12, 2 px apart from the hole's edge)
-HOLE_CORNER = 8
+# The moving video's codecs (Scripts/make_video_animation.py: 960 x 540 at 30 fps,
+# AV1 Main 8 bit at level 3.0, H.264 High at level 3.1)
+MOTION_TYPES = {"webm": "video/webm; codecs=av01.0.04M.08", "mp4": "video/mp4; codecs=avc1.64001f"}
 
 
 def motion(name):
-    """The moving video laid over the video's still, one for each theme (the
-    control bar's progress and times move along in it, drawn as the theme
-    shows them), the same for every language (Scripts/make_video_animation.py:
-    the WebPs, where the video lies in the still, the holes the badge and the
-    control bar keep, so they stay in front, and the part of the bar the
-    animation draws itself)."""
+    """The video playing over the video's still, with the badge and the control
+    bar as the app shows them moving along: one video per theme, the same for
+    every language (Scripts/make_video_animation.py), placed in percent of the
+    still. site.js gives it the theme's sources and plays it while it is on
+    screen (not with "reduce motion"); until it plays, and without script, the
+    still shows."""
     if name != "video" or not MOTION.exists():
         return ""
     m = json.loads(MOTION.read_text())
     (shot_w, shot_h), (x, y, w, h) = m["shot"], m["area"]
     def pct(value, of):
         return f"{100 * value / of:.3f}".rstrip("0").rstrip(".") + "%"
-    # The video's rectangle, each hole as a ring of its own and each part drawn
-    # inside a hole as one more (even-odd); a hole's corners cut off by
-    # HOLE_CORNER, so the video goes on moving there around the badge's and the
-    # bar's rounded corners
-    ring = ["0 0", "100% 0", "100% 100%", "0 100%", "0 0"]
-    for (x0, y0, x1, y1), k in [(box, HOLE_CORNER) for box in m["holes"]] + [(box, 0) for box in m["drawn"]]:
-        k = min(k, (x1 - x0) // 2, (y1 - y0) // 2) if x1 - x0 < w else 0
-        points = [(x0 + k, y0), (x1 - k, y0), (x1, y0 + k), (x1, y1 - k), (x1 - k, y1), (x0 + k, y1), (x0, y1 - k), (x0, y0 + k)]
-        corners = list(dict.fromkeys(points))
-        ring += [f"{pct(px, w)} {pct(py, h)}" for px, py in corners + corners[:1]] + ["0 0"]
-    def srcset(theme):
-        files = sorted((int(width), file) for width, file in m["files"][theme].items())
-        for _, file in files:
+    for theme in ("light", "dark"):
+        for file in m["files"][theme].values():
             if not (DOCS / "screenshots" / file).exists():
                 problems.append(f"docs/screenshots/{file} (Scripts/make_video_animation.py)")
-        return ", ".join(f"/screenshots/{file} {width}w" for width, file in files), files[-1][1]
-    dark, _ = srcset("dark")
-    light, largest = srcset("light")
-    style = (f"left:{pct(x, shot_w)};top:{pct(y, shot_h)};width:{pct(w, shot_w)};height:{pct(h, shot_h)};"
-             f"clip-path:polygon(evenodd,{','.join(ring)})")
-    return (f'<picture><source type="image/webp" media="(prefers-color-scheme: dark)" srcset="{dark}" sizes="{FEATURE_SIZES}">'
-            f'<source type="image/webp" srcset="{light}" sizes="{FEATURE_SIZES}">'
-            f'<img class="motion" src="/screenshots/{largest}" width="{w}" height="{h}" alt="" '
-            f'loading="lazy" decoding="async" style="{style}"></picture>')
+    data = " ".join(f'data-{theme}="{esc(",".join(f"/screenshots/{file}|{MOTION_TYPES[kind]}" for kind, file in m["files"][theme].items()))}"'
+                    for theme in ("light", "dark"))
+    style = f"left:{pct(x, shot_w)};top:{pct(y, shot_h)};width:{pct(w, shot_w)};height:{pct(h, shot_h)}"
+    if m["still"]:
+        # What differs between the languages shows from the still, through
+        # rectangles on the badge's and the bar's flat ground (even-odd)
+        ring = ["0 0", "100% 0", "100% 100%", "0 100%", "0 0"]
+        for x0, y0, x1, y1 in m["still"]:
+            a, b, c, d = pct(x0, w), pct(y0, h), pct(x1, w), pct(y1, h)
+            ring += [f"{a} {b}", f"{c} {b}", f"{c} {d}", f"{a} {d}", f"{a} {b}", "0 0"]
+        style += f";clip-path:polygon(evenodd,{','.join(ring)})"
+    return (f'<video class="motion" width="{w}" height="{h}" muted loop playsinline disablepictureinpicture '
+            f'preload="none" aria-hidden="true" tabindex="-1" {data} style="{style}"></video>')
 
 
 

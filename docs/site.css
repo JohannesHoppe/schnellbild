@@ -370,12 +370,13 @@ h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 /* The demo video in a feature's place: the app's window content, so it gets the
    corners and the shadow the screenshots' windows have (build_site.py demo) */
 .media video.demo { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: var(--lift); background: var(--surface); }
-/* The video's still with the video moving over its picture (build_site.py
-   places it; the holes keep the badge and the control bar in front) */
+/* The video's still with the video playing over its picture, the badge and the
+   bar in it (build_site.py places it): shown once it plays (site.js), so the
+   still stands until then; none with "reduce motion" */
 .playing { position: relative; display: block; width: fit-content; margin-inline: auto; }
-.playing img.motion { position: absolute; max-width: none; max-height: none; pointer-events: none; }
-dialog.lightbox img.motion { max-width: none; max-height: none; cursor: zoom-out; }
-@media (prefers-reduced-motion: reduce) { .playing img.motion { display: none; } }
+.playing video.motion { position: absolute; display: block; max-width: none; max-height: none; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+.playing video.motion.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .playing video.motion { display: none; } }
 dialog.lightbox { padding: 0; border: 0; background: none; max-width: none; max-height: none; overflow: visible; }
 dialog.lightbox::backdrop { background: var(--scrim); }
 dialog.lightbox img { max-width: 96vw; max-height: 94vh; width: auto; height: auto; cursor: zoom-out; }
