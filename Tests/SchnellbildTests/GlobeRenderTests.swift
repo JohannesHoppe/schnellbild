@@ -382,6 +382,8 @@ final class GlobeSurfaceTests: XCTestCase {
         let surface = GlobeSurfaceView(map: renderer.textures.map)
         surface.attach(renderer)
         window.contentView = surface
+        // Out of the window at the end: its renderer's textures are shared with the next test's globe
+        defer { window.contentView = nil }
         surface.frame = NSRect(origin: .zero, size: size)
         let metal = try XCTUnwrap(surface.subviews.last)
         let alps = Coordinate(latitude: 46, longitude: 9)
