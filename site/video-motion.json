@@ -23,8 +23,28 @@
    48
   ]
  ],
+ "drawn": [
+  [
+   235,
+   506,
+   628,
+   531
+  ],
+  [
+   359,
+   26,
+   602,
+   41
+  ]
+ ],
  "files": {
-  "960": "video-motion-960.webp",
-  "480": "video-motion-480.webp"
+  "light": {
+   "960": "video-motion-light-960.webp",
+   "480": "video-motion-light-480.webp"
+  },
+  "dark": {
+   "960": "video-motion-dark-960.webp",
+   "480": "video-motion-dark-480.webp"
+  }
  }
 }
