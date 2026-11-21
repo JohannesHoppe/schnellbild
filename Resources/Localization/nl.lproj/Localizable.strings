@@ -607,7 +607,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: naar het dichtstbijzijnde item op de kaart in die richting; omlaag naar de strook zonder locatie";
 "Atlas: zoom the map in / out" = "Atlas: kaart in- / uitzoomen";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: op meerdere items inzoomen tot ze uit elkaar gaan; op één item openen";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: op items van één plek het volgende (ook → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: op items van één plek het volgende (ook %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Eroverheen slepen of een greep verschuiven: alleen die tijd op de kaart; klik: het item dat het dichtst bij dat moment is gemaakt";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Reis: de plekken in volgorde van tijd, schermvullend, de route op de kaart getekend";
 "arrows" = "pijlen";
@@ -651,7 +651,7 @@
 "Public domain" = "Publiek domein";
 "No endorsement by NASA is implied." = "Dit houdt geen goedkeuring door NASA in.";
 "NASA's media usage guidelines" = "Mediarichtlijnen van NASA";
-"⌘F searches the license texts." = "⌘F zoekt in de licentieteksten.";
+"⌘ + F searches the license texts." = "⌘ + F zoekt in de licentieteksten.";
 "License texts" = "Licentieteksten";
 "Tilt the view" = "Weergave kantelen";
 "Look straight down" = "Recht naar beneden kijken";

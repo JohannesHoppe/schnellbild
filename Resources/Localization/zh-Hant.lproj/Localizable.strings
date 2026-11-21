@@ -607,7 +607,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "地圖集：移到該方向上地圖中最近的項目；向下進入無位置項目列";
 "Atlas: zoom the map in / out" = "地圖集：放大 / 縮小地圖";
 "Atlas: on several items, zoom in until they part; on one, open it" = "地圖集：在多個項目上放大直到分開；在單個項目上打開它";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "地圖集：在同一地點的項目上選下一項（→ ← 亦可）";
+"Atlas: on items taken at one place, the next one (%@ too)" = "地圖集：在同一地點的項目上選下一項（%@ 亦可）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "橫向拖移或移動控點：地圖上只顯示該時間段；按一下：顯示最接近該時間拍攝的項目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅程：依時間順序逐個地點，全螢幕顯示，路線繪製在地圖上";
 "arrows" = "方向鍵";
@@ -651,7 +651,7 @@
 "Public domain" = "公有領域";
 "No endorsement by NASA is implied." = "不代表 NASA 的認可。";
 "NASA's media usage guidelines" = "NASA 媒體使用準則";
-"⌘F searches the license texts." = "⌘F 可在授權條款文字中搜尋。";
+"⌘ + F searches the license texts." = "⌘ + F 可在授權條款文字中搜尋。";
 "License texts" = "授權條款文字";
 "Tilt the view" = "傾斜視角";
 "Look straight down" = "垂直向下看";

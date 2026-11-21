@@ -607,7 +607,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Kartasto: lähimpään kohteeseen kartalla siihen suuntaan; alas sijainnittomien kohteiden riville";
 "Atlas: zoom the map in / out" = "Kartasto: lähennä / loitonna karttaa";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Kartasto: useassa kohteessa lähennä, kunnes ne erottuvat; yhdessä avaa se";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Kartasto: samassa paikassa otetuissa kohteissa seuraava (myös → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Kartasto: samassa paikassa otetuissa kohteissa seuraava (myös %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Vedä yli tai siirrä kahvaa: kartalla vain se aika; osoitus: kohde, joka otettiin lähimpänä sitä hetkeä";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Matka: paikat aikajärjestyksessä, koko näytöllä, reitti piirrettynä karttaan";
 "arrows" = "nuolet";
@@ -651,7 +651,7 @@
 "Public domain" = "Vapaasti käytettävissä";
 "No endorsement by NASA is implied." = "Tämä ei tarkoita NASAn hyväksyntää.";
 "NASA's media usage guidelines" = "NASAn median käyttöohjeet";
-"⌘F searches the license texts." = "⌘F hakee lisenssiteksteistä.";
+"⌘ + F searches the license texts." = "⌘ + F hakee lisenssiteksteistä.";
 "License texts" = "Lisenssitekstit";
 "Tilt the view" = "Kallista näkymää";
 "Look straight down" = "Katso suoraan alas";

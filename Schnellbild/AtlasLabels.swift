@@ -12,8 +12,8 @@ struct AtlasHeaderTexts {
     var tour: String
     var tourHelp: String
     var tourLabel: String
-    /// The key of the tour, as on the keyboard ("T"); nil without one.
-    var tourKey: String?
+    /// The key of the tour ("T"); nil without one.
+    var tourKey: KeyChord?
     /// "13 on the map", or the reading's progress.
     var count: String
     var subfolders: String
@@ -26,7 +26,7 @@ struct AtlasHeaderTexts {
             tour: String(localized: "Tour"),
             tourHelp: String(localized: "Play the tour: the places in the order of time, full screen (\(shortcuts.hint(.startTour)))"),
             tourLabel: String(localized: "Play the tour"),
-            tourKey: shortcuts.keys(.startTour).first?.capText,
+            tourKey: shortcuts.keys(.startTour).first,
             count: progress.map { String(localized: "Reading locations: \($0.done) of \($0.total)") } ?? String(localized: "\(onMap) on the map"),
             subfolders: String(localized: "Include subfolders"),
             subfoldersHelp: String(localized: "The photos and videos of every subfolder too, archives included"),

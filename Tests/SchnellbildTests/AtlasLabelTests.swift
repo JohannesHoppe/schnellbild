@@ -54,7 +54,7 @@ final class AtlasLabelTests: XCTestCase {
     private func header(_ table: [String: String], progress: BrowserModel.Progress? = nil) -> AtlasHeader {
         AtlasHeader(texts: AtlasHeaderTexts(
             tour: table["Tour"] ?? "Tour", tourHelp: "", tourLabel: table["Play the tour"] ?? "",
-            tourKey: "T",
+            tourKey: KeyChord(.char("t")),
             count: progress.map { format(table, "Reading locations: %lld of %lld", $0.done, $0.total) }
                 ?? format(table, "%lld on the map", 99_999),
             subfolders: table["Include subfolders"] ?? "", subfoldersHelp: "", walking: table["Reading subfolders…"] ?? ""),

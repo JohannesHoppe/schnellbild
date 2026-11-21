@@ -414,7 +414,7 @@ private struct AboutView: View {
                     }
                     .listStyle(.sidebar)
                     .accessibilityIdentifier("aboutLicenseList")
-                    Text("⌘F searches the license texts.")
+                    Text("⌘ + F searches the license texts.")
                         .font(.caption).foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 14).padding(.vertical, 8)

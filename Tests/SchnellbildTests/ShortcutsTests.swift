@@ -42,15 +42,18 @@ final class ShortcutsTests: XCTestCase {
     }
 
     func testKeysAreShownAsOnApplesKeyboards() {
-        XCTAssertEqual(chord("@$c").text, "⇧⌘C")
-        XCTAssertEqual(chord("^@s").text, "⌃⌘S")
-        XCTAssertEqual(chord("~left").text, "⌥←")
+        let glyphs = KeyGlyphs.current
+        XCTAssertEqual(chord("@$c").text, "⇧ + ⌘ + C")
+        XCTAssertEqual(chord("^@s").text, "⌃ + ⌘ + S")
+        XCTAssertEqual(chord("~left").text, "⌥ + \(glyphs.left)")
+        XCTAssertEqual(chord("@$c").compactText, "⇧⌘C")
         XCTAssertEqual(chord("-").text, "−")
         XCTAssertEqual(chord("space").text, String(localized: "Space"))
         XCTAssertEqual(chord("space").idText, "space")
         XCTAssertEqual(chord("escape").text, "⎋")
         XCTAssertEqual(chord("escape").idText, "esc")
-        XCTAssertEqual(chord("escape").capText, "esc")
+        XCTAssertEqual(chord("escape").buttonCaps.text, "esc")
+        XCTAssertEqual(chord("@escape").buttonCaps.text, "⌘ + ⎋", "esc as a word only alone")
         XCTAssertEqual(chord("tab").idText, "Tab")
         XCTAssertEqual(chord("delete").text, "⌫")
         XCTAssertEqual(KeyChord(.char("="), command: true), chord("@+"), "= is the + key")
@@ -291,6 +294,61 @@ final class ShortcutsTests: XCTestCase {
                        "the keys as set: ⌘R renames as in Phiewer")
         XCTAssertEqual(Shortcuts.keySearch("option command l"), "⌥⌘L")
         XCTAssertEqual(Shortcuts.keySearch("esc"), "⎋")
+        XCTAssertEqual(found("⌘ + R"), found("⌘R"), "as a tooltip writes it")
+        XCTAssertTrue(found(chord("@up").compactText).contains(.enclosingFolder))
+        XCTAssertEqual(Shortcuts.keySearch("cmd up", glyphs: .triangles), "⌘▲")
+        XCTAssertEqual(Shortcuts.keySearch("⌘↑", glyphs: .triangles), "⌘▲", "either version's arrows")
+        XCTAssertEqual(Shortcuts.keySearch("⌘▲", glyphs: .arrows), "⌘↑")
+        XCTAssertEqual(Shortcuts.keySearch("home", glyphs: .arrows), "↖")
+    }
+
+    // MARK: Glyphs and caps
+
+    func testTheGlyphsAreTheMenusOfTheRunningMacOS() {
+        XCTAssertEqual(KeyGlyphs.forMacOS(15), .arrows)
+        XCTAssertEqual(KeyGlyphs.forMacOS(26), .triangles)
+        XCTAssertEqual(KeyGlyphs.forMacOS(27), .triangles, "later versions as 26")
+        XCTAssertEqual(KeyGlyphs.current, KeyGlyphs.forMacOS(ProcessInfo.processInfo.operatingSystemVersion.majorVersion))
+        let keys: [(String, String, String)] = [
+            ("left", "←", "◀"), ("right", "→", "▶"), ("up", "↑", "▲"), ("down", "↓", "▼"), ("home", "↖", "↖"), ("end", "↘", "↘"),
+            ("return", "↩", "↩"), ("delete", "⌫", "⌫"), ("escape", "⎋", "⎋"), ("tab", "⇥", "⇥"), ("f1", "F1", "F1"), ("x", "X", "X"),
+        ]
+        for (stored, on15, on26) in keys {
+            XCTAssertEqual(chord(stored).keyText(.arrows), on15, stored)
+            XCTAssertEqual(chord(stored).keyText(.triangles), on26, stored)
+        }
+        XCTAssertEqual(KeyCaps.chord(chord("@up"), glyphs: .triangles).text, "⌘ + ▲", "the Go menu's Enclosing Folder")
+        XCTAssertEqual(KeyCaps.chord(chord("@up"), glyphs: .arrows).text, "⌘ + ↑")
+        XCTAssertEqual(chord("right").idText, "→", "the mini keyboard's identifiers stay")
+        XCTAssertEqual(chord("@up").idText, "⌘↑")
+    }
+
+    func testHomeAndEndSayHowToTypeThemWithFn() {
+        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .triangles).text, "↖ (fn + ◀)")
+        XCTAssertEqual(KeyCaps.chord(chord("end"), glyphs: .triangles).text, "↘ (fn + ▶)")
+        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .arrows).text, "↖ (fn + ←)")
+        XCTAssertEqual(KeyCaps.chord(chord("end"), glyphs: .arrows).text, "↘ (fn + →)")
+        XCTAssertEqual(KeyCaps.chord(chord("home"), glyphs: .arrows).parts,
+                       [.cap("↖"), .open, .cap("fn"), .plus, .cap("←"), .close])
+        XCTAssertEqual(KeyCaps.chord(chord("$end"), glyphs: .arrows).text, "⇧ + ↘ (⇧ + fn + →)", "with the modifiers")
+        XCTAssertEqual(KeyCaps.chord(chord("left"), glyphs: .arrows).text, "←", "other keys need no fn")
+    }
+
+    func testEachKeyIsItsOwnCap() {
+        let all = KeyChord(.char("n"), command: true, shift: true, option: true, control: true)
+        XCTAssertEqual(all.caps.parts, [.cap("⌃"), .plus, .cap("⌥"), .plus, .cap("⇧"), .plus, .cap("⌘"), .plus, .cap("N")],
+                       "modifiers in Apple's order, then the key")
+        XCTAssertEqual(all.text, "⌃ + ⌥ + ⇧ + ⌘ + N")
+        XCTAssertEqual(chord("x").caps.parts, [.cap("X")])
+        let thrice = KeyCaps.sequence(chord("x"), count: 3)
+        XCTAssertEqual(thrice.parts, [.cap("X"), .then, .cap("X"), .then, .cap("X")], "a sequence: no sign between")
+        XCTAssertEqual(thrice.text, "X X X")
+        XCTAssertEqual(KeyCaps.either([chord("space").caps, chord("f3").caps]).text, String(localized: "Space") + " / F3")
+        XCTAssertEqual(KeyCaps.range(chord("@1").caps, chord("@5").caps).text, "⌘ + 1 … ⌘ + 5")
+        XCTAssertEqual(KeyCaps.either([]).parts, [], "nothing: no separators")
+        let s = Shortcuts(defaults: makeTestDefaults())
+        XCTAssertEqual(HelpKeys.sequence(.markAll, count: 2).text(s), "⌘ + A ⌘ + A")
+        XCTAssertEqual(s.caps(.info).parts, [.cap("I"), .or, .cap("⌘"), .plus, .cap("I")])
     }
 
     // MARK: Where keys are shown
@@ -301,16 +359,22 @@ final class ShortcutsTests: XCTestCase {
             ShortcutsHelpView.groups(s).flatMap(\.shortcuts).first { $0.action == String(localized: String.LocalizationValue(action)) }?.keys
         }
         XCTAssertEqual(helpKeys("Grid or list (a click on a column sorts by it)"), "L")
-        XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / − · ⌘+ / ⌘−")
-        XCTAssertEqual(helpKeys("Previous / next item"), "← →")
-        XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘1 … ⌘6")
-        XCTAssertEqual(helpKeys("Copy / move the marked items into the other pane's folder"), "⇧⌘C / ⇧⌘M · F5 / F6")
+        let glyphs = KeyGlyphs.current
+        XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / − · ⌘ + + / ⌘ + −")
+        XCTAssertEqual(helpKeys("Previous / next item"), "\(glyphs.left) / \(glyphs.right)")
+        XCTAssertEqual(helpKeys("First / last item"), "↖ (fn + \(glyphs.left)) / ↘ (fn + \(glyphs.right))")
+        XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘ + 1 … ⌘ + 6")
+        XCTAssertEqual(helpKeys("Copy / move the marked items into the other pane's folder"), "⇧ + ⌘ + C / ⇧ + ⌘ + M · F5 / F6")
+        XCTAssertEqual(helpKeys("Undo / redo renaming, trashing, moving, copying, a new folder"), "⌘ + Z / ⇧ + ⌘ + Z")
+        let sort = ShortcutsHelpView.groups(s).flatMap(\.shortcuts).first { $0.keys == "⌘ + 1 … ⌘ + 6" }?.caps
+        XCTAssertEqual(sort?.parts, [.cap("⌘"), .plus, .cap("1"), .through, .cap("⌘"), .plus, .cap("6")], "a cap per key")
         s.assign(chord("j"), to: .toggleList, replacing: chord("l"))
         s.remove(chord("right"), from: .gridNext)
         s.assign(chord("^@1"), to: .sortName, replacing: chord("@1"))
         XCTAssertEqual(helpKeys("Grid or list (a click on a column sorts by it)"), "J")
-        XCTAssertEqual(helpKeys("Previous / next item"), "←")
-        XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌃⌘1 ⌘2 ⌘3 ⌘4 ⌘5 ⌘6")
+        XCTAssertEqual(helpKeys("Previous / next item"), glyphs.left)
+        XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"),
+                       "⌃ + ⌘ + 1 / ⌘ + 2 / ⌘ + 3 / ⌘ + 4 / ⌘ + 5 / ⌘ + 6")
         XCTAssertNotNil(ShortcutsHelpView.groups(s).flatMap(\.shortcuts).first { $0.action == String(localized: "Quit (F10 asks first)") })
 
         let grid = MiniKeyboard.keys(for: .grid)
@@ -318,12 +382,13 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertEqual(next.id, "→", "the key's identifier stays")
         XCTAssertNil(next.cap(s), "no key: left out")
         s.assign(chord("n"), to: .gridNext)
-        XCTAssertEqual(next.cap(s), "N")
+        XCTAssertEqual(next.cap(s), chord("n"))
         let search = grid.first { $0.action == .search }!
-        XCTAssertEqual(search.cap(s), "⌘F")
+        XCTAssertEqual(search.cap(s), chord("@f"))
+        XCTAssertEqual(search.cap(s)?.caps.parts, [.cap("⌘"), .plus, .cap("F")], "a cap per key")
         XCTAssertEqual(s.menuShortcut(.search), KeyboardShortcut("f", modifiers: .command))
         s.assign(chord("/"), to: .search, replacing: chord("@f"))
-        XCTAssertEqual(search.cap(s), "/")
+        XCTAssertEqual(search.cap(s), chord("/"))
         XCTAssertNil(s.menuShortcut(.search), "a key without ⌘ isn't in the menu")
         s.assign(chord("~@f"), to: .search)
         XCTAssertEqual(s.menuShortcut(.search), KeyboardShortcut("f", modifiers: [.command, .option]))

@@ -27,12 +27,12 @@ struct MiniKeyboard: View {
         /// Unique within a row ("F" and "⌘F" are two keys).
         var id: String { standard.idText }
 
-        /// The cap: the key it has always had while the action still has
-        /// it, else the action's first key; nil when the action has none.
+        /// The key shown: the key it has always had while the action still
+        /// has it, else the action's first key; nil when the action has none.
         @MainActor
-        func cap(_ shortcuts: Shortcuts) -> String? {
+        func cap(_ shortcuts: Shortcuts) -> KeyChord? {
             let keys = shortcuts.keys(action)
-            return keys.contains(standard) ? standard.text : keys.first?.text
+            return keys.contains(standard) ? standard : keys.first
         }
     }
 
@@ -229,7 +229,7 @@ struct MiniKeyboard: View {
 /// One key of the mini keyboard: lights up when it acts.
 private struct MiniKeyButton: View {
     let key: MiniKeyboard.Key
-    let cap: String
+    let cap: KeyChord
     @EnvironmentObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
     @State private var lit = false
@@ -248,15 +248,13 @@ private struct MiniKeyButton: View {
             }
         } label: {
             VStack(spacing: 3) {
-                Text(verbatim: cap)
-                    .font(.system(size: 12, weight: .semibold))
-                    .frame(minWidth: 26, minHeight: 22)
-                    .padding(.horizontal, 5)
-                    .background(RoundedRectangle(cornerRadius: 5)
-                        .fill(lit ? Color.accentColor : Color.primary.opacity(0.06)))
-                    .overlay(RoundedRectangle(cornerRadius: 5)
-                        .strokeBorder(lit ? Color.accentColor : Color.secondary.opacity(0.6), lineWidth: 1))
-                    .foregroundStyle(lit ? Color.white : Color.primary)
+                // A chord: a cap per key, joined by "+"
+                KeyCapsView(cap.caps, style: KeyCapStyle(
+                    size: 12, minWidth: cap.modifierGlyphs.isEmpty ? 26 : 18, minHeight: 22, padding: cap.modifierGlyphs.isEmpty ? 5 : 3,
+                    fill: lit ? Color.accentColor : Color.primary.opacity(0.06),
+                    stroke: lit ? Color.accentColor : Color.secondary.opacity(0.6),
+                    foreground: lit ? Color.white : Color.primary))
+                    .fixedSize()
                     .scaleEffect(lit ? 0.92 : 1)
                 Text(key.word)
                     .font(.system(size: 9))

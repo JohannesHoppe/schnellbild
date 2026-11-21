@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Katso isona, selaa näppäimillä",
-      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, ← → selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä + −, käännä ⌥← ⌥→, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
+      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, <kbd>◀</kbd> / <kbd>▶</kbd> selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä <kbd>+</kbd> / <kbd>−</kbd>, käännä <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
       "alt": "Kuva koko näkymässä"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
-      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>⌘→ seuraavaan videoon ja ⌘← takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
+      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hyppäävät kymmenesosan videosta, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> sadasosan</li><li><kbd>▲</kbd> / <kbd>▼</kbd> säätävät äänenvoimakkuutta, kaikille videoille</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> seuraavaan videoon ja <kbd>⌘</kbd> + <kbd>◀</kbd> takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Mikä tiedosto oikeasti on",
-      "text": "<p><kbd>I</kbd> tai <kbd>⌘</kbd><kbd>I</kbd> avaa tiedoston tiedot kuvan viereen: milloin ja missä se on otettu, pienen kartan ja lähimmän paikkakunnan kera, kamera ja objektiivi, formaatti, resoluutio, koodekit, bittinopeus, bittisyvyys ja väriprofiili sekä jokainen metatietoavain (EXIF, GPS, IPTC, XMP, QuickTime) suodatettavaksi ja kopioitavaksi. Aika ja paikka saadaan myös XMP-sivutiedostoista, GoPron tai DJI-dronen GPS-tiedoista, Sonyn klippitiedostoista ja kansion GPX-jäljistä.</p><p>Jos tiedostopääte ei vastaa sisältöä, saat huomautuksen. Tiedostot, joiden nimi ei kerro mitään, tunnistetaan sisällöstä, ja kesken olevat lataukset (.part, .crdownload …) näkyvät niin pitkälle kuin ne ovat ehtineet.</p>",
+      "text": "<p><kbd>I</kbd> tai <kbd>⌘</kbd> + <kbd>I</kbd> avaa tiedoston tiedot kuvan viereen: milloin ja missä se on otettu, pienen kartan ja lähimmän paikkakunnan kera, kamera ja objektiivi, formaatti, resoluutio, koodekit, bittinopeus, bittisyvyys ja väriprofiili sekä jokainen metatietoavain (EXIF, GPS, IPTC, XMP, QuickTime) suodatettavaksi ja kopioitavaksi. Aika ja paikka saadaan myös XMP-sivutiedostoista, GoPron tai DJI-dronen GPS-tiedoista, Sonyn klippitiedostoista ja kansion GPX-jäljistä.</p><p>Jos tiedostopääte ei vastaa sisältöä, saat huomautuksen. Tiedostot, joiden nimi ei kerro mitään, tunnistetaan sisällöstä, ja kesken olevat lataukset (.part, .crdownload …) näkyvät niin pitkälle kuin ne ovat ehtineet.</p>",
       "alt": "Tiedoston tiedot kuvan vieressä"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Vaalea tai tumma, sinä valitset",
-      "text": "<p>Jotkut vannovat tumman tilan nimeen, toiset eivät siedä sitä. Joten sinä päätät: Kuten järjestelmä, Vaalea tai Tumma, Asetuksissa (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Jotkut vannovat tumman tilan nimeen, toiset eivät siedä sitä. Joten sinä päätät: Kuten järjestelmä, Vaalea tai Tumma, Asetuksissa (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Asetukset: ulkoasu kuten järjestelmä, vaalea tai tumma"
     }
   ],

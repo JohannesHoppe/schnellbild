@@ -607,7 +607,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Атлас: до найближчого об'єкта на мапі в цьому напрямку; вниз, у смугу об'єктів без місця";
 "Atlas: zoom the map in / out" = "Атлас: наблизити / віддалити мапу";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Атлас: на кількох об'єктах наближати, доки вони не розійдуться; на одному відкрити його";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Атлас: на об'єктах, знятих в одному місці, наступний (також → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Атлас: на об'єктах, знятих в одному місці, наступний (також %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Провести поверх або посунути ручку: на мапі лише цей період; клацання: об'єкт, знятий найближче до цього часу";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Подорож: місця в порядку часу, на весь екран, маршрут намальовано на мапі";
 "arrows" = "стрілки";
@@ -651,7 +651,7 @@
 "Public domain" = "Суспільне надбання";
 "No endorsement by NASA is implied." = "Це не означає схвалення з боку NASA.";
 "NASA's media usage guidelines" = "Правила NASA щодо медіаматеріалів";
-"⌘F searches the license texts." = "⌘F шукає в текстах ліцензій.";
+"⌘ + F searches the license texts." = "⌘ + F шукає в текстах ліцензій.";
 "License texts" = "Тексти ліцензій";
 "Tilt the view" = "Нахилити вигляд";
 "Look straight down" = "Дивитися прямо вниз";

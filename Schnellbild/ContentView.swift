@@ -690,7 +690,7 @@ struct PaneView: View {
             .fixedSize()
             .help(String(localized: "Grid or list (\(shortcuts.hint(.toggleList))), Atlas (\(shortcuts.hint(.toggleAtlas)))"))
             .accessibilityIdentifier("viewModePicker")
-            if let key = shortcuts.keys(model.viewMode == .atlas ? .toggleAtlas : .toggleList).first { KeyCap(key.capText) }
+            if let key = shortcuts.keys(model.viewMode == .atlas ? .toggleAtlas : .toggleList).first { KeyCap(key) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {
@@ -867,7 +867,7 @@ struct EmptyStateView: View {
                         .multilineTextAlignment(.center)
                 }
                 Button { model.chooseFolder() } label: {
-                    HStack(spacing: 6) { Text("Open Another Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key.capText) } }
+                    HStack(spacing: 6) { Text("Open Another Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key) } }
                 }
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
@@ -894,7 +894,7 @@ struct EmptyStateView: View {
                         .accessibilityIdentifier("skippedRestore")
                 }
                 Button { model.chooseFolder() } label: {
-                    HStack(spacing: 6) { Text("Open Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key.capText) } }
+                    HStack(spacing: 6) { Text("Open Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key) } }
                 }
             }
         }
@@ -1177,17 +1177,15 @@ struct VideoProgressBar: View {
 
 /// A key as it looks on the keyboard: the shortcut of a button, shown on
 /// it so it is learnt by using the button.
+/// A chord is a cap per key, joined by "+" (`KeyCaps`).
 struct KeyCap: View {
-    let key: String
-    init(_ key: String) { self.key = key }
+    let caps: KeyCaps
+    /// One key ("esc", "↩").
+    init(_ key: String) { caps = KeyCaps([.cap(key)]) }
+    init(_ chord: KeyChord) { caps = chord.buttonCaps }
 
     var body: some View {
-        Text(verbatim: key)
-            .font(.system(size: 10, weight: .semibold))
-            .padding(.horizontal, 4)
-            .padding(.vertical, 1)
-            .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Color.secondary.opacity(0.7), lineWidth: 1))
-            .foregroundStyle(.secondary)
+        KeyCapsView(caps, style: .button)
             .fixedSize()
             .accessibilityHidden(true)
     }
@@ -1216,7 +1214,7 @@ struct ShortcutLabel: View {
             } else {
                 Label(title, systemImage: systemImage).labelStyle(.iconOnly)
             }
-            if let key = shortcuts.keys(action).first { KeyCap(key.capText) }
+            if let key = shortcuts.keys(action).first { KeyCap(key) }
         }
     }
 }

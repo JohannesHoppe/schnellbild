@@ -607,7 +607,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: zum nächsten Objekt auf der Karte in diese Richtung; nach unten in die Leiste ohne Ort";
 "Atlas: zoom the map in / out" = "Atlas: Karte vergrößern / verkleinern";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: auf mehreren Objekten vergrößern, bis sie sich trennen; auf einem öffnen";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: auf Objekten von einem Ort das nächste (auch → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: auf Objekten von einem Ort das nächste (auch %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Darüber ziehen oder einen Griff verschieben: nur diese Zeit auf der Karte; Klick: das Objekt, das am nächsten an dieser Zeit aufgenommen wurde";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Reise: die Orte in der Reihenfolge der Zeit, im Vollbild, die Route auf der Karte gezeichnet";
 "arrows" = "Pfeile";
@@ -651,7 +651,7 @@
 "Public domain" = "Gemeinfrei";
 "No endorsement by NASA is implied." = "Keine Billigung durch die NASA.";
 "NASA's media usage guidelines" = "Medien-Richtlinien der NASA";
-"⌘F searches the license texts." = "⌘F sucht in den Lizenztexten.";
+"⌘ + F searches the license texts." = "⌘ + F sucht in den Lizenztexten.";
 "License texts" = "Lizenztexte";
 "Tilt the view" = "Ansicht neigen";
 "Look straight down" = "Senkrecht nach unten blicken";

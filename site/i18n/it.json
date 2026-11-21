@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Guarda in grande, sfoglia con i tasti o in presentazione",
-      "text": "<p>La barra spaziatrice apre un’immagine grande quanto la finestra permette, ← → sfogliano la cartella. Ingrandisci con il trackpad o con + −, ruota con ⌥← ⌥→, schermo intero con <kbd>f</kbd>. GIF animate e SVG compresi, PDF pagina per pagina.</p><p>Una presentazione (<kbd>s</kbd>) scorre la cartella e tutte le sue sottocartelle, foto e video insieme. Ciò che la presentazione riproduce è la playlist: <kbd>p</kbd> la apre per cambiare l’ordine e togliere ciò che non serve.</p>",
+      "text": "<p>La barra spaziatrice apre un’immagine grande quanto la finestra permette, <kbd>◀</kbd> / <kbd>▶</kbd> sfogliano la cartella. Ingrandisci con il trackpad o con <kbd>+</kbd> / <kbd>−</kbd>, ruota con <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, schermo intero con <kbd>f</kbd>. GIF animate e SVG compresi, PDF pagina per pagina.</p><p>Una presentazione (<kbd>s</kbd>) scorre la cartella e tutte le sue sottocartelle, foto e video insieme. Ciò che la presentazione riproduce è la playlist: <kbd>p</kbd> la apre per cambiare l’ordine e togliere ciò che non serve.</p>",
       "alt": "Una foto nella vista completa"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Video, anche MKV e AVI che macOS non riproduce",
-      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>⌘→ al video successivo e ⌘← indietro: il primo riprende da dove era rimasto</li><li>I sottotitoli del video (<kbd>V</kbd>) compaiono fin dall’inizio; attivati a metà, la riga in corso appare subito, e i sottotitoli ASS mantengono posizione, colori e caratteri</li><li>Anche il Finder e la Visualizzazione rapida ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> saltano di un decimo del video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> di un centesimo</li><li><kbd>▲</kbd> / <kbd>▼</kbd> regolano il volume, per tutti i video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> al video successivo e <kbd>⌘</kbd> + <kbd>◀</kbd> indietro: il primo riprende da dove era rimasto</li><li>I sottotitoli del video (<kbd>V</kbd>) compaiono fin dall’inizio; attivati a metà, la riga in corso appare subito, e i sottotitoli ASS mantengono posizione, colori e caratteri</li><li>Anche il Finder e la Visualizzazione rapida ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Un video in riproduzione in Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Cos’è davvero il file",
-      "text": "<p><kbd>I</kbd> o <kbd>⌘</kbd><kbd>I</kbd> apre le info accanto all’immagine: quando e dove è stata scattata, con una piccola mappa e la località vicina, fotocamera e obiettivo, formato, risoluzione, codec, bitrate, profondità di bit e profilo colore, e ogni chiave di metadati (EXIF, GPS, IPTC, XMP, QuickTime) da filtrare e copiare. Date e luoghi arrivano anche dai file XMP affiancati, dai dati GPS di una GoPro o di un drone DJI, dai file clip di Sony e dalle tracce GPX nella cartella.</p><p>Se l’estensione del file non corrisponde al contenuto, compare un avviso. I file con un nome che non dice nulla contano per il contenuto, e i download ancora in corso (.part, .crdownload…) si vedono fin dove sono arrivati.</p>",
+      "text": "<p><kbd>I</kbd> o <kbd>⌘</kbd> + <kbd>I</kbd> apre le info accanto all’immagine: quando e dove è stata scattata, con una piccola mappa e la località vicina, fotocamera e obiettivo, formato, risoluzione, codec, bitrate, profondità di bit e profilo colore, e ogni chiave di metadati (EXIF, GPS, IPTC, XMP, QuickTime) da filtrare e copiare. Date e luoghi arrivano anche dai file XMP affiancati, dai dati GPS di una GoPro o di un drone DJI, dai file clip di Sony e dalle tracce GPX nella cartella.</p><p>Se l’estensione del file non corrisponde al contenuto, compare un avviso. I file con un nome che non dice nulla contano per il contenuto, e i download ancora in corso (.part, .crdownload…) si vedono fin dove sono arrivati.</p>",
       "alt": "Le info sul file accanto a una foto"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Chiaro o scuro, scegli tu",
-      "text": "<p>C'è chi giura sulla modalità scura e chi non la sopporta. Quindi decidi tu: Come il sistema, Chiaro o Scuro, nelle Impostazioni (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>C'è chi giura sulla modalità scura e chi non la sopporta. Quindi decidi tu: Come il sistema, Chiaro o Scuro, nelle Impostazioni (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Impostazioni: aspetto come il sistema, chiaro o scuro"
     }
   ],

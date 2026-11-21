@@ -33,7 +33,7 @@ One free app for the pictures and videos in your folders. Open a folder, see thu
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
 - **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the whole app runs in Apple's App Sandbox, so it reaches only the folders you open to it. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
 - **Provably built from this source.** Every DMG comes with a build attestation signed by GitHub: anyone can check that it was built by this repository's workflow, from a public commit. [How to check it](#provably-built-from-this-source).
-- **Light or dark, your choice.** Some swear by dark mode, others can't stand it. So you decide: same as the system, light or dark (Settings, ⌘,).
+- **Light or dark, your choice.** Some swear by dark mode, others can't stand it. So you decide: same as the system, light or dark (Settings, <kbd>⌘</kbd> + <kbd>,</kbd>).
 - **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder, and the app keeps running. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download
@@ -46,10 +46,10 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-- **Open** a folder with ⌘O or by dragging it onto the window; a single file dropped opens straight in the full view. Schnellbild reopens the last folder on launch (the very first launch opens Pictures), and ⌘N opens another window.
+- **Open** a folder with <kbd>⌘</kbd> + <kbd>O</kbd> or by dragging it onto the window; a single file dropped opens straight in the full view. Schnellbild reopens the last folder on launch (the very first launch opens Pictures), and <kbd>⌘</kbd> + <kbd>N</kbd> opens another window.
 - **Folders first**, each previewing its first pictures or videos like the Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
 - **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos.
-- **Always current:** what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection jumping; ⌘R reads the folder again. An ejected drive takes its windows back to the list of drives.
+- **Always current:** what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection jumping; <kbd>⌘</kbd> + <kbd>R</kbd> reads the folder again. An ejected drive takes its windows back to the list of drives.
 - **Other files** (not pictures, videos or archives) are listed by name under the grid, so a folder never looks empty when it isn't. A folder that can't be read says so, with the reason.
 - **Links** count by what they point to: a link to a folder opens that folder, while renaming or trashing it acts on the link, as in the Finder.
 
@@ -57,29 +57,29 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 
 | Key | Action |
 |---|---|
-| ← → | previous / next item |
-| ↑ ↓ | one row up / down |
-| Space | open the picture or video, or enter the folder |
-| Backspace | back to where you were, also to a search and its results (with no history yet: up a level) |
-| ⌘↑ / `..` | up one folder level; above `/` lie all drives, the Mac's own disks, external ones and network shares (opened, never renamed or trashed) |
-| ⌘R | read the folder again (View → Reload) |
-| Home / End | first / last item |
-| + / − (or ⌘+ / ⌘−, or a trackpad pinch) | larger / smaller thumbnails |
-| ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
-| f / ⌃⌘F | full screen |
-| Return / F2 / ⇧F6 | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |
-| L | grid or list (a click on a column header sorts by it) |
-| W | Atlas: the photos and videos on the map (again: back) |
-| i / ⌘I | file info beside the grid for the selected item (also Get Info in its right-click menu) |
-| D / ⌃O | dual pane on / off |
-| K | mini keyboard on / off |
-| ⇧⌘. | hidden files and folders on / off, as in the Finder (also View → Show Hidden Files and Settings → General); off, they appear nowhere: not in the grid, the search, slideshows or the Atlas; on, everything appears, also `.DS_Store` and the other files macOS keeps for itself, so a folder that looks empty is empty |
-| ⌘N | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
-| ⌘D | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
-| ⌃1 … ⌃9 | open bookmark 1 … 9 |
-| X | boss key: every window turns invisible and every video silent at once; X X X typed with Schnellbild in front (⌘-Tab, which shows no window meanwhile) or a click on its Dock icon brings them back (in full screen again, if it was); ⌘Q still quits |
-| ⌘A / Esc | mark all / unmark; Esc with nothing marked clears the search |
-| M / Insert | mark or unmark the selected item and move on to the next |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | previous / next item |
+| <kbd>▲</kbd> / <kbd>▼</kbd> | one row up / down |
+| <kbd>Space</kbd> | open the picture or video, or enter the folder |
+| <kbd>Backspace</kbd> | back to where you were, also to a search and its results (with no history yet: up a level) |
+| <kbd>⌘</kbd> + <kbd>▲</kbd> / `..` | up one folder level; above `/` lie all drives, the Mac's own disks, external ones and network shares (opened, never renamed or trashed) |
+| <kbd>⌘</kbd> + <kbd>R</kbd> | read the folder again (View → Reload) |
+| <kbd>↖</kbd> (<kbd>fn</kbd> + <kbd>◀</kbd>) / <kbd>↘</kbd> (<kbd>fn</kbd> + <kbd>▶</kbd>) | first / last item |
+| <kbd>+</kbd> / <kbd>−</kbd> (or <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd>, or a trackpad pinch) | larger / smaller thumbnails |
+| <kbd>⌘</kbd> + <kbd>[</kbd> / <kbd>⌘</kbd> + <kbd>]</kbd> | back / forward, restoring the folder, the search and the selection |
+| <kbd>f</kbd> / <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>F</kbd> | full screen |
+| <kbd>Return</kbd> / <kbd>F2</kbd> / <kbd>⇧</kbd> + <kbd>F6</kbd> | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |
+| <kbd>L</kbd> | grid or list (a click on a column header sorts by it) |
+| <kbd>W</kbd> | Atlas: the photos and videos on the map (again: back) |
+| <kbd>i</kbd> / <kbd>⌘</kbd> + <kbd>I</kbd> | file info beside the grid for the selected item (also Get Info in its right-click menu) |
+| <kbd>D</kbd> / <kbd>⌃</kbd> + <kbd>O</kbd> | dual pane on / off |
+| <kbd>K</kbd> | mini keyboard on / off |
+| <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>.</kbd> | hidden files and folders on / off, as in the Finder (also View → Show Hidden Files and Settings → General); off, they appear nowhere: not in the grid, the search, slideshows or the Atlas; on, everything appears, also `.DS_Store` and the other files macOS keeps for itself, so a folder that looks empty is empty |
+| <kbd>⌘</kbd> + <kbd>N</kbd> | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
+| <kbd>⌘</kbd> + <kbd>D</kbd> | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
+| <kbd>⌃</kbd> + <kbd>1</kbd> … <kbd>⌃</kbd> + <kbd>9</kbd> | open bookmark 1 … 9 |
+| <kbd>X</kbd> | boss key: every window turns invisible and every video silent at once; X X X typed with Schnellbild in front (<kbd>⌘</kbd> + <kbd>Tab</kbd>, which shows no window meanwhile) or a click on its Dock icon brings them back (in full screen again, if it was); <kbd>⌘</kbd> + <kbd>Q</kbd> still quits |
+| <kbd>⌘</kbd> + <kbd>A</kbd> / <kbd>Esc</kbd> | mark all / unmark; Esc with nothing marked clears the search |
+| <kbd>M</kbd> / <kbd>Insert</kbd> | mark or unmark the selected item and move on to the next |
 
 ### List view
 
@@ -92,26 +92,26 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 
 ### Atlas: your photos on the map, with a timeline and a tour
 
-`W` (or the map in the status bar's switch, or View → as Atlas) shows the folder's photos and videos where they were taken, on the map inside Schnellbild: a thumbnail at each place, and where several lie close together one tile with their number, which parts as you zoom in. Zoomed far out the map is a globe (from satellite pictures, with clouds, day and night and the relief, if you like), which flattens into the map as you zoom in. The tilt button, ⌥-drag or ⌥ with two fingers tilts the view towards the horizon, down to low orbit, and turning two fingers turns it; the same button looks straight down again. It shows the photos and videos of every subfolder too (archives included, hidden folders only while hidden files are shown), as the slideshow plays them; they come in while the subfolders are read, and "Include subfolders" over the map turns that off (Schnellbild remembers it). While you search, it shows the results. A photo selected in the Atlas stays selected in the grid and the list; one from a subfolder selects the folder it lies in there, and a folder selected in the grid hands the selection to its first photo in the Atlas. The full view opened from the Atlas goes on from folder to folder. Drag or scroll to move the map or turn the globe, pinch, ⌘-scroll or `+` `−` to zoom. A click selects (the same item as in the grid and the list), Space or a double click opens it, a double click on a tile of several zooms in until they part, and the arrow keys go to the nearest tile that way. Photos taken at the very same place stay one tile however far you zoom in: each click on it selects the next of them, as do → and ←. Photos and videos without a location wait in a strip under the map ("No location · 12"), to select and open like the others; none gets a made-up place.
+`W` (or the map in the status bar's switch, or View → as Atlas) shows the folder's photos and videos where they were taken, on the map inside Schnellbild: a thumbnail at each place, and where several lie close together one tile with their number, which parts as you zoom in. Zoomed far out the map is a globe (from satellite pictures, with clouds, day and night and the relief, if you like), which flattens into the map as you zoom in. The tilt button, ⌥-drag or ⌥ with two fingers tilts the view towards the horizon, down to low orbit, and turning two fingers turns it; the same button looks straight down again. It shows the photos and videos of every subfolder too (archives included, hidden folders only while hidden files are shown), as the slideshow plays them; they come in while the subfolders are read, and "Include subfolders" over the map turns that off (Schnellbild remembers it). While you search, it shows the results. A photo selected in the Atlas stays selected in the grid and the list; one from a subfolder selects the folder it lies in there, and a folder selected in the grid hands the selection to its first photo in the Atlas. The full view opened from the Atlas goes on from folder to folder. Drag or scroll to move the map or turn the globe, pinch, ⌘-scroll or `+` `−` to zoom. A click selects (the same item as in the grid and the list), Space or a double click opens it, a double click on a tile of several zooms in until they part, and the arrow keys go to the nearest tile that way. Photos taken at the very same place stay one tile however far you zoom in: each click on it selects the next of them, as do <kbd>▶</kbd> and <kbd>◀</kbd>. Photos and videos without a location wait in a strip under the map ("No location · 12"), to select and open like the others; none gets a made-up place.
 
 The **timeline** at the bottom lays everything out by the time it was taken, a bar for each stretch of time with a thumbnail now and then. Drag across it, or move one of its handles, and the map and the strip show only that part of the trip; Show All brings back the whole span. A click on the timeline selects the photo taken nearest that moment. Times are those of the clock where each photo was taken, also when your Mac is in another time zone, and a video whose file only knows the time in UTC gets the offset of the photos around it.
 
-**Tour** (`T`, or the Tour button over the map) plays the trip back in full screen: the photos and videos are grouped into places (the same day, within about a kilometre), the map glides from one to the next in the order of time, the route grows on the map in the accent colour (along a GoPro's or DJI drone's GPS track where a video has one), and at each place its photos show large one after another while a video (also an MKV or another format only VLC plays) plays a few seconds without sound. Space pauses, ← → go to the previous or next place, `Esc` ends it. It keeps to the part of the timeline you chose. With Reduce motion on, the map cuts from place to place.
+**Tour** (`T`, or the Tour button over the map) plays the trip back in full screen: the photos and videos are grouped into places (the same day, within about a kilometre), the map glides from one to the next in the order of time, the route grows on the map in the accent colour (along a GoPro's or DJI drone's GPS track where a video has one), and at each place its photos show large one after another while a video (also an MKV or another format only VLC plays) plays a few seconds without sound. Space pauses, <kbd>◀</kbd> / <kbd>▶</kbd> go to the previous or next place, `Esc` ends it. It keeps to the part of the timeline you chose. With Reduce motion on, the map cuts from place to place.
 
 The times and places come from the same sources as sorting by date taken and by distance (EXIF, a phone's video, a GoPro's telemetry, a DJI flight log, a Sony clip file, XMP sidecars, GPX tracks in the folder), read in the background; with tens of thousands of photos the map fills in while they are read, one photo of every folder first, so every place shows early, then the folders you are looking at. The map is OpenStreetMap data inside the app: nothing is uploaded, no location leaves your Mac, and Schnellbild doesn't go online for it.
 
 | Key | Action |
 |---|---|
-| w | Atlas (again: back to the grid or list) |
-| ← → ↑ ↓ | to the nearest item on the map that way; down into the strip of items without a location |
-| Space / double-click | open the item; on a tile of several, a double click zooms in |
-| click | on a tile of photos taken at one place: the next of them (→ ← too) |
-| + / − | zoom the map in / out |
-| Home / End | the first / last item in time |
-| t | play the tour |
-| Space | in the tour: pause / resume |
-| ← → | in the tour: previous / next place |
-| Esc / t | end the tour |
+| <kbd>w</kbd> | Atlas (again: back to the grid or list) |
+| <kbd>◀</kbd> / <kbd>▶</kbd> / <kbd>▲</kbd> / <kbd>▼</kbd> | to the nearest item on the map that way; down into the strip of items without a location |
+| <kbd>Space</kbd> / double-click | open the item; on a tile of several, a double click zooms in |
+| click | on a tile of photos taken at one place: the next of them (<kbd>▶</kbd> / <kbd>◀</kbd> too) |
+| <kbd>+</kbd> / <kbd>−</kbd> | zoom the map in / out |
+| <kbd>↖</kbd> (<kbd>fn</kbd> + <kbd>◀</kbd>) / <kbd>↘</kbd> (<kbd>fn</kbd> + <kbd>▶</kbd>) | the first / last item in time |
+| <kbd>t</kbd> | play the tour |
+| <kbd>Space</kbd> | in the tour: pause / resume |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | in the tour: previous / next place |
+| <kbd>Esc</kbd> / <kbd>t</kbd> | end the tour |
 
 ### Sort
 
@@ -126,7 +126,7 @@ By name, kind, date modified, date taken, size or distance, from the toolbar or 
 
 | Key | Action |
 |---|---|
-| ⌘1 … ⌘6 | sort by name, kind, date modified, date taken, size, distance (again: reverse) |
+| <kbd>⌘</kbd> + <kbd>1</kbd> … <kbd>⌘</kbd> + <kbd>6</kbd> | sort by name, kind, date modified, date taken, size, distance (again: reverse) |
 
 ### Search, including subfolders
 
@@ -141,10 +141,10 @@ By name, kind, date modified, date taken, size or distance, from the toolbar or 
 
 | Key | Action |
 |---|---|
-| ⌘F | focus the search field |
-| ↓ | move into the results |
-| Return | open the selected result |
-| Esc | clear the search; once more: leave the field |
+| <kbd>⌘</kbd> + <kbd>F</kbd> | focus the search field |
+| <kbd>▼</kbd> | move into the results |
+| <kbd>Return</kbd> | open the selected result |
+| <kbd>Esc</kbd> | clear the search; once more: leave the field |
 
 ### Full view
 
@@ -155,16 +155,16 @@ By name, kind, date modified, date taken, size or distance, from the toolbar or 
 
 One picture, as large as the window allows, with its position in the folder. The full image is sampled to screen size, the thumbnail shows instantly until it's there. Animated GIFs play, and zoom, turn and take the enhance filter like any photo.
 
-**PDFs, page by page.** A PDF shows one page at a time, drawn sharp at every zoom. ← → turn the pages as they skim a video: past the last page on to the next item, before the first back to the previous one; ⌘← ⌘→ go to the previous / next item at once. The badge shows the page ("Page 3 / 12"). Each page starts at fit and upright and is zoomed, moved and turned on its own. Its tile shows the first page. Links, form fields and scripts in a PDF do nothing: Schnellbild only draws the pages.
+**PDFs, page by page.** A PDF shows one page at a time, drawn sharp at every zoom. <kbd>◀</kbd> / <kbd>▶</kbd> turn the pages as they skim a video: past the last page on to the next item, before the first back to the previous one; <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> go to the previous / next item at once. The badge shows the page ("Page 3 / 12"). Each page starts at fit and upright and is zoomed, moved and turned on its own. Its tile shows the first page. Links, form fields and scripts in a PDF do nothing: Schnellbild only draws the pages.
 
 | Key | Action |
 |---|---|
-| ← → | previous / next picture; on a PDF its previous / next page (on a video: see below) |
-| ⌘← ⌘→ | previous / next item, also from a video or PDF |
-| ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
-| Space | next picture |
-| F2 | rename the picture or video shown |
-| Esc / Backspace / Return | back to the grid, at the same place |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | previous / next picture; on a PDF its previous / next page (on a video: see below) |
+| <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> | previous / next item, also from a video or PDF |
+| <kbd>▲</kbd> / <kbd>▼</kbd> | pictures zoomed in: look further up / down; videos: volume up / down |
+| <kbd>Space</kbd> | next picture |
+| <kbd>F2</kbd> | rename the picture or video shown |
+| <kbd>Esc</kbd> / <kbd>Backspace</kbd> / <kbd>Return</kbd> | back to the grid, at the same place |
 
 ### Slideshow
 
@@ -173,7 +173,7 @@ One picture, as large as the window allows, with its position in the folder. The
   <img src="docs/screenshots/slideshow-light.webp" width="760" alt="The slideshow">
 </picture></p>
 
-Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds (Settings, ⌘, sets 1 to 60), videos play to their end, then it moves on. A PDF is one item, shown at its first page. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
+Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds (Settings, <kbd>⌘</kbd> + <kbd>,</kbd> sets 1 to 60), videos play to their end, then it moves on. A PDF is one item, shown at its first page. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
 
 Three ways to start it:
 
@@ -192,17 +192,17 @@ It starts where you are: from the full view at the picture you're looking at; in
 
 | Key | Action |
 |---|---|
-| s | start the slideshow (again: end it) |
-| p | show / hide the playlist |
-| ↑ ↓ / Return / Backspace | in the playlist, after a click in it: choose an item / show it / take it out of the playlist (the file stays) |
-| Space | pause / resume |
-| ← → | previous / next picture; in a video 10 % of its length back / ahead |
-| ⇧← ⇧→ | in a video 1 % of its length back / ahead |
-| ⌘← ⌘→ | previous / next item |
-| ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
-| f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
-| V / ⌃⌘S / ⌃⌘A / < > | subtitles, audio track and speed of a video, as in the full view |
-| Esc / Return / Backspace | end the slideshow (with the playlist open: close the playlist first) |
+| <kbd>s</kbd> | start the slideshow (again: end it) |
+| <kbd>p</kbd> | show / hide the playlist |
+| <kbd>▲</kbd> / <kbd>▼</kbd> / <kbd>Return</kbd> / <kbd>Backspace</kbd> | in the playlist, after a click in it: choose an item / show it / take it out of the playlist (the file stays) |
+| <kbd>Space</kbd> | pause / resume |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | previous / next picture; in a video 10 % of its length back / ahead |
+| <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> | in a video 1 % of its length back / ahead |
+| <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> | previous / next item |
+| <kbd>▲</kbd> / <kbd>▼</kbd> | pictures zoomed in: look further up / down; videos: volume up / down |
+| <kbd>f</kbd> / <kbd>i</kbd> / <kbd>e</kbd> / <kbd>a</kbd> | full screen, file info, auto enhance, sliders, as in the full view |
+| <kbd>V</kbd> / <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>S</kbd> / <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>A</kbd> / <kbd>&lt;</kbd> / <kbd>&gt;</kbd> | subtitles, audio track and speed of a video, as in the full view |
+| <kbd>Esc</kbd> / <kbd>Return</kbd> / <kbd>Backspace</kbd> | end the slideshow (with the playlist open: close the playlist first) |
 
 ### Zoom and rotate
 
@@ -215,9 +215,9 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 
 | Key | Action |
 |---|---|
-| + / − (or ⌘+ / ⌘−) | zoom in / out |
-| 0 / 1 | fit to window / a photo's real size (100 %; a photo smaller than the window stays fitted, a video always) |
-| ⌥← / ⌥→ | rotate left / right |
+| <kbd>+</kbd> / <kbd>−</kbd> (or <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd>) | zoom in / out |
+| <kbd>0</kbd> / <kbd>1</kbd> | fit to window / a photo's real size (100 %; a photo smaller than the window stays fitted, a video always) |
+| <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> | rotate left / right |
 
 ### Videos
 
@@ -227,28 +227,28 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 </picture></p>
 
 - **Everything plays:** MP4 and MOV through macOS itself (HDR included), what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
-- **The arrow keys skim:** each press jumps a tenth of the video, ⇧ a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
-- **Back where you left it:** halfway through a video, ⌘→ shows what the next one brings, and ⌘← takes you back to the place you left, playing or paused as you left it. The same when you open it again from the grid. A video watched to its end starts from the beginning. The places last as long as you stay in the folder: open another one, and back here every video starts from the beginning again.
+- **The arrow keys skim:** each press jumps a tenth of the video, ⇧ a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> skip a video at once.
+- **Back where you left it:** halfway through a video, <kbd>⌘</kbd> + <kbd>▶</kbd> shows what the next one brings, and <kbd>⌘</kbd> + <kbd>◀</kbd> takes you back to the place you left, playing or paused as you left it. The same when you open it again from the grid. A video watched to its end starts from the beginning. The places last as long as you stay in the folder: open another one, and back here every video starts from the beginning again.
 - **A thin bar** at the top shows how far the video has played and the time left.
 - **One control bar for every video**, whichever engine plays it: play and pause, the position to drag, the time played and left, volume, speed, subtitles and the audio track (where the video has more than one), full screen. It shows while the mouse moves over the video and goes after a few seconds of rest, never dimming the picture. Drag it by its grip wherever it suits you: it stays there for every video, also after a restart, and a double click on the grip puts it back at the bottom. On a zoomed or turned video it stays upright.
-- **↑ ↓ set the volume** of every video, kept for the next launch.
-- **Subtitles inside the video** (MKV with SubRip, ASS or PGS, MP4 and MOV with text tracks): on or off with `V`, the next track with ⌃⌘S. On and off and the language you chose last are kept for every video. Subtitle files lying next to a video are never loaded, nothing is fetched from the internet.
-- **Audio tracks:** a video with several (languages, a commentary) switches with ⌃⌘A or from the control bar, which names each track's language; the language is kept for the next video.
-- **Speed:** `<` and `>` play slower or faster in steps from 0.5× to 2×, the voices keeping their pitch; ⌘\\ is normal speed again. The badge shows the speed while it isn't 1×; it holds for every video until Schnellbild quits.
+- **<kbd>▲</kbd> / <kbd>▼</kbd> set the volume** of every video, kept for the next launch.
+- **Subtitles inside the video** (MKV with SubRip, ASS or PGS, MP4 and MOV with text tracks): on or off with `V`, the next track with <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>S</kbd>. On and off and the language you chose last are kept for every video. Subtitle files lying next to a video are never loaded, nothing is fetched from the internet.
+- **Audio tracks:** a video with several (languages, a commentary) switches with <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>A</kbd> or from the control bar, which names each track's language; the language is kept for the next video.
+- **Speed:** `<` and `>` play slower or faster in steps from 0.5× to 2×, the voices keeping their pitch; <kbd>⌘</kbd> + <kbd>\\</kbd> is normal speed again. The badge shows the speed while it isn't 1×; it holds for every video until Schnellbild quits.
 - **Right-click the video** for subtitles, audio track and speed; the Video menu has them too.
 
 | Key | Action |
 |---|---|
-| Space | play / pause |
-| ← → | 10 % of the length back / ahead; at the end on to the next item, at the start back to the previous one |
-| ⌘← ⌘→ | previous / next item straight away; a video you come back to goes on where you left it (in the same folder) |
-| ↑ ↓ | volume up / down in tenths, for every video, remembered (shown while it changes) |
-| ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
-| V | subtitles on / off (remembered) |
-| ⌃⌘S | next subtitle track, then none |
-| ⌃⌘A | next audio track |
-| < / > | slower / faster (0.5×, 0.75×, 1×, 1.25×, 1.5×, 2×) |
-| ⌘\\ | normal speed |
+| <kbd>Space</kbd> | play / pause |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | 10 % of the length back / ahead; at the end on to the next item, at the start back to the previous one |
+| <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> | previous / next item straight away; a video you come back to goes on where you left it (in the same folder) |
+| <kbd>▲</kbd> / <kbd>▼</kbd> | volume up / down in tenths, for every video, remembered (shown while it changes) |
+| <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> | 1 % of the length back / ahead, to find a place exactly |
+| <kbd>V</kbd> | subtitles on / off (remembered) |
+| <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>S</kbd> | next subtitle track, then none |
+| <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>A</kbd> | next audio track |
+| <kbd>&lt;</kbd> / <kbd>&gt;</kbd> | slower / faster (0.5×, 0.75×, 1×, 1.25×, 1.5×, 2×) |
+| <kbd>⌘</kbd> + <kbd>\\</kbd> | normal speed |
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.webp">
@@ -290,8 +290,8 @@ It's a filter on the screen only: your files stay as they are. Photos and videos
 
 | Key | Action |
 |---|---|
-| e | auto enhance on / off |
-| a | show / hide the sliders (Esc hides them too) |
+| <kbd>e</kbd> | auto enhance on / off |
+| <kbd>a</kbd> | show / hide the sliders (Esc hides them too) |
 
 ### File info
 
@@ -300,7 +300,7 @@ It's a filter on the screen only: your files stay as they are. Photos and videos
   <img src="docs/screenshots/inspector-light.webp" width="760" alt="The file info beside a photo">
 </picture></p>
 
-A sidebar with everything a file says about itself, for the item selected in the grid or list, or the one on screen in the full view and the slideshow (i, ⌘I, or Get Info in an item's right-click menu):
+A sidebar with everything a file says about itself, for the item selected in the grid or list, or the one on screen in the full view and the slideshow (i, <kbd>⌘</kbd> + <kbd>I</kbd>, or Get Info in an item's right-click menu):
 
 - **Capture:** date and time as the camera's clock showed them, with its offset from UTC, and where they come from when it isn't the file's own capture date (an XMP sidecar, a GoPro's GPS time, a DJI drone's flight log, a Sony camera's clip file, the video's header in UTC); camera, lens, aperture, shutter speed, ISO, focal length (and its 35 mm equivalent), flash, exposure program and bias, white balance, orientation.
 - **Location:** latitude and longitude (`48.1372° N, 11.5761° E`), altitude, the direction the camera faced and where the place comes from: a photo's GPS data, the location a phone writes into a video (iPhone, Android), a GoPro's GPS track (its first good fix; for the video also the route's length), a DJI drone's flight log beside the video (`DJI_0001.SRT`), a Sony camera's clip file (`C0001M01.XML`), XMP inside a video, or an XMP sidecar from Lightroom, darktable and others (`IMG_0001.xmp`, `IMG_0001.CR2.xmp`), which comes first. A photo or video without a place of its own is placed on a GPX track in the same folder by the time it was taken, within five minutes of a point of the track; it says so ("From GPX track walk.gpx", with the time to the nearest point), and the file stays as it is. How exact the place is, where the source states it (GPS error in metres, GoPro's dilution of precision). A small map around the place and the town nearby ("near Geiranger, Norway") come from the map data inside Schnellbild, without going online. Open in Maps shows the place in Apple Maps; that app goes online, Schnellbild itself doesn't.
@@ -314,7 +314,7 @@ A file whose extension names another format than its content (a recording named 
 
 | Key | Action |
 |---|---|
-| i / ⌘I | show / hide the file info |
+| <kbd>i</kbd> / <kbd>⌘</kbd> + <kbd>I</kbd> | show / hide the file info |
 
 ### Rename, reveal, trash, sort into folders
 
@@ -324,20 +324,20 @@ A file whose extension names another format than its content (a recording named 
 </picture></p>
 
 - **Rename** with Return or F2 (as in the Finder), also from the full view, the Actions menu or a right-click. The folder you're in is renamed by clicking its name in the title bar.
-- **Sort into folders:** ⇧⌘N makes a new folder, then drag tiles onto a folder, or onto `..` to move them up a level. On the same disk they move, onto another they're copied. A name that's taken asks: keep both, skip or cancel, once or for all.
-- **Undo** renaming, trashing (folders, marked items and archives with all their parts too), moving, copying and new folders, as often as you like: Edit → Undo, ⌘Z, or the top of the right-click menu ("Undo Move to Trash"); ⇧⌘Z redoes. While you type in a field, ⌘Z undoes the typing.
+- **Sort into folders:** <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>N</kbd> makes a new folder, then drag tiles onto a folder, or onto `..` to move them up a level. On the same disk they move, onto another they're copied. A name that's taken asks: keep both, skip or cancel, once or for all.
+- **Undo** renaming, trashing (folders, marked items and archives with all their parts too), moving, copying and new folders, as often as you like: Edit → Undo, <kbd>⌘</kbd> + <kbd>Z</kbd>, or the top of the right-click menu ("Undo Move to Trash"); <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>Z</kbd> redoes. While you type in a field, <kbd>⌘</kbd> + <kbd>Z</kbd> undoes the typing.
 - **Safe by design:** a copy gets its real name only when it's complete, so an interrupted one never leaves a cut-off file. Undo touches only what Schnellbild itself did, never a different file that took the same name. An Undo that can't be carried out (the Trash emptied, the name taken meanwhile) says why and leaves the item where it is, in the Trash too. Inside archives nothing is changed.
 - **Other files** (anything that isn't a picture, video or archive) are listed under the grid: rename, trash or drag them like tiles; a double click opens documents (text, PDF, office, audio) in their app, but never apps, scripts, installers, disk images or web pages.
 - Reveal in Finder, open with the default app, move to the Trash, or drag tiles to the Finder.
 
 | Key | Action |
 |---|---|
-| F2 | rename the selected folder or file, also in the full view |
-| ⇧⌘N | new folder: type its name, ↩ creates it, Esc creates none |
-| ⇧⌘R | reveal in Finder |
-| ⌘↩ | open with the default app |
-| ⌘⌫ | move to Trash |
-| ⌘Z / ⇧⌘Z | undo / redo renaming, trashing, moving, copying, a new folder |
+| <kbd>F2</kbd> | rename the selected folder or file, also in the full view |
+| <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>N</kbd> | new folder: type its name, ↩ creates it, Esc creates none |
+| <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>R</kbd> | reveal in Finder |
+| <kbd>⌘</kbd> + <kbd>↩</kbd> | open with the default app |
+| <kbd>⌘</kbd> + <kbd>⌫</kbd> | move to Trash |
+| <kbd>⌘</kbd> + <kbd>Z</kbd> / <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>Z</kbd> | undo / redo renaming, trashing, moving, copying, a new folder |
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.webp">
@@ -354,26 +354,26 @@ A file whose extension names another format than its content (a recording named 
 **Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers:
 
 - **Two browsers side by side,** each with its own folder, search, history and sort order. The outlined one gets the keys, `Tab` switches. Drag the line between them to share the room differently (double-click: half and half).
-- **Mark** with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, `M` marks and moves on, Esc none).
-- **Copy or move across:** ⇧⌘C (or `F5`) copies, ⇧⌘M (or `F6`) moves the marked items into the other half's folder. Or drag them over: onto a folder tile, or anywhere else in that half for the folder it shows.
+- **Mark** with ⌘-click, ⇧-click or ⇧-arrows (<kbd>⌘</kbd> + <kbd>A</kbd> all, `M` marks and moves on, Esc none).
+- **Copy or move across:** <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>C</kbd> (or `F5`) copies, <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>M</kbd> (or `F6`) moves the marked items into the other half's folder. Or drag them over: onto a folder tile, or anywhere else in that half for the folder it shows.
 - **A folder's right-click menu** opens it in the other half. `D` again goes back to one pane.
 
 **Use your old Norton Commander muscle memory:** the function keys work as they did there, as a second way next to the Mac shortcuts.
 
 | Key | Norton Commander | Here |
 |---|---|---|
-| F1 | Help | help |
-| F3 | View | open the picture, video or folder (also Space) |
-| F4 | Edit | open with the default app (also ⌘↩) |
-| F5 | Copy | copy the marked items into the other pane (also ⇧⌘C) |
-| F6 | RenMov | move them into the other pane (also ⇧⌘M); rename in a single pane (⇧F6 always renames, also F2) |
-| F7 | Mkdir | new folder (also ⇧⌘N) |
-| F8 | Delete | move the marked items to the Trash, after asking (in the grid; ⌘⌫ also in the full view) |
-| F9 | PullDn | the menus, in the window |
-| F10 | Quit | quit, after asking (also ⌘Q) |
-| Tab / Insert / ⌃O | | switch pane / mark and move on (also M) / dual pane on and off |
+| <kbd>F1</kbd> | Help | help |
+| <kbd>F3</kbd> | View | open the picture, video or folder (also Space) |
+| <kbd>F4</kbd> | Edit | open with the default app (also <kbd>⌘</kbd> + <kbd>↩</kbd>) |
+| <kbd>F5</kbd> | Copy | copy the marked items into the other pane (also <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>C</kbd>) |
+| <kbd>F6</kbd> | RenMov | move them into the other pane (also <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>M</kbd>); rename in a single pane (<kbd>⇧</kbd> + <kbd>F6</kbd> always renames, also F2) |
+| <kbd>F7</kbd> | Mkdir | new folder (also <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>N</kbd>) |
+| <kbd>F8</kbd> | Delete | move the marked items to the Trash, after asking (in the grid; <kbd>⌘</kbd> + <kbd>⌫</kbd> also in the full view) |
+| <kbd>F9</kbd> | PullDn | the menus, in the window |
+| <kbd>F10</kbd> | Quit | quit, after asking (also <kbd>⌘</kbd> + <kbd>Q</kbd>) |
+| <kbd>Tab</kbd> / <kbd>Insert</kbd> / <kbd>⌃</kbd> + <kbd>O</kbd> | | switch pane / mark and move on (also M) / dual pane on and off |
 
-Norton's F2 opened its user menu; here F2 renames, as in Windows (Return renames too, as in the Finder). On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard; every one of them also has a Mac key (⇧⌘C, ⇧⌘M, M, ⇧⌘N, ⌘↩, ⌘⌫, F2's Return).
+Norton's F2 opened its user menu; here F2 renames, as in Windows (Return renames too, as in the Finder). On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard; every one of them also has a Mac key (<kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>C</kbd>, <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>M</kbd>, M, <kbd>⇧</kbd> + <kbd>⌘</kbd> + <kbd>N</kbd>, <kbd>⌘</kbd> + <kbd>↩</kbd>, <kbd>⌘</kbd> + <kbd>⌫</kbd>, F2's Return).
 
 ### Archives as folders
 
@@ -410,7 +410,7 @@ ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: b
   <img src="docs/screenshots/help-light.webp" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
-F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, the Atlas and its tour, a picture, a PDF, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
+F1 (or <kbd>⌘</kbd> + <kbd>?</kbd>) shows a cheat sheet of the keys; Print… (<kbd>⌘</kbd> + <kbd>P</kbd>) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, the Atlas and its tour, a picture, a PDF, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.webp">
@@ -421,9 +421,9 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
 
 Every action that has a key can get other keys, or more than one, in Settings → Keyboard (free, like everything else). The actions are grouped as in the cheat sheet, and the search field finds one by its name or its key (“rename”, “⌘R”, “cmd shift r”); click a key and type the new one, `+` adds another, a right-click removes one. A key another action already has moves over after asking, and that action loses it. Each action can go back to its preset's keys, or all at once.
 
-Two presets give every action its keys: **Schnellbild** (the keys in these tables) and **As in Phiewer**, for people coming from Phiewer: ← → page through pictures and videos while ⌘← ⌘→ skip within a video, ⌫ moves to the Trash, ⌘R renames, ⌥⌘L switches between grid and list, ⌥⌘S starts and ends the slideshow. Only what Schnellbild has gets Phiewer's key; everything else keeps Schnellbild's. The actions whose keys differ from Schnellbild's are marked and can be listed on their own.
+Two presets give every action its keys: **Schnellbild** (the keys in these tables) and **As in Phiewer**, for people coming from Phiewer: <kbd>◀</kbd> / <kbd>▶</kbd> page through pictures and videos while <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> skip within a video, ⌫ moves to the Trash, <kbd>⌘</kbd> + <kbd>R</kbd> renames, <kbd>⌥</kbd> + <kbd>⌘</kbd> + <kbd>L</kbd> switches between grid and list, <kbd>⌥</kbd> + <kbd>⌘</kbd> + <kbd>S</kbd> starts and ends the slideshow. Only what Schnellbild has gets Phiewer's key; everything else keeps Schnellbild's. The actions whose keys differ from Schnellbild's are marked and can be listed on their own.
 
-The cheat sheet (also printed), the mini keyboard, the menus, the tooltips and the keys on the buttons always show the keys as set. Keys macOS keeps for itself (⌘Q, ⌘W, ⌘H, ⌘M, ⌘,, ⌃⌘F …) and those text fields need (⌘C, ⌘V, ⌘X, ⌘Z) can't be given to an action.
+The cheat sheet (also printed), the mini keyboard, the menus, the tooltips and the keys on the buttons always show the keys as set. Keys macOS keeps for itself (<kbd>⌘</kbd> + <kbd>Q</kbd>, <kbd>⌘</kbd> + <kbd>W</kbd>, <kbd>⌘</kbd> + <kbd>H</kbd>, <kbd>⌘</kbd> + <kbd>M</kbd>, <kbd>⌘</kbd> + <kbd>,</kbd>, <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>F</kbd> …) and those text fields need (<kbd>⌘</kbd> + <kbd>C</kbd>, <kbd>⌘</kbd> + <kbd>V</kbd>, <kbd>⌘</kbd> + <kbd>X</kbd>, <kbd>⌘</kbd> + <kbd>Z</kbd>) can't be given to an action.
 
 ### Settings
 
@@ -432,7 +432,7 @@ The cheat sheet (also printed), the mini keyboard, the menus, the tooltips and t
   <img src="docs/screenshots/settings-light.webp" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has two tabs. Keyboard holds [your own keys](#your-own-keys). General has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width, the keys. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (<kbd>⌘</kbd> + <kbd>,</kbd>) has two tabs. Keyboard holds [your own keys](#your-own-keys). General has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width, the keys. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 
@@ -521,7 +521,7 @@ Three programs were the models for Schnellbild: Phiewer for browsing pictures by
 
 ## A free IINA alternative for looking through videos
 
-[IINA](https://iina.io/) is a free and open-source media player for the Mac, and the model for how Schnellbild handles videos: several keys are the same (Space plays and pauses, ← → skip, ↑ ↓ set the volume, ⌘← ⌘→ go to the previous or next file). IINA is made for watching, with subtitle files, chapters, Picture in Picture, a music mode and plugins. Schnellbild is for people who keep photos and videos together in folders and want to browse, sort and play them in one app. IINA's side is what its [website](https://iina.io/), its [README](https://github.com/iina/iina#features) and its default key bindings list (as of November 2026); "not listed" means they don't mention it.
+[IINA](https://iina.io/) is a free and open-source media player for the Mac, and the model for how Schnellbild handles videos: several keys are the same (Space plays and pauses, <kbd>◀</kbd> / <kbd>▶</kbd> skip, <kbd>▲</kbd> / <kbd>▼</kbd> set the volume, <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> go to the previous or next file). IINA is made for watching, with subtitle files, chapters, Picture in Picture, a music mode and plugins. Schnellbild is for people who keep photos and videos together in folders and want to browse, sort and play them in one app. IINA's side is what its [website](https://iina.io/), its [README](https://github.com/iina/iina#features) and its default key bindings list (as of November 2026); "not listed" means they don't mention it.
 
 | | Schnellbild | IINA |
 |---|---|---|
@@ -530,7 +530,7 @@ Three programs were the models for Schnellbild: Phiewer for browsing pictures by
 | Engine | AVKit, VLC for what macOS can't play | mpv |
 | Photos and videos in one grid, folders, search | yes | not listed (playlists, playback history) |
 | Videos inside ZIP, RAR and 7z archives | yes, streamed without unpacking | not listed |
-| ← → | a tenth of the video, with ⇧ a hundredth, then on to the next file | 5 seconds |
+| <kbd>◀</kbd> / <kbd>▶</kbd> | a tenth of the video, with <kbd>⇧</kbd> a hundredth, then on to the next file | 5 seconds |
 | Slideshow through photos and videos | yes | not listed |
 | Two panes side by side to sort into folders | yes | no |
 | Auto enhance and sliders for videos | yes | video and audio filters |

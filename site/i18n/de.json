@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Groß ansehen, mit den Tasten blättern",
-      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, ← → blättern durch den Ordner. Zoomen mit dem Trackpad oder + −, drehen mit ⌥← ⌥→, Vollbild mit <kbd>f</kbd>. Animierte GIFs und SVG inklusive, PDFs Seite für Seite.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>p</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
+      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, <kbd>◀</kbd> / <kbd>▶</kbd> blättern durch den Ordner. Zoomen mit dem Trackpad oder <kbd>+</kbd> / <kbd>−</kbd>, drehen mit <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, Vollbild mit <kbd>f</kbd>. Animierte GIFs und SVG inklusive, PDFs Seite für Seite.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>p</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
       "alt": "Ein Foto in der Vollansicht"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Videos, auch die, die macOS nicht abspielt",
-      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>⌘→ zum nächsten Video und ⌘← zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen ein Zehntel des Videos, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> ein Hundertstel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stellen die Lautstärke ein, für alle Videos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> zum nächsten Video und <kbd>⌘</kbd> + <kbd>◀</kbd> zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
       "alt": "Ein Video in Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Was die Datei wirklich ist",
-      "text": "<p><kbd>I</kbd> oder <kbd>⌘</kbd><kbd>I</kbd> öffnet die Datei-Info neben dem Bild: wann und wo es aufgenommen wurde, mit kleiner Karte und dem Ort in der Nähe, Kamera und Objektiv, Format, Auflösung, Codecs, Bitrate, Farbtiefe und Farbprofil, dazu jeder Metadaten-Schlüssel (EXIF, GPS, IPTC, XMP, QuickTime) zum Filtern und Kopieren. Zeit und Ort kommen auch aus XMP-Begleitdateien, den GPS-Daten einer GoPro oder DJI-Drohne, Sonys Clip-Dateien und GPX-Tracks im Ordner.</p><p>Passt die Dateiendung nicht zum Inhalt, gibt es einen Hinweis. Dateien, deren Name nichts verrät, zählen nach ihrem Inhalt, und Downloads, die noch laufen (.part, .crdownload …), zeigen, was schon angekommen ist.</p>",
+      "text": "<p><kbd>I</kbd> oder <kbd>⌘</kbd> + <kbd>I</kbd> öffnet die Datei-Info neben dem Bild: wann und wo es aufgenommen wurde, mit kleiner Karte und dem Ort in der Nähe, Kamera und Objektiv, Format, Auflösung, Codecs, Bitrate, Farbtiefe und Farbprofil, dazu jeder Metadaten-Schlüssel (EXIF, GPS, IPTC, XMP, QuickTime) zum Filtern und Kopieren. Zeit und Ort kommen auch aus XMP-Begleitdateien, den GPS-Daten einer GoPro oder DJI-Drohne, Sonys Clip-Dateien und GPX-Tracks im Ordner.</p><p>Passt die Dateiendung nicht zum Inhalt, gibt es einen Hinweis. Dateien, deren Name nichts verrät, zählen nach ihrem Inhalt, und Downloads, die noch laufen (.part, .crdownload …), zeigen, was schon angekommen ist.</p>",
       "alt": "Die Datei-Info neben einem Foto"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Hell oder dunkel, wie du willst",
-      "text": "<p>Die einen schwören auf den Dark Mode, die anderen können ihn nicht ausstehen. Also entscheidest du: Wie das System, Hell oder Dunkel, in den Einstellungen (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Die einen schwören auf den Dark Mode, die anderen können ihn nicht ausstehen. Also entscheidest du: Wie das System, Hell oder Dunkel, in den Einstellungen (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Einstellungen: Erscheinungsbild wie das System, hell oder dunkel"
     }
   ],

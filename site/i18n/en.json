@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Look at it large, page with the keys",
-      "text": "<p>Space opens a picture as large as the window allows, ← → page through the folder. Zoom in with the trackpad or + −, turn with ⌥← ⌥→, full screen with <kbd>f</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
+      "text": "<p>Space opens a picture as large as the window allows, <kbd>◀</kbd> / <kbd>▶</kbd> page through the folder. Zoom in with the trackpad or <kbd>+</kbd> / <kbd>−</kbd>, turn with <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, full screen with <kbd>f</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
       "alt": "A photo in the full view"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>⌘→ to the next video and ⌘← back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "What the file really is",
-      "text": "<p><kbd>I</kbd> or <kbd>⌘</kbd><kbd>I</kbd> opens the file info beside the picture: when and where it was taken, with a small map and the town nearby, camera and lens, format, resolution, codecs, bitrate, bit depth and colour profile, and every metadata key (EXIF, GPS, IPTC, XMP, QuickTime) to filter and copy. Times and places also come from XMP sidecars, a GoPro's or DJI drone's GPS data, Sony's clip files and GPX tracks in the folder.</p><p>A file whose extension doesn't match its content gets a note. Files whose name says nothing count by their content, and downloads still in progress (.part, .crdownload …) show as far as they have arrived.</p>",
+      "text": "<p><kbd>I</kbd> or <kbd>⌘</kbd> + <kbd>I</kbd> opens the file info beside the picture: when and where it was taken, with a small map and the town nearby, camera and lens, format, resolution, codecs, bitrate, bit depth and colour profile, and every metadata key (EXIF, GPS, IPTC, XMP, QuickTime) to filter and copy. Times and places also come from XMP sidecars, a GoPro's or DJI drone's GPS data, Sony's clip files and GPX tracks in the folder.</p><p>A file whose extension doesn't match its content gets a note. Files whose name says nothing count by their content, and downloads still in progress (.part, .crdownload …) show as far as they have arrived.</p>",
       "alt": "The file info next to a photo"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Light or dark, your choice",
-      "text": "<p>Some swear by dark mode, others can't stand it. So you decide: Same as System, Light or Dark, in Settings (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Some swear by dark mode, others can't stand it. So you decide: Same as System, Light or Dark, in Settings (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Settings: appearance as the system, light or dark"
     }
   ],

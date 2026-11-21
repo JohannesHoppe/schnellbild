@@ -607,7 +607,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: til nærmeste objekt på kartet i den retningen; ned i stripen med objekter uten sted";
 "Atlas: zoom the map in / out" = "Atlas: zoom kartet inn / ut";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flere objekter zoom inn til de skilles; på ett åpne det";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: på objekter fra samme sted det neste (også → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: på objekter fra samme sted det neste (også %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Dra over eller flytt et håndtak: bare den tiden på kartet; klikk: objektet tatt nærmest det tidspunktet";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Tur: stedene i tidsrekkefølge, i fullskjerm, ruten tegnet på kartet";
 "arrows" = "piler";
@@ -651,7 +651,7 @@
 "Public domain" = "Fri for opphavsrett";
 "No endorsement by NASA is implied." = "Det innebærer ingen godkjenning fra NASA.";
 "NASA's media usage guidelines" = "NASAs retningslinjer for bruk av medier";
-"⌘F searches the license texts." = "⌘F søker i lisenstekstene.";
+"⌘ + F searches the license texts." = "⌘ + F søker i lisenstekstene.";
 "License texts" = "Lisenstekster";
 "Tilt the view" = "Vipp visningen";
 "Look straight down" = "Se rett ned";

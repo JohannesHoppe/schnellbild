@@ -194,7 +194,9 @@ struct ShortcutsSettingsView: View {
                 recordingCap
             } else {
                 Button { startRecording(Recording(action: action, replacing: chord)) } label: {
-                    cap(Text(verbatim: chord.text), highlighted: false)
+                    // A cap per key, joined by "+"
+                    KeyCapsView(chord.caps, style: KeyCapStyle(size: 12, minWidth: 22, minHeight: 20, padding: 4))
+                        .fixedSize()
                 }
                 .buttonStyle(.plain)
                 .help("Click to type another key")
