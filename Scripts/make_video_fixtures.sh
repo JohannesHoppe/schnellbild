@@ -129,8 +129,11 @@ make clip.m2t  -c:v mpeg2video -q:v 8 -f mpegts
 make clip.m1v  -c:v mpeg1video -q:v 8 -f mpeg1video
 make clip.rm   -c:v rv20 -q:v 8 -f rm
 make clip.mxf  -c:v mpeg2video -q:v 8 -pix_fmt yuv422p -f mxf
-# RealMedia's variable-bitrate name: the same file
+# RealMedia's variable-bitrate name, and the MP4 files of 360° cameras
+# (Insta360 ".insv", GoPro MAX ".360"): the same files
 cp "$OUT/clip.rm" "$OUT/clip.rmvb"
+cp "$OUT/clip.mp4" "$OUT/clip.insv"
+cp "$OUT/clip.mp4" "$OUT/clip.360"
 # DV is always full PAL size: three pictures only
 "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -frames:v 3 -an -vf scale=720:576,setsar=16/15 -r 25 -c:v dvvideo -pix_fmt yuv420p -f dv "$OUT/clip.dv"
 

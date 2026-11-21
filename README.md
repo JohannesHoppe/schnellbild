@@ -456,7 +456,7 @@ Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile
 | What macOS plays | MP4, MOV (`.mov`, `.qt`), M4V, 3GP / 3G2 | AVKit |
 | Everything else | MKV, WebM, AVI and DivX (`.avi`, `.divx`), WMV / ASF, FLV and F4V, Ogg video (`.ogv`, `.ogm`), MPEG (`.mpg`, `.mpeg`, `.m1v`, `.m2v`), DVD video (`.vob`), AVCHD (`.mts`, `.m2ts`), MPEG transport streams (`.ts`, `.m2t`), DV, RealMedia (`.rm`, `.rmvb`), MXF | VLC, built in |
 
-A `.ts` file counts as a video when its content is an MPEG transport stream (a TV or IPTV recording); TypeScript code, which uses the same ending, stays among the other files. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
+The MP4 files of 360° cameras (Insta360 `.insv`, GoPro MAX `.360`) play as recorded, not stitched into a panorama. A `.ts` file counts as a video when its content is an MPEG transport stream (a TV or IPTV recording); TypeScript code, which uses the same ending, stays among the other files. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
 
 **Archives** (opened like folders, see [Archives as folders](#archives-as-folders)): ZIP and comic books (`.zip`, `.cbz`), RAR (`.rar`, `.cbr`, all versions, also in volumes `.part1.rar` … and `.rar` / `.r00` …), 7z (`.7z`, `.cb7`), and archives split by bytes (`.zip.001`, `.7z.001`) or as ZIP volumes (`.z01` …).
 

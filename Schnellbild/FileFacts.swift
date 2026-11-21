@@ -107,7 +107,7 @@ struct FileFacts: Equatable, Sendable {
         case "mp4":
             let quickTime = b.count >= 12 && String(decoding: b[8..<12], as: UTF8.self) == "qt  "
             return Container(name: quickTime ? "QuickTime" : "MPEG-4",
-                             extensions: quickTime ? ["mov", "qt", "mp4", "m4v"] : ["mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v"])
+                             extensions: quickTime ? ["mov", "qt", "mp4", "m4v"] : ["mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v", "insv", "360"])
         case "avi":      return Container(name: "AVI", extensions: ["avi", "divx"])
         case "ps":       return Container(name: "MPEG-PS", extensions: ["mpg", "mpeg", "vob"])
         case "asf":      return Container(name: "ASF / WMV", extensions: ["wmv", "asf"])

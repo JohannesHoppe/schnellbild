@@ -48,6 +48,8 @@ final class VideoFormatTests: XCTestCase {
     func testRM() async throws { try await assertFrame("rm") }
     func testRMVB() async throws { try await assertFrame("rmvb") }
     func testMXF() async throws { try await assertFrame("mxf") }
+    func testINSV() async throws { try await assertFrame("insv") }
+    func test360() async throws { try await assertFrame("360") }
 
     /// RealMedia and MXF go to FFmpeg held to their one format, by their
     /// first bytes also under another name.

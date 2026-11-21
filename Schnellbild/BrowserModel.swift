@@ -1811,7 +1811,7 @@ final class BrowserModel: ObservableObject {
         "ori", "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq", "dxo"
     ]
     nonisolated static let videoExtensions: Set<String> = [
-        "mp4", "mov", "qt", "m4v", "f4v", "avi", "divx", "mkv", "webm", "m2ts", "mts", "m2t",
+        "mp4", "mov", "qt", "m4v", "f4v", "insv", "360", "avi", "divx", "mkv", "webm", "m2ts", "mts", "m2t",
         "mpg", "mpeg", "m2v", "m1v", "vob", "3gp", "3g2", "dv", "wmv", "asf", "flv", "ogv", "ogm",
         "rm", "rmvb", "mxf"
         // (".ts" by its content: `isTransportStream`)

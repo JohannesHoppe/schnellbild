@@ -324,7 +324,8 @@ public enum VLCSafety {
         switch ext.lowercased() {
         case "mkv", "webm":                                  return ("mkv", nil)
         case "avi", "divx":                                  return ("avi", nil)
-        case "mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v": return ("mp4", nil)
+        // Insta360's ".insv" and GoPro MAX's ".360" are MP4 files
+        case "mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v", "insv", "360": return ("mp4", nil)
         case "mpg", "mpeg", "vob":                           return ("ps", nil)
         case "ts", "m2ts", "mts", "m2t":                     return ("ts", nil)
         case "m2v", "m1v":                                   return ("mpgv", nil)   // an MPEG video stream on its own
