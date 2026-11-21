@@ -2,7 +2,8 @@
 """The website's moving video: the sample video (Scripts/make_sample_media.swift)
 as an animated WebP that docs/site.css lays over the video in the still
 screenshots video-light[-<lang>].webp / video-dark[-<lang>].webp, with the
-control bar's position and times moving along. One animation per theme serves
+control bar's position and times and the badge's line and time left moving
+along. One animation per theme serves
 every language: the video has no words, the bar none but its times, and the
 window's layout is the same in all of them.
 
@@ -34,8 +35,12 @@ pixel for pixel: the bar's flat ground and the slider's track from the
 English still (its filled and its empty part, column by column), the knob
 cut out of it, placed where the slider puts it for the frame's moment (a
 line fitted through the knob in the bartime pictures), and the two times
-from the bartime picture of that second. The bar's ground is one flat colour
-in every still (checked), so what is drawn meets the still around it.
+from the bartime picture of that second. The badge's line and time left the
+same way: the line filled up to where a line through the bartime pictures'
+ends of the filled part puts it, the time from the bartime picture. The
+bar's and the badge's ground is one flat colour around these parts in every
+still and bartime picture (checked), so what is drawn meets the still
+around it.
 """
 import json
 import subprocess
@@ -43,16 +48,16 @@ import sys
 import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageStat
+from PIL import Image, ImageChops, ImageFilter, ImageStat
 
 ROOT = Path(__file__).resolve().parent.parent
 SHOTS = ROOT / "docs" / "screenshots"
 GEOMETRY = ROOT / "site" / "video-motion.json"
 VIDEO_NAME = "Sunset Timelapse.mp4"
-FPS = 15
+FPS = 10
 SECONDS = 6        # the sample video's length: the bartime pictures cover each second
 THEMES = ("light", "dark")
-WIDTHS = {960: 80, 480: 82}  # width: WebP quality
+WIDTHS = {960: 90, 480: 90}  # width: WebP quality (lower ones leave blocks in the sky)
 DIFFERS = 40       # a pixel differing this much from the frame is the app's, not the video's
 PAD = 2            # around each hole
 MARGIN = 3         # around the bar's part drawn here
@@ -93,12 +98,12 @@ def video_area(still):
     return left, top, right - left, bottom - top
 
 
-def frames(video, width, height, gamma, folder):
+def frames(video, width, height, folder):
+    """Every frame of the video, as ffmpeg decodes it."""
     folder.mkdir(parents=True, exist_ok=True)
-    curves = ":".join(f"{c}='255*pow(val/255\\,{g})'" for c, g in zip("rgb", gamma))
     run("ffmpeg", "-v", "error", "-y", "-i", str(video), "-vf",
-        f"scale={width}:{height}:in_color_matrix=bt601:in_range=tv:flags=lanczos,format=rgb24,"
-        f"lutrgb={curves},fps={FPS}", str(folder / "%03d.png"))
+        f"scale={width}:{height}:in_color_matrix=bt601:in_range=tv:flags=lanczos,format=rgb24",
+        str(folder / "%03d.png"))
     return sorted(folder.glob("*.png"))
 
 
@@ -129,15 +134,26 @@ def fit_gamma(still, frame, h):
 
 def holes(still, frame, w, h):
     """The rectangles where the still differs from the video: the badge at
-    the top, the control bar at the bottom."""
+    the top, the control bar at the bottom (solid areas: what is thinner than
+    5 px, the water's glitter caught a frame apart, is left out); and, apart
+    from them, rows along the top or the bottom edge that differ across the
+    whole width (a line the window draws over the video's edge)."""
     mask = ImageChops.difference(still, frame).convert("L").point(lambda v: 255 if v > DIFFERS else 0)
+    edges = []
+    for rows in (range(0, 3), range(h - 1, h - 4, -1)):
+        lined = [r for r in rows if sum(mask.getpixel((x, r)) > 0 for x in range(w)) > 0.9 * w]
+        for r in lined:
+            mask.paste(0, (0, r, w, r + 1))
+            edges.append([0, r, w, r + 1])
+    solid = mask.filter(ImageFilter.MinFilter(5))
     found = []
     for y0, y1 in ((0, h // 3), (h * 2 // 3, h)):
-        box = mask.crop((0, y0, w, y1)).getbbox()
+        box = solid.crop((0, y0, w, y1)).getbbox()
         if box:
-            found.append([max(box[0] - PAD, 0), max(box[1] + y0 - PAD, 0),
-                          min(box[2] + PAD, w), min(box[3] + y0 + PAD, h)])
-    return found
+            grow = 2 + PAD   # what the filter took off each side, and the pad
+            found.append([max(box[0] - grow, 0), max(box[1] + y0 - grow, 0),
+                          min(box[2] + grow, w), min(box[3] + y0 + grow, h)])
+    return found, edges
 
 
 def union(boxes):
@@ -269,13 +285,7 @@ def bar_frames(still, bartimes, box):
             sys.exit(f"bartime-{second}: the slider lies elsewhere than in the still")
         points.append(((second - 0.5) / SECONDS, slider.centre))
         times[second] = (picture.crop((x0, y0, ref.left - 1, y1)), picture.crop((ref.right + 2, y0, x1, y1)))
-    n = len(points)
-    mp, mc = sum(p for p, _ in points) / n, sum(c for _, c in points) / n
-    slope = sum((p - mp) * (c - mc) for p, c in points) / sum((p - mp) ** 2 for p, _ in points)
-    offset = mc - slope * mp
-    fit = max(abs(offset + slope * p - c) for p, c in points)
-    if fit > 1:
-        sys.exit(f"the knob's places don't lie on a line ({fit:.1f} px off)")
+    offset, slope = line(points, "the knob's places")
 
     def draw(t):
         """The part at the video's time t (seconds, never a whole one)."""
@@ -297,6 +307,112 @@ def bar_frames(still, bartimes, box):
     return draw, worst
 
 
+class Line:
+    """The badge's progress line and the time left after it, read from one
+    picture of the badge (a crop of its hole): the ground's colour, the line's
+    rows and ends, where its filled part ends, and the time's columns."""
+
+    def __init__(self, badge):
+        self.badge = badge
+        px = badge.load()
+        w, h = badge.size
+        self.ground = max(badge.getcolors(w * h), key=lambda c: c[0])[1]
+
+        def run_at(y):
+            """The longest run of columns other than the ground on row y with
+            the ground on both sides (inside the badge)."""
+            best, start = (0, 0), None
+            for x in range(w + 1):
+                drawn = x < w and px[x, y] != self.ground
+                if drawn and start is None:
+                    start = x
+                if not drawn and start is not None:
+                    if start > 0 and x < w:
+                        best = max(best, (x - start, start))
+                    start = None
+            return best
+        rows = [y for y in range(h) if run_at(y)[0] > w // 2]
+        if not rows:
+            raise ValueError("no progress line in the badge")
+        self.track = (rows[0], rows[-1] + 1)
+        y = self.row = (rows[0] + rows[-1]) // 2
+        length, self.left = run_at(y)
+        self.right = self.left + length - 1
+        filled = px[self.left + 3, y]
+        self.boundary = next(x for x in range(self.left + 3, self.right) if px[x, y] != filled)
+        near = range(max(self.track[0] - 8, 0), min(self.track[1] + 8, h))
+        columns = [x for x in range(self.right + 2, w) if any(px[x, r] != self.ground for r in near)]
+        self.time = [columns[0], columns[0]]
+        for x in columns:
+            if x - self.time[1] > 3:
+                break
+            self.time[1] = x + 1
+
+    def region(self):
+        """The line and the time with a margin, the rows of anything drawn in those columns."""
+        px = self.badge.load()
+        x0, x1 = self.left - MARGIN, self.time[1] + MARGIN
+        near = range(max(self.track[0] - 8, 0), min(self.track[1] + 8, self.badge.height))
+        rows = [y for y in near if any(px[x, y] != self.ground for x in range(x0, x1))]
+        return [x0, rows[0] - MARGIN, x1, rows[-1] + 1 + MARGIN]
+
+
+def line(points, what):
+    """The straight line through (position, x) points: offset and slope."""
+    n = len(points)
+    mp, mc = sum(p for p, _ in points) / n, sum(c for _, c in points) / n
+    slope = sum((p - mp) * (c - mc) for p, c in points) / sum((p - mp) ** 2 for p, _ in points)
+    offset = mc - slope * mp
+    fit = max(abs(offset + slope * p - c) for p, c in points)
+    if fit > 1:
+        sys.exit(f"{what} don't lie on a line ({fit:.1f} px off)")
+    return offset, slope
+
+
+def badge_frames(still, bartimes, box):
+    """As bar_frames for the badge's progress line and time left: the line
+    filled up to where the bartime pictures say, the time of that second."""
+    ref = Line(still)
+    x0, y0, x1, y1 = box
+    ground = Image.new("RGB", (x1 - x0, y1 - y0), ref.ground)
+    filled = still.crop((ref.left + 3, y0, ref.left + 4, y1))
+    empty = still.crop((ref.right - 3, y0, ref.right - 2, y1))
+    cap_left = still.crop((ref.left, y0, ref.left + 2, y1))
+    cap_right = still.crop((ref.right - 1, y0, ref.right + 1, y1))
+    # the filled part is a capsule of its own: its rounded end goes along with it
+    end = still.crop((ref.boundary - 3, y0, ref.boundary, y1))
+
+    def track(boundary):
+        image = ground.copy()
+        for x in range(ref.left, ref.right + 1):
+            image.paste(filled if x < boundary else empty, (x - x0, 0))
+        image.paste(cap_left, (ref.left - x0, 0))
+        image.paste(cap_right, (ref.right - 1 - x0, 0))
+        if boundary - 3 >= ref.left + 2:
+            image.paste(end, (boundary - 3 - x0, 0))
+        return image
+
+    points, times = [], {}
+    for second, picture in bartimes.items():
+        found = Line(picture)
+        if (found.left, found.right, found.track) != (ref.left, ref.right, ref.track):
+            sys.exit(f"bartime-{second}: the badge's line lies elsewhere than in the still")
+        points.append(((second - 0.5) / SECONDS, found.boundary))
+        times[second] = picture.crop((ref.right + 2, y0, x1, y1))
+    offset, slope = line(points, "the ends of the badge's filled line")
+
+    def draw(t):
+        image = track(round(offset + slope * t / SECONDS))
+        image.paste(times[int(t) + 1], (ref.right + 2 - x0, 0))
+        return image
+
+    actual = still.crop((x0, y0, x1, y1))
+    keep = (0, 0, ref.right + 2 - x0, y1 - y0)
+    check = track(ref.boundary)
+    worst = max(ImageStat.Stat(ImageChops.difference(check.crop(keep), actual.crop(keep))).extrema, key=lambda e: e[1])[1]
+    return draw, worst
+
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -313,58 +429,69 @@ def main():
                 sys.exit(f"{path.name}: the video lies elsewhere than in {all_stills[0].name}")
 
         # Colours: the curve that matches the first still, from a plain decode
-        plain = frames(video, w, h, (1, 1, 1), tmp / "plain")
+        plain = frames(video, w, h, tmp / "plain")
         decoded = [Image.open(p).convert("RGB") for p in plain]
         crop = lambda p: Image.open(p).convert("RGB").crop((x, y, x + w, y + h))
         reference = crop(all_stills[0])
         gamma = fit_gamma(reference, closest(reference, decoded, h), h)
         decoded = [f.point(sum((curve(g) for g in gamma), [])) for f in decoded]
 
-        boxes, worst = [], 0.0
+        boxes, lines, worst = [], [], 0.0
         for path in all_stills:
             still = crop(path)
             frame = closest(still, decoded, h)
             worst = max(worst, max(ImageStat.Stat(ImageChops.difference(middle(still, h), middle(frame, h))).mean))
-            boxes += holes(still, frame, w, h)
+            found, edges = holes(still, frame, w, h)
+            boxes += found
+            lines += [e for e in edges if e not in lines]
         cut = union(boxes)
-        print(f"video at {x},{y} {w}x{h}; gamma {gamma}; holes {cut}; largest mean difference {worst:.1f}")
+        print(f"video at {x},{y} {w}x{h}; gamma {gamma}; holes {cut}, lines {lines}; largest mean difference {worst:.1f}")
 
-        # The bar's hole (the lower one) and the part of it drawn here, the same in every still of a theme
-        bar_hole = max(cut, key=lambda b: b[1])
-        bx, by = bar_hole[0], bar_hole[1]
-        bar_of = lambda image: image.crop((bar_hole[0], bar_hole[1], bar_hole[2], bar_hole[3]))
-        bars = {path: bar_of(crop(path)) for path in all_stills}
-        regions = [Slider(bar).region() for bar in bars.values()]
-        drawn = [min(r[0] for r in regions), min(r[1] for r in regions), max(r[2] for r in regions), max(r[3] for r in regions)]
-        if max(r[2] - r[0] for r in regions) != min(r[2] - r[0] for r in regions):
-            sys.exit(f"the control bar's slider and times aren't equally wide in every still: {regions}")
-        for path, bar in bars.items():
-            region = bar.crop(drawn)
-            edge = [region.getpixel((i, j)) for i in range(region.width) for j in (0, region.height - 1)]
-            edge += [region.getpixel((i, j)) for j in range(region.height) for i in (0, region.width - 1)]
-            if len(set(edge)) != 1:
-                sys.exit(f"{path.name}: the control bar's ground isn't one colour around its slider and times")
+        # The parts drawn here: the control bar's slider and times in its hole (the
+        # lower one), the badge's line and time left in its hole; each in the same
+        # place in every still and bartime picture, on one flat ground there
+        parts = []
+        for hole, reader, frames_of, what in ((max(cut, key=lambda b: b[1]), Slider, bar_frames, "control bar's slider and times"),
+                                             (min(cut, key=lambda b: b[1]), Line, badge_frames, "badge's line and time left")):
+            of = lambda image, hole=hole: image.crop(tuple(hole))
+            pictures = {path: of(crop(path)) for path in all_stills + sorted(folder.glob("bartime-*.png"))}
+            regions = [reader(picture).region() for picture in pictures.values()]
+            box = [min(r[0] for r in regions), min(r[1] for r in regions), max(r[2] for r in regions), max(r[3] for r in regions)]
+            for path, picture in pictures.items():
+                region = picture.crop(box)
+                edge = [region.getpixel((i, j)) for i in range(region.width) for j in (0, region.height - 1)]
+                edge += [region.getpixel((i, j)) for j in range(region.height) for i in (0, region.width - 1)]
+                if len(set(edge)) != 1:
+                    sys.exit(f"{path.name}: the ground isn't one colour around the {what}")
+            parts.append((hole, of, box, frames_of, what))
 
         # Each frame at its moment (half a frame on, so a time is never a whole second)
+        # (every frame for the stills above, which show any of them; FPS of them here)
+        step = round(len(decoded) / (SECONDS * FPS))
+        decoded = decoded[::step]
         moments = [(i + 0.5) / FPS for i in range(len(decoded))]
         if moments[-1] >= SECONDS:
             sys.exit(f"the video lasts longer than {SECONDS} s")
         files = {}
         for theme in THEMES:
-            still = bar_of(crop(SHOTS / f"video-{theme}.webp"))
-            bartimes = {}
+            paths = []
             for second in range(1, SECONDS + 1):
                 path = folder / f"bartime-{second}-{theme}.png"
                 if not path.exists():
                     sys.exit(f"{path} is missing (screenshots.yml's English pictures)")
-                bartimes[second] = bar_of(crop(path))
-            draw, off = bar_frames(still, bartimes, drawn)
-            print(f"{theme}: the still's slider drawn again differs by at most {off}")
+                paths.append(path)
+            drawers = []
+            for hole, of, box, frames_of, what in parts:
+                bartimes = {second: of(crop(path)) for second, path in enumerate(paths, 1)}
+                draw, off = frames_of(of(crop(SHOTS / f"video-{theme}.webp")), bartimes, box)
+                print(f"{theme}: the still's {what} drawn again differ by at most {off} (outside the times)")
+                drawers.append((draw, (hole[0] + box[0], hole[1] + box[1])))
             composed = tmp / f"composed-{theme}"
             composed.mkdir()
             for i, (frame, t) in enumerate(zip(decoded, moments)):
                 image = frame.copy()
-                image.paste(draw(t), (bx + drawn[0], by + drawn[1]))
+                for draw, place in drawers:
+                    image.paste(draw(t), place)
                 image.save(composed / f"{i:03d}.png")
             files[theme] = {}
             for width, quality in WIDTHS.items():
@@ -387,9 +514,9 @@ def main():
             if old.name not in [n for f in files.values() for n in f.values()]:
                 old.unlink()
                 print("deleted", old.relative_to(ROOT))
-        part = [bx + drawn[0], by + drawn[1], bx + drawn[2], by + drawn[3]]
+        drawn = [[hole[0] + box[0], hole[1] + box[1], hole[0] + box[2], hole[1] + box[3]] for hole, _, box, _, _ in parts]
         GEOMETRY.write_text(json.dumps({
-            "shot": list(first.size), "area": [x, y, w, h], "holes": cut, "drawn": [part],
+            "shot": list(first.size), "area": [x, y, w, h], "holes": cut + lines, "drawn": drawn,
             "files": files}, indent=1) + "\n")
         print(f"{GEOMETRY.relative_to(ROOT)} written")
 

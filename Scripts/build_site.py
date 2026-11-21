@@ -149,6 +149,9 @@ def icon(name, size, alt="", attributes=""):
 
 
 MOTION = ROOT / "site" / "video-motion.json"
+# How far a hole's corners are cut off (video pixels): outside the badge's and the
+# bar's rounded corners (radius 10 and 12, 2 px apart from the hole's edge)
+HOLE_CORNER = 8
 
 
 def motion(name):
@@ -165,11 +168,15 @@ def motion(name):
     def pct(value, of):
         return f"{100 * value / of:.3f}".rstrip("0").rstrip(".") + "%"
     # The video's rectangle, each hole as a ring of its own and each part drawn
-    # inside a hole as one more (even-odd)
+    # inside a hole as one more (even-odd); a hole's corners cut off by
+    # HOLE_CORNER, so the video goes on moving there around the badge's and the
+    # bar's rounded corners
     ring = ["0 0", "100% 0", "100% 100%", "0 100%", "0 0"]
-    for x0, y0, x1, y1 in m["holes"] + m["drawn"]:
-        a, b, c, d = pct(x0, w), pct(y0, h), pct(x1, w), pct(y1, h)
-        ring += [f"{a} {b}", f"{c} {b}", f"{c} {d}", f"{a} {d}", f"{a} {b}", "0 0"]
+    for (x0, y0, x1, y1), k in [(box, HOLE_CORNER) for box in m["holes"]] + [(box, 0) for box in m["drawn"]]:
+        k = min(k, (x1 - x0) // 2, (y1 - y0) // 2) if x1 - x0 < w else 0
+        points = [(x0 + k, y0), (x1 - k, y0), (x1, y0 + k), (x1, y1 - k), (x1 - k, y1), (x0 + k, y1), (x0, y1 - k), (x0, y0 + k)]
+        corners = list(dict.fromkeys(points))
+        ring += [f"{pct(px, w)} {pct(py, h)}" for px, py in corners + corners[:1]] + ["0 0"]
     def srcset(theme):
         files = sorted((int(width), file) for width, file in m["files"][theme].items())
         for _, file in files:
