@@ -156,6 +156,11 @@ struct FileActions {
     /// An other file (not a picture, video or archive): only documents
     /// that hold no program, web locations only to web addresses.
     var openOtherFile: @MainActor (URL) -> Void = { if !LiveFiles.openOtherFile($0) { NSSound.beep() } }
+    /// Puts text on the general pasteboard (Copy Path).
+    var copyText: @MainActor (String) -> Void = { text in
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+    }
     /// The names of what goes; `detail` says what goes with it (a folder's
     /// contents, an archive's parts).
     var confirmTrash: @MainActor (_ names: [String], _ detail: String) -> Bool
@@ -2373,11 +2378,14 @@ final class BrowserModel: ObservableObject {
     /// code); nil when cancelled or when it gave up (not known: the folder
     /// isn't greyed out).
     nonisolated private static func anyMedia(below folder: URL, cancelled: () -> Bool) -> Bool? {
+        // The previews' walk (`folderPreviewFiles`): level by level, the same
+        // limit and the same sources, so a folder shown as holding media
+        // finds its previews too
         let walk = FolderWalk(root: folder, keys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey], limit: probeLimit(for: folder),
-                              appleDoubles: false)
+                              appleDoubles: false, breadthFirst: true)
         // An archive opens like a folder; what's in it isn't looked into
         // here (that means unpacking), so it counts as holding something
-        switch walk.run(cancelled: cancelled, { url in !((mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil) && isFile(url)) }) {
+        switch walk.run(cancelled: cancelled, { url in !isPreviewSource(url) }) {
         case .stopped: return true
         case .whole: return false
         case .cancelled, .gaveUp: return nil
@@ -2416,33 +2424,52 @@ final class BrowserModel: ObservableObject {
     /// The media files a folder tile previews: the first `previewCount` the disk
     /// lists at the folder's top (any three: listing a big folder on a
     /// network share to its end to sort it would cost far more), else the
-    /// first ones further down.
+    /// first ones further down, at the shallowest depth that has any (a
+    /// folder holding one folder holding the pictures, however deep).
     nonisolated static func folderPreviewFiles(in folder: URL) async -> [URL] {
         let limit = previewCount
         if await ArchivePath.readsFromArchive(folder) {
             // An archive: its first pictures at any depth
             return (try? await ArchiveStore.shared.pictures(below: folder, limit: limit)) ?? []
         }
-        return await FolderProbes.run { cancelled -> [URL]? in
-            func first(deep: Bool, lookingAt most: Int) -> [URL] {
+        let walked = await FolderProbes.run { cancelled -> (files: [URL], archive: URL?)? in
+            func first(deep: Bool, lookingAt most: Int) -> (files: [URL], archive: URL?) {
                 var found: [URL] = []
+                var archive: URL?
                 FolderWalk(root: folder, keys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey], deep: deep, limit: most,
-                           appleDoubles: false)
+                           appleDoubles: false, breadthFirst: true)
                     .run(cancelled: cancelled) { url in
-                        if mediaKind(of: url) != nil, isFile(url) { found.append(url) }
+                        guard isPreviewSource(url) else { return true }
+                        if mediaKind(of: url) != nil { found.append(url) } else if archive == nil { archive = url }
                         return found.count < limit
                     }
-                return found
+                return (found, archive)
             }
             // The first ones the disk lists at the top, not the first by
             // name: a big folder on a network share isn't listed to its end
             // for three pictures
             let top = first(deep: false, lookingAt: .max)
-            if !top.isEmpty { return top }
+            if !top.files.isEmpty { return top }
             // None at the top: the first ones further down, so a folder of
             // folders previews what's inside them too (a huge tree: give up, not hang)
-            return first(deep: true, lookingAt: probeLimit(for: folder))
-        } ?? []
+            let below = first(deep: true, lookingAt: probeLimit(for: folder))
+            return below.files.isEmpty ? (below.files, top.archive ?? below.archive) : below
+        }
+        guard let walked else { return [] }
+        // Media only inside archives (which `containsMedia` counts): the
+        // first archive's pictures, as its own tile shows them
+        if walked.files.isEmpty, let archive = walked.archive {
+            ArchivePath.noteArchive(archive)
+            return await folderPreviewFiles(in: archive)
+        }
+        return walked.files
+    }
+
+    /// What makes a folder hold media for its tile, for its previews and for
+    /// being greyed out alike: a picture or video file, or an archive
+    /// (opened like a folder).
+    nonisolated private static func isPreviewSource(_ url: URL) -> Bool {
+        (mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil) && isFile(url)
     }
 
     /// How many pictures a folder tile fans out.
@@ -3775,22 +3802,25 @@ final class BrowserModel: ObservableObject {
         lastKeyPress = KeyPress(key: key, command: command, shift: shift)
     }
 
-    /// Tiles, a list (L) or the Atlas (W, the map): per pane, remembered.
+    /// Tiles, a list or the Atlas (the map): per pane, remembered; L goes
+    /// from one to the next.
     enum ViewMode: String { case grid, list, atlas }
     @Published var viewMode: ViewMode = .grid {
         didSet {
             defaults.set(viewMode.rawValue, forKey: settingsPrefix + "viewMode")
             if viewMode == .list { columnCount = 1 }
-            if viewMode != .atlas, oldValue != .atlas { viewModeBeforeAtlas = viewMode }
             if viewMode == .atlas { updateDeep(); atlasFollow() } else if oldValue == .atlas { updateDeep(); atlasIfMade?.pause() }
         }
     }
-    /// What W goes back to from the Atlas.
-    private var viewModeBeforeAtlas: ViewMode = .grid
-
-    /// W: the Atlas, or back to the grid or list it came from.
-    func toggleAtlas() {
-        viewMode = viewMode == .atlas ? viewModeBeforeAtlas : .atlas
+    /// L: the next view, grid → list → Atlas → grid. The Atlas only with a
+    /// folder open (it shows the folder's places), else the list goes back
+    /// to the grid.
+    func nextViewMode() {
+        switch viewMode {
+        case .grid: viewMode = .list
+        case .list: viewMode = folderURL != nil ? .atlas : .grid
+        case .atlas: viewMode = .grid
+        }
     }
 
     /// The Atlas view's state (made when first shown).
@@ -4220,10 +4250,7 @@ final class BrowserModel: ObservableObject {
         case "e" where !command: enhance.toggle(); return true
         case "a" where !command: showAdjustments.toggle(); return true
         case "k" where !command: showMiniKeyboard.toggle(); return true
-        case "l" where !command: viewMode = viewMode == .list ? .grid : .list; return true
-        case "w" where !command:
-            guard folderURL != nil else { return false }
-            toggleAtlas(); return true
+        case "l" where !command: nextViewMode(); return true
         case "t" where !command:
             guard mode == .grid, folderURL != nil else { return false }
             startTour(); return true
@@ -4274,6 +4301,40 @@ final class BrowserModel: ObservableObject {
         guard let entry = actionableSelection else { return }
         // Inside an archive: the archive file
         fileActions.reveal(ArchivePath.isInside(entry.url) ? ArchivePath.split(entry.url)!.archive : entry.url)
+    }
+
+    // MARK: The status bar's path
+
+    /// The path the status bar shows: the folder's POSIX path, inside an
+    /// archive the path through the archive ("…/Holiday.zip/Day 1"), as the
+    /// app shows it. nil without a folder.
+    var shownPath: String? { folderURL?.path }
+
+    /// Copy Path: the path the status bar shows, as text.
+    func copyFolderPath() {
+        guard let path = shownPath else { return }
+        fileActions.copyText(path)
+    }
+
+    /// The selected item's path, for Copy Path of Selected Item (not "..",
+    /// none during a slideshow); inside an archive the path through it.
+    var selectedItemPath: String? { actionableSelection?.url.path }
+
+    func copySelectedItemPath() {
+        guard let path = selectedItemPath else { return }
+        fileActions.copyText(path)
+    }
+
+    /// Reveal in Finder for the folder shown: the folder selected in the
+    /// Finder; inside an archive the archive file; nothing at the drives' level.
+    func revealFolderInFinder() {
+        guard canRevealFolder, let folderURL else { return }
+        fileActions.reveal(ArchivePath.split(folderURL)?.archive ?? folderURL)
+    }
+
+    var canRevealFolder: Bool {
+        guard let folderURL else { return false }
+        return !Self.isDrivesLevel(folderURL)
     }
 
     // MARK: Other files (not pictures, videos or archives)

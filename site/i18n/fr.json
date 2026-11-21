@@ -73,7 +73,7 @@
     },
     {
       "title": "Vos photos sur la carte et le globe",
-      "text": "<p><kbd>W</kbd> place les photos et vidéos d’un dossier et de ses sous-dossiers là où elles ont été prises. De très loin, la carte est un globe devant le ciel étoilé, avec le jour et la nuit si vous le voulez et les villes éclairées sur sa face nocturne ; en zoomant, il s’aplatit en carte.</p><ul><li>La frise chronologique range le voyage dans le temps : faites glisser sur une période, la carte ne montre plus que celle-ci</li><li><kbd>T</kbd> lance le voyage : la carte glisse d’un lieu à l’autre, les photos s’affichent en grand, les vidéos jouent quelques secondes</li><li>La carte est dans l’app : rien ne passe par Internet, aucun lieu ne quitte votre Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> passe de la grille à la liste, puis à l’atlas. L’atlas place les photos et vidéos d’un dossier et de ses sous-dossiers là où elles ont été prises. De très loin, la carte est un globe devant le ciel étoilé, avec le jour et la nuit si vous le voulez et les villes éclairées sur sa face nocturne ; en zoomant, il s’aplatit en carte.</p><ul><li>La frise chronologique range le voyage dans le temps : faites glisser sur une période, la carte ne montre plus que celle-ci</li><li><kbd>T</kbd> lance le voyage : la carte glisse d’un lieu à l’autre, les photos s’affichent en grand, les vidéos jouent quelques secondes</li><li>La carte est dans l’app : rien ne passe par Internet, aucun lieu ne quitte votre Mac</li></ul>",
       "alt": "Les photos d’un voyage sur le globe, dans la vue Atlas"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Toutes les touches sous la main",
-      "text": "<p><kbd>F1</kbd> liste toutes les touches, à imprimer aussi ; <kbd>K</kbd> affiche un petit clavier où cliquer. Choisissez vos propres touches, ou celles de Phiewer. Grille ou liste (<kbd>L</kbd>), tri par nom, type, date, taille ou distance d’un lieu, plusieurs fenêtres, et une touche patron (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> liste toutes les touches, à imprimer aussi ; <kbd>K</kbd> affiche un petit clavier où cliquer. Choisissez vos propres touches, ou celles de Phiewer. Grille, liste ou atlas (<kbd>L</kbd>), tri par nom, type, date, taille ou distance d’un lieu, plusieurs fenêtres, et une touche patron (<kbd>X</kbd>).</p>",
       "alt": "La liste des touches (F1)"
     },
     {
@@ -122,7 +122,7 @@
   "safe": [
     [
       "Dans l’App Sandbox d’Apple.",
-      "Aucun accès réseau, aucun programme lancé de sa propre initiative, accès aux seuls dossiers que vous lui ouvrez, plus Images."
+      "Aucun accès réseau, aucun programme lancé de sa propre initiative, accès aux seuls dossiers que vous lui ouvrez, plus Images. C’est macOS qui l’impose : même si nous le voulions, nous ne pourrions pas tricher. L’app ne peut tout simplement pas accéder à Internet."
     ],
     [
       "En lecture seule.",

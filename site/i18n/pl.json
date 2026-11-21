@@ -73,7 +73,7 @@
     },
     {
       "title": "Twoje zdjęcia na mapie i na globusie",
-      "text": "<p><kbd>W</kbd> pokazuje zdjęcia i filmy z folderu i jego podfolderów w miejscach, w których powstały. Przy dużym oddaleniu mapa jest globusem na tle gwiazd, jeśli chcesz z dniem i nocą oraz światłami miast po nocnej stronie; po przybliżeniu spłaszcza się w mapę.</p><ul><li>Oś czasu układa podróż według czasu: przeciągnij po fragmencie, a mapa pokaże tylko tę część</li><li><kbd>T</kbd> odtwarza podróż: mapa płynie od miejsca do miejsca, zdjęcia pojawiają się w dużym rozmiarze, filmy grają kilka sekund</li><li>Mapa jest w aplikacji: nic nie trafia do internetu, żadna lokalizacja nie opuszcza Twojego Maca</li></ul>",
+      "text": "<p><kbd>L</kbd> przełącza z siatki na listę i dalej na atlas. Atlas pokazuje zdjęcia i filmy z folderu i jego podfolderów w miejscach, w których powstały. Przy dużym oddaleniu mapa jest globusem na tle gwiazd, jeśli chcesz z dniem i nocą oraz światłami miast po nocnej stronie; po przybliżeniu spłaszcza się w mapę.</p><ul><li>Oś czasu układa podróż według czasu: przeciągnij po fragmencie, a mapa pokaże tylko tę część</li><li><kbd>T</kbd> odtwarza podróż: mapa płynie od miejsca do miejsca, zdjęcia pojawiają się w dużym rozmiarze, filmy grają kilka sekund</li><li>Mapa jest w aplikacji: nic nie trafia do internetu, żadna lokalizacja nie opuszcza Twojego Maca</li></ul>",
       "alt": "Zdjęcia z podróży na globusie, w widoku atlasu"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Każdy klawisz pod ręką",
-      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka lub lista (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty, rozmiaru lub odległości od miejsca, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka, lista lub atlas (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty, rozmiaru lub odległości od miejsca, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
       "alt": "Lista klawiszy (F1)"
     },
     {
@@ -122,7 +122,7 @@
   "safe": [
     [
       "W App Sandbox Apple.",
-      "Zero dostępu do sieci, sam z siebie nie uruchamia żadnych programów, widzi tylko foldery, które mu otworzysz, oraz Obrazki."
+      "Zero dostępu do sieci, sam z siebie nie uruchamia żadnych programów, widzi tylko foldery, które mu otworzysz, oraz Obrazki. Pilnuje tego macOS, więc nie moglibyśmy oszukiwać, nawet gdybyśmy chcieli: aplikacja po prostu nie ma dostępu do internetu."
     ],
     [
       "Tylko odczyt.",

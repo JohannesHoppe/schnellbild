@@ -18,11 +18,11 @@ struct Uniforms {
     float4 orthoToward;  // towards the viewer
     float4 sun;          // direction to the Sun (Earth-fixed), w: lighting on
     float4 relief;       // land and ocean displacement factors, hillshade strength, w: heightmap present
-    float4 detail;       // the map's detail texture: first tile x, y, tiles around the world, w: present
+    float4 mapTiles;     // the map's tiles: x present, y the finest zoom (index level 0), z the index's levels
     float4 sky;          // sky's opacity, atmosphere's opacity, cloud amount, w: city lights present
     float4 heightTexel;  // heightmap texel (1/width, 1/height), z: dark palette, w: satellite present
-    float4 satDetail;    // the satellite detail texture's place: u, v of its top left, its width and height (in the world's 0 … 1)
-    float4 extra;        // x: satellite detail present
+    float4 satTiles;     // the satellite picture's tiles: x present, y the index's levels (level 0: 16 × 8 tiles)
+    float4 mesh;         // x: the mesh's middle longitude (degrees, whole, Earth-fixed), y: it less the centre's longitude (degrees)
     float4 northColor;   // beyond the Web Mercator square: the Arctic sea
     float4 southColor;   // and Antarctica's ice
     float4x4 starMatrix; // J2000 directions to Earth-fixed ones (the sky)
@@ -88,7 +88,7 @@ void viewRay(float2 local, constant Uniforms &u, thread float3 &origin, thread f
 // MARK: Globe
 
 struct MeshIn {
-    float2 lonLat [[attribute(0)]];   // longitude from the centre, latitude (degrees)
+    float2 lonLat [[attribute(0)]];   // longitude from the mesh's middle (whole degrees), latitude (degrees)
 };
 
 struct MeshOut {
@@ -98,48 +98,87 @@ struct MeshOut {
     float3 normal;
 };
 
-vertex MeshOut globeVertex(MeshIn in [[stage_in]], constant Uniforms &u [[buffer(1)]],
-                           texture2d<float> heights [[texture(0)]], sampler hs [[sampler(0)]]) {
-    float t = u.viewport.w;
-    float lonRel = in.lonLat.x, latDeg = in.lonLat.y;
-    float lonDeg = u.center.y * 180 / PI + lonRel;
-    float3 v = unitVector(latDeg * PI / 180, lonDeg * PI / 180);
+// A vertex of the mesh on the Earth: its direction (v), its longitude from
+// the centre, and its place raised by the relief (returned). Each vertex
+// stays on its place of the Earth (whole degrees) while the globe turns, so
+// it always samples the same height: a mesh laid out from the centre would
+// slide over the heightmap, and the mountains between its vertices would
+// rise and sink as the globe turns.
+float3 meshPoint(float2 lonLat, constant Uniforms &u, texture2d<float> heights, sampler hs, thread float3 &v, thread float &lonRel) {
+    float latDeg = lonLat.y;
+    float lonDeg = u.mesh.x + lonLat.x;
+    lonRel = lonLat.x + u.mesh.y;
+    v = unitVector(latDeg * PI / 180, lonDeg * PI / 180);
     float h = u.relief.w > 0 ? heightKm(heights, hs, latDeg, lonDeg) : 0;
     float k = h >= 0 ? u.relief.x : u.relief.y;
-    float3 p = v * (1 + h * k / 6371.0 * (1 - t));
+    return v * (1 + h * k / 6371.0 * (1 - u.viewport.w));
+}
+
+vertex MeshOut globeVertex(MeshIn in [[stage_in]], constant Uniforms &u [[buffer(1)]],
+                           texture2d<float> heights [[texture(0)]], sampler hs [[sampler(0)]]) {
+    float3 v;
+    float lonRel;
+    float3 p = meshPoint(in.lonLat, u, heights, hs, v, lonRel);
+    float latDeg = in.lonLat.y;
     MeshOut out;
     out.position = place(p, v, lonRel, latDeg, u);
-    out.lonLat = in.lonLat;
+    out.lonLat = float2(lonRel, latDeg);
     out.texY = clamp(mercatorY(latDeg), 0.0, 1.0);
     out.normal = v;
     return out;
 }
 
-// The ground's colour by day from the satellite picture (equirectangular),
-// the detail texture over the whole world's where it reaches.
+// The ground's colour by day from the satellite picture (equirectangular):
+// the finest of its tiles kept (22.5°, then 45°), else the whole world's.
 float3 satelliteColor(float ux, float latDeg, float2 gx, float2 gy, constant Uniforms &u,
-                      texture2d<float> satBase, texture2d<float> satDetail, sampler wrap, sampler clampS) {
+                      texture2d<float> satBase, texture2d_array<float> satTiles, texture2d<uint> satIndex, sampler wrap, sampler clampS) {
     float vy = (90 - latDeg) / 180;
     float2 g1 = float2(gx.x, dfdx(vy)), g2 = float2(gy.x, dfdy(vy));
-    float3 c = satBase.sample(wrap, float2(fract(ux), vy), gradient2d(g1, g2)).rgb;
-    if (u.extra.x > 0) {
-        float du = fract(ux - u.satDetail.x);
-        float dv = vy - u.satDetail.y;
-        float2 rel = float2(du / u.satDetail.z, dv / u.satDetail.w);
-        if (rel.x >= 0 && rel.x < 1 && rel.y >= 0 && rel.y < 1) {
-            float edge = min(min(rel.x, 1 - rel.x), min(rel.y, 1 - rel.y));
-            float w = smoothstep(0.0, 0.08, edge);
-            float3 d = satDetail.sample(clampS, rel, gradient2d(g1 / u.satDetail.zw, g2 / u.satDetail.zw)).rgb;
-            c = mix(c, d, w);
+    if (u.satTiles.x > 0) {
+        float x = fract(ux);
+        for (uint level = 0; level < uint(u.satTiles.y); level++) {
+            float2 n = float2(16 >> level, 8 >> level);
+            float2 p = float2(x, clamp(vy, 0.0, 0.99999)) * n;
+            uint2 tile = uint2(min(floor(p), n - 1));
+            uint slot = satIndex.read(tile, level).r;
+            if (slot > 0) {
+                return satTiles.sample(clampS, p - float2(tile), slot - 1, gradient2d(g1 * n, g2 * n)).rgb;
+            }
         }
     }
-    return c;
+    return satBase.sample(wrap, float2(fract(ux), vy), gradient2d(g1, g2)).rgb;
+}
+
+// The map's colour from its tiles kept: the zoom the pixel wants, else a
+// coarser one, else a finer one; `found` false where none is kept.
+float4 mapTileColor(float ux, float texY, float2 gx, float2 gy, constant Uniforms &u,
+                    texture2d_array<float> tiles, texture2d<uint> index, sampler s, thread bool &found) {
+    found = false;
+    if (u.mapTiles.x <= 0) return float4(0);
+    int finest = int(u.mapTiles.y), levels = int(u.mapTiles.z), coarsest = finest - levels + 1;
+    // Tiles of 512 px: the zoom at which a texel is no larger than the pixel
+    float footprint = max(max(length(gx), length(gy)), 1e-9);
+    int want = clamp(int(ceil(log2(1.0 / (512.0 * footprint)) - 0.05)), coarsest, finest);
+    float x = fract(ux), y = clamp(texY, 0.0, 0.99999);
+    for (int i = 0; i < levels; i++) {
+        int z = i <= want - coarsest ? want - i : want + (i - (want - coarsest));
+        float n = float(1 << z);
+        float2 p = float2(x, y) * n;
+        uint2 tile = uint2(min(floor(p), float2(n - 1)));
+        uint slot = index.read(tile, uint(finest - z)).r;
+        if (slot > 0) {
+            found = true;
+            return tiles.sample(s, p - float2(tile), slot - 1, gradient2d(gx * n, gy * n));
+        }
+    }
+    return float4(0);
 }
 
 fragment float4 globeFragment(MeshOut in [[stage_in]], constant Uniforms &u [[buffer(1)]],
-                              texture2d<float> base [[texture(0)]], texture2d<float> detail [[texture(1)]],
+                              texture2d<float> base [[texture(0)]], texture2d_array<float> mapTiles [[texture(1)]],
                               texture2d<float> heights [[texture(2)]], texture2d<float> lights [[texture(3)]],
-                              texture2d<float> satBase [[texture(4)]], texture2d<float> satDetail [[texture(5)]],
+                              texture2d<float> satBase [[texture(4)]], texture2d_array<float> satTiles [[texture(5)]],
+                              texture2d<uint> mapIndex [[texture(6)]], texture2d<uint> satIndex [[texture(7)]],
                               sampler baseSampler [[sampler(0)]], sampler detailSampler [[sampler(1)]],
                               sampler hs [[sampler(2)]]) {
     float t = u.viewport.w;
@@ -148,27 +187,16 @@ fragment float4 globeFragment(MeshOut in [[stage_in]], constant Uniforms &u [[bu
     float ux = (lonDeg + 180) / 360;   // unwrapped: continuous across the antimeridian
     float2 uvU = float2(ux, in.texY);
     float2 gx = dfdx(uvU), gy = dfdy(uvU);
-    float4 color = base.sample(baseSampler, float2(fract(ux), in.texY), gradient2d(gx, gy));
-    if (u.detail.w > 0) {
-        float n = u.detail.z;
-        float span = min(8.0, n);
-        float rx = ux * n - u.detail.x;
-        rx -= floor(rx / n) * n;
-        float ry = in.texY * n - u.detail.y;
-        if (rx < span && ry >= 0 && ry < span) {
-            float edge = min(min(rx, span - rx), min(ry, span - ry));
-            float w = smoothstep(0.0, 0.75, edge);
-            float4 dc = detail.sample(detailSampler, float2(rx, ry) / span, gradient2d(gx * n / span, gy * n / span));
-            color = mix(color, dc, w);
-        }
-    }
+    bool tiled;
+    float4 color = mapTileColor(ux, in.texY, gx, gy, u, mapTiles, mapIndex, detailSampler, tiled);
+    if (!tiled) color = base.sample(baseSampler, float2(fract(ux), in.texY), gradient2d(gx, gy));
     // Beyond ±85.05° the tiles end: the palette's sea in the north, ice in the south
     float polar = smoothstep(84.0, MAX_LAT, abs(latDeg));
     color.rgb = mix(color.rgb, latDeg > 0 ? u.northColor.rgb : u.southColor.rgb, polar);
     float3 rgb = color.rgb;
     // The satellite picture by day; the map's own colours take over as the globe flattens
     if (u.heightTexel.w > 0) {
-        float3 sat = satelliteColor(ux, latDeg, gx, gy, u, satBase, satDetail, baseSampler, detailSampler);
+        float3 sat = satelliteColor(ux, latDeg, gx, gy, u, satBase, satTiles, satIndex, baseSampler, detailSampler);
         rgb = mix(sat, rgb, t);
     }
     float fade = 1 - t;
@@ -237,12 +265,13 @@ struct CloudOut {
 };
 
 vertex CloudOut cloudVertex(MeshIn in [[stage_in]], constant Uniforms &u [[buffer(1)]]) {
-    float lonRel = in.lonLat.x, latDeg = in.lonLat.y;
-    float lonDeg = u.center.y * 180 / PI + lonRel;
+    float latDeg = in.lonLat.y;
+    float lonDeg = u.mesh.x + in.lonLat.x;
+    float lonRel = in.lonLat.x + u.mesh.y;
     float3 v = unitVector(latDeg * PI / 180, lonDeg * PI / 180);
     CloudOut out;
     out.position = place(v * 1.006, v, lonRel, latDeg, u);
-    out.lonLat = in.lonLat;
+    out.lonLat = float2(lonRel, latDeg);
     out.normal = v;
     return out;
 }

@@ -349,7 +349,7 @@ private struct WindowView: View {
                    let handled = window.handleTyped(chord, physical: KeyChord.physical(event), textEditing: typing, repeating: event.isARepeat) { return handled }
                 // X: the boss key (everywhere but while typing)
                 if letter == "x", !typing, !command, !control, !event.modifierFlags.contains(.option) {
-                    BossKey.engage()
+                    BossKey.press()
                     return true
                 }
                 // ⌃O: the commanders' "panels on / off" (the dual pane)
@@ -668,15 +668,11 @@ struct PaneView: View {
             }
             if model.accessLimited { accessLimitedNote }
             if path {
-                Text(model.folderURL?.path ?? "")
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-                    .truncationMode(.head)
-                    .frame(minWidth: 60, idealWidth: 60, maxWidth: .infinity, alignment: .trailing)
+                folderPath
             } else {
                 Spacer(minLength: 0)
             }
-            // Tiles, a list (L) or the Atlas (W)
+            // Tiles, a list or the Atlas (L: the next one)
             Picker("", selection: $model.viewMode) {
                 Image(systemName: "square.grid.2x2").tag(BrowserModel.ViewMode.grid)
                     .accessibilityLabel(Text("as Grid"))
@@ -688,9 +684,9 @@ struct PaneView: View {
             .pickerStyle(.segmented)
             .labelsHidden()
             .fixedSize()
-            .help(String(localized: "Grid or list (\(shortcuts.hint(.toggleList))), Atlas (\(shortcuts.hint(.toggleAtlas)))"))
+            .help(String(localized: "Next view: grid, list, Atlas (\(shortcuts.hint(.toggleList)))"))
             .accessibilityIdentifier("viewModePicker")
-            if let key = shortcuts.keys(model.viewMode == .atlas ? .toggleAtlas : .toggleList).first { KeyCap(key.capText) }
+            if let key = shortcuts.keys(.toggleList).first { KeyCap(key.capText) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {
@@ -701,6 +697,39 @@ struct PaneView: View {
             .help(String(localized: "Mini keyboard: the keys of what's on screen, clickable (\(shortcuts.hint(.miniKeyboard)))"))
             .accessibilityIdentifier("keyboardButton")
         }
+    }
+
+    /// The folder's path, cut at its start; right-click (or ⌃-click) copies
+    /// it or reveals the folder, the tooltip shows it whole. VoiceOver gets
+    /// the same items as actions.
+    private var folderPath: some View {
+        let shown = model.shownPath ?? ""
+        return Text(verbatim: shown)
+            .foregroundStyle(.tertiary)
+            .lineLimit(1)
+            .truncationMode(.head)
+            .frame(minWidth: 60, idealWidth: 60, maxWidth: .infinity, alignment: .trailing)
+            .contentShape(Rectangle())
+            .help(Text(verbatim: shown + "\n") + Text("Right-click to copy"))
+            .contextMenu { pathMenu }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Path"))
+            .accessibilityValue(Text(verbatim: shown))
+            .accessibilityAction(named: Text("Copy Path")) { model.copyFolderPath() }
+            .accessibilityAction(named: Text("Copy Path of Selected Item")) { model.copySelectedItemPath() }
+            .accessibilityAction(named: Text("Reveal in Finder")) { model.revealFolderInFinder() }
+            .accessibilityIdentifier("statusPath")
+    }
+
+    /// The path's context menu.
+    @ViewBuilder private var pathMenu: some View {
+        Button("Copy Path") { model.copyFolderPath() }
+            .disabled(model.shownPath == nil)
+        Button("Copy Path of Selected Item") { model.copySelectedItemPath() }
+            .disabled(model.selectedItemPath == nil)
+        Divider()
+        Button("Reveal in Finder") { model.revealFolderInFinder() }
+            .disabled(!model.canRevealFolder)
     }
 
     private var statusText: String { statusParts.joined(separator: " · ") }

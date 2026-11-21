@@ -81,11 +81,11 @@ struct GlobeUniforms {
     var orthoToward: SIMD4<Float>
     var sun: SIMD4<Float>
     var relief: SIMD4<Float>
-    var detail: SIMD4<Float>
+    var mapTiles: SIMD4<Float>
     var sky: SIMD4<Float>
     var heightTexel: SIMD4<Float>
-    var satDetail: SIMD4<Float>
-    var extra: SIMD4<Float>
+    var satTiles: SIMD4<Float>
+    var mesh: SIMD4<Float>
     var northColor: SIMD4<Float>
     var southColor: SIMD4<Float>
     var starMatrix: simd_float4x4
@@ -93,14 +93,15 @@ struct GlobeUniforms {
 
 /// Draws the globe with Metal: the map's own tiles (`MapRenderer`, the
 /// light or dark palette) as the sphere's texture, Web Mercator sampled
-/// directly (a world texture of zoom 3 at 2× and, from zoom 3 on, a detail
-/// texture of 8 × 8 tiles around the centre at the zoom shown), the relief
+/// directly (a world texture of zoom 3 at 2× and, where a pixel needs more,
+/// the tiles of zoom 4 … 6 the view needs, `GlobeTextures`), the relief
 /// from a heightmap (displacement in the vertex shader, hillshade in the
 /// fragment shader), day and night by the Sun, the atmosphere's rim and the
 /// night sky (`GlobeData.sky`, in right ascension and declination) turned by
 /// the sidereal time and the precession, seen through a camera of 90°
-/// along the view. The sphere is a mesh
-/// of 360 × 180 cells in longitude from the centre and latitude; each vertex
+/// along the view. The sphere is a mesh of 360 × 180 cells of a degree in
+/// longitude and latitude, its vertices on whole degrees of the Earth
+/// (`meshMiddle`); each vertex
 /// is placed on the sphere and on the flat map and blended by the
 /// projection's flatness, so the picture at `GlobeProjection.flatZoom` is the
 /// flat map's (the same tiles, no lighting or relief).
@@ -198,7 +199,7 @@ public final class GlobeRenderer: @unchecked Sendable {
         detailSampler = dts
         heightSampler = hs
 
-        // The mesh: longitudes from the centre −180 ... 180, latitudes −90 ... 90, a degree apart
+        // The mesh: longitudes −180 ... 180 from its middle (`meshMiddle`), latitudes −90 ... 90, a degree apart
         let columns = 360, rows = 180
         var vertices: [SIMD2<Float>] = []
         vertices.reserveCapacity((columns + 1) * (rows + 1))
@@ -222,6 +223,14 @@ public final class GlobeRenderer: @unchecked Sendable {
         textures = GlobeTextures(device: device, queue: queue, map: map, data: data)
     }
 
+    /// The longitude the mesh is laid out from (−180 … 180 degrees around
+    /// it): the whole degree nearest the centre. Its vertices lie on whole
+    /// degrees of the Earth whatever the centre, so a vertex keeps its height
+    /// while the globe turns; only the one seam on the far side moves.
+    static func meshMiddle(forCenterLongitude longitude: Double) -> Double {
+        (longitude.isFinite ? longitude : 0).rounded()
+    }
+
     func uniforms(for scene: GlobeScene) -> GlobeUniforms {
         let projection = scene.projection
         let t = projection.flatness
@@ -232,12 +241,13 @@ public final class GlobeRenderer: @unchecked Sendable {
         var starMatrix = matrix_identity_float4x4
         for c in 0..<3 { for r in 0..<3 { starMatrix[c][r] = Float(m[c][r]) } }
         let heights = textures.heightTexture
-        let detail = textures.detail(dark: scene.dark)
-        let satDetail = textures.satelliteDetailRegion
+        let mapTiles = textures.mapTiles(dark: scene.dark)
+        let satTiles = textures.satelliteTiles
         let palette = MapPalette.appearance(dark: scene.dark)
         func color(_ c: MapColor) -> SIMD4<Float> { SIMD4(Float(c.red), Float(c.green), Float(c.blue), 1) }
         let k = scene.reliefFactor
         let distance = simd_length(fr.position)
+        let anchor = Self.meshMiddle(forCenterLongitude: scene.camera.center.longitude)
         return GlobeUniforms(
             viewport: SIMD4(Float(scene.size.width), Float(scene.size.height), Float(projection.radius), Float(t)),
             center: SIMD4(Float(scene.camera.center.latitude * .pi / 180), Float(scene.camera.center.longitude * .pi / 180),
@@ -247,12 +257,12 @@ public final class GlobeRenderer: @unchecked Sendable {
             orthoRight: f4(fr.flatRight), orthoUp: f4(fr.flatUp), orthoToward: f4(fr.flatToward),
             sun: f4(sunVector, scene.lighting ? 1 : 0),
             relief: SIMD4(Float(k), Float(max(1, k * 0.15)), scene.exaggerated ? 14 : 4, heights == nil ? 0 : 1),
-            detail: detail.map { SIMD4(Float($0.x0), Float($0.y0), Float(1 << $0.zoom), 1) } ?? .zero,
+            mapTiles: SIMD4(mapTiles == nil ? 0 : 1, Float(GlobeTilePlan.mapFinest), Float(GlobeTilePlan.mapLevels), 0),
             sky: SIMD4(Float(scene.skyOpacity), Float((1 - t) * (1 - t)), Float(scene.cloudOpacity), textures.lightsTexture == nil ? 0 : 1),
             heightTexel: SIMD4(heights.map { 1 / Float($0.width) } ?? 0, heights.map { 1 / Float($0.height) } ?? 0, scene.dark ? 1 : 0,
                                textures.satelliteBaseTexture == nil ? 0 : 1),
-            satDetail: satDetail.map { SIMD4(Float($0.minX), Float($0.minY), Float($0.width), Float($0.height)) } ?? .zero,
-            extra: SIMD4(satDetail == nil ? 0 : 1, 0, 0, 0),
+            satTiles: SIMD4(satTiles == nil ? 0 : 1, Float(GlobeTilePlan.satelliteLevels), 0, 0),
+            mesh: SIMD4(Float(anchor), Float(anchor - scene.camera.center.longitude), 0, 0),
             northColor: color(palette.water), southColor: color(palette.glacier),
             starMatrix: starMatrix)
     }
@@ -288,11 +298,14 @@ public final class GlobeRenderer: @unchecked Sendable {
         encoder.setVertexTexture(heights, index: 0)
         encoder.setVertexSamplerState(heightSampler, index: 0)
         encoder.setFragmentTexture(textures.base(dark: scene.dark) ?? textures.placeholder(dark: scene.dark), index: 0)
-        encoder.setFragmentTexture(textures.detail(dark: scene.dark)?.texture ?? textures.blank, index: 1)
+        let mapTiles = textures.mapTiles(dark: scene.dark), satTiles = textures.satelliteTiles
+        encoder.setFragmentTexture(mapTiles?.slots ?? textures.blankArray, index: 1)
         encoder.setFragmentTexture(heights, index: 2)
         encoder.setFragmentTexture(textures.lightsTexture ?? textures.blank, index: 3)
         encoder.setFragmentTexture(textures.satelliteBaseTexture ?? textures.blank, index: 4)
-        encoder.setFragmentTexture(textures.satelliteDetailTexture ?? textures.blank, index: 5)
+        encoder.setFragmentTexture(satTiles?.slots ?? textures.blankArray, index: 5)
+        encoder.setFragmentTexture(mapTiles?.index ?? textures.blankIndex, index: 6)
+        encoder.setFragmentTexture(satTiles?.index ?? textures.blankIndex, index: 7)
         encoder.setFragmentSamplerState(baseSampler, index: 0)
         encoder.setFragmentSamplerState(detailSampler, index: 1)
         encoder.setFragmentSamplerState(heightSampler, index: 2)
@@ -379,17 +392,20 @@ public final class GlobeRenderer: @unchecked Sendable {
 }
 
 /// The globe's textures: the map's tiles as a world texture per palette
-/// (zoom 3 at 2×, 4096 px square, made once off the main thread), a detail
-/// texture of 8 × 8 tiles around the centre at the zoom shown (made again
-/// when the centre moves two tiles away or the zoom changes), the heightmap
-/// (in km as half floats; the bundled one or the placeholder from the map),
-/// the city lights, the night sky, the clouds and the satellite picture
-/// (`SatelliteTiles`: the whole world at 2700 × 1350, and 2 × 2 tiles of
-/// 1350 × 1350 around the centre from the level the zoom wants: 45° tiles
-/// from zoom 2.5, 22.5° ones from 4.5, made again when the centre leaves
-/// them). With the satellite picture the map's own textures are made only
-/// once the globe starts to flatten. `didChange` reports a texture that
-/// became ready.
+/// (zoom 3 at 2×, 4096 px square, made once off the main thread) and its
+/// tiles at zoom 4 … 6 (`mapTiles`, 512 px each, in a `TileAtlas` of
+/// `mapCapacity`), the heightmap (in km as half floats; the bundled one or
+/// the placeholder from the map), the city lights, the night sky, the
+/// clouds and the satellite picture (`SatelliteTiles`: the whole world at
+/// 2700 × 1350, and its tiles of 1350 px, 45° from level 1 and 22.5° from
+/// level 2, in a `TileAtlas` of `satelliteCapacity`). Which tiles a view
+/// needs is worked out off the main thread from the view itself
+/// (`GlobeTilePlan`), with the cameras ahead of a throw or a drag; each
+/// tile is made once and kept until its place is needed, so turning the
+/// globe makes only the tiles coming into view, and those ahead of the
+/// motion before they arrive. With the satellite picture the map's own
+/// textures are made only once the globe starts to flatten. `didChange`
+/// reports a texture that became ready.
 public final class GlobeTextures: @unchecked Sendable {
     let device: MTLDevice
     let queue: MTLCommandQueue
@@ -397,36 +413,61 @@ public final class GlobeTextures: @unchecked Sendable {
     private let lock = NSLock()
     private var bases: [Bool: MTLTexture] = [:]
     private var basesRunning: Set<Bool> = []
-    private var details: [Bool: Detail] = [:]
-    private var detailRunning: [Bool: DetailKey] = [:]
+    private var mapAtlases: [Bool: TileAtlas] = [:]
+    private var satelliteAtlas: TileAtlas?
     private var heights: MTLTexture?
     private var lights: MTLTexture?
     private var skyMap: MTLTexture?
     private var cloudMap: MTLTexture?
     private var satelliteBase: MTLTexture?
-    private var satelliteDetail: (key: SatelliteKey, texture: MTLTexture)?
-    private var satelliteRunning: SatelliteKey?
     let satellite: SatelliteTiles?
     var cloudsTexture: MTLTexture? { lock.withLock { cloudMap } }
     var satelliteBaseTexture: MTLTexture? { lock.withLock { satelliteBase } }
-    var satelliteDetailTexture: MTLTexture? { lock.withLock { satelliteDetail?.texture } }
-    /// Where the satellite detail texture lies in the world's 0 … 1 (equirectangular, top left origin)
-    var satelliteDetailRegion: CGRect? { lock.withLock { satelliteDetail.map { $0.key.region } } }
     var heightTexture: MTLTexture? { lock.withLock { heights } }
     var lightsTexture: MTLTexture? { lock.withLock { lights } }
     var skyTexture: MTLTexture? { lock.withLock { skyMap } }
     private var heightsRunning = false
     private var placeholders: [Bool: MTLTexture] = [:]
     let blank: MTLTexture
+    /// Bound where no tile atlas is (a texture array of one black pixel, an index of one empty entry)
+    let blankArray: MTLTexture
+    let blankIndex: MTLTexture
     let work = DispatchQueue(label: "Globe textures", qos: .userInitiated, attributes: .concurrent)
     /// Posted on the main queue when a texture is ready (every view of a shared renderer draws again)
     public static let didChange = Notification.Name("GlobeTexturesDidChange")
 
     public static let baseZoom = 3
     public static let baseScale = 2
+    /// How many satellite tiles are kept (1350 px with mipmaps, 9.7 MB each: 233 MB)
+    static let satelliteCapacity = 24
+    /// How many map tiles are kept per palette (512 px with mipmaps, 1.4 MB each: 90 MB)
+    static let mapCapacity = 64
 
-    struct DetailKey: Equatable { var zoom, x0, y0: Int; var scale: Int }
-    struct Detail { var key: DetailKey; var texture: MTLTexture; var zoom: Int { key.zoom }; var x0: Int { key.x0 }; var y0: Int { key.y0 } }
+    /// What a plan depends on (not the time: the Sun doesn't change which tiles a view needs)
+    struct PlanKey: Equatable {
+        var camera: MapCamera
+        var size: CGSize
+        var lens: Double
+        var dark: Bool
+        var ahead: [MapCamera]
+        init(_ scene: GlobeScene, ahead: [MapCamera]) {
+            camera = scene.camera
+            size = scene.size
+            lens = scene.lens
+            dark = scene.dark
+            self.ahead = ahead
+        }
+        func isSameView(_ other: PlanKey) -> Bool {
+            camera == other.camera && size == other.size && lens == other.lens && dark == other.dark
+        }
+    }
+    private let planQueue = DispatchQueue(label: "Globe tile plans", qos: .userInitiated)
+    /// The plans made last, the newest last (a view asked for again finds its plan)
+    private var plans: [(key: PlanKey, plan: GlobeTilePlan.Plan)] = []
+    /// The views asked for and not planned yet: the newest two (a view asked
+    /// for just before another, as the flat map's way out before its own frame)
+    private var planWaiting: [(key: PlanKey, scene: GlobeScene)] = []
+    private var planning = false
 
     init(device: MTLDevice, queue: MTLCommandQueue, map: MapRenderer?, data: GlobeData) {
         self.device = device
@@ -436,44 +477,21 @@ public final class GlobeTextures: @unchecked Sendable {
         blank = device.makeTexture(descriptor: d)!
         var zero: UInt16 = 0
         blank.replace(region: MTLRegionMake2D(0, 0, 1, 1), mipmapLevel: 0, withBytes: &zero, bytesPerRow: 2)
+        let a = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: GlobeRenderer.colorFormat, width: 1, height: 1, mipmapped: false)
+        a.textureType = .type2DArray
+        a.arrayLength = 1
+        blankArray = device.makeTexture(descriptor: a)!
+        var black: UInt32 = 0
+        blankArray.replace(region: MTLRegionMake2D(0, 0, 1, 1), mipmapLevel: 0, slice: 0, withBytes: &black, bytesPerRow: 4, bytesPerImage: 4)
+        let i = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r16Uint, width: 1, height: 1, mipmapped: false)
+        blankIndex = device.makeTexture(descriptor: i)!
+        blankIndex.replace(region: MTLRegionMake2D(0, 0, 1, 1), mipmapLevel: 0, withBytes: &zero, bytesPerRow: 2)
         if let heightmap = data.heightmap { heights = Self.texture(device: device, heightmap: heightmap) }
         if let image = data.cityLights { lights = Self.texture(device: device, grey: image) }
         if let image = data.sky { skyMap = Self.texture(device: device, queue: queue, colour: image) }
         if let image = data.clouds { cloudMap = Self.texture(device: device, queue: queue, colour: image) }
         satellite = data.satellite
         if let image = data.satellite?.image(named: "base") { satelliteBase = Self.texture(device: device, queue: queue, colour: image) }
-    }
-
-    /// Which satellite tiles a detail texture holds: 2 × 2 of a level from its top left one.
-    struct SatelliteKey: Equatable {
-        var level, x0, y0: Int
-        var columns: Int { level == 1 ? 8 : 16 }
-        var rows: Int { columns / 2 }
-        var region: CGRect {
-            CGRect(x: Double(x0) / Double(columns), y: Double(y0) / Double(rows), width: 2 / Double(columns), height: 2 / Double(rows))
-        }
-    }
-
-    /// The satellite tiles a scene wants (none far out, where the whole world's picture is sharp enough).
-    static func satelliteKey(for scene: GlobeScene) -> SatelliteKey? {
-        let z = scene.camera.zoom
-        guard z >= 2.5, scene.projection.flatness < 1 else { return nil }
-        // Tilted, the ground near the camera lies closer than the centre: the full size half a step earlier
-        let level = z >= (scene.projection.shownPitch > 30 ? 4.0 : 4.5) ? 2 : 1
-        let columns = level == 1 ? 8 : 16, rows = columns / 2
-        // Tilted, the ground nearest the camera (the view's lower middle) needs the detail most; the
-        // 2 × 2 tiles around the point between it and the centre cover both
-        var anchor = scene.camera.center
-        let projection = scene.projection
-        if projection.perspective > 0.5,
-           let near = projection.coordinate(at: CGPoint(x: scene.size.width / 2, y: scene.size.height * 0.9)) {
-            let a = GlobeGeometry.unitVector(near), b = GlobeGeometry.unitVector(scene.camera.center)
-            anchor = GlobeGeometry.coordinate(simd_normalize(a + b))
-        }
-        let u = (anchor.longitude + 180) / 360, v = (90 - anchor.latitude) / 180
-        let x0 = ((Int(floor(u * Double(columns) - 0.5)) % columns) + columns) % columns
-        let y0 = min(rows - 2, max(0, Int(floor(v * Double(rows) - 0.5))))
-        return SatelliteKey(level: level, x0: x0, y0: y0)
     }
 
     /// Whether the map's own textures are needed: always without the satellite picture, else once the globe flattens.
@@ -483,7 +501,11 @@ public final class GlobeTextures: @unchecked Sendable {
 
     func base(dark: Bool) -> MTLTexture? { lock.withLock { bases[dark] } }
 
-    func detail(dark: Bool) -> Detail? { lock.withLock { details[dark] } }
+    /// The map's tiles of the palette (nil until the first is wanted).
+    func mapTiles(dark: Bool) -> TileAtlas? { lock.withLock { mapAtlases[dark] } }
+
+    /// The satellite picture's tiles (nil until the first is wanted).
+    var satelliteTiles: TileAtlas? { lock.withLock { satelliteAtlas } }
 
     /// One pixel of the palette's land colour until the world texture is made.
     func placeholder(dark: Bool) -> MTLTexture {
@@ -499,41 +521,56 @@ public final class GlobeTextures: @unchecked Sendable {
         }
     }
 
-    /// Whether everything the scene needs is made.
-    public func isReady(for scene: GlobeScene) -> Bool {
-        return lock.withLock {
-            if satellite != nil, let wanted = Self.satelliteKey(for: scene), satelliteDetail?.key != wanted { return false }
-            guard map != nil else { return true }
-            guard heights != nil else { return false }
-            guard Self.needsMap(scene, satellite: satelliteBase != nil) else { return true }
-            guard bases[scene.dark] != nil else { return false }
-            guard let wanted = Self.detailKey(for: scene) else { return true }
-            return details[scene.dark]?.key == wanted
-        }
+    /// The plan made for the view (nil while it is being made).
+    func plan(for scene: GlobeScene) -> GlobeTilePlan.Plan? {
+        let key = PlanKey(scene, ahead: [])
+        return lock.withLock { plans.last { $0.key.isSameView(key) }?.plan }
     }
 
-    /// Starts making what the scene needs and isn't there (off the calling thread).
-    public func prepare(for scene: GlobeScene) {
-        prepareSatellite(for: scene)
-        guard let map else { return }
+    /// Whether everything the scene needs is made: the world textures, and
+    /// every tile of the view itself (not the margin's or those ahead).
+    public func isReady(for scene: GlobeScene) -> Bool {
+        let key = PlanKey(scene, ahead: [])
+        let (plan, satTiles, mapTiles, ready): (GlobeTilePlan.Plan?, TileAtlas?, TileAtlas?, Bool) = lock.withLock {
+            let plan = plans.last { $0.key.isSameView(key) }?.plan
+            guard map != nil else { return (plan, satelliteAtlas, nil, true) }
+            guard heights != nil else { return (plan, nil, nil, false) }
+            let ready = !Self.needsMap(scene, satellite: satelliteBase != nil) || bases[scene.dark] != nil
+            return (plan, satelliteAtlas, mapAtlases[scene.dark], ready)
+        }
+        guard ready else { return false }
+        guard let plan else { return satellite == nil && map == nil }
+        if !plan.satelliteRequired.isEmpty, !(satTiles?.has(plan.satelliteRequired) ?? false) { return false }
+        if !plan.mapRequired.isEmpty, !(mapTiles?.has(plan.mapRequired) ?? false) { return false }
+        return true
+    }
+
+    /// Starts making what the scene needs and isn't there (off the calling
+    /// thread), and the tiles of the cameras `ahead` (where the view is
+    /// moving) after the view's own.
+    public func prepare(for scene: GlobeScene, ahead: [MapCamera] = []) {
         let dark = scene.dark
+        let key = PlanKey(scene, ahead: ahead)
         lock.lock()
-        let mapWanted = Self.needsMap(scene, satellite: satelliteBase != nil)
+        let mapWanted = map != nil && Self.needsMap(scene, satellite: satelliteBase != nil)
         let needBase = mapWanted && bases[dark] == nil && !basesRunning.contains(dark)
         if needBase { basesRunning.insert(dark) }
         // Only the palette shown keeps its textures (each world texture is about 90 MB)
         bases[!dark] = nil
-        details[!dark] = nil
-        let needHeights = heights == nil && !heightsRunning
+        mapAtlases[!dark] = nil
+        let needHeights = map != nil && heights == nil && !heightsRunning
         if needHeights { heightsRunning = true }
-        var detailKey: DetailKey?
-        if mapWanted, let wanted = Self.detailKey(for: scene), detailRunning[dark] == nil {
-            if let have = details[dark]?.key, !Self.needsNewDetail(have: have, wanted: wanted) {} else {
-                detailKey = wanted
-                detailRunning[dark] = wanted
-            }
+        let planned = plans.last { $0.key == key }?.plan
+        if planned == nil, !planWaiting.contains(where: { $0.key == key }) {
+            planWaiting.append((key, scene))
+            if planWaiting.count > 2 { planWaiting.removeFirst(planWaiting.count - 2) }
         }
+        let startPlanning = planned == nil && !planning
+        if startPlanning { planning = true }
         lock.unlock()
+        if let planned { request(planned, dark: dark) }
+        if startPlanning { planQueue.async { [weak self] in self?.makePlans() } }
+        guard let map else { return }
         if needBase {
             let began = Date()
             work.async { [weak self] in
@@ -559,49 +596,80 @@ public final class GlobeTextures: @unchecked Sendable {
                 self.changed()
             }
         }
-        if let key = detailKey {
-            let began = Date()
-            work.async { [weak self] in
-                guard let self else { return }
-                let texture = self.makeTiles(map: map, zoom: key.zoom, x0: key.x0, y0: key.y0, count: 8, scale: key.scale, dark: dark)
-                MapMotion.trace?(String(format: "globe: detail texture at zoom %d made in %.0f ms", key.zoom, Date().timeIntervalSince(began) * 1000))
-                self.lock.withLock {
-                    self.detailRunning[dark] = nil
-                    if let texture { self.details[dark] = Detail(key: key, texture: texture) }
-                }
-                self.changed()
+    }
+
+    /// Makes the plans asked for, oldest first, until none waits (on `planQueue`).
+    private func makePlans() {
+        while true {
+            let next: (key: PlanKey, scene: GlobeScene)? = lock.withLock {
+                guard !planWaiting.isEmpty else { planning = false; return nil }
+                return planWaiting.removeFirst()
             }
+            guard let (key, scene) = next else { return }
+            let mapWanted = map != nil && Self.needsMap(scene, satellite: satelliteBase != nil)
+            let plan = GlobeTilePlan.plan(for: scene, ahead: key.ahead, satellite: satellite != nil, map: mapWanted,
+                                          satelliteCapacity: Self.satelliteCapacity, mapCapacity: Self.mapCapacity)
+            lock.withLock {
+                plans.removeAll { $0.key == key }
+                plans.append((key, plan))
+                if plans.count > 8 { plans.removeFirst(plans.count - 8) }
+            }
+            request(plan, dark: scene.dark)
+            // A view whose tiles are all kept already is ready now
+            changed()
         }
     }
 
-    /// Starts decoding the satellite tiles the scene wants.
-    private func prepareSatellite(for scene: GlobeScene) {
-        guard let satellite, let wanted = Self.satelliteKey(for: scene) else { return }
-        let start: Bool = lock.withLock {
-            guard satelliteDetail?.key != wanted, satelliteRunning != wanted else { return false }
-            satelliteRunning = wanted
-            return true
-        }
-        guard start else { return }
-        work.async { [weak self] in
-            guard let self else { return }
-            let side = 1350
-            guard let ctx = MapRenderer.context(width: 2 * side, height: 2 * side) else { return }
-            for dy in 0..<2 {
-                for dx in 0..<2 {
-                    let x = (wanted.x0 + dx) % wanted.columns, y = wanted.y0 + dy
-                    guard let tile = satellite.image(named: "\(wanted.level)-\(y)-\(x)") else { continue }
-                    // CoreGraphics' origin is at the bottom
-                    ctx.draw(tile, in: CGRect(x: dx * side, y: (1 - dy) * side, width: side, height: side))
+    /// Hands the plan's tiles to the atlases (made when first needed).
+    private func request(_ plan: GlobeTilePlan.Plan, dark: Bool) {
+        var sat: TileAtlas?, mapTiles: TileAtlas?
+        if !plan.satellite.isEmpty, let satellite {
+            sat = lock.withLock {
+                if satelliteAtlas == nil {
+                    satelliteAtlas = TileAtlas(device: device, queue: queue, side: 1350, capacity: Self.satelliteCapacity,
+                                               columns: GlobeTilePlan.satelliteColumns, rows: GlobeTilePlan.satelliteRows,
+                                               levels: GlobeTilePlan.satelliteLevels, concurrency: 4, name: "Globe satellite tiles",
+                                               make: { key in Self.drawSatelliteTile(key, from: satellite) },
+                                               changed: { [weak self] in self?.changed() })
                 }
+                return satelliteAtlas
             }
-            guard let image = ctx.makeImage(), let texture = Self.texture(device: self.device, queue: self.queue, colour: image) else { return }
-            self.lock.withLock {
-                if self.satelliteRunning == wanted { self.satelliteRunning = nil }
-                self.satelliteDetail = (wanted, texture)
-            }
-            self.changed()
         }
+        if !plan.map.isEmpty, let map {
+            mapTiles = lock.withLock {
+                if mapAtlases[dark] == nil {
+                    let palette = MapPalette.appearance(dark: dark)
+                    mapAtlases[dark] = TileAtlas(device: device, queue: queue, side: GlobeTilePlan.mapTileSide, capacity: Self.mapCapacity,
+                                                 columns: 1 << GlobeTilePlan.mapFinest, rows: 1 << GlobeTilePlan.mapFinest,
+                                                 levels: GlobeTilePlan.mapLevels, concurrency: max(2, ProcessInfo.processInfo.activeProcessorCount - 2),
+                                                 name: "Globe map tiles", make: { key in Self.drawMapTile(key, map: map, palette: palette) },
+                                                 changed: { [weak self] in self?.changed() })
+                }
+                return mapAtlases[dark]
+            }
+        }
+        sat?.request(plan.satellite)
+        mapTiles?.request(plan.map)
+    }
+
+    /// A satellite tile (level 1 or 2 of the tile pack) as the atlas keeps it.
+    static func drawSatelliteTile(_ key: TileAtlas.Key, from satellite: SatelliteTiles) -> CGContext? {
+        let level = GlobeTilePlan.satelliteLevels - key.level
+        guard let tile = satellite.image(named: "\(level)-\(key.y)-\(key.x)"), let ctx = MapRenderer.context(width: 1350, height: 1350) else { return nil }
+        ctx.interpolationQuality = .high
+        ctx.draw(tile, in: CGRect(x: 0, y: 0, width: 1350, height: 1350))
+        return ctx
+    }
+
+    /// A map tile (zoom `mapFinest` − level) at 2×.
+    static func drawMapTile(_ key: TileAtlas.Key, map: MapRenderer, palette: MapPalette) -> CGContext? {
+        let side = GlobeTilePlan.mapTileSide, scale = side / 256
+        guard let ctx = MapRenderer.context(width: side, height: side) else { return nil }
+        ctx.scaleBy(x: CGFloat(scale), y: CGFloat(scale))
+        ctx.translateBy(x: 0, y: 256)
+        ctx.scaleBy(x: 1, y: -1)
+        map.drawTile(TileKey(z: GlobeTilePlan.mapFinest - key.level, x: key.x, y: key.y), in: ctx, palette: palette, tolerance: 0.5 / Double(scale))
+        return ctx
     }
 
     /// Makes everything the scene needs and waits for it (tests, snapshots).
@@ -609,7 +677,7 @@ public final class GlobeTextures: @unchecked Sendable {
         let end = Date().addingTimeInterval(timeout)
         while !isReady(for: scene), Date() < end {
             prepare(for: scene)
-            Thread.sleep(forTimeInterval: 0.02)
+            Thread.sleep(forTimeInterval: 0.005)
         }
     }
 
@@ -618,33 +686,6 @@ public final class GlobeTextures: @unchecked Sendable {
             guard let self else { return }
             NotificationCenter.default.post(name: Self.didChange, object: self)
         }
-    }
-
-    /// The detail texture a scene wants: 8 × 8 tiles of the zoom shown
-    /// (rounded up, from 4 to the flat zoom's) around the centre; none
-    /// below zoom 3, where the world texture is sharp enough. Beyond the
-    /// flat zoom (a tilted camera straightening on its way into the flat
-    /// map, `GlobeProjection.straightZoom`) the zoom shown rounded down, so
-    /// the tiles are as sharp as the flat map's it hands over to.
-    static func detailKey(for scene: GlobeScene) -> DetailKey? {
-        let z = scene.camera.zoom
-        guard z > Double(baseZoom) else { return nil }
-        let projection = scene.projection
-        let flatTiles = Int(ceil(projection.flatZoom - 1e-9))
-        let zoom = max(baseZoom + 1, z > Double(flatTiles) && !projection.isFlat ? Int(floor(z)) : min(flatTiles, Int(ceil(z - 1e-9))))
-        let n = 1 << zoom
-        let u = WebMercator.unitPoint(scene.camera.center)
-        let x0 = Int((Double(u.x) * Double(n)).rounded()) - 4
-        let y0 = min(n - 8, max(0, Int((Double(u.y) * Double(n)).rounded()) - 4))
-        return DetailKey(zoom: zoom, x0: ((x0 % n) + n) % n, y0: y0, scale: 2)
-    }
-
-    static func needsNewDetail(have: DetailKey, wanted: DetailKey) -> Bool {
-        guard have.zoom == wanted.zoom, have.scale == wanted.scale else { return true }
-        let n = 1 << have.zoom
-        var dx = abs(have.x0 - wanted.x0) % n
-        dx = min(dx, n - dx)
-        return dx >= 2 || abs(have.y0 - wanted.y0) >= 2
     }
 
     /// count × count tiles of a zoom from (x0, y0) drawn into one texture

@@ -73,7 +73,7 @@
     },
     {
       "title": "Suas fotos no mapa e no globo",
-      "text": "<p><kbd>W</kbd> mostra as fotos e os vídeos de uma pasta e das subpastas no lugar onde foram feitos. Bem de longe, o mapa é um globo diante do céu estrelado, com dia e noite se você quiser e as cidades iluminadas no lado noturno; ao aproximar, ele se achata no mapa.</p><ul><li>A linha do tempo organiza a viagem por data: arraste sobre um trecho e o mapa mostra só essa parte</li><li><kbd>T</kbd> reproduz a viagem: o mapa desliza de um lugar a outro, as fotos aparecem grandes, os vídeos tocam alguns segundos</li><li>O mapa fica dentro do app: nada vai para a internet, nenhuma localização sai do seu Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> passa da grade para a lista e depois para o atlas. O atlas mostra as fotos e os vídeos de uma pasta e das subpastas no lugar onde foram feitos. Bem de longe, o mapa é um globo diante do céu estrelado, com dia e noite se você quiser e as cidades iluminadas no lado noturno; ao aproximar, ele se achata no mapa.</p><ul><li>A linha do tempo organiza a viagem por data: arraste sobre um trecho e o mapa mostra só essa parte</li><li><kbd>T</kbd> reproduz a viagem: o mapa desliza de um lugar a outro, as fotos aparecem grandes, os vídeos tocam alguns segundos</li><li>O mapa fica dentro do app: nada vai para a internet, nenhuma localização sai do seu Mac</li></ul>",
       "alt": "As fotos de uma viagem no globo, na visualização Atlas"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Todas as teclas à mão",
-      "text": "<p><kbd>F1</kbd> lista todas as teclas, inclusive para imprimir; <kbd>K</kbd> mostra um pequeno teclado para clicar. Defina suas próprias teclas ou escolha as teclas como no Phiewer. Grade ou lista (<kbd>L</kbd>), ordenação por nome, tipo, data, tamanho ou distância de um lugar, várias janelas e uma tecla do chefe (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lista todas as teclas, inclusive para imprimir; <kbd>K</kbd> mostra um pequeno teclado para clicar. Defina suas próprias teclas ou escolha as teclas como no Phiewer. Grade, lista ou atlas (<kbd>L</kbd>), ordenação por nome, tipo, data, tamanho ou distância de um lugar, várias janelas e uma tecla do chefe (<kbd>X</kbd>).</p>",
       "alt": "A lista de teclas (F1)"
     },
     {
@@ -122,7 +122,7 @@
   "safe": [
     [
       "Na App Sandbox da Apple.",
-      "Nenhum acesso à rede, não inicia programas por conta própria, só vê as pastas que você abrir para ele, além de Imagens."
+      "Nenhum acesso à rede, não inicia programas por conta própria, só vê as pastas que você abrir para ele, além de Imagens. Quem garante isso é o macOS, então não teríamos como trapacear nem se quiséssemos: o app simplesmente não consegue acessar a internet."
     ],
     [
       "Somente leitura.",

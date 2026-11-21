@@ -325,6 +325,13 @@ class SchnellbildUITestCase: XCTestCase {
 
     func tile(_ name: String) -> XCUIElement { element("tile.\(name)").firstMatch }
 
+    /// From the grid to the Atlas: L shows the list, L again the Atlas.
+    func showAtlasFromTheGrid(file: StaticString = #filePath, line: UInt = #line) {
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("list").waitForExistence(timeout: 10), "L: the list first", file: file, line: line)
+        app.typeKey("l", modifierFlags: [])
+    }
+
     var searchField: XCUIElement { app.searchFields["searchField"] }
 
     /// Click into the search field and type a query.

@@ -73,7 +73,7 @@
     },
     {
       "title": "Deine Fotos auf der Karte und dem Globus",
-      "text": "<p><kbd>W</kbd> zeigt die Fotos und Videos eines Ordners und seiner Unterordner dort, wo sie aufgenommen wurden. Weit herausgezoomt ist die Karte ein Globus vor dem Sternenhimmel, auf Wunsch mit Tag und Nacht und den Lichtern der Städte auf der Nachtseite; beim Hineinzoomen wird er zur flachen Karte.</p><ul><li>Die Zeitleiste ordnet die Reise nach der Zeit: Zieh über einen Abschnitt, und die Karte zeigt nur diesen Teil</li><li><kbd>T</kbd> spielt die Reise ab: Die Karte gleitet von Ort zu Ort, die Fotos erscheinen groß, die Videos laufen ein paar Sekunden</li><li>Die Karte steckt in der App: Nichts geht online, kein Ort verlässt deinen Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> wechselt vom Raster zur Liste und weiter zum Atlas. Er zeigt die Fotos und Videos eines Ordners und seiner Unterordner dort, wo sie aufgenommen wurden. Weit herausgezoomt ist die Karte ein Globus vor dem Sternenhimmel, auf Wunsch mit Tag und Nacht und den Lichtern der Städte auf der Nachtseite; beim Hineinzoomen wird er zur flachen Karte.</p><ul><li>Die Zeitleiste ordnet die Reise nach der Zeit: Zieh über einen Abschnitt, und die Karte zeigt nur diesen Teil</li><li><kbd>T</kbd> spielt die Reise ab: Die Karte gleitet von Ort zu Ort, die Fotos erscheinen groß, die Videos laufen ein paar Sekunden</li><li>Die Karte steckt in der App: Nichts geht online, kein Ort verlässt deinen Mac</li></ul>",
       "alt": "Die Fotos einer Reise auf dem Globus, in der Atlas-Ansicht"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Alle Tasten griffbereit",
-      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum, Größe oder Entfernung von einem Ort, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster, Liste oder Atlas (<kbd>L</kbd>), sortieren nach Name, Art, Datum, Größe oder Entfernung von einem Ort, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
       "alt": "Die Liste der Tasten (F1)"
     },
     {
@@ -122,7 +122,7 @@
   "safe": [
     [
       "In Apples App Sandbox.",
-      "Kein Netzwerk, startet von sich aus keine Programme, sieht nur die Ordner, die du freigibst, dazu Bilder."
+      "Kein Netzwerk, startet von sich aus keine Programme, sieht nur die Ordner, die du freigibst, dazu Bilder. Das setzt macOS durch, wir könnten also nicht einmal schummeln, wenn wir wollten: Ins Internet kommt die App schlicht nicht."
     ],
     [
       "Nur lesen.",

@@ -95,7 +95,8 @@ final class ThumbnailCache {
         var image = rep?.nsImage
         if rep?.type == .icon { image?.accessibilityDescription = Self.fileIcon }
         // A picture QuickLook doesn't know by its name ("x.jpg.part", "IMG"):
-        // ImageIO reads it by its content, as far as its bytes reach
+        // ImageIO reads it by its content, as far as its bytes reach; an
+        // SVG or PDF QuickLook gave no picture of is drawn here
         if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .image, !Task.isCancelled,
            let picture = await Self.pictureThumbnail(of: url, side: side) {
             image = picture
@@ -206,11 +207,19 @@ final class ThumbnailCache {
             answer.finish()
         }
     }
-    /// A picture scaled down by ImageIO, off the main thread.
-    private static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
+    /// A picture scaled down by ImageIO, off the main thread; an SVG or PDF
+    /// (which ImageIO can't read) drawn as the full view draws it
+    /// (`VectorPicture`), for when QuickLook answered with the icon or not
+    /// at all. An SVG AppKit can't draw either (broken XML, a web font
+    /// without a picture size) keeps QuickLook's icon.
+    static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
         let maxPixel = Int(side * NSScreen.mainBackingScale)
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
-            guard !VectorPicture.isVector(url), let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+            if VectorPicture.isVector(url) {
+                guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
+                return NSImage(pixels: rendered.0)
+            }
+            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
                   let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
             return NSImage(pixels: cg)
         }

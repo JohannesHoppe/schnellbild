@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 import OfflineMap
 
-/// The Atlas view of one pane (W): the pane's photos and videos (the
+/// The Atlas view of one pane (L after the list): the pane's photos and videos (the
 /// folder's, or a search's from every subfolder) at their places on the
 /// offline map, the timeline under it and the tour. The items are the
 /// pane's `entries`, so the selection is the grid's and the list's.

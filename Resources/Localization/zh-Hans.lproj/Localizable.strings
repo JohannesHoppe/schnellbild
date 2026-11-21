@@ -175,7 +175,7 @@
 "Archive" = "归档";
 "as Grid" = "以网格显示";
 "as List" = "以列表显示";
-"Grid or list (a click on a column sorts by it)" = "网格或列表（点按某一栏按其排序）";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "下一个视图：网格、列表、地图集（点按某一栏按其排序）";
 "Back (where you were, also a search); without history the enclosing folder" = "返回（之前的位置，也包括搜索）；没有历史时前往上一级文件夹";
 "Click to rename this folder" = "点按以重新命名此文件夹";
 "Privacy Policy" = "隐私政策";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "手动调整曝光、对比度、饱和度和锐度（%@）";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "此文件夹及其子文件夹中所有图像和视频的幻灯片放映；搜索时：搜索结果（%@）";
 "Sort by (%@; press again to reverse)" = "排序方式（%@；再按一次则反转）";
-"Grid or list (%@)" = "网格或列表（%@）";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "迷你键盘：屏幕上内容的按键，可点按（%@）";
 "Bookmarks (%@: this folder; %@: go)" = "书签（%1$@：此文件夹；%2$@：打开）";
 "Close the playlist (%@)" = "关闭播放列表（%@）";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "退出（%@ 会先询问）";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "老板键：立即隐藏并静音；%@ 或点按程序坞图标恢复";
 "⌘-click" = "⌘-点按";
-"Grid or list" = "网格或列表";
+"Next view (grid, list, Atlas)" = "下一个视图（网格、列表、地图集）";
 "General" = "通用";
 "no key" = "无按键";
 "Back, or the enclosing folder" = "返回，或上层文件夹";
 "Boss key" = "老板键";
+"Boss key on" = "老板键：开启";
+"Boss key off" = "老板键：关闭";
+"Boss key on: every window turns invisible and every video silent at once" = "老板键开启：所有窗口立即隐藏，所有视频立即静音";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "老板键关闭：将 Schnellbild 置于前台（⌘-Tab），在一秒内按三次";
+"Every window turns invisible and every video silent at once." = "所有窗口立即隐藏，所有视频立即静音。";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "将 Schnellbild 置于前台（⌘-Tab），在一秒内按三次老板键。";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild 会立即消失，所有视频立即静音。点按程序坞图标不会让它恢复。要恢复，请切换到 Schnellbild（⌘-Tab），然后在一秒内按三次 %@。";
 "End the slideshow" = "结束幻灯片放映";
 "First item" = "第一个项目";
 "Last item" = "最后一个项目";
@@ -570,14 +575,13 @@
 "Route" = "路线";
 "Date Source" = "日期来源";
 "Atlas" = "地图集";
-"Atlas (map)" = "地图集（地图）";
 "Play the tour" = "播放旅程";
 "Tour: pause / resume" = "旅程：暂停 / 继续";
 "Tour: previous place" = "旅程：上一个地点";
 "Tour: next place" = "旅程：下一个地点";
 "End the tour" = "结束旅程";
 "as Atlas" = "以地图集显示";
-"Grid or list (%@), Atlas (%@)" = "网格或列表（%1$@），地图集（%2$@）";
+"Next view: grid, list, Atlas (%@)" = "下一个视图：网格、列表、地图集（%@）";
 "Play Tour" = "播放旅程";
 "Left" = "向左";
 "Up" = "向上";
@@ -603,7 +607,7 @@
 "End of the range" = "范围终点";
 "Resume" = "继续";
 "Place %lld of %lld" = "地点 %1$lld / %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "地图集：在地图上显示照片和视频；再按一次：回到网格或列表";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "从列表：地图集，在地图上显示照片和视频；从地图集：回到网格";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "地图集：移到该方向上地图中最近的项目；向下进入无位置项目条";
 "Atlas: zoom the map in / out" = "地图集：放大 / 缩小地图";
 "Atlas: on several items, zoom in until they part; on one, open it" = "地图集：在多个项目上放大直到分开；在单个项目上打开它";
@@ -671,3 +675,6 @@
 "“%@” is no longer in the Trash." = "“%@”已不在废纸篓中。";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "无法将“%@”从废纸篓中取出，它仍在废纸篓中。%@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "撤销 / 重做：重新命名、移到废纸篓、移动、拷贝、新建文件夹";
+"Copy Path" = "拷贝路径";
+"Copy Path of Selected Item" = "拷贝所选项目的路径";
+"Right-click to copy" = "右键点按以拷贝";

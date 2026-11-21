@@ -370,19 +370,23 @@ final class AtlasTests: XCTestCase {
         return (window, left, shortcuts, tree)
     }
 
-    func testWShowsTheAtlasAndTTheTourWithTheKeysAsSet() async throws {
+    func testLShowsTheAtlasAndTTheTourWithTheKeysAsSet() async throws {
         let (w, m, s, tree) = try window()
         await openAndWait(m, tree.root)
         m.viewMode = .list
-        XCTAssertTrue(w.typeKey(.char("w")))
-        XCTAssertEqual(m.viewMode, .atlas)
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertEqual(m.viewMode, .atlas, "after the list: the Atlas")
         await waitUntil { m.atlas.items.count == 14 && m.atlas.isComplete }
         m.atlas.mapSize = CGSize(width: 960, height: 600)
         m.atlas.fitAll()
         m.atlas.clusterNow()
-        XCTAssertTrue(w.typeKey(.char("w")))
-        XCTAssertEqual(m.viewMode, .list, "W again: back to where it came from")
-        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertEqual(m.viewMode, .grid, "after the Atlas: the grid")
+        XCTAssertFalse(w.typeKey(.char("w")), "W is no view's key")
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertEqual(m.viewMode, .list)
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertEqual(m.viewMode, .atlas)
         XCTAssertEqual(w.shortcutContext, .grid)
 
         // Selection is the pane's: the arrows choose a tile, Space opens it
@@ -423,17 +427,17 @@ final class AtlasTests: XCTestCase {
         XCTAssertFalse(m.touring)
         XCTAssertEqual(w.shortcutContext, .grid)
 
-        // W and T on other keys
-        s.assign(KeyChord(stored: "g")!, to: .toggleAtlas, replacing: KeyChord(.char("w")))
+        // L and T on other keys
+        s.assign(KeyChord(stored: "g")!, to: .toggleList, replacing: KeyChord(.char("l")))
         s.assign(KeyChord(stored: "@$t")!, to: .startTour, replacing: KeyChord(.char("t")))
-        XCTAssertFalse(w.typeKey(.char("w")))
+        XCTAssertFalse(w.typeKey(.char("l")))
         XCTAssertEqual(m.viewMode, .atlas)
         XCTAssertTrue(w.typeKey(.char("g")))
-        XCTAssertEqual(m.viewMode, .list)
+        XCTAssertEqual(m.viewMode, .grid)
         XCTAssertFalse(w.typeKey(.char("t")))
         XCTAssertFalse(m.touring)
         XCTAssertTrue(w.typeKey(.char("t"), command: true, shift: true))
-        XCTAssertTrue(m.touring, "the tour starts from the list too, in the Atlas")
+        XCTAssertTrue(m.touring, "the tour starts from the grid too, in the Atlas")
         XCTAssertEqual(m.viewMode, .atlas)
         XCTAssertTrue(w.typeKey(.escape))
         XCTAssertFalse(m.touring)
@@ -548,12 +552,14 @@ final class AtlasTests: XCTestCase {
         let geiranger = try XCTUnwrap(m.entries.first { $0.name == "norway-09-geiranger.jpg" })
         m.atlas.select(geiranger.url)
         XCTAssertEqual(m.selectedEntry?.name, "norway-09-geiranger.jpg")
-        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertTrue(w.typeKey(.char("l")))
         XCTAssertEqual(m.viewMode, .grid)
         XCTAssertEqual(m.selectedEntry?.name, "Day 3", "the folder the item lies in")
         XCTAssertFalse(m.showsDeep)
-        // A folder selected in the grid: the Atlas selects its first item once it comes
-        XCTAssertTrue(w.typeKey(.char("w")))
+        // A folder selected in the grid (and the list): the Atlas selects its first item once it comes
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertEqual(m.selectedEntry?.name, "Day 3")
+        XCTAssertTrue(w.typeKey(.char("l")))
         await waitUntil({ !m.deepWalking && m.entries.count == 14 }, timeout: 10)
         XCTAssertEqual(m.selectedEntry?.name, "norway-08-geiranger.jpg")
         // The full view pages through every folder's items, in the pane's order
@@ -568,21 +574,22 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(m.viewMode, .atlas)
         XCTAssertEqual(m.selectedEntry?.name, "norway-12-alesund.jpg", "the item shown last stays selected")
         // Two levels down: the folder of the listing that holds it
-        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertTrue(w.typeKey(.char("l")))
         XCTAssertEqual(m.selectedEntry?.name, "Day 4")
         // A photo of the folder itself stays selected either way
         m.selectEntry(named: "norway-02-bryggen.jpg")
-        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertTrue(w.typeKey(.char("l")))
+        XCTAssertTrue(w.typeKey(.char("l")))
         await waitUntil({ !m.deepWalking }, timeout: 10)
         XCTAssertEqual(m.selectedEntry?.name, "norway-02-bryggen.jpg")
-        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertTrue(w.typeKey(.char("l")))
         XCTAssertEqual(m.selectedEntry?.name, "norway-02-bryggen.jpg")
     }
 
     func testSwitchingWhileTheWalkRunsKeepsTheSelectionInRange() async throws {
         let (w, m, _) = try await atlasOfTheTree()
         for round in 0..<20 {
-            w.typeKey(.char("w"))
+            w.typeKey(.char("l"))
             if round % 3 == 0 { m.atlasSubfolders.toggle() }
             if let selection = m.selection { XCTAssertTrue(m.entries.indices.contains(selection), "round \(round)") }
             w.typeKey(.right)

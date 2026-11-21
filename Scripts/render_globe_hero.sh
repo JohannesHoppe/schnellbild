@@ -10,9 +10,11 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 BUILD="$ROOT/build/globe-hero"
 mkdir -p "$BUILD"
+# The module's files but its SwiftUI views (their @State needs SwiftUI's macro
+# plugin, which the Command Line Tools' swiftc lacks)
 SOURCES=()
-for f in CountryNames Gzip MapLabels MapRenderer MapStyle Mercator PMTiles PlaceIndex VectorTile GlobeMath GlobeData GlobeShaders GlobeRenderer; do
-    SOURCES+=("$ROOT/OfflineMap/$f.swift")
+for f in "$ROOT"/OfflineMap/*.swift; do
+    grep -q '^import SwiftUI' "$f" || SOURCES+=("$f")
 done
 newest="$(ls -t "${SOURCES[@]}" "$ROOT/Scripts/render_globe_hero.swift" | head -1)"
 if [ ! -x "$BUILD/render" ] || [ "$newest" -nt "$BUILD/render" ]; then

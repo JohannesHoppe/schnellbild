@@ -2,7 +2,8 @@
 # Draws one short clip per video format Schnellbild shows into
 # Tests/SchnellbildTests/Videos, all from UITests/Fixtures/clip.mp4 (2 s,
 # a keyframe every half second, as camcorders and encoders write them), and
-# the UI tests' videos with two audio and two subtitle tracks
+# Resources/FormatsCheck.mkv (the app's copy of clip.mkv), the UI tests'
+# videos with two audio and two subtitle tracks
 # (UITests/Fixtures/tracks.mp4 and tracks.mkv), the HDR clips (`hdr` as
 # the only argument draws just those), the AC-3 / E-AC-3 sound (`sound`)
 # and Teletext subtitles (`teletext`).
@@ -103,6 +104,8 @@ if [ "${1:-}" = teletext ]; then draw_teletext; exit 0; fi
 
 make() { local name=$1; shift; "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -t 2 -an -g 12 "$@" "$OUT/$name"; }
 make clip.mkv  -c:v libx264 -pix_fmt yuv420p
+# The app's own check whether the user turned the media extension on (MediaFormats.isOn)
+cp "$OUT/clip.mkv" Resources/FormatsCheck.mkv
 make clip.webm -c:v libvpx-vp9 -crf 40 -b:v 0
 make clip.avi  -c:v mpeg4 -q:v 8 -vtag xvid
 make clip.mp4  -c:v libx264 -pix_fmt yuv420p

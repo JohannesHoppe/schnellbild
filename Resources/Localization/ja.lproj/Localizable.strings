@@ -175,7 +175,7 @@
 "Archive" = "アーカイブ";
 "as Grid" = "グリッドで表示";
 "as List" = "リストで表示";
-"Grid or list (a click on a column sorts by it)" = "グリッドまたはリスト（列をクリックするとその列で並べ替え）";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "次の表示：グリッド、リスト、アトラス（列をクリックするとその列で並べ替え）";
 "Back (where you were, also a search); without history the enclosing folder" = "戻る（前の場所、検索にも）。履歴がなければ上のフォルダへ";
 "Click to rename this folder" = "クリックしてこのフォルダの名前を変更";
 "Privacy Policy" = "プライバシーポリシー";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "露出、コントラスト、彩度、シャープネスを手動で（%@）";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "このフォルダとサブフォルダのすべての画像とビデオのスライドショー。検索中は検索結果（%@）";
 "Sort by (%@; press again to reverse)" = "並べ替え（%@。もう一度押すと逆順）";
-"Grid or list (%@)" = "グリッドまたはリスト（%@）";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "ミニキーボード：画面上の内容のキー、クリック可能（%@）";
 "Bookmarks (%@: this folder; %@: go)" = "ブックマーク（%1$@：このフォルダ、%2$@：開く）";
 "Close the playlist (%@)" = "プレイリストを閉じる（%@）";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "終了（%@ は確認あり）";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "ボスキー：すぐに非表示・消音。%@ または Dock のアイコンで元に戻る";
 "⌘-click" = "⌘-クリック";
-"Grid or list" = "グリッドまたはリスト";
+"Next view (grid, list, Atlas)" = "次の表示（グリッド、リスト、アトラス）";
 "General" = "一般";
 "no key" = "キーなし";
 "Back, or the enclosing folder" = "戻る、または親フォルダ";
 "Boss key" = "ボスキー";
+"Boss key on" = "ボスキーをオン";
+"Boss key off" = "ボスキーをオフ";
+"Boss key on: every window turns invisible and every video silent at once" = "ボスキーをオン：すべてのウインドウがすぐに見えなくなり、すべてのビデオが消音";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "ボスキーをオフ：Schnellbild を前面にして（⌘-Tab）1 秒以内に 3 回押す";
+"Every window turns invisible and every video silent at once." = "すべてのウインドウがすぐに見えなくなり、すべてのビデオが消音になります。";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Schnellbild を前面にして（⌘-Tab）ボスキーを 1 秒以内に 3 回押します。";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild はすぐに消え、すべてのビデオが消音になります。Dock のアイコンをクリックしても元に戻りません。元に戻すには、Schnellbild に切り替えて（⌘-Tab）%@ を 1 秒以内に 3 回押します。";
 "End the slideshow" = "スライドショーを終了";
 "First item" = "最初の項目";
 "Last item" = "最後の項目";
@@ -570,14 +575,13 @@
 "Route" = "ルート";
 "Date Source" = "日付のソース";
 "Atlas" = "アトラス";
-"Atlas (map)" = "アトラス（地図）";
 "Play the tour" = "旅をたどる";
 "Tour: pause / resume" = "旅：一時停止 / 再開";
 "Tour: previous place" = "旅：前の場所";
 "Tour: next place" = "旅：次の場所";
 "End the tour" = "旅を終了";
 "as Atlas" = "アトラス";
-"Grid or list (%@), Atlas (%@)" = "グリッドまたはリスト（%1$@）、アトラス（%2$@）";
+"Next view: grid, list, Atlas (%@)" = "次の表示：グリッド、リスト、アトラス（%@）";
 "Play Tour" = "旅をたどる";
 "Left" = "左";
 "Up" = "上";
@@ -603,7 +607,7 @@
 "End of the range" = "範囲の終了";
 "Resume" = "再開";
 "Place %lld of %lld" = "場所 %1$lld / %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "アトラス：写真とビデオを地図上に表示。もう一度押すとグリッドかリストに戻る";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "リストから：アトラス、写真とビデオを地図上に表示。アトラスから：グリッドに戻る";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "アトラス：その方向で地図上の最も近い項目へ。下で位置情報のない項目の列へ";
 "Atlas: zoom the map in / out" = "アトラス：地図を拡大 / 縮小";
 "Atlas: on several items, zoom in until they part; on one, open it" = "アトラス：複数の項目では分かれるまで拡大、1件なら開く";
@@ -671,3 +675,6 @@
 "“%@” is no longer in the Trash." = "“%@”はもうゴミ箱にありません。";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@”をゴミ箱から取り出せなかったため、ゴミ箱に残っています。%@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "取り消す / やり直す：名前変更、ゴミ箱に入れる、移動、コピー、新規フォルダ";
+"Copy Path" = "パスをコピー";
+"Copy Path of Selected Item" = "選択した項目のパスをコピー";
+"Right-click to copy" = "右クリックでコピー";
