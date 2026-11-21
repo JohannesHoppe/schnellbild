@@ -329,20 +329,25 @@ enum GlobeTilePlan {
         let flatness = projection.flatness
         let wantsSatellite = satellite && flatness < satelliteFlatness
         guard wantsSatellite || map else { return plan }
-        var samples = samples(of: projection, margin: margin)
+        // Each view's points with its flatness and its finest map zoom
+        var views = [(samples: samples(of: projection, margin: margin), flatness: flatness, finest: finestMapZoom(for: projection))]
         for (k, camera) in ahead.enumerated() {
             var s = scene
             s.camera = camera
+            let p = s.projection
             // After every sample of the view itself
-            samples += Self.samples(of: s.projection, margin: 0, offset: 1e6 * Double(k + 1)).map { var a = $0; a.inView = false; return a }
+            views.append((Self.samples(of: p, margin: 0, offset: 1e6 * Double(k + 1)).map { var a = $0; a.inView = false; return a },
+                          p.flatness, finestMapZoom(for: p)))
         }
-        func ordered(_ tile: (Sample) -> TileAtlas.Key?, capacity: Int) -> (required: [TileAtlas.Key], all: [TileAtlas.Key]) {
+        func ordered(_ tile: (Sample, Double, Int) -> TileAtlas.Key?, capacity: Int) -> (required: [TileAtlas.Key], all: [TileAtlas.Key]) {
             var best: [TileAtlas.Key: (inView: Bool, distance: Double)] = [:]
-            for s in samples {
-                guard let key = tile(s) else { continue }
-                let rank = (inView: s.inView, distance: s.inView ? s.distance : s.distance + 1e5)
-                if let have = best[key], have.distance <= rank.distance { continue }
-                best[key] = rank
+            for view in views {
+                for s in view.samples {
+                    guard let key = tile(s, view.flatness, view.finest) else { continue }
+                    let rank = (inView: s.inView, distance: s.inView ? s.distance : s.distance + 1e5)
+                    if let have = best[key], have.distance <= rank.distance { continue }
+                    best[key] = rank
+                }
             }
             // The view's own tiles first, the coarser before the finer, then by the distance from the middle
             let sorted = best.sorted { a, b in
@@ -354,13 +359,12 @@ enum GlobeTilePlan {
             return (all.filter { best[$0.key]!.inView }.map(\.key), all.map(\.key))
         }
         if wantsSatellite {
-            let s = ordered({ satelliteTile($0, flatness: flatness) }, capacity: satelliteCapacity)
+            let s = ordered({ s, flatness, _ in satelliteTile(s, flatness: flatness) }, capacity: satelliteCapacity)
             plan.satelliteRequired = s.required
             plan.satellite = s.all
         }
         if map {
-            let finest = finestMapZoom(for: projection)
-            let m = ordered({ mapTile($0, finest: finest) }, capacity: mapCapacity)
+            let m = ordered({ s, _, finest in mapTile(s, finest: finest) }, capacity: mapCapacity)
             plan.mapRequired = m.required
             plan.map = m.all
         }

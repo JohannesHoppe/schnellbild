@@ -351,12 +351,20 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     /// textures for the camera zoomed out to just below the flat zoom (the
     /// world texture, the map's and the satellite picture's tiles) are made ahead.
     private func prewarm() {
-        guard let renderer, !flatOnly, bounds.width > 0, bounds.height > 0 else { return }
-        let flatZoom = projection.flatZoom
-        guard camera.zoom < flatZoom + Self.prewarmSteps else { return }
+        guard let renderer, let way = wayOut() else { return }
         var next = scene
-        next.camera.zoom = flatZoom - 0.01
+        next.camera = way
         renderer.textures.prepare(for: next)
+    }
+
+    /// On the flat map within `prewarmSteps` of the flat zoom: the camera zoomed out to just below it.
+    private func wayOut() -> MapCamera? {
+        guard !flatOnly, bounds.width > 0, bounds.height > 0, projection.isFlat else { return nil }
+        let flatZoom = projection.flatZoom
+        guard camera.zoom < flatZoom + Self.prewarmSteps else { return nil }
+        var next = camera
+        next.zoom = flatZoom - 0.01
+        return next
     }
 
     /// Fades the globe out once the flat map's tiles are drawn (at most a second later).
@@ -434,19 +442,23 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
 
     /// Where the view is going: a throw's camera half way and at its end
     /// (the speed falls off over `throwDecay`, so it carries speed × decay),
-    /// a drag's in its speed of the last tenth of a second, a glide's target.
-    /// The globe's tiles there are made after the view's own.
+    /// a drag's in its speed of the last tenth of a second, a glide's target,
+    /// on the flat map the globe's camera on the way out (`prewarm`). The
+    /// globe's tiles there are made after the view's own.
     func ahead() -> [MapCamera] {
-        if let g = glide { return [g.to] }
+        var cameras: [MapCamera] = []
+        if let g = glide { cameras.append(g.to) }
+        if let way = wayOut() { cameras.append(way) }
+        guard glide == nil else { return cameras }
         var v = velocity
         if v == nil, dragStart != nil, !dragTilts, let first = dragSteps.first, let last = dragSteps.last, dragSteps.count >= 2,
            ProcessInfo.processInfo.systemUptime - last.0 < 0.1 {
             let span = max(0.016, last.0 - first.0)
             v = (dragSteps.reduce(0) { $0 + $1.1 } / span, dragSteps.reduce(0) { $0 + $1.2 } / span)
         }
-        guard let v, hypot(v.x, v.y) > 150 else { return [] }
+        guard let v, hypot(v.x, v.y) > 150 else { return cameras }
         let reach = Self.throwDecay
-        return [pan(by: v.x * reach / 2, v.y * reach / 2), pan(by: v.x * reach, v.y * reach)].map(held)
+        return cameras + [pan(by: v.x * reach / 2, v.y * reach / 2), pan(by: v.x * reach, v.y * reach)].map(held)
     }
 
     /// How fast a throw slows down: its speed falls by e every this many seconds

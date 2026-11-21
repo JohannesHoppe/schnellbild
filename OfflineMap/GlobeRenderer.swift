@@ -462,7 +462,9 @@ public final class GlobeTextures: @unchecked Sendable {
     private let planQueue = DispatchQueue(label: "Globe tile plans", qos: .userInitiated)
     /// The plans made last, the newest last (a view asked for again finds its plan)
     private var plans: [(key: PlanKey, plan: GlobeTilePlan.Plan)] = []
-    private var planWaiting: (key: PlanKey, scene: GlobeScene)?
+    /// The views asked for and not planned yet: the newest two (a view asked
+    /// for just before another, as the flat map's way out before its own frame)
+    private var planWaiting: [(key: PlanKey, scene: GlobeScene)] = []
     private var planning = false
 
     init(device: MTLDevice, queue: MTLCommandQueue, map: MapRenderer?, data: GlobeData) {
@@ -557,8 +559,9 @@ public final class GlobeTextures: @unchecked Sendable {
         let needHeights = map != nil && heights == nil && !heightsRunning
         if needHeights { heightsRunning = true }
         let planned = plans.last { $0.key == key }?.plan
-        if planned == nil {
-            planWaiting = (key, scene)
+        if planned == nil, !planWaiting.contains(where: { $0.key == key }) {
+            planWaiting.append((key, scene))
+            if planWaiting.count > 2 { planWaiting.removeFirst(planWaiting.count - 2) }
         }
         let startPlanning = planned == nil && !planning
         if startPlanning { planning = true }
@@ -593,13 +596,12 @@ public final class GlobeTextures: @unchecked Sendable {
         }
     }
 
-    /// Makes the plan asked for last, then the one asked for meanwhile, and so on (on `planQueue`).
+    /// Makes the plans asked for, oldest first, until none waits (on `planQueue`).
     private func makePlans() {
         while true {
             let next: (key: PlanKey, scene: GlobeScene)? = lock.withLock {
-                guard let w = planWaiting else { planning = false; return nil }
-                planWaiting = nil
-                return w
+                guard !planWaiting.isEmpty else { planning = false; return nil }
+                return planWaiting.removeFirst()
             }
             guard let (key, scene) = next else { return }
             let mapWanted = map != nil && Self.needsMap(scene, satellite: satelliteBase != nil)
@@ -611,6 +613,8 @@ public final class GlobeTextures: @unchecked Sendable {
                 if plans.count > 8 { plans.removeFirst(plans.count - 8) }
             }
             request(plan, dark: scene.dark)
+            // A view whose tiles are all kept already is ready now
+            changed()
         }
     }
 
