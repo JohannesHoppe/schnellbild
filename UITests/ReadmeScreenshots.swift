@@ -71,6 +71,13 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     /// them, so the bar counts along with the website's moving video. Left
     /// paused within the last seconds, so the video isn't resumed there later.
     private func shootVideoTimes() {
+        // The bar shows while the mouse moves over the video and stays while
+        // the mouse rests on it: here on the time played, off the slider
+        element("video.avkit").coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.4)).hover()
+        let bar = element("videoBar").firstMatch
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        let rest = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.13, dy: 0.5))
+        rest.hover()
         // Paused (it may have reached its end by now, which pauses it too)
         let playPause = element("videoBar.playPause").firstMatch
         XCTAssertTrue(playPause.waitForExistence(timeout: 5))
@@ -80,7 +87,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(position.waitForExistence(timeout: 5))
         for second in 1...6 {
             position.adjust(toNormalizedSliderPosition: (CGFloat(second) - 0.5) / 6)
-            element("video.avkit").hover()   // the pointer off the slider
+            rest.hover()
             shoot("bartime-\(second)", settle: 1)
         }
     }
