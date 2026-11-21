@@ -175,7 +175,7 @@
 "Archive" = "Arkisto";
 "as Grid" = "ruudukkona";
 "as List" = "luettelona";
-"Grid or list (a click on a column sorts by it)" = "Ruudukko tai luettelo (sarakkeen osoitus järjestää sen mukaan)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Seuraava näkymä: ruudukko, luettelo, kartasto (sarakkeen osoitus järjestää sen mukaan)";
 "Back (where you were, also a search); without history the enclosing folder" = "Takaisin (missä olit, myös hakuun); ilman historiaa ylempään kansioon";
 "Click to rename this folder" = "Nimeä kansio uudelleen osoittamalla";
 "Privacy Policy" = "Tietosuojakäytäntö";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Valotus, kontrasti, värikylläisyys ja terävyys käsin (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Diaesitys kaikista tämän kansion ja sen alikansioiden kuvista ja videoista; haun aikana: tuloksista (%@)";
 "Sort by (%@; press again to reverse)" = "Järjestä (%@; paina uudelleen kääntääksesi)";
-"Grid or list (%@)" = "Ruudukko tai luettelo (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Mininäppäimistö: näytöllä olevan sisällön näppäimet, klikattavissa (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Kirjanmerkit (%1$@: tämä kansio; %2$@: avaa)";
 "Close the playlist (%@)" = "Sulje soittolista (%@)";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Lopeta (%@ kysyy ensin)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Pomonäppäin: heti piiloon ja hiljaiseksi; %@ tai Dockin symboli tuo takaisin";
 "⌘-click" = "⌘-osoitus";
-"Grid or list" = "Ruudukko tai luettelo";
+"Next view (grid, list, Atlas)" = "Seuraava näkymä (ruudukko, luettelo, kartasto)";
 "General" = "Yleiset";
 "no key" = "ei näppäintä";
 "Back, or the enclosing folder" = "Takaisin tai yläkansio";
 "Boss key" = "Pomonäppäin";
+"Boss key on" = "Pomonäppäin päälle";
+"Boss key off" = "Pomonäppäin pois";
+"Boss key on: every window turns invisible and every video silent at once" = "Pomonäppäin päälle: jokainen ikkuna katoaa näkyvistä ja jokainen video hiljenee heti";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Pomonäppäin pois: paina sitä kolme kertaa sekunnin sisällä Schnellbild edessä (⌘ + Tab)";
+"Every window turns invisible and every video silent at once." = "Jokainen ikkuna katoaa näkyvistä ja jokainen video hiljenee heti.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Paina pomonäppäintä kolme kertaa sekunnin sisällä Schnellbild edessä (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild katoaa heti ja jokainen video hiljenee. Dockin symbolin osoittaminen ei tuo sitä takaisin. Tuo se takaisin siirtymällä Schnellbildiin (⌘ + Tab) ja painamalla %@ kolme kertaa sekunnin sisällä.";
 "End the slideshow" = "Lopeta diaesitys";
 "First item" = "Ensimmäinen kohde";
 "Last item" = "Viimeinen kohde";
@@ -570,14 +575,13 @@
 "Route" = "Reitti";
 "Date Source" = "Päivämäärän lähde";
 "Atlas" = "Kartasto";
-"Atlas (map)" = "Kartasto (kartta)";
 "Play the tour" = "Toista matka";
 "Tour: pause / resume" = "Matka: tauko / jatka";
 "Tour: previous place" = "Matka: edellinen paikka";
 "Tour: next place" = "Matka: seuraava paikka";
 "End the tour" = "Lopeta matka";
 "as Atlas" = "kartastona";
-"Grid or list (%@), Atlas (%@)" = "Ruudukko tai luettelo (%1$@), kartasto (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Seuraava näkymä: ruudukko, luettelo, kartasto (%@)";
 "Play Tour" = "Toista matka";
 "Left" = "Vasen";
 "Up" = "Ylös";
@@ -603,7 +607,7 @@
 "End of the range" = "Aikavälin loppu";
 "Resume" = "Jatka";
 "Place %lld of %lld" = "Paikka %1$lld/%2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Kartasto: kuvat ja videot kartalla; uudelleen: takaisin ruudukkoon tai luetteloon";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Luettelosta: kartasto, kuvat ja videot kartalla; kartastosta: takaisin ruudukkoon";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Kartasto: lähimpään kohteeseen kartalla siihen suuntaan; alas sijainnittomien kohteiden riville";
 "Atlas: zoom the map in / out" = "Kartasto: lähennä / loitonna karttaa";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Kartasto: useassa kohteessa lähennä, kunnes ne erottuvat; yhdessä avaa se";
@@ -671,3 +675,6 @@
 "“%@” is no longer in the Trash." = "”%@” ei ole enää roskakorissa.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Kohdetta ”%@” ei voitu ottaa pois roskakorista, joten se on yhä siellä. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Kumoa / tee uudelleen: nimeäminen, siirto roskakoriin, siirto, kopiointi, uusi kansio";
+"Copy Path" = "Kopioi polku";
+"Copy Path of Selected Item" = "Kopioi valitun kohteen polku";
+"Right-click to copy" = "Kopioi oikealla osoituksella";

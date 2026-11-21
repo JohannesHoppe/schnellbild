@@ -165,7 +165,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
         tile("Geirangerfjord.jpg").click()
         waitForSelected("Geirangerfjord.jpg")
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
         let deadline = Date().addingTimeInterval(20)
@@ -203,7 +203,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
                                      ("globe-world", "38,20,2.7,0,0", "2026-06-21T10:30:00Z")] {
             launch(open: world, extra: ["--globe-camera=\(camera)", "--globe-date=\(date)"])
             XCTAssertTrue(tile("Rome-Colosseum.jpg").waitForExistence(timeout: 15))
-            app.typeKey("w", modifierFlags: [])
+            showAtlasFromTheGrid()
             XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
             let pins = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
             let deadline = Date().addingTimeInterval(20)
@@ -278,6 +278,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         row.click()
         shoot("list")
         app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(tile("Lofoten").waitForExistence(timeout: 10))
 
         // The dual pane: the trip on the right, two photos marked on the left
         app.typeKey("d", modifierFlags: [])

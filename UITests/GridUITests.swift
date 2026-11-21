@@ -288,9 +288,35 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("hidden", timeout: 10) { !self.app.windows.firstMatch.exists }
     }
 
+    /// The boss key: X hides the app; brought forward again (as by ⌘-Tab)
+    /// it stays engaged, two X don't bring it back, three in a row do. Read
+    /// from the app's log (`BossKey`), as the windows stay in the tree while
+    /// invisible.
+    func testBossKeyComesBackOnlyOnThreeX() {
+        launchOnTempDir()
+        let log = testLog("app.log")
+        func logged(_ text: String) -> Bool { ((try? String(contentsOf: log, encoding: .utf8)) ?? "").contains(text) }
+        app.typeKey("x", modifierFlags: [])
+        eventually("engaged", timeout: 10) { logged("boss key engaged") }
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.activate()
+        eventually("brought forward, still engaged", timeout: 10) { logged("boss key: brought forward") }
+        app.typeKey("x", modifierFlags: [])
+        app.typeKey("x", modifierFlags: [])
+        eventually("both keys arrived", timeout: 10) {
+            ((try? String(contentsOf: log, encoding: .utf8)) ?? "").components(separatedBy: "boss key: typed x").count == 3
+        }
+        // More than a second later: counting starts over
+        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+        XCTAssertFalse(logged("boss key released"), "two X don't bring it back")
+        for _ in 0..<3 { app.typeKey("x", modifierFlags: []) }
+        eventually("three X bring it back", timeout: 10) { logged("boss key released") }
+        eventually("the window is there", timeout: 10) { self.app.windows.firstMatch.exists }
+    }
+
     /// L shows the list: whole names in rows; a click anywhere on a column's
     /// header sorts by it (again: the other way), like the sort menu; a double
-    /// click opens the picture.
+    /// click opens the picture. L again: the Atlas, then the grid.
     func testTheListView() throws {
         try put("huge.jpg", at: "d-large.jpg")
         launchOnTempDir()
@@ -312,7 +338,9 @@ final class GridUITests: SchnellbildUITestCase {
         open(element("row.b.jpg").firstMatch, until: "the picture opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("l", modifierFlags: [])
-        XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "tiles again")
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 5), "after the list: the Atlas")
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "after the Atlas: tiles again")
     }
 
     /// ⌘-click marks one more item, ⇧-click the range from the last one,

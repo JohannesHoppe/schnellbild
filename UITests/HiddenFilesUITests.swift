@@ -35,13 +35,13 @@ final class HiddenFilesUITests: SchnellbildUITestCase {
         searchField.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 10), file: file, line: line)
         // The Atlas with the subfolders: Paris only while hidden items show
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid(file: file, line: line)
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10), file: file, line: line)
         let count = element("atlasCount")
         eventually(shown ? "Sydney and Paris on the map" : "Sydney alone on the map", timeout: 30, file: file, line: line) {
             self.text(of: count).contains(shown ? "2 on the map" : "1 on the map")
         }
-        app.typeKey("w", modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 10), file: file, line: line)
     }
 

@@ -44,12 +44,14 @@ final class ShortcutsUITests: SchnellbildUITestCase {
         app.typeKey("w", modifierFlags: .command)
         eventually("Settings closed") { !self.element("shortcuts.list").exists }
 
-        // In the window: J shows the list, L does nothing, E goes back to the grid
+        // In the window: J shows the list, L does nothing, E goes on to the Atlas, then the grid
         app.typeKey("j", modifierFlags: [])
         XCTAssertTrue(element("list").waitForExistence(timeout: 5), "J shows the list")
         app.typeKey("l", modifierFlags: [])
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         XCTAssertTrue(element("list").exists, "L does nothing now")
+        app.typeKey("e", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 5), "E: the Atlas")
         app.typeKey("e", modifierFlags: [])
         XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "E: the tiles again")
 

@@ -73,7 +73,7 @@
     },
     {
       "title": "Le tue foto sulla mappa e sul globo",
-      "text": "<p><kbd>W</kbd> mostra le foto e i video di una cartella e delle sue sottocartelle nel luogo in cui sono stati scattati. Da molto lontano la mappa è un globo davanti al cielo stellato, se vuoi con il giorno e la notte e le città illuminate sul lato notturno; avvicinandoti diventa la mappa piana.</p><ul><li>La linea del tempo ordina il viaggio per data: trascina su un tratto e la mappa mostra solo quella parte</li><li><kbd>T</kbd> riproduce il viaggio: la mappa scorre da un luogo all’altro, le foto appaiono grandi, i video girano per qualche secondo</li><li>La mappa è dentro l’app: nulla va online, nessun luogo lascia il tuo Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> passa dalla griglia all’elenco e poi all’atlante. L’atlante mostra le foto e i video di una cartella e delle sue sottocartelle nel luogo in cui sono stati scattati. Da molto lontano la mappa è un globo davanti al cielo stellato, se vuoi con il giorno e la notte e le città illuminate sul lato notturno; avvicinandoti diventa la mappa piana.</p><ul><li>La linea del tempo ordina il viaggio per data: trascina su un tratto e la mappa mostra solo quella parte</li><li><kbd>T</kbd> riproduce il viaggio: la mappa scorre da un luogo all’altro, le foto appaiono grandi, i video girano per qualche secondo</li><li>La mappa è dentro l’app: nulla va online, nessun luogo lascia il tuo Mac</li></ul>",
       "alt": "Le foto di un viaggio sul globo, nella vista Atlante"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Ogni tasto a portata di mano",
-      "text": "<p><kbd>F1</kbd> elenca tutti i tasti, anche da stampare; <kbd>K</kbd> mostra una piccola tastiera da cliccare. Scegli i tuoi tasti, oppure i tasti come in Phiewer. Griglia o elenco (<kbd>L</kbd>), ordinamento per nome, tipo, data, dimensione o distanza da un luogo, più finestre e un tasto capo (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> elenca tutti i tasti, anche da stampare; <kbd>K</kbd> mostra una piccola tastiera da cliccare. Scegli i tuoi tasti, oppure i tasti come in Phiewer. Griglia, elenco o atlante (<kbd>L</kbd>), ordinamento per nome, tipo, data, dimensione o distanza da un luogo, più finestre e un tasto capo (<kbd>X</kbd>).</p>",
       "alt": "L’elenco dei tasti (F1)"
     },
     {

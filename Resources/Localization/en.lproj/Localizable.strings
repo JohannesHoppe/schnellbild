@@ -175,7 +175,7 @@
 "Archive" = "Archive";
 "as Grid" = "as Grid";
 "as List" = "as List";
-"Grid or list (a click on a column sorts by it)" = "Grid or list (a click on a column sorts by it)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Next view: grid, list, Atlas (a click on a column sorts by it)";
 "Back (where you were, also a search); without history the enclosing folder" = "Back (where you were, also a search); without history the enclosing folder";
 "Click to rename this folder" = "Click to rename this folder";
 "Privacy Policy" = "Privacy Policy";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Exposure, contrast, saturation and sharpness by hand (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)";
 "Sort by (%@; press again to reverse)" = "Sort by (%@; press again to reverse)";
-"Grid or list (%@)" = "Grid or list (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Mini keyboard: the keys of what's on screen, clickable (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Bookmarks (%@: this folder; %@: go)";
 "Close the playlist (%@)" = "Close the playlist (%@)";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Quit (%@ asks first)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Boss key: hidden and silent at once; %@ or the Dock icon brings it back";
 "⌘-click" = "⌘-click";
-"Grid or list" = "Grid or list";
+"Next view (grid, list, Atlas)" = "Next view (grid, list, Atlas)";
 "General" = "General";
 "no key" = "no key";
 "Back, or the enclosing folder" = "Back, or the enclosing folder";
 "Boss key" = "Boss key";
+"Boss key on" = "Boss key on";
+"Boss key off" = "Boss key off";
+"Boss key on: every window turns invisible and every video silent at once" = "Boss key on: every window turns invisible and every video silent at once";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)";
+"Every window turns invisible and every video silent at once." = "Every window turns invisible and every video silent at once.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Press the boss key three times within a second with Schnellbild in front (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second.";
 "End the slideshow" = "End the slideshow";
 "First item" = "First item";
 "Last item" = "Last item";
@@ -570,14 +575,13 @@
 "Route" = "Route";
 "Date Source" = "Date Source";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (map)";
 "Play the tour" = "Play the tour";
 "Tour: pause / resume" = "Tour: pause / resume";
 "Tour: previous place" = "Tour: previous place";
 "Tour: next place" = "Tour: next place";
 "End the tour" = "End the tour";
 "as Atlas" = "as Atlas";
-"Grid or list (%@), Atlas (%@)" = "Grid or list (%@), Atlas (%@)";
+"Next view: grid, list, Atlas (%@)" = "Next view: grid, list, Atlas (%@)";
 "Play Tour" = "Play Tour";
 "Left" = "Left";
 "Up" = "Up";
@@ -603,7 +607,7 @@
 "End of the range" = "End of the range";
 "Resume" = "Resume";
 "Place %lld of %lld" = "Place %lld of %lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas: the photos and videos on the map; again: back to the grid or list";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: to the nearest item on the map that way; down into the strip of items without a location";
 "Atlas: zoom the map in / out" = "Atlas: zoom the map in / out";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: on several items, zoom in until they part; on one, open it";
@@ -671,3 +675,6 @@
 "“%@” is no longer in the Trash." = "“%@” is no longer in the Trash.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” couldn't be taken out of the Trash and is still there. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Undo / redo renaming, trashing, moving, copying, a new folder";
+"Copy Path" = "Copy Path";
+"Copy Path of Selected Item" = "Copy Path of Selected Item";
+"Right-click to copy" = "Right-click to copy";

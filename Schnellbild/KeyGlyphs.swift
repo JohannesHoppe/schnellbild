@@ -111,9 +111,9 @@ struct KeyCaps: Equatable {
     /// Several ways to the same: " / " between them.
     static func either(_ choices: [KeyCaps]) -> KeyCaps { join(choices, by: .or) }
 
-    /// The same key pressed `count` times: [X] [X] [X].
-    static func sequence(_ chord: KeyChord, count: Int, glyphs: KeyGlyphs = .current) -> KeyCaps {
-        join(Array(repeating: Self.chord(chord, glyphs: glyphs), count: max(count, 0)), by: .then)
+    /// The same key pressed `times` in a row: [X] [X] [X].
+    static func sequence(_ chord: KeyChord, times: Int, glyphs: KeyGlyphs = .current) -> KeyCaps {
+        join(Array(repeating: Self.chord(chord, glyphs: glyphs), count: max(times, 0)), by: .then)
     }
 
     /// From the first to the last: [⌘] + [1] … [⌘] + [5].

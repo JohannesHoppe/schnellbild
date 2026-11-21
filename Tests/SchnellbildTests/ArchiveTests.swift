@@ -446,6 +446,40 @@ final class ArchiveTests: XCTestCase {
         return tree.root.appendingPathComponent(name)
     }
 
+    /// A folder whose only media lie in an archive is shown as holding media
+    /// and previews the archive's pictures.
+    func testAFolderHoldingOnlyAnArchivePreviewsItsPictures() async throws {
+        let tree = try TempTree(self)
+        let archive = try makeZip(tree)
+        let box = try tree.folder("Box/Inner")
+        try FileManager.default.moveItem(at: archive, to: box.appendingPathComponent("Holiday.zip"))
+        let folder = tree.root.appendingPathComponent("Box")
+        let hasMedia = await BrowserModel.containsMedia(folder)
+        XCTAssertEqual(hasMedia, true)
+        let previews = await BrowserModel.folderPreviewFiles(in: folder)
+        XCTAssertEqual(Set(previews.map(\.lastPathComponent)), ["a.jpg", "b.jpg"])
+    }
+
+    /// Copy Path inside an archive copies the path through it, as the status
+    /// bar shows it; Reveal in Finder shows the archive.
+    func testCopyPathInsideAnArchiveIsThePathThroughIt() async throws {
+        let tree = try TempTree(self)
+        let archive = try makeZip(tree)
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        let inside = archive.appendingPathComponent("Day 1", isDirectory: true)
+        await openAndWait(m, inside)
+        XCTAssertEqual(m.shownPath, inside.path)
+        m.copyFolderPath()
+        XCTAssertEqual(spy.copiedTexts.count, 1)
+        XCTAssertTrue(spy.copiedTexts.first?.hasSuffix("/Holiday.zip/Day 1") == true, spy.copiedTexts.first ?? "")
+        m.selectEntry(named: "b.jpg")
+        m.copySelectedItemPath()
+        XCTAssertTrue(spy.copiedTexts.last?.hasSuffix("/Holiday.zip/Day 1/b.jpg") == true, spy.copiedTexts.last ?? "")
+        m.revealFolderInFinder()
+        XCTAssertEqual(spy.revealed.map(\.lastPathComponent), ["Holiday.zip"])
+    }
+
     func testAnArchiveBrowsesLikeAFolder() async throws {
         let tree = try TempTree(self)
         let archive = try makeZip(tree)

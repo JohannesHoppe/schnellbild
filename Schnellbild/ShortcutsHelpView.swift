@@ -13,9 +13,9 @@ enum HelpKeys {
     /// Several actions, one key each: [⌘] + [1] … [⌘] + [5] while they have
     /// Schnellbild's keys, else every key.
     case range([ShortcutAction])
-    /// The action's first key pressed `count` times, one after another:
-    /// [X] [X] [X].
-    case sequence(ShortcutAction, count: Int)
+    /// The action's first key typed `times` in a row, one key after the
+    /// other (the boss key's release): [X] [X] [X].
+    case sequence(ShortcutAction, times: Int)
     /// Keys that stay as they are (⌘Q, ⌃⌘F: the system's; the search
     /// field's keys), either of them.
     case fixed([KeyChord])
@@ -43,8 +43,8 @@ enum HelpKeys {
             } else {
                 caps = KeyCaps.either(actions.flatMap { shortcuts.keys($0) }.map(\.caps))
             }
-        case .sequence(let action, let count):
-            caps = shortcuts.keys(action).first.map { KeyCaps.sequence($0, count: count) } ?? KeyCaps()
+        case .sequence(let action, let times):
+            caps = shortcuts.keys(action).first.map { KeyCaps.sequence($0, times: times) } ?? KeyCaps()
         case .fixed(let keys):
             caps = KeyCaps.either(keys.map(\.caps))
         case .words(let words):
@@ -104,8 +104,6 @@ struct ShortcutsHelpView: View {
     /// The groups, with the keys as set.
     @MainActor
     static func groups(_ s: Shortcuts) -> [HelpGroup] {
-        let thrice = s.keys(.bossKey).first.map { key in Array(repeating: key.text, count: 3).joined(separator: " ") }
-            ?? String(localized: "no key")
         // The keys that end the slideshow; all but S close the playlist first
         let closers = s.keys(.endSlideshow).filter { $0 != KeyChord(.char("s")) }.map(\.text).joined(separator: " / ")
         // The Atlas's arrows (`atlasKey`), which can't be changed
@@ -117,7 +115,7 @@ struct ShortcutsHelpView: View {
                 Row(.action(.gridOpen), action: "Open picture or video · open folder or archive"),
                 Row(.action(.gridBack), action: "Back (where you were, also a search); without history the enclosing folder"),
                 Row(.pair(.gridFirst, .gridLast), action: "First / last item"),
-                Row(.action(.toggleList), action: "Grid or list (a click on a column sorts by it)"),
+                Row(.action(.toggleList), action: "Next view: grid, list, Atlas (a click on a column sorts by it)"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails), action: "Larger / smaller thumbnails"),
                 Row(.action(.gridRename), action: s.keys(.moveToOther).contains(KeyChord(.f6)) ? "Rename (F6 too in a single pane)" : "Rename"),
                 Row(.action(.newFolder), action: "New folder: type its name, ↩ creates it, Esc creates none"),
@@ -163,7 +161,7 @@ struct ShortcutsHelpView: View {
                     : String(localized: "End the slideshow (\(closers) close the playlist first)")),
             ]),
             ("Atlas", [
-                Row(.action(.toggleAtlas), action: "Atlas: the photos and videos on the map; again: back to the grid or list"),
+                Row(.action(.toggleList), action: "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid"),
                 Row(.words("arrows"), action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails), action: "Atlas: zoom the map in / out"),
                 Row(.words("double-click"), action: "Atlas: on several items, zoom in until they part; on one, open it"),
@@ -212,7 +210,8 @@ struct ShortcutsHelpView: View {
                 Row(.action(.hiddenFiles), action: "Show / hide hidden files and folders"),
                 Row(.action(.bookmark), action: "Bookmark the folder shown, or remove its bookmark"),
                 Row(.range(ShortcutAction.bookmarks), action: "Open bookmark 1 … 9"),
-                Row(.action(.bossKey), text: String(localized: "Boss key: hidden and silent at once; \(thrice) or the Dock icon brings it back")),
+                Row(.action(.bossKey), action: "Boss key on: every window turns invisible and every video silent at once"),
+                Row(.sequence(.bossKey, times: 3), action: "Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)"),
                 Row(.action(.help), action: "Show this list"),
             ]),
         ]
