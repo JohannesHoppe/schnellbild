@@ -631,7 +631,7 @@ public final class GlobeTextures: @unchecked Sendable {
         guard z > Double(baseZoom) else { return nil }
         let projection = scene.projection
         let flatTiles = Int(ceil(projection.flatZoom - 1e-9))
-        let zoom = max(baseZoom + 1, z > Double(flatTiles) && !projection.isFlat ? max(flatTiles, Int(floor(z))) : Int(ceil(z - 1e-9)))
+        let zoom = max(baseZoom + 1, z > Double(flatTiles) && !projection.isFlat ? Int(floor(z)) : min(flatTiles, Int(ceil(z - 1e-9))))
         let n = 1 << zoom
         let u = WebMercator.unitPoint(scene.camera.center)
         let x0 = Int((Double(u.x) * Double(n)).rounded()) - 4

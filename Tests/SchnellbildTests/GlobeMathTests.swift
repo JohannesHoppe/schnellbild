@@ -302,6 +302,25 @@ final class GlobeMathTests: XCTestCase {
         XCTAssertEqual(shown(10).globeZoom, GlobeProjection.straightZoom)
     }
 
+    /// The globe's detail tiles: the zoom shown rounded up, at most the flat
+    /// zoom's straight down (also on the frames that fade out over the flat
+    /// map); a tilted camera straightening beyond it gets the zoom shown
+    /// rounded down, as sharp as the flat map it hands over to.
+    func testTheDetailTilesFollowATiltedCameraIn() {
+        let alps = Coordinate(latitude: 46, longitude: 9)
+        func detail(_ zoom: Double, pitch: Double = 0) -> Int? {
+            GlobeTextures.detailKey(for: GlobeScene(camera: MapCamera(center: alps, zoom: zoom, pitch: pitch), size: size))?.zoom
+        }
+        let flat = Int(ceil(GlobeProjection.flatZoom(for: size) - 1e-9))
+        XCTAssertNil(detail(2.5))
+        XCTAssertEqual(detail(3.4), 4)
+        XCTAssertEqual(detail(GlobeProjection.flatZoom(for: size) - 0.01), flat)
+        for zoom in [GlobeProjection.flatZoom(for: size) + 0.5, 8, 11] { XCTAssertEqual(detail(zoom), flat, "straight down at \(zoom)") }
+        XCTAssertEqual(detail(6.5, pitch: 60), 6)
+        XCTAssertEqual(detail(8.2, pitch: 60), 8)
+        XCTAssertEqual(detail(9, pitch: 60), flat, "flat again from `straightZoom` on")
+    }
+
     /// Zooming through the range in small steps moves every place on screen
     /// a little each step, never with a jump (globe, tilt, flattening and
     /// the hand-over to the flat map), in both directions.
