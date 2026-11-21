@@ -404,13 +404,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Çık (%@ önce sorar)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Patron tuşu: anında gizli ve sessiz; %@ veya Dock’taki simge geri getirir";
 "⌘-click" = "⌘-tıklama";
 "Grid or list" = "Izgara veya liste";
 "General" = "Genel";
 "no key" = "tuş yok";
 "Back, or the enclosing folder" = "Geri veya üst klasör";
 "Boss key" = "Patron tuşu";
+"Boss key on" = "Patron tuşu açık";
+"Boss key off" = "Patron tuşu kapalı";
+"Boss key on: every window turns invisible and every video silent at once" = "Patron tuşu açık: her pencere anında görünmez, her video sessiz olur";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Patron tuşu kapalı: Schnellbild öndeyken (⌘-Tab) bir saniye içinde üç kez basın";
+"Every window turns invisible and every video silent at once." = "Her pencere anında görünmez, her video sessiz olur.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Schnellbild öndeyken (⌘-Tab) patron tuşuna bir saniye içinde üç kez basın.";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild anında kaybolur ve her video susar. Dock’taki simgeyi tıklamak onu geri getirmez. Geri getirmek için Schnellbild’e geçin (⌘-Tab) ve bir saniye içinde %@ tuşuna üç kez basın.";
 "End the slideshow" = "Slayt gösterisini bitir";
 "First item" = "İlk öğe";
 "Last item" = "Son öğe";

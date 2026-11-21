@@ -12,6 +12,9 @@ enum HelpKeys {
     /// Several actions, one key each: "⌘1 … ⌘5" while they have
     /// Schnellbild's keys, else every key.
     case range([ShortcutAction])
+    /// The action's first key typed `times` in a row, one key after the
+    /// other (the boss key's release: "X X X").
+    case sequence(ShortcutAction, times: Int)
     /// Keys that stay as they are (⌘Q, ⌃⌘F: the system's; the search
     /// field's keys).
     case fixed(String)
@@ -39,6 +42,8 @@ enum HelpKeys {
             }
             let all = actions.flatMap { shortcuts.keys($0) }.map(\.text)
             return all.isEmpty ? nil : all.joined(separator: " ")
+        case .sequence(let action, let times):
+            return shortcuts.keys(action).first.map { Array(repeating: $0.text, count: times).joined(separator: " ") }
         case .fixed(let keys):
             return keys.replacingOccurrences(of: "Space", with: String(localized: "Space"))
         case .words(let words):
@@ -89,8 +94,6 @@ struct ShortcutsHelpView: View {
     /// The groups, with the keys as set.
     @MainActor
     static func groups(_ s: Shortcuts) -> [HelpGroup] {
-        let thrice = s.keys(.bossKey).first.map { key in Array(repeating: key.text, count: 3).joined(separator: " ") }
-            ?? String(localized: "no key")
         // The keys that end the slideshow; all but S close the playlist first
         let closers = s.keys(.endSlideshow).filter { $0 != KeyChord(.char("s")) }.map(\.text).joined(separator: " ")
         let rows: [(LocalizedStringKey, [Row])] = [
@@ -195,7 +198,8 @@ struct ShortcutsHelpView: View {
                 Row(.action(.hiddenFiles), action: "Show / hide hidden files and folders"),
                 Row(.action(.bookmark), action: "Bookmark the folder shown, or remove its bookmark"),
                 Row(.range(ShortcutAction.bookmarks), action: "Open bookmark 1 … 9"),
-                Row(.action(.bossKey), text: String(localized: "Boss key: hidden and silent at once; \(thrice) or the Dock icon brings it back")),
+                Row(.action(.bossKey), action: "Boss key on: every window turns invisible and every video silent at once"),
+                Row(.sequence(.bossKey, times: 3), action: "Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)"),
                 Row(.action(.help), action: "Show this list"),
             ]),
         ]

@@ -404,13 +404,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Afslut (%@ spørger først)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Chefknap: skjult og lydløs med det samme; %@ eller symbolet i Dock henter det tilbage";
 "⌘-click" = "⌘-klik";
 "Grid or list" = "Gitter eller liste";
 "General" = "Generelt";
 "no key" = "ingen tast";
 "Back, or the enclosing folder" = "Tilbage, eller den overordnede mappe";
 "Boss key" = "Chefknap";
+"Boss key on" = "Chefknap til";
+"Boss key off" = "Chefknap fra";
+"Boss key on: every window turns invisible and every video silent at once" = "Chefknap til: hvert vindue bliver usynligt og hver video lydløs med det samme";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Chefknap fra: tryk på den tre gange inden for et sekund med Schnellbild forrest (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Hvert vindue bliver usynligt og hver video lydløs med det samme.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Tryk på chefknappen tre gange inden for et sekund med Schnellbild forrest (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild forsvinder med det samme, og hver video bliver lydløs. Et klik på symbolet i Dock henter det ikke tilbage. Skift til Schnellbild (⌘-Tab), og tryk tre gange på %@ inden for et sekund for at hente det tilbage.";
 "End the slideshow" = "Afslut lysbilledshowet";
 "First item" = "Første emne";
 "Last item" = "Sidste emne";

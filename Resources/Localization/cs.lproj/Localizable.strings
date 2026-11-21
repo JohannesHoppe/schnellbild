@@ -404,13 +404,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Ukončit (%@ se nejdřív zeptá)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Šéfovo tlačítko: hned skryté a ztlumené; %@ nebo ikona v Docku vše vrátí";
 "⌘-click" = "⌘-kliknutí";
 "Grid or list" = "Mřížka nebo seznam";
 "General" = "Obecné";
 "no key" = "bez klávesy";
 "Back, or the enclosing folder" = "Zpět, nebo nadřazená složka";
 "Boss key" = "Šéfovo tlačítko";
+"Boss key on" = "Šéfovo tlačítko zapnout";
+"Boss key off" = "Šéfovo tlačítko vypnout";
+"Boss key on: every window turns invisible and every video silent at once" = "Šéfovo tlačítko zapnout: každé okno hned zmizí a každé video ztichne";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Šéfovo tlačítko vypnout: stiskněte ho třikrát během sekundy, se Schnellbildem v popředí (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Každé okno hned zmizí a každé video ztichne.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Stiskněte šéfovo tlačítko třikrát během sekundy, se Schnellbildem v popředí (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild hned zmizí a každé video ztichne. Kliknutí na ikonu v Docku ho nevrátí. Chcete-li ho vrátit, přepněte na Schnellbild (⌘-Tab) a stiskněte třikrát během sekundy %@.";
 "End the slideshow" = "Ukončit prezentaci";
 "First item" = "První položka";
 "Last item" = "Poslední položka";

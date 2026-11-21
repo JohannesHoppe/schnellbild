@@ -404,13 +404,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Вийти (%@ спершу питає)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Клавіша «бос»: одразу приховано й без звуку; %@ або значок у Dock повертає";
 "⌘-click" = "⌘-клацання";
 "Grid or list" = "Сітка або список";
 "General" = "Загальні";
 "no key" = "немає клавіші";
 "Back, or the enclosing folder" = "Назад або папка рівнем вище";
 "Boss key" = "Клавіша «бос»";
+"Boss key on" = "Клавіша «бос»: увімк.";
+"Boss key off" = "Клавіша «бос»: вимк.";
+"Boss key on: every window turns invisible and every video silent at once" = "Клавіша «бос», увімк.: кожне вікно одразу стає невидимим, кожне відео замовкає";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Клавіша «бос», вимк.: натисніть її тричі протягом секунди, коли Schnellbild на передньому плані (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Кожне вікно одразу стає невидимим, кожне відео замовкає.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Натисніть клавішу «бос» тричі протягом секунди, коли Schnellbild на передньому плані (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild одразу зникає, і кожне відео замовкає. Клацання значка в Dock його не повертає. Щоб повернути його, перейдіть до Schnellbild (⌘-Tab) і натисніть %@ тричі протягом секунди.";
 "End the slideshow" = "Завершити слайд-шоу";
 "First item" = "Перший об’єкт";
 "Last item" = "Останній об’єкт";

@@ -517,7 +517,7 @@ enum ShortcutAction: String, CaseIterable {
         case .miniKeyboard:      return String(localized: "Mini Keyboard")
         case .hiddenFiles:       return String(localized: "Show Hidden Files")
         case .bookmark:          return String(localized: "Bookmark This Folder")
-        case .bossKey:           return String(localized: "Boss key")
+        case .bossKey:           return String(localized: "Boss key on")
         case .help:              return String(localized: "Schnellbild Help")
         default:                 return rawValue
         }
@@ -899,7 +899,7 @@ extension WindowModel {
             NortonMenus.askToQuit()
         case .bossKey:
             guard !textEditing else { return false }
-            BossKey.engage()
+            BossKey.press()
         default:
             return false
         }

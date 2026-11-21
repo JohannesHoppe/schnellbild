@@ -349,7 +349,7 @@ private struct WindowView: View {
                    let handled = window.handleTyped(chord, physical: KeyChord.physical(event), textEditing: typing, repeating: event.isARepeat) { return handled }
                 // X: the boss key (everywhere but while typing)
                 if letter == "x", !typing, !command, !control, !event.modifierFlags.contains(.option) {
-                    BossKey.engage()
+                    BossKey.press()
                     return true
                 }
                 // ⌃O: the commanders' "panels on / off" (the dual pane)

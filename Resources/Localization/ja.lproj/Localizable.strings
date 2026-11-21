@@ -404,13 +404,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "終了（%@ は確認あり）";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "ボスキー：すぐに非表示・消音。%@ または Dock のアイコンで元に戻る";
 "⌘-click" = "⌘-クリック";
 "Grid or list" = "グリッドまたはリスト";
 "General" = "一般";
 "no key" = "キーなし";
 "Back, or the enclosing folder" = "戻る、または親フォルダ";
 "Boss key" = "ボスキー";
+"Boss key on" = "ボスキーをオン";
+"Boss key off" = "ボスキーをオフ";
+"Boss key on: every window turns invisible and every video silent at once" = "ボスキーをオン：すべてのウインドウがすぐに見えなくなり、すべてのビデオが消音";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "ボスキーをオフ：Schnellbild を前面にして（⌘-Tab）1 秒以内に 3 回押す";
+"Every window turns invisible and every video silent at once." = "すべてのウインドウがすぐに見えなくなり、すべてのビデオが消音になります。";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Schnellbild を前面にして（⌘-Tab）ボスキーを 1 秒以内に 3 回押します。";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild はすぐに消え、すべてのビデオが消音になります。Dock のアイコンをクリックしても元に戻りません。元に戻すには、Schnellbild に切り替えて（⌘-Tab）%@ を 1 秒以内に 3 回押します。";
 "End the slideshow" = "スライドショーを終了";
 "First item" = "最初の項目";
 "Last item" = "最後の項目";
