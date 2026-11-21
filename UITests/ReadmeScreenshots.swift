@@ -78,13 +78,15 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(bar.waitForExistence(timeout: 5))
         let rest = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.13, dy: 0.5))
         rest.hover()
-        // Paused (it may have reached its end by now, which pauses it too)
-        let playPause = element("videoBar.playPause").firstMatch
-        XCTAssertTrue(playPause.waitForExistence(timeout: 5))
-        if playPause.label != "Play" { playPause.click() }
-        eventually("the video pauses") { playPause.label == "Play" }
+        // Paused: back to the start first, so it doesn't reach its end (which
+        // pauses it too) between the look at the badge and the key
         let position = element("videoBar.position").firstMatch
         XCTAssertTrue(position.waitForExistence(timeout: 5))
+        position.adjust(toNormalizedSliderPosition: 0)
+        rest.hover()
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        if !text(of: badge).contains(ui("Paused")) { app.typeKey(.space, modifierFlags: []) }
+        waitForBadge(containing: ui("Paused"))
         for second in 1...6 {
             position.adjust(toNormalizedSliderPosition: (CGFloat(second) - 0.5) / 6)
             rest.hover()
