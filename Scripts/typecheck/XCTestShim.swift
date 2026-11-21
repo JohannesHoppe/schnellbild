@@ -12,11 +12,18 @@ open class XCTestCase {
     open func tearDownWithError() throws {}
     open var continueAfterFailure = true
     public func addTeardownBlock(_ block: @escaping () -> Void) {}
+    public func add(_ attachment: XCTAttachment) {}
     open var name: String { "" }
     open var testRun: XCTestRun? { nil }
 }
 /// SwiftPM's resource bundle of a test target.
 extension Bundle { public static var module: Bundle { .main } }
+open class XCTAttachment {
+    public enum Lifetime { case keepAlways, deleteOnSuccess }
+    public init(screenshot: XCUIScreenshot) {}
+    open var name: String? = nil
+    open var lifetime: Lifetime = .deleteOnSuccess
+}
 public struct XCTSkip: Error { public init(_ message: String = "") {} }
 
 public func XCTAssertEqual<T: Equatable>(_ a: @autoclosure () throws -> T, _ b: @autoclosure () throws -> T, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {}
@@ -46,7 +53,7 @@ public struct XCUIKeyboardKey: RawRepresentable, ExpressibleByStringLiteral {
 public struct XCUIElementType: Equatable {
     public var rawValue: UInt = 0
     public static let any = XCUIElementType(), menuItem = XCUIElementType(), textField = XCUIElementType(), dialog = XCUIElementType(),
-                      sheet = XCUIElementType(), window = XCUIElementType(), button = XCUIElementType(), staticText = XCUIElementType()
+                      sheet = XCUIElementType(), window = XCUIElementType(), button = XCUIElementType(), staticText = XCUIElementType(), menu = XCUIElementType()
 }
 public final class XCUIElementQuery {
     public subscript(_ id: String) -> XCUIElement { XCUIElement() }
@@ -78,6 +85,10 @@ public final class XCUICoordinate {
     public func rightClick() {}
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
+public final class XCUIScreen {
+    public static let main = XCUIScreen()
+    public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
+}
 public class XCUIElement {
     public typealias ElementType = XCUIElementType
     public var elementType: XCUIElementType { .any }

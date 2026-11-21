@@ -174,6 +174,10 @@ struct SchnellbildApp: App {
                 Button("Schnellbild Help") { window.openHelp() }
                     .keyboardShortcut(shortcuts.menuShortcut(.help))
                     .disabled(window.anySheetOpen)
+                if KeyGlyphsTestMenu.shown {
+                    Divider()
+                    KeyGlyphsTestMenu()
+                }
             }
         }
         Settings {
