@@ -36,23 +36,30 @@ final class TooltipUITests: SchnellbildUITestCase {
         photograph(around: element.frame, as: name)
     }
 
+    private func probeStatusBar(_ prefix: String) {
+        probe(element("keyboardButton").firstMatch, prefix + "keyboard")
+        probe(element("viewModePicker").firstMatch, prefix + "viewMode")
+        probe(element("statusText").firstMatch, prefix + "statusText")
+    }
+
     func testProbeTooltips() throws {
         for name in ["a.jpg", "b.jpg", "c.jpg"] { try FileManager.default.removeItem(at: tempDir.appendingPathComponent(name)) }
         for name in ["norway-01-bryggen.jpg", "norway-05-flam.jpg", "norway-08-geiranger.jpg"] { try put(name, at: name) }
         launch(open: tempDir.path)
         XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
+        probeStatusBar("grid-")
+        probe(element("searchMode").firstMatch, "searchMode")
         probe(toolbarButton("backButton"), "back")
-        probe(toolbarButton("upButton"), "up")
-        probe(element("viewModePicker").firstMatch, "viewMode")
-        probe(element("keyboardButton").firstMatch, "keyboard")
-        probe(element("sortMenu").firstMatch, "sort")
-        probe(element("dualPaneButton").firstMatch, "dual")
-        showAtlasFromTheGrid()
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("list").waitForExistence(timeout: 10))
+        probeStatusBar("list-")
+        app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
-        probe(app.buttons["Zoom in"].firstMatch, "zoomIn")
+        probeStatusBar("atlas-")
         probe(app.buttons["Tilt the view"].firstMatch, "tilt")
-        probe(element("tourButton").firstMatch, "tour")
-        probe(element("atlasSubfolders").firstMatch, "subfolders")
-        print("PROBE tree: \(app.windows.firstMatch.debugDescription.prefix(20000))")
+        app.terminate()
+        launch(open: tempDir.path, extra: ["--probe-bars-below"])
+        XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
+        probeStatusBar("below-grid-")
     }
 }

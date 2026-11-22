@@ -546,15 +546,7 @@ struct PaneView: View {
                     .modifier(CoversTiles(pane: ObjectIdentifier(model), view: "searchBar"))
             }
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            if model.mode == .grid, !model.presenting, model.folderURL != nil {
-                statusBar.modifier(CoversTiles(pane: ObjectIdentifier(model), view: "statusBar"))
-            } else if model.mode == .detail, !model.presenting, model.accessLimited {
-                // The file dropped alone, in the full view: why ← → find
-                // nothing, and how to see its folder
-                accessLimitedBar
-            }
-        }
+        .modifier(BottomBar(below: TestSwitches.has("--probe-bars-below")) { bottomBar })
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
         .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
@@ -600,6 +592,16 @@ struct PaneView: View {
     }
 
     // MARK: - Status bar
+
+    @ViewBuilder private var bottomBar: some View {
+        if model.mode == .grid, !model.presenting, model.folderURL != nil {
+            statusBar.modifier(CoversTiles(pane: ObjectIdentifier(model), view: "statusBar"))
+        } else if model.mode == .detail, !model.presenting, model.accessLimited {
+            // The file dropped alone, in the full view: why ← → find
+            // nothing, and how to see its folder
+            accessLimitedBar
+        }
+    }
 
     /// The counts come first and are never cut off. The first of these rows
     /// that fits is shown: the counts with the folder's path (cut at its
@@ -1707,5 +1709,18 @@ struct StatusFlow: Layout {
         }
         if !line.indices.isEmpty { lines.append(line) }
         return lines
+    }
+}
+
+/// Probe: the status bar over the content (safe area) or below it.
+private struct BottomBar<Bar: View>: ViewModifier {
+    let below: Bool
+    @ViewBuilder let bar: () -> Bar
+    func body(content: Content) -> some View {
+        if below {
+            VStack(spacing: 0) { content; bar() }
+        } else {
+            content.safeAreaInset(edge: .bottom, spacing: 0) { bar() }
+        }
     }
 }
