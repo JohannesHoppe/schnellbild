@@ -101,7 +101,7 @@
     },
     {
       "title": "MKV, AVI까지, macOS가 재생하지 못하는 동영상도",
-      "text": "<p>macOS가 자체적으로 재생하는 형식은 macOS로 재생합니다(HDR 포함). {fmt:mp4}, {fmt:mov}, {fmt:avchd} 등입니다. 그 밖의 모든 형식은 내장된 VLC 엔진으로 재생합니다. {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf}(<a href=\"{formats}#videoMac\">모든 동영상 형식</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>로 동영상의 10분의 1, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>로 100분의 1씩 이동</li><li><kbd>▲</kbd> / <kbd>▼</kbd>로 음량 조절, 모든 동영상에 적용</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>로 다음 동영상으로, <kbd>⌘</kbd> + <kbd>◀</kbd>로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>오디오 트랙, 속도(<kbd>&lt;</kbd> / <kbd>&gt;</kbd>), 모든 동영상에 같은 컨트롤 막대. 끌어다 놓은 곳에 그대로 있습니다</li><li>Finder와 훑어보기에서도 .mkv, .webm, .wmv, .flv, .vob 썸네일 표시</li></ul>",
+      "text": "<p>모두 재생되며 HDR도 지원합니다. {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} 등(<a href=\"{formats}#video\">모든 동영상 형식</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>로 동영상의 10분의 1, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>로 100분의 1씩 이동</li><li><kbd>▲</kbd> / <kbd>▼</kbd>로 음량 조절, 모든 동영상에 적용</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>로 다음 동영상으로, <kbd>⌘</kbd> + <kbd>◀</kbd>로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>오디오 트랙, 속도(<kbd>&lt;</kbd> / <kbd>&gt;</kbd>), 모든 동영상에 같은 컨트롤 막대. 끌어다 놓은 곳에 그대로 있습니다</li><li>Finder와 훑어보기에서도 .mkv, .webm, .wmv, .flv, .vob 썸네일 표시</li></ul>",
       "alt": "Schnellbild에서 재생 중인 동영상"
     },
     {
@@ -190,7 +190,7 @@
     "seoTitle": "지원 형식: 이미지, RAW, 동영상, 아카이브 · Mac용 Schnellbild",
     "description": "무료 Mac 뷰어 Schnellbild가 여는 모든 형식을 전체 이름과 확장자로 정리했습니다. JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z 등.",
     "keywords": "파일 형식 Mac, 맥 HEIC 열기, RAW 뷰어 Mac, CR3 열기, NEF 열기, 맥 MKV 재생, 맥 AVI 재생, 맥 WebM 재생, 포토샵 없이 PSD 열기, 맥 EPS 열기, JPEG XL 뷰어, AVIF 열기, DDS 뷰어, CBR CBZ 뷰어 Mac, Schnellbild",
-    "lead": "Schnellbild는 {count}가지 형식, {extensions}가지 확장자를 보여 줍니다. 이미지는 macOS의 ImageIO로 읽으므로 새로운 macOS일수록 더 많이 읽습니다. macOS가 읽지 못하는 것은 Schnellbild가 직접 또는 LibRaw로 디코딩합니다. macOS가 재생하지 못하는 동영상은 내장된 VLC 엔진으로 재생하고, 아카이브는 폴더처럼 열립니다.",
+    "lead": "Schnellbild는 {count}가지 형식, {extensions}가지 확장자를 보여 줍니다. 이미지, 카메라 RAW, 문서, 동영상, 그리고 폴더처럼 열리는 아카이브입니다.",
     "jump": "그룹",
     "columns": [
       "형식",
@@ -212,18 +212,14 @@
       "photo": "사진과 그래픽",
       "pro": "HDR, 편집, 의료",
       "texture": "텍스처",
-      "decoded": "Schnellbild가 디코딩",
       "document": "문서와 드로잉",
-      "raw": "카메라 RAW, macOS가 현상",
-      "libraw": "카메라 RAW, LibRaw가 현상",
-      "videoMac": "macOS로 재생하는 동영상(안 되면 VLC)",
-      "videoVlc": "항상 내장된 VLC 엔진으로 재생하는 동영상",
+      "raw": "카메라 RAW",
+      "video": "동영상",
       "archive": "아카이브, 폴더처럼 열림"
     },
     "notes": {
       "animated": "애니메이션 재생",
       "macos26": "macOS 26 이상",
-      "oriLibraw": "macOS 15에서는 LibRaw로",
       "firstPage": "첫 페이지",
       "pages": "한 페이지씩",
       "aiPdf": "PDF로 표시, PDF 콘텐츠 없이 저장된 파일은 내장 미리보기",
@@ -234,7 +230,7 @@
       "tsContent": "내용이 MPEG 전송 스트림일 때만 동영상(TypeScript 코드는 파일로 남음)",
       "password": "암호가 걸려 있어도 열림",
       "rar": "모든 RAR 버전, 솔리드 압축과 암호도 지원",
-      "sevenZip": "macOS의 아카이브 라이브러리로 읽음, macOS 15에서는 LZMA 압축 미지원",
+      "sevenZip": "macOS 15에서는 LZMA 압축 미지원",
       "parts": "첫 번째 파트로 한 번만 표시"
     },
     "names": {

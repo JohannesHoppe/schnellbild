@@ -101,7 +101,7 @@
     },
     {
       "title": "Videor, även MKV och andra som macOS inte kan spela",
-      "text": "<p>Det macOS spelar självt spelas via macOS, även i HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd} med flera. Allt annat via den inbyggda VLC-motorn: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">alla videoformat</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Ljudspår, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) och samma kontrollfält för varje video, som stannar där du drar det</li><li>Finder och Överblick får miniatyrer även för .mkv, .webm, .wmv, .flv och .vob</li></ul>",
+      "text": "<p>Alla spelas, även i HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} med flera (<a href=\"{formats}#video\">alla videoformat</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Ljudspår, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) och samma kontrollfält för varje video, som stannar där du drar det</li><li>Finder och Överblick får miniatyrer även för .mkv, .webm, .wmv, .flv och .vob</li></ul>",
       "alt": "En video som spelas i Schnellbild"
     },
     {
@@ -190,7 +190,7 @@
     "seoTitle": "Format som stöds: bilder, RAW, videor, arkiv · Schnellbild för Mac",
     "description": "Alla format som den kostnadsfria bildvisaren Schnellbild öppnar på Mac, med fullständigt namn och filändelse: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z med flera.",
     "keywords": "filformat Mac, öppna HEIC på Mac, RAW-visare Mac, öppna CR3, öppna NEF, MKV-spelare Mac, spela AVI på Mac, spela WebM på Mac, öppna PSD utan Photoshop, öppna EPS på Mac, JPEG XL-visare, öppna AVIF, DDS-visare, CBR CBZ-läsare Mac, Schnellbild",
-    "lead": "Schnellbild visar {count} format med {extensions} filändelser. Bilder går genom ImageIO, macOS:s bibliotek, så ett nyare macOS läser fler; det macOS inte läser avkodar Schnellbild själv eller med LibRaw. Videor som macOS inte spelar går genom den inbyggda VLC-motorn, och arkiv öppnas som mappar.",
+    "lead": "Schnellbild visar {count} format med {extensions} filändelser: bilder, kamera-RAW, dokument, videor och arkiv, som öppnas som mappar.",
     "jump": "Grupper",
     "columns": [
       "Format",
@@ -212,18 +212,14 @@
       "photo": "Foton och grafik",
       "pro": "HDR, bildredigering och medicin",
       "texture": "Texturer",
-      "decoded": "Avkodas av Schnellbild",
       "document": "Dokument och teckningar",
-      "raw": "Kamera-RAW, framkallas av macOS",
-      "libraw": "Kamera-RAW, framkallas av LibRaw",
-      "videoMac": "Videor via macOS när det spelar dem, annars VLC",
-      "videoVlc": "Videor alltid via den inbyggda VLC-motorn",
+      "raw": "Kamera-RAW",
+      "video": "Videor",
       "archive": "Arkiv, öppnas som mappar"
     },
     "notes": {
       "animated": "animationer spelas",
       "macos26": "från macOS 26",
-      "oriLibraw": "på macOS 15 via LibRaw",
       "firstPage": "första sidan",
       "pages": "sida för sida",
       "aiPdf": "som PDF; sparad utan PDF-innehåll, den inbäddade förhandsvisningen",
@@ -234,7 +230,7 @@
       "tsContent": "en video bara när innehållet är en MPEG-transportström (TypeScript-kod förblir en fil)",
       "password": "även med lösenord",
       "rar": "alla RAR-versioner, även solida arkiv och lösenord",
-      "sevenZip": "läses av macOS:s arkivbibliotek: på macOS 15 inte med LZMA-komprimering",
+      "sevenZip": "på macOS 15 inte med LZMA-komprimering",
       "parts": "visas en gång, via första delen"
     },
     "names": {

@@ -30,7 +30,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 LIST = ROOT / "site" / "formats.json"
 MACOS = ROOT / "site" / "formats-macos.json"
-GROUPS = ["photo", "pro", "texture", "decoded", "document", "raw", "libraw", "videoMac", "videoVlc", "archive"]
+GROUPS = ["photo", "pro", "texture", "document", "raw", "video", "archive"]
 KINDS = ["picture", "document", "video", "archive"]
 
 

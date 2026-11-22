@@ -101,7 +101,7 @@
     },
     {
       "title": "macOSで再生できないAVIやMKVも再生",
-      "text": "<p>macOS自体で再生できる形式はmacOSで再生します（HDRにも対応）。{fmt:mp4}、{fmt:mov}、{fmt:avchd}などです。それ以外は内蔵のVLCエンジンで再生します。{fmt:mkv}、{fmt:webm}、{fmt:avi}、{fmt:wmv}、{fmt:flv}、{fmt:mpeg}、{fmt:vob}、{fmt:rm}、{fmt:mxf}（<a href=\"{formats}#videoMac\">すべての動画フォーマット</a>）。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>で動画の10分の1、<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>で100分の1ジャンプ</li><li><kbd>▲</kbd> / <kbd>▼</kbd>で音量を調整。すべての動画に共通です</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>で次の動画へ、<kbd>⌘</kbd> + <kbd>◀</kbd>で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>オーディオトラック、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>）、すべての動画に共通のコントロールバー。ドラッグした場所にとどまります</li><li>.mkv、.webm、.wmv、.flv、.vobのサムネールもFinderとクイックルックで表示されます</li></ul>",
+      "text": "<p>どれもHDRを含めて再生できます。{fmt:mp4}、{fmt:mov}、{fmt:avchd}、{fmt:mkv}、{fmt:webm}、{fmt:avi}、{fmt:wmv}、{fmt:flv}、{fmt:mpeg}、{fmt:vob}、{fmt:rm}、{fmt:mxf}など（<a href=\"{formats}#video\">すべての動画フォーマット</a>）。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>で動画の10分の1、<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>で100分の1ジャンプ</li><li><kbd>▲</kbd> / <kbd>▼</kbd>で音量を調整。すべての動画に共通です</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>で次の動画へ、<kbd>⌘</kbd> + <kbd>◀</kbd>で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>オーディオトラック、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>）、すべての動画に共通のコントロールバー。ドラッグした場所にとどまります</li><li>.mkv、.webm、.wmv、.flv、.vobのサムネールもFinderとクイックルックで表示されます</li></ul>",
       "alt": "Schnellbildで再生中の動画"
     },
     {
@@ -190,7 +190,7 @@
     "seoTitle": "対応フォーマット：画像、RAW、動画、アーカイブ · Mac用Schnellbild",
     "description": "無料のMac用ビューアSchnellbildが開けるすべてのフォーマットを、正式名称と拡張子で一覧にしました。JPEG、HEIC、AVIF、RAW、PSD、PDF、EPS、MKV、AVI、WebM、ZIP、RAR、7zなど。",
     "keywords": "ファイル形式 Mac, HEIC 開く Mac, RAW ビューア Mac, CR3 開く, NEF 開く, MKV 再生 Mac, AVI 再生 Mac, WebM 再生 Mac, PSD 開く Photoshopなし, EPS 開く Mac, JPEG XL ビューア, AVIF 開く, DDS ビューア, CBR CBZ リーダー Mac, Schnellbild",
-    "lead": "Schnellbildは{count}種類のフォーマット、{extensions}種類の拡張子を表示します。画像はmacOSのImageIOで読むため、新しいmacOSほど多く読めます。macOSが読めないものは、Schnellbild自身かLibRawでデコードします。macOSで再生できない動画は内蔵のVLCエンジンで再生し、アーカイブはフォルダのように開きます。",
+    "lead": "Schnellbildは{count}種類のフォーマット、{extensions}種類の拡張子を表示します。画像、カメラRAW、書類、動画、そしてフォルダのように開くアーカイブです。",
     "jump": "グループ",
     "columns": [
       "フォーマット",
@@ -212,18 +212,14 @@
       "photo": "写真とグラフィック",
       "pro": "HDR、画像編集、医療",
       "texture": "テクスチャ",
-      "decoded": "Schnellbildがデコード",
       "document": "書類とドローイング",
-      "raw": "カメラRAW（macOSで現像）",
-      "libraw": "カメラRAW（LibRawで現像）",
-      "videoMac": "macOSで再生できる動画（できない場合はVLC）",
-      "videoVlc": "常に内蔵のVLCエンジンで再生する動画",
+      "raw": "カメラRAW",
+      "video": "動画",
       "archive": "アーカイブ（フォルダのように開く）"
     },
     "notes": {
       "animated": "アニメーションを再生",
       "macos26": "macOS 26以降",
-      "oriLibraw": "macOS 15ではLibRawで",
       "firstPage": "最初のページ",
       "pages": "1ページずつ",
       "aiPdf": "PDFとして表示。PDFの内容なしで保存したものは埋め込みプレビュー",
@@ -234,7 +230,7 @@
       "tsContent": "中身がMPEGトランスポートストリームの場合のみ動画（TypeScriptのコードはファイルのまま）",
       "password": "パスワード付きにも対応",
       "rar": "すべてのRARバージョン、ソリッド書庫とパスワードにも対応",
-      "sevenZip": "macOSのアーカイブライブラリで読み込み。macOS 15ではLZMA圧縮に非対応",
+      "sevenZip": "macOS 15ではLZMA圧縮に非対応",
       "parts": "最初のパートで1回だけ表示"
     },
     "names": {

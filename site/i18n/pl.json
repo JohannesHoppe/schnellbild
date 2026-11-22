@@ -101,7 +101,7 @@
     },
     {
       "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
-      "text": "<p>To, co macOS potrafi odtworzyć sam, odtwarza macOS, także w HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd} i inne. Całą resztę odtwarza wbudowany silnik VLC: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">wszystkie formaty wideo</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> przeskakują o jedną dziesiątą filmu, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o jedną setną</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ustawiają głośność, dla każdego filmu</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> do następnego filmu i <kbd>⌘</kbd> + <kbd>◀</kbd> z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Ścieżki dźwiękowe, prędkość (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) i jeden pasek sterowania dla każdego filmu, który zostaje tam, gdzie go przeciągniesz</li><li>Finder i Szybki przegląd dostają miniatury także dla .mkv, .webm, .wmv, .flv i .vob</li></ul>",
+      "text": "<p>Odtwarza je wszystkie, także w HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} i inne (<a href=\"{formats}#video\">wszystkie formaty wideo</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> przeskakują o jedną dziesiątą filmu, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o jedną setną</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ustawiają głośność, dla każdego filmu</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> do następnego filmu i <kbd>⌘</kbd> + <kbd>◀</kbd> z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Ścieżki dźwiękowe, prędkość (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) i jeden pasek sterowania dla każdego filmu, który zostaje tam, gdzie go przeciągniesz</li><li>Finder i Szybki przegląd dostają miniatury także dla .mkv, .webm, .wmv, .flv i .vob</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },
     {
@@ -190,7 +190,7 @@
     "seoTitle": "Obsługiwane formaty: obrazy, RAW, filmy, archiwa · Schnellbild na Maca",
     "description": "Wszystkie formaty, które darmowa przeglądarka Schnellbild otwiera na Macu, z pełną nazwą i rozszerzeniem: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z i inne.",
     "keywords": "formaty plików Mac, otwieranie HEIC na Macu, przeglądarka RAW Mac, otwórz CR3, otwórz NEF, odtwarzacz MKV Mac, odtwarzanie AVI na Macu, odtwarzanie WebM na Macu, otwórz PSD bez Photoshopa, otwórz EPS na Macu, przeglądarka JPEG XL, otwórz AVIF, przeglądarka DDS, czytnik CBR CBZ Mac, Schnellbild",
-    "lead": "Schnellbild pokazuje {count} formatów z {extensions} rozszerzeniami plików. Obrazy przechodzą przez ImageIO, bibliotekę macOS, więc nowszy macOS czyta więcej; czego macOS nie czyta, Schnellbild dekoduje sam albo z LibRaw. Filmy, których macOS nie odtwarza, przechodzą przez wbudowany silnik VLC, a archiwa otwierają się jak foldery.",
+    "lead": "Schnellbild pokazuje {count} formatów z {extensions} rozszerzeniami plików: obrazy, RAW z aparatu, dokumenty, filmy i archiwa, które otwierają się jak foldery.",
     "jump": "Grupy",
     "columns": [
       "Format",
@@ -212,18 +212,14 @@
       "photo": "Zdjęcia i grafika",
       "pro": "HDR, edycja i medycyna",
       "texture": "Tekstury",
-      "decoded": "Dekodowane przez Schnellbild",
       "document": "Dokumenty i rysunki",
-      "raw": "RAW z aparatu, wywoływane przez macOS",
-      "libraw": "RAW z aparatu, wywoływane przez LibRaw",
-      "videoMac": "Filmy przez macOS, jeśli je odtwarza, inaczej VLC",
-      "videoVlc": "Filmy zawsze przez wbudowany silnik VLC",
+      "raw": "RAW z aparatu",
+      "video": "Filmy",
       "archive": "Archiwa, otwierane jak foldery"
     },
     "notes": {
       "animated": "animacje są odtwarzane",
       "macos26": "od macOS 26",
-      "oriLibraw": "na macOS 15 przez LibRaw",
       "firstPage": "jego pierwsza strona",
       "pages": "strona po stronie",
       "aiPdf": "jako PDF; zapisany bez treści PDF, jego osadzony podgląd",
@@ -234,7 +230,7 @@
       "tsContent": "film tylko wtedy, gdy treścią jest strumień transportowy MPEG (kod TypeScript pozostaje plikiem)",
       "password": "także z hasłem",
       "rar": "wszystkie wersje RAR, także archiwa ciągłe i hasła",
-      "sevenZip": "czytany przez bibliotekę archiwów macOS: na macOS 15 nie z kompresją LZMA",
+      "sevenZip": "na macOS 15 nie z kompresją LZMA",
       "parts": "pokazywane raz, przez pierwszą część"
     },
     "names": {

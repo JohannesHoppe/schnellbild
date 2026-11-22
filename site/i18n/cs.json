@@ -101,7 +101,7 @@
     },
     {
       "title": "Videa, i MKV a další, která macOS neumí přehrát",
-      "text": "<p>Co umí přehrát samotný macOS, přehraje macOS, i v HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd} a další. Vše ostatní přehraje vestavěné jádro VLC: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">všechny formáty videa</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> přeskakují o desetinu videa, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o setinu</li><li><kbd>▲</kbd> / <kbd>▼</kbd> nastavují hlasitost, pro všechna videa</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> na další video a <kbd>⌘</kbd> + <kbd>◀</kbd> zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Zvukové stopy, rychlost (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) a jeden ovládací panel pro každé video, který zůstane tam, kam ho přetáhnete</li><li>Finder a Rychlý náhled dostanou miniatury i pro .mkv, .webm, .wmv, .flv a .vob</li></ul>",
+      "text": "<p>Přehraje je všechny, i v HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} a další (<a href=\"{formats}#video\">všechny formáty videa</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> přeskakují o desetinu videa, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o setinu</li><li><kbd>▲</kbd> / <kbd>▼</kbd> nastavují hlasitost, pro všechna videa</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> na další video a <kbd>⌘</kbd> + <kbd>◀</kbd> zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Zvukové stopy, rychlost (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) a jeden ovládací panel pro každé video, který zůstane tam, kam ho přetáhnete</li><li>Finder a Rychlý náhled dostanou miniatury i pro .mkv, .webm, .wmv, .flv a .vob</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
     {
@@ -190,7 +190,7 @@
     "seoTitle": "Podporované formáty: obrázky, RAW, videa, archivy · Schnellbild pro Mac",
     "description": "Všechny formáty, které bezplatný prohlížeč Schnellbild otevře na Macu, s plným názvem a příponou: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z a další.",
     "keywords": "formáty souborů Mac, otevřít HEIC na Macu, prohlížeč RAW Mac, otevřít CR3, otevřít NEF, přehrávač MKV Mac, přehrát AVI na Macu, přehrát WebM na Macu, otevřít PSD bez Photoshopu, otevřít EPS na Macu, prohlížeč JPEG XL, otevřít AVIF, prohlížeč DDS, čtečka CBR CBZ Mac, Schnellbild",
-    "lead": "Schnellbild zobrazí {count} formátů se {extensions} příponami souborů. Obrázky jdou přes ImageIO, knihovnu macOS, takže novější macOS jich přečte víc; co macOS nepřečte, dekóduje Schnellbild sám nebo s LibRaw. Videa, která macOS nepřehraje, jdou přes vestavěné jádro VLC a archivy se otevírají jako složky.",
+    "lead": "Schnellbild zobrazí {count} formátů se {extensions} příponami souborů: obrázky, RAW z fotoaparátu, dokumenty, videa a archivy, které se otevírají jako složky.",
     "jump": "Skupiny",
     "columns": [
       "Formát",
@@ -212,18 +212,14 @@
       "photo": "Fotky a grafika",
       "pro": "HDR, úpravy a medicína",
       "texture": "Textury",
-      "decoded": "Dekóduje Schnellbild",
       "document": "Dokumenty a kresby",
-      "raw": "RAW z fotoaparátu, vyvolává macOS",
-      "libraw": "RAW z fotoaparátu, vyvolává LibRaw",
-      "videoMac": "Videa přes macOS, pokud je přehraje, jinak VLC",
-      "videoVlc": "Videa vždy přes vestavěné jádro VLC",
+      "raw": "RAW z fotoaparátu",
+      "video": "Videa",
       "archive": "Archivy, otevírané jako složky"
     },
     "notes": {
       "animated": "animace se přehrávají",
       "macos26": "od macOS 26",
-      "oriLibraw": "v macOS 15 přes LibRaw",
       "firstPage": "jeho první stránka",
       "pages": "stránku po stránce",
       "aiPdf": "jako PDF; uložený bez obsahu PDF jeho vložený náhled",
@@ -234,7 +230,7 @@
       "tsContent": "video jen tehdy, když je obsahem transportní tok MPEG (kód TypeScript zůstává souborem)",
       "password": "i s heslem",
       "rar": "všechny verze RAR, i pevné archivy a hesla",
-      "sevenZip": "čte knihovna archivů macOS: v macOS 15 ne s kompresí LZMA",
+      "sevenZip": "v macOS 15 ne s kompresí LZMA",
       "parts": "zobrazí se jednou, přes první část"
     },
     "names": {

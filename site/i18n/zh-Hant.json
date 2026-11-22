@@ -101,7 +101,7 @@
     },
     {
       "title": "影片播放器，連 macOS 播不了的也行",
-      "text": "<p>macOS 本身能播放的格式由 macOS 播放（支援 HDR），例如 {fmt:mp4}、{fmt:mov}、{fmt:avchd}。其餘格式由內建的 VLC 引擎播放：{fmt:mkv}、{fmt:webm}、{fmt:avi}、{fmt:wmv}、{fmt:flv}、{fmt:mpeg}、{fmt:vob}、{fmt:rm}、{fmt:mxf}（<a href=\"{formats}#videoMac\">所有影片格式</a>）。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> 跳轉影片的十分之一，<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> 跳轉百分之一</li><li><kbd>▲</kbd> / <kbd>▼</kbd> 調整音量，對所有影片生效</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> 切到下一個影片，<kbd>⌘</kbd> + <kbd>◀</kbd> 返回：前一個影片從離開時的位置繼續播放</li><li>影片內的字幕（<kbd>V</kbd>）從一開始就顯示；播放到一半才打開，也會立刻顯示正在進行的那一句；ASS 字幕保留位置、顏色和字體</li><li>音軌、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>），所有影片共用一條控制列，拖到哪裡就停在哪裡</li><li>Finder 和快速查看也能顯示 .mkv、.webm、.wmv、.flv 和 .vob 的縮圖</li></ul>",
+      "text": "<p>全都能播放，支援 HDR：{fmt:mp4}、{fmt:mov}、{fmt:avchd}、{fmt:mkv}、{fmt:webm}、{fmt:avi}、{fmt:wmv}、{fmt:flv}、{fmt:mpeg}、{fmt:vob}、{fmt:rm}、{fmt:mxf} 等（<a href=\"{formats}#video\">所有影片格式</a>）。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> 跳轉影片的十分之一，<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> 跳轉百分之一</li><li><kbd>▲</kbd> / <kbd>▼</kbd> 調整音量，對所有影片生效</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> 切到下一個影片，<kbd>⌘</kbd> + <kbd>◀</kbd> 返回：前一個影片從離開時的位置繼續播放</li><li>影片內的字幕（<kbd>V</kbd>）從一開始就顯示；播放到一半才打開，也會立刻顯示正在進行的那一句；ASS 字幕保留位置、顏色和字體</li><li>音軌、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>），所有影片共用一條控制列，拖到哪裡就停在哪裡</li><li>Finder 和快速查看也能顯示 .mkv、.webm、.wmv、.flv 和 .vob 的縮圖</li></ul>",
       "alt": "在 Schnellbild 中播放的影片"
     },
     {
@@ -190,7 +190,7 @@
     "seoTitle": "支援的格式：圖片、RAW、影片、壓縮檔 · Mac 版 Schnellbild",
     "description": "免費的 Mac 看圖軟體 Schnellbild 能打開的所有格式，附完整名稱和副檔名：JPEG、HEIC、AVIF、RAW、PSD、PDF、EPS、MKV、AVI、WebM、ZIP、RAR、7z 等。",
     "keywords": "檔案格式 Mac, Mac 開啟 HEIC, Mac RAW 檢視器, 開啟 CR3, 開啟 NEF, Mac MKV 播放器, Mac 播放 AVI, Mac 播放 WebM, 不用 Photoshop 開啟 PSD, Mac 開啟 EPS, JPEG XL 檢視器, 開啟 AVIF, DDS 檢視器, CBR CBZ 閱讀器 Mac, Schnellbild",
-    "lead": "Schnellbild 能顯示 {count} 種格式、{extensions} 種副檔名。圖片透過 macOS 的 ImageIO 讀取，所以 macOS 越新，能讀的越多；macOS 讀不了的，由 Schnellbild 自己或藉助 LibRaw 解碼。macOS 播放不了的影片由內建的 VLC 引擎播放，壓縮檔像資料夾一樣打開。",
+    "lead": "Schnellbild 能顯示 {count} 種格式、{extensions} 種副檔名：圖片、相機 RAW、文件、影片，以及像資料夾一樣打開的壓縮檔。",
     "jump": "分組",
     "columns": [
       "格式",
@@ -212,18 +212,14 @@
       "photo": "照片和圖形",
       "pro": "HDR、影像編輯和醫學",
       "texture": "材質",
-      "decoded": "由 Schnellbild 解碼",
       "document": "文件和繪圖",
-      "raw": "相機 RAW，由 macOS 沖印",
-      "libraw": "相機 RAW，由 LibRaw 沖印",
-      "videoMac": "由 macOS 播放的影片（不行時由 VLC 播放）",
-      "videoVlc": "一律由內建 VLC 引擎播放的影片",
+      "raw": "相機 RAW",
+      "video": "影片",
       "archive": "壓縮檔，像資料夾一樣打開"
     },
     "notes": {
       "animated": "播放動畫",
       "macos26": "macOS 26 及更新版本",
-      "oriLibraw": "在 macOS 15 上藉助 LibRaw",
       "firstPage": "第一頁",
       "pages": "逐頁顯示",
       "aiPdf": "以 PDF 顯示；未儲存 PDF 內容的檔案顯示其內嵌預覽",
@@ -234,7 +230,7 @@
       "tsContent": "僅當內容是 MPEG 傳輸串流時才算影片（TypeScript 程式碼仍是一般檔案）",
       "password": "也支援密碼",
       "rar": "所有 RAR 版本，包括固實壓縮和密碼",
-      "sevenZip": "由 macOS 的壓縮程式庫讀取：在 macOS 15 上不支援 LZMA 壓縮",
+      "sevenZip": "在 macOS 15 上不支援 LZMA 壓縮",
       "parts": "只顯示一次，透過第一個分割檔"
     },
     "names": {
