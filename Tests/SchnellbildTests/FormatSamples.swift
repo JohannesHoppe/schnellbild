@@ -213,7 +213,9 @@ extension FormatFixtures {
         }
         let first = DecoderFixtures.pcx(reference, kind: .rgb), second = DecoderFixtures.pcx(reference, kind: .mono)
         try add("dcx (first page)", "pages.dcx", DecoderFixtures.dcx([first.data, second.data]), first.expected)
-        try add("bay (Casio, LibRaw)", "casio.bay", DecoderFixtures.casioBay(reference), reference, .raw)
+        // The Casio's sensor is 1632 × 1208: the picture lies stretched over it
+        let stretched = DecoderFixtures.RGBA.of(reference.image, width: 408, height: 302)
+        try add("bay (Casio, LibRaw)", "casio.bay", DecoderFixtures.casioBay(reference), stretched, .raw)
         return samples
     }
 
