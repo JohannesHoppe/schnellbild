@@ -2,6 +2,7 @@
   "name": "简体中文",
   "privacySlug": "privacy",
   "alternativesSlug": "alternatives",
+  "formatsSlug": "formats",
   "title": "Schnellbild：一款用着不闹心的 Mac 图片和视频查看器",
   "seoTitle": "Schnellbild · 免费的 Mac 看图软件和视频播放器（支持 MKV）",
   "seoDescription": "快速、免费的 Mac 看图软件和视频播放器：缩略图、键盘翻页、幻灯片，播放 MKV、AVI、WebM，ZIP、RAR 压缩包和漫画像文件夹一样打开。Phiewer 的替代品。",
@@ -90,7 +91,7 @@
   "features": [
     {
       "title": "大图查看，按键翻页",
-      "text": "<p>按空格键，图像会以窗口允许的最大尺寸打开；用 <kbd>◀</kbd> / <kbd>▶</kbd> 在文件夹中翻页。用触控板或 <kbd>+</kbd> / <kbd>−</kbd> 缩放，用 <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> 旋转，按 <kbd>F</kbd> 全屏。动态 GIF 和 SVG 同样支持，PDF 逐页显示。</p><p>幻灯片（<kbd>S</kbd>）会播放文件夹及其所有子文件夹中的内容，照片和视频都包括在内。幻灯片播放的内容就是播放列表：按 <kbd>P</kbd> 打开，可调整顺序、移出不需要的项目。</p>",
+      "text": "<p>按空格键，图像会以窗口允许的最大尺寸打开；用 <kbd>◀</kbd> / <kbd>▶</kbd> 在文件夹中翻页。用触控板或 <kbd>+</kbd> / <kbd>−</kbd> 缩放，用 <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> 旋转，按 <kbd>F</kbd> 全屏。带动画的 {fmt:gif} 和 {fmt:svg} 同样支持，{fmt:pdf} 逐页显示（<a href=\"{formats}\">全部格式</a>）。</p><p>幻灯片（<kbd>S</kbd>）会播放文件夹及其所有子文件夹中的内容，照片和视频都包括在内。幻灯片播放的内容就是播放列表：按 <kbd>P</kbd> 打开，可调整顺序、移出不需要的项目。</p>",
       "alt": "以完整视图显示的照片"
     },
     {
@@ -100,12 +101,12 @@
     },
     {
       "title": "视频播放器，连 macOS 播放不了的格式也能播",
-      "text": "<p>macOS 自身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放（支持 HDR），其余格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频、RealMedia、MXF）则由内置的 VLC 引擎播放。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> 跳转视频的十分之一，<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> 跳转百分之一</li><li><kbd>▲</kbd> / <kbd>▼</kbd> 调节音量，对所有视频生效</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> 切到下一个视频，<kbd>⌘</kbd> + <kbd>◀</kbd> 返回：前一个视频从离开时的位置继续播放</li><li>视频内的字幕（<kbd>V</kbd>）从一开始就显示；播放中途打开，也会立刻显示正在进行的那一句；ASS 字幕保留位置、颜色和字体</li><li>音轨、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>），所有视频共用一条控制栏，拖到哪里就停在哪里</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
+      "text": "<p>macOS 自身能播放的格式由 macOS 播放（支持 HDR），例如 {fmt:mp4}、{fmt:mov}、{fmt:avchd}。其余格式由内置的 VLC 引擎播放：{fmt:mkv}、{fmt:webm}、{fmt:avi}、{fmt:wmv}、{fmt:flv}、{fmt:mpeg}、{fmt:vob}、{fmt:rm}、{fmt:mxf}（<a href=\"{formats}#videoMac\">全部视频格式</a>）。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> 跳转视频的十分之一，<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> 跳转百分之一</li><li><kbd>▲</kbd> / <kbd>▼</kbd> 调节音量，对所有视频生效</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> 切到下一个视频，<kbd>⌘</kbd> + <kbd>◀</kbd> 返回：前一个视频从离开时的位置继续播放</li><li>视频内的字幕（<kbd>V</kbd>）从一开始就显示；播放中途打开，也会立刻显示正在进行的那一句；ASS 字幕保留位置、颜色和字体</li><li>音轨、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>），所有视频共用一条控制栏，拖到哪里就停在哪里</li><li>访达和快速查看也能显示 .mkv、.webm、.wmv、.flv 和 .vob 的缩略图</li></ul>",
       "alt": "在 Schnellbild 中播放的视频"
     },
     {
       "title": "压缩包像文件夹一样打开",
-      "text": "<p>ZIP、RAR 和 7z 压缩包，包括漫画（CBZ、CBR），分卷的也可以；ZIP 和 RAR 还支持密码。不会向磁盘解压任何内容，视频直接从压缩包中播放。</p>",
+      "text": "<p>{fmt:zip}、{fmt:rar} 和 {fmt:7z} 压缩包，包括漫画：{fmt:cbz}、{fmt:cbr}、{fmt:cb7}，分卷的也可以；ZIP 和 RAR 还支持密码。不会向磁盘解压任何内容，视频直接从压缩包中播放。</p>",
       "alt": "显示为带预览文件夹的归档"
     },
     {
@@ -182,6 +183,67 @@
   "footerImprint": "法律声明 (Impressum)",
   "footerEula": "许可协议",
   "footerAlternatives": "替代软件",
+  "footerFormats": "支持的格式",
+  "formats": {
+    "short": "支持的格式",
+    "title": "Schnellbild 显示的全部格式",
+    "seoTitle": "支持的格式：图片、RAW、视频、压缩包 · Mac 版 Schnellbild",
+    "description": "免费的 Mac 看图软件 Schnellbild 能打开的全部格式，附完整名称和扩展名：JPEG、HEIC、AVIF、RAW、PSD、PDF、EPS、MKV、AVI、WebM、ZIP、RAR、7z 等。",
+    "keywords": "文件格式 Mac, Mac 打开 HEIC, Mac RAW 查看器, 打开 CR3, 打开 NEF, Mac MKV 播放器, Mac 播放 AVI, Mac 播放 WebM, 不用 Photoshop 打开 PSD, Mac 打开 EPS, JPEG XL 查看器, 打开 AVIF, DDS 查看器, CBR CBZ 阅读器 Mac, Schnellbild",
+    "lead": "Schnellbild 能显示 {count} 种格式、{extensions} 种扩展名。图片通过 macOS 的 ImageIO 读取，所以 macOS 越新，能读的越多；macOS 读不了的，由 Schnellbild 自己或借助 LibRaw 解码。macOS 播放不了的视频由内置的 VLC 引擎播放，压缩包像文件夹一样打开。",
+    "jump": "分组",
+    "columns": [
+      "格式",
+      "缩写",
+      "扩展名",
+      "类型",
+      "说明"
+    ],
+    "macos": "macOS：{name}",
+    "nameStyle": "{name}（{abbr}，{ext}）",
+    "nameStyleBare": "{name}（{ext}）",
+    "kinds": {
+      "picture": "图片",
+      "document": "文稿",
+      "video": "视频",
+      "archive": "压缩包"
+    },
+    "groups": {
+      "photo": "照片和图形",
+      "pro": "HDR、图像编辑和医学",
+      "texture": "纹理",
+      "decoded": "由 Schnellbild 解码",
+      "document": "文稿和绘图",
+      "raw": "相机 RAW，由 macOS 冲印",
+      "libraw": "相机 RAW，由 LibRaw 冲印",
+      "videoMac": "由 macOS 播放的视频（不行时由 VLC 播放）",
+      "videoVlc": "始终由内置 VLC 引擎播放的视频",
+      "archive": "压缩包，像文件夹一样打开"
+    },
+    "notes": {
+      "animated": "播放动画",
+      "macos26": "macOS 26 及更高版本",
+      "oriLibraw": "在 macOS 15 上借助 LibRaw",
+      "firstPage": "第一页",
+      "pages": "逐页显示",
+      "aiPdf": "作为 PDF 显示；未存储 PDF 内容的文件显示其内嵌预览",
+      "embedded": "内嵌预览",
+      "notStitched": "按拍摄原样播放，不拼接成全景",
+      "thumbnails": "借助 Schnellbild 在访达中显示缩略图",
+      "mediaExtension": "借助 Schnellbild 的媒体扩展在访达中显示缩略图（macOS 26）",
+      "tsContent": "仅当内容是 MPEG 传输流时才算视频（TypeScript 代码仍是普通文件）",
+      "password": "也支持密码",
+      "rar": "所有 RAR 版本，包括固实压缩和密码",
+      "sevenZip": "由 macOS 的压缩库读取：在 macOS 15 上不支持 LZMA 压缩",
+      "parts": "只显示一次，通过第一个分卷"
+    },
+    "names": {
+      "split": "按字节分割的压缩包",
+      "zipParts": "分卷 ZIP",
+      "rarParts": "分卷 RAR"
+    },
+    "after": "仍在下载的文件按完成后的格式处理：film.mp4.part 是 MP4，photos.rar.part 是 RAR。名称看不出格式的文件按内容判断。其他所有文件都会在网格下方列出名称和大小。"
+  },
   "privacy": {
     "title": "隐私政策",
     "description": "Schnellbild 不收集任何个人数据：无账户、无分析、无跟踪、无网络访问。",

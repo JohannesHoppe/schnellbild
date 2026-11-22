@@ -35,12 +35,15 @@ on:
       - '!Scripts/build_map_data.py'
       - '!Scripts/build_globe_data.py'
       - '!Scripts/_build_common.py'
+      - '!Scripts/format_names.swift'
       - '!Scripts/build_world_photos.py'
       - '!Scripts/world_photos.env'
       # The privacy policies the About window links (AboutPanelTests)
       - 'docs/privacy/index.html'
       - 'docs/de/datenschutz/index.html'
       - 'docs/*/privacy/index.html'
+      # The list of formats the app shows (FormatListTests)
+      - 'site/formats.json'
   pull_request:
     paths:
       - '**'
@@ -71,12 +74,15 @@ on:
       - '!Scripts/build_map_data.py'
       - '!Scripts/build_globe_data.py'
       - '!Scripts/_build_common.py'
+      - '!Scripts/format_names.swift'
       - '!Scripts/build_world_photos.py'
       - '!Scripts/world_photos.env'
       # The privacy policies the About window links (AboutPanelTests)
       - 'docs/privacy/index.html'
       - 'docs/de/datenschutz/index.html'
       - 'docs/*/privacy/index.html'
+      # The list of formats the app shows (FormatListTests)
+      - 'site/formats.json'
   workflow_dispatch:
     inputs:
       only:

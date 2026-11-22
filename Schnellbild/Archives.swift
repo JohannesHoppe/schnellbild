@@ -22,27 +22,31 @@ enum ArchiveName {
         format(of: url.lastPathComponent) ?? ContentSniffer.shared.known(url)?.archiveFormat
     }
 
+    /// The extensions of archives, each with its format (comic books are
+    /// ZIP, RAR and 7z archives under their own names). Besides them ".001",
+    /// a split by bytes, by the extension before it: `format(of:)`.
+    /// `FormatListTests` holds them to site/formats.json.
+    static let formats: [String: ArchiveFormat] = [
+        "zip": .zip, "cbz": .zip, "7z": .sevenZip, "cb7": .sevenZip, "rar": .rar, "cbr": .rar,
+    ]
+
     /// The format of a file shown as an archive, nil for anything else
     /// (also for the later volumes of a split archive).
     static func format(of name: String) -> ArchiveFormat? {
         guard !name.hasPrefix("._") else { return nil }
         let base = DownloadName.finalName(of: name).lowercased() as NSString
-        switch base.pathExtension {
-        case "zip", "cbz": return .zip
-        case "7z", "cb7":  return .sevenZip
-        case "rar", "cbr":
-            // "x.part2.rar" and later are read through "x.part1.rar"
-            if let part = rarPart(of: base as String), part != 1 { return nil }
-            return .rar
-        case "001":   // a split by bytes: "x.7z.001", "x.zip.001"
+        if base.pathExtension == "001" {
+            // a split by bytes: "x.7z.001", "x.zip.001"
             switch (base.deletingPathExtension as NSString).pathExtension {
             case "7z":  return .sevenZip
             case "zip": return .zip
             default:    return nil
             }
-        default:
-            return nil
         }
+        guard let format = formats[base.pathExtension] else { return nil }
+        // "x.part2.rar" and later are read through "x.part1.rar"
+        if format == .rar, let part = rarPart(of: base as String), part != 1 { return nil }
+        return format
     }
 
     /// The N of "x.partN.rar".
