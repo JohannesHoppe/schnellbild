@@ -54,7 +54,6 @@ enum EmbeddedPreview {
     nonisolated static func showsPreview(_ url: URL) -> Bool {
         let ext = DownloadName.finalExtension(of: url)
         return (postScriptExtensions.contains(ext) || zipEntries[ext] != nil) || ext == "pbm" || codeStreamExtensions.contains(ext)
-            || (ext == "astc" && ASTCRows.imageIOReadsFromTheBottom)
     }
 
     /// JPEG 2000 code streams without the JP2 file around them: macOS 15's
@@ -80,8 +79,6 @@ enum EmbeddedPreview {
             guard let data = try? await MediaData.read(url) else { return nil }
             if ext == "pbm" {
                 bytes = netpbmBitmap(data) ?? data
-            } else if ext == "astc" {
-                bytes = ASTCRows.upright(data) ?? data
             } else if codeStreamExtensions.contains(ext) {
                 bytes = jpeg2000File(around: data) ?? data   // a JP2 file under such a name stays as it is
             } else {
@@ -271,63 +268,6 @@ enum EmbeddedPreview {
             }
         }
         return Data("P5\n\(width) \(height)\n255\n".utf8) + Data(grey)
-    }
-
-    // MARK: ASTC
-
-    /// ASTC textures (".astc", as ARM's astcenc writes them: the blocks row
-    /// by row from the top). ImageIO on macOS 15 and 26 reads the rows from
-    /// the bottom (its own writer writes them so), macOS 27's from the top;
-    /// which one this Mac's does is tried once on a texture of two blocks,
-    /// white over black, and where it reads them from the bottom the
-    /// picture is turned upright here.
-    enum ASTCRows {
-        static var imageIOReadsFromTheBottom: Bool { probe.fromTheBottom }
-
-        /// What the probe found (also for `FormatVisualTests`' notes): a
-        /// texture of 16 × 16 pixels, blocks of 4 × 4, void-extent blocks
-        /// (one colour each), the upper two rows of blocks white, the lower
-        /// two black, read by ImageIO.
-        static let probe: (fromTheBottom: Bool, said: String) = {
-            var bytes: [UInt8] = [0x13, 0xAB, 0xA1, 0x5C, 4, 4, 1, 16, 0, 0, 16, 0, 0, 1, 0, 0]
-            for grey: UInt8 in [0xFF, 0xFF, 0x00, 0x00] {
-                for _ in 0..<4 {
-                    bytes += [0xFC, 0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF] + [UInt8](repeating: grey, count: 6) + [0xFF, 0xFF]
-                }
-            }
-            guard let source = CGImageSourceCreateWithData(Data(bytes) as CFData, nil) else { return (false, "no image source") }
-            guard let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else { return (false, "not decoded") }
-            var pixels = [UInt8](repeating: 0, count: 16 * 16 * 4)
-            let drawn = pixels.withUnsafeMutableBytes { buffer -> Bool in
-                guard let context = CGContext(data: buffer.baseAddress, width: 16, height: 16, bitsPerComponent: 8, bytesPerRow: 64,
-                                              space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
-                context.draw(image, in: CGRect(x: 0, y: 0, width: 16, height: 16))
-                return true
-            }
-            guard drawn else { return (false, "not drawn") }
-            // The context's memory runs from the top: white there when read from the top
-            let top = pixels[64 * 2], bottom = pixels[64 * 13]
-            return (top < 128 && bottom > 128, "\(image.width)×\(image.height), top \(top), bottom \(bottom)")
-        }()
-
-        /// The texture decoded and turned upright, as PNG; nil when ImageIO
-        /// doesn't read it.
-        static func upright(_ data: Data) -> Data? {
-            guard let source = CGImageSourceCreateWithData(data as CFData, nil),
-                  let image = CGImageSourceCreateImageAtIndex(source, 0, nil),
-                  let space = image.colorSpace?.model == .rgb ? image.colorSpace : CGColorSpace(name: CGColorSpace.sRGB),
-                  let context = CGContext(data: nil, width: image.width, height: image.height, bitsPerComponent: 8, bytesPerRow: 0,
-                                          space: space, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-            context.translateBy(x: 0, y: CGFloat(image.height))
-            context.scaleBy(x: 1, y: -1)
-            context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
-            let output = NSMutableData()
-            guard let turned = context.makeImage(),
-                  let destination = CGImageDestinationCreateWithData(output, UTType.png.identifier as CFString, 1, nil) else { return nil }
-            CGImageDestinationAddImage(destination, turned, nil)
-            return CGImageDestinationFinalize(destination) ? output as Data : nil
-        }
     }
 
     // MARK: JPEG 2000

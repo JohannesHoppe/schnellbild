@@ -92,8 +92,10 @@ final class ThumbnailCache {
         }
         // PostScript, Illustrator, ZIP documents, Netpbm bitmaps: what the app
         // shows of them (QuickLook draws an Illustrator file's placeholder
-        // page, or only an icon)
-        if EmbeddedPreview.extensions.contains(DownloadName.finalExtension(of: url)) || EmbeddedPreview.showsPreview(url) {
+        // page, or only an icon); ASTC textures, which QuickLook turns upside
+        // down (`MediaInfo.orientationIgnored`)
+        let ext = DownloadName.finalExtension(of: url)
+        if EmbeddedPreview.extensions.contains(ext) || EmbeddedPreview.showsPreview(url) || ext == "astc" {
             guard let image = await Self.pictureThumbnail(of: url, side: side), !Task.isCancelled else { return nil }
             keep(image, side: side, modified: modified, for: url)
             return image

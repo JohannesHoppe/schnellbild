@@ -258,9 +258,6 @@ final class FormatVisualTests: XCTestCase {
             missing.append("avci")
         }
         for name in missing { lines.append("\(name): no sample on this macOS") }
-        let probe = EmbeddedPreview.ASTCRows.probe
-        lines.append("ASTC rows probe: \(probe.said), read from the bottom: \(probe.fromTheBottom)")
-        print("visual: \(lines.last!)")
         // Why ASTC and KTX are written by hand: ImageIO's own writers, read
         // back by ImageIO (said, not asserted: a fixed writer changes nothing here)
         for (name, type) in [("ImageIO's ASTC writer", "org.khronos.astc"), ("ImageIO's KTX writer", "org.khronos.ktx")] {
@@ -289,31 +286,6 @@ final class FormatVisualTests: XCTestCase {
         for name in missing { lines.append("\(name): no sample on this macOS") }
         try writeSnapshots(group: "documents")
         XCTAssertEqual(missing, [])
-    }
-
-    /// Which way ImageIO reads an ASTC texture's rows, by its size (said, not
-    /// asserted): white above, black below, each read back.
-    func testASTCRowOrderBySize() throws {
-        var said: [String] = []
-        for (w, h) in [(16, 16), (64, 64), (128, 64), (64, 128), (256, 256), (384, 240), (240, 384), (384, 256), (512, 512), (1024, 1024)] {
-            let context = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                    bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
-            context.setFillColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 1))
-            context.fill(CGRect(x: 0, y: 0, width: w, height: h))
-            context.setFillColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1))
-            context.fill(CGRect(x: 0, y: h / 2, width: w, height: h / 2))   // the upper half
-            let texture = FormatFixtures.astc(picture: context.makeImage()!).data
-            guard let source = CGImageSourceCreateWithData(texture as CFData, nil),
-                  let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else { said.append("\(w)×\(h): not read"); continue }
-            let pixels = RGBAPixels(image)
-            let top = pixels.at(w / 2, 2).r, bottom = pixels.at(w / 2, h - 3).r
-            said.append("\(w)×\(h): top \(top), bottom \(bottom): " + (top > 128 && bottom < 128 ? "from the top" : top < 128 && bottom > 128 ? "FROM THE BOTTOM" : "?"))
-        }
-        print(said.map { "astc rows: " + $0 }.joined(separator: "\n"))
-        if let out = Self.snapshots {
-            try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
-            try (said.joined(separator: "\n") + "\n").write(to: out.appendingPathComponent("results-astc-rows.txt"), atomically: true, encoding: .utf8)
-        }
     }
 
     // MARK: Videos

@@ -155,8 +155,8 @@ enum FormatFixtures {
     /// 5CA1AB13, block 4 × 4 × 1, the sides in 24 bits, then the blocks
     /// row by row from the top). Every block a void-extent block: one
     /// colour (UNORM16), the mean of its 4 × 4 pixels. Made by hand, since
-    /// ImageIO's ASTC writer puts the rows from the bottom while its reader
-    /// (as astcenc) reads them from the top. `expected`: the picture of
+    /// ImageIO's ASTC writer puts the rows from the bottom (and its reader states
+    /// orientation 4 for every ASTC file). `expected`: the picture of
     /// those block colours.
     static func astc(picture: CGImage) -> (data: Data, expected: CGImage) {
         let p = Pixels(picture)

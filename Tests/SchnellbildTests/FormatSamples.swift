@@ -37,6 +37,9 @@ extension FormatFixtures {
         static let video = Tolerance(mean: 10, probe: 20)
         /// A page drawn by its own renderer (antialiased edges).
         static let drawn = Tolerance(mean: 4, probe: 6)
+        /// An SVG: its tile is QuickLook's, which draws it a little darker
+        /// (255 stays, 250 comes out 237, 96 as 91).
+        static let svg = Tolerance(mean: 4, probe: 10)
 
         /// A tile is the picture scaled down: its edges blend, the probes
         /// stay (they lie inside even areas).
@@ -146,7 +149,7 @@ extension FormatFixtures {
         let svg = dir.appendingPathComponent("drawing.svg")
         try Data(ReferencePicture.svg().utf8).write(to: svg)
         try run("/usr/bin/gzip", ["-n", "-S", "z", svg.path], in: dir)
-        samples.append(Sample(name: "svgz", url: dir.appendingPathComponent("drawing.svgz"), reference: reference, tolerance: .drawn))
+        samples.append(Sample(name: "svgz", url: dir.appendingPathComponent("drawing.svgz"), reference: reference, tolerance: .svg))
 
         let size = CGSize(width: ReferencePicture.width, height: ReferencePicture.height)
         try add("ai (PDF content)", "vector.ai", pdf(size: size) { ReferencePicture.draw(in: $0, vector: true) }, reference, .drawn)
