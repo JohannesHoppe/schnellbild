@@ -26,8 +26,15 @@ final class TooltipUITests: SchnellbildUITestCase {
             return
         }
         let tags = app.descendants(matching: .helpTag)
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: -0.02, dy: 0.5)).hover()
-        eventually("the tooltip before \(name) is gone", timeout: 5) { !tags.firstMatch.exists }
+        // Off the window, until the tooltip shown before is gone (on macOS 15
+        // one stayed for more than 5 s once)
+        for y in [0.5, 0.3, 0.7] {
+            app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: -0.02, dy: y)).hover()
+            let gone = Date().addingTimeInterval(5)
+            while tags.firstMatch.exists, Date() < gone { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
+            if !tags.firstMatch.exists { break }
+        }
+        XCTAssertFalse(tags.firstMatch.exists, "the tooltip before \(name) is gone")
         element.hover()
         if tags.firstMatch.waitForExistence(timeout: 6) { return }
         // The pointer moved on a little inside it, as a hand does (a
