@@ -1,15 +1,14 @@
 import Foundation
 import CoreGraphics
-import CoreText
 import ImageIO
 import UniformTypeIdentifiers
 
 /// Files in the formats the app decodes itself (QOI, PCX / DCX) and RAW
-/// files LibRaw reads, made from one known reference picture: colour bars,
-/// letters and a gradient (with alpha, a ramp and a hole). Encoded here by
-/// the formats' specifications, so the tests compare what the app decodes
-/// with what went in. `Scripts/make_decoder_samples.sh` writes them as
-/// sample files.
+/// files LibRaw reads, made from the visual checks' reference picture
+/// (`ReferencePicture`; with alpha, a ramp and a hole). Encoded here by the
+/// formats' specifications, so the tests compare what the app decodes with
+/// what went in (`PictureDecoderTests`, `FormatVisualTests`).
+/// `Scripts/make_decoder_samples.sh` writes them as sample files.
 enum DecoderFixtures {
     /// RGBA, 8 bits, not premultiplied, rows from the top.
     struct RGBA: Equatable {
@@ -78,64 +77,28 @@ enum DecoderFixtures {
 
     // MARK: The reference picture
 
-    /// 5 × 7 letters, a row of 5 bits each, top row first.
-    private static let font: [Character: [UInt8]] = [
-        "Q": [0x0E, 0x11, 0x11, 0x11, 0x15, 0x12, 0x0D], "O": [0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E],
-        "I": [0x0E, 0x04, 0x04, 0x04, 0x04, 0x04, 0x0E], "P": [0x1E, 0x11, 0x11, 0x1E, 0x10, 0x10, 0x10],
-        "C": [0x0E, 0x11, 0x10, 0x10, 0x10, 0x11, 0x0E], "X": [0x11, 0x11, 0x0A, 0x04, 0x0A, 0x11, 0x11],
-        "R": [0x1E, 0x11, 0x11, 0x1E, 0x14, 0x12, 0x11], "A": [0x0E, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11],
-        "W": [0x11, 0x11, 0x11, 0x15, 0x15, 0x15, 0x0A], "D": [0x1E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1E],
-        "N": [0x11, 0x19, 0x15, 0x13, 0x11, 0x11, 0x11], "G": [0x0E, 0x11, 0x10, 0x17, 0x11, 0x11, 0x0F],
-        "B": [0x1E, 0x11, 0x11, 0x1E, 0x11, 0x11, 0x1E], "Y": [0x11, 0x11, 0x0A, 0x04, 0x04, 0x04, 0x04],
-        " ": [0, 0, 0, 0, 0, 0, 0],
-    ]
-
-    /// The colour bars: white, yellow, cyan, green, magenta, red, blue, black.
+    /// The colour bars of the palettes below (white, yellow, cyan, green,
+    /// magenta, red, blue, black), as `ReferencePicture` draws them.
     static let bars: [[UInt8]] = [[255, 255, 255], [255, 255, 0], [0, 255, 255], [0, 255, 0],
                                   [255, 0, 255], [255, 0, 0], [0, 0, 255], [0, 0, 0]]
 
-    /// The reference: colour bars in the top 40 %, white letters (`text`)
-    /// on dark grey in the middle 30 %, a gradient in the bottom 30 %
-    /// (red across, green down, blue against red). With `alpha`, the
-    /// gradient fades out from left to right and a hole in the bars is
-    /// transparent.
-    static func reference(width: Int = 160, height: Int = 100, text: String = "QOI PCX", alpha: Bool = false) -> RGBA {
-        var picture = RGBA(width: width, height: height)
-        let barsEnd = height * 4 / 10, textEnd = height * 7 / 10
-        for y in 0..<height {
+    /// The one reference picture of the visual checks (`ReferencePicture`,
+    /// 384 × 240) at `width` × `height`; with `alpha`, its lower part fades
+    /// out from left to right and a hole in the bars is transparent.
+    static func reference(width: Int = ReferencePicture.width, height: Int = ReferencePicture.height, alpha: Bool = false) -> RGBA {
+        var picture = RGBA.of(ReferencePicture.image(), width: width, height: height)
+        for i in stride(from: 3, to: picture.pixels.count, by: 4) { picture.pixels[i] = 255 }
+        guard alpha else { return picture }
+        let barsEnd = height * 2 / 10
+        for y in height * 7 / 10..<height {
             for x in 0..<width {
-                let pixel: [UInt8]
-                if y < barsEnd {
-                    pixel = bars[x * bars.count / width] + [255]
-                } else if y < textEnd {
-                    pixel = [48, 48, 48, 255]
-                } else {
-                    let fx = Double(x) / Double(width - 1), fy = Double(y - textEnd) / Double(max(1, height - textEnd - 1))
-                    let a = alpha ? UInt8(255 - fx * 200) : 255
-                    pixel = [UInt8(fx * 255), UInt8(fy * 255), UInt8((1 - fx) * 255), a]
-                }
-                picture[x, y] = pixel
+                var px = picture[x, y]
+                px[3] = UInt8(255 - Double(x) / Double(max(1, width - 1)) * 200)
+                picture[x, y] = px
             }
         }
-        // The letters, as large as fit the band
-        let scale = max(1, min((textEnd - barsEnd - 4) / 7, (width - 4) / max(1, text.count * 6)))
-        let left = (width - text.count * 6 * scale) / 2, top = barsEnd + (textEnd - barsEnd - 7 * scale) / 2
-        for (i, character) in text.enumerated() {
-            guard let rows = font[character] else { continue }
-            for (row, bits) in rows.enumerated() {
-                for column in 0..<5 where bits & (0x10 >> column) != 0 {
-                    for dy in 0..<scale {
-                        for dx in 0..<scale {
-                            picture[left + (i * 6 + column) * scale + dx, top + row * scale + dy] = [255, 255, 255, 255]
-                        }
-                    }
-                }
-            }
-        }
-        if alpha {
-            for y in barsEnd / 4..<barsEnd * 3 / 4 {
-                for x in width / 3..<width / 2 { picture[x, y] = [0, 0, 0, 0] }
-            }
+        for y in barsEnd / 4..<barsEnd * 3 / 4 {
+            for x in width / 3..<width / 2 { picture[x, y] = [0, 0, 0, 0] }
         }
         return picture
     }
@@ -495,50 +458,4 @@ enum DecoderFixtures {
         }
     }
 
-    // MARK: Contact sheet
-
-    /// Rows of pictures with a label each, on a light grey ground: what the
-    /// tests decoded beside the reference, to look at.
-    static func contactSheet(_ rows: [(label: String, pictures: [(caption: String, image: CGImage)])], cell: Int = 220) -> CGImage {
-        let labelWidth = 200, pad = 12, caption = 16
-        let columns = rows.map(\.pictures.count).max() ?? 1
-        let width = labelWidth + columns * (cell + pad) + pad
-        let rowHeight = cell + caption + pad
-        let height = rows.count * rowHeight + pad
-        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
-                                space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-        context.setFillColor(CGColor(gray: 0.86, alpha: 1))
-        context.fill(CGRect(x: 0, y: 0, width: width, height: height))
-        func text(_ string: String, at point: CGPoint, size: CGFloat) {
-            let font = CTFontCreateWithName("Helvetica" as CFString, size, nil)
-            let attributed = NSAttributedString(string: string, attributes: [
-                NSAttributedString.Key(kCTFontAttributeName as String): font,
-                NSAttributedString.Key(kCTForegroundColorAttributeName as String): CGColor(gray: 0, alpha: 1),
-            ])
-            context.textPosition = point
-            CTLineDraw(CTLineCreateWithAttributedString(attributed), context)
-        }
-        for (r, row) in rows.enumerated() {
-            let top = height - pad - r * rowHeight
-            text(row.label, at: CGPoint(x: pad, y: top - cell / 2), size: 13)
-            for (c, picture) in row.pictures.enumerated() {
-                let x = labelWidth + c * (cell + pad)
-                // A checkerboard behind, so transparency shows
-                let box = CGRect(x: x, y: top - cell, width: cell, height: cell)
-                for i in 0..<(cell / 10) {
-                    for j in 0..<(cell / 10) where (i + j) % 2 == 0 {
-                        context.setFillColor(CGColor(gray: 0.75, alpha: 1))
-                        context.fill(CGRect(x: x + i * 10, y: top - cell + j * 10, width: 10, height: 10))
-                    }
-                }
-                let image = picture.image
-                let fit = min(CGFloat(cell) / CGFloat(image.width), CGFloat(cell) / CGFloat(image.height))
-                let size = CGSize(width: CGFloat(image.width) * fit, height: CGFloat(image.height) * fit)
-                context.interpolationQuality = .none
-                context.draw(image, in: CGRect(x: box.midX - size.width / 2, y: box.midY - size.height / 2, width: size.width, height: size.height))
-                text(picture.caption, at: CGPoint(x: x, y: top - cell - caption + 3), size: 11)
-            }
-        }
-        return context.makeImage()!
-    }
 }

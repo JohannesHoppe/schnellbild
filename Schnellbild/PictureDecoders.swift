@@ -264,8 +264,8 @@ enum RawDecoder {
         return MediaInfo.scaledDown(developed.source, at: 0, maxPixel: maxPixel, now: true)
     }
 
-    /// For a file of ImageIO's RAW formats that ImageIO gives no picture
-    /// of: the raw data developed by LibRaw (nil for other files).
+    /// For a file of ImageIO's RAW formats: the raw data developed by
+    /// LibRaw (nil for other files), kept like the app's own decodes.
     static func fallback(_ url: URL) async -> (source: CGImageSource, inMemory: Int)? {
         guard imageIOExtensions.contains(BrowserModel.shownExtension(of: url)) else { return nil }
         let stamp = await Blocking.run(.userInitiated) { PictureDecoders.Kept.stamp(of: url) }
@@ -274,6 +274,66 @@ enum RawDecoder {
               let developed = await developed(data, named: url, half: false) else { return nil }
         PictureDecoders.Kept.shared.keep(url, stamp: stamp, developed)
         return (developed.source, developed.bytes)
+    }
+
+    /// Whether the file is one of ImageIO's RAW formats (by its name or content).
+    nonisolated static func isImageIORaw(_ url: URL) -> Bool {
+        imageIOExtensions.contains(BrowserModel.shownExtension(of: url))
+    }
+
+    /// How a picture came out: nearly all black, or blown out (much of it
+    /// white, bright overall), else fine.
+    enum Exposure: Equatable {
+        case fine, black, blownOut
+    }
+
+    /// Looked at in 32 × 32 (a cheap histogram of its luminance): black
+    /// when 97 % of it lies at 8 of 255 or below, blown out when 40 % lies
+    /// at 250 or above and its mean above 200. A snow field or a night sky
+    /// shows more than that; ImageIO's picture of a Blackmagic Micro Cinema
+    /// Camera DNG is all black on macOS 15 and half white at a mean of 229
+    /// on macOS 26 (`FormatVisualTests`' RAW samples).
+    static func exposure(of image: CGImage) -> Exposure {
+        let side = 32
+        var pixels = [UInt8](repeating: 0, count: side * side * 4)
+        let drawn = pixels.withUnsafeMutableBytes { raw -> Bool in
+            guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+                  let context = CGContext(data: raw.baseAddress, width: side, height: side, bitsPerComponent: 8, bytesPerRow: side * 4,
+                                          space: space, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else { return false }
+            context.interpolationQuality = .medium
+            context.draw(image, in: CGRect(x: 0, y: 0, width: side, height: side))
+            return true
+        }
+        guard drawn else { return .fine }
+        var dark = 0, bright = 0, sum = 0
+        for i in stride(from: 0, to: pixels.count, by: 4) {
+            let luma = (Int(pixels[i]) * 299 + Int(pixels[i + 1]) * 587 + Int(pixels[i + 2]) * 114) / 1000
+            if luma <= 8 { dark += 1 }
+            if luma >= 250 { bright += 1 }
+            sum += luma
+        }
+        let count = side * side
+        if dark * 100 >= count * 97 { return .black }
+        if bright * 100 >= count * 40, sum > 200 * count { return .blownOut }
+        return .fine
+    }
+
+    /// For one of ImageIO's RAW formats whose picture by ImageIO is missing,
+    /// black or blown out: LibRaw's development at up to `maxPixel`, when it
+    /// comes out fine itself (a picture really that dark stays ImageIO's).
+    static func replacement(of image: CGImage?, for url: URL, maxPixel: Int) async -> (source: CGImageSource, inMemory: Int, image: CGImage)? {
+        guard isImageIORaw(url), image.map({ exposure(of: $0) != .fine }) ?? true,
+              let developed = await fallback(url), !Task.isCancelled,
+              let picture = MediaInfo.scaledDown(developed.source, at: 0, maxPixel: maxPixel, now: true),
+              exposure(of: picture) == .fine else { return nil }
+        return (developed.source, developed.inMemory, picture)
+    }
+
+    /// The same for a tile (QuickLook's or ImageIO's): LibRaw's tile.
+    static func thumbnailReplacement(of image: CGImage?, for url: URL, maxPixel: Int) async -> CGImage? {
+        guard isImageIORaw(url), image.map({ exposure(of: $0) != .fine }) ?? true, !Task.isCancelled,
+              let tile = await thumbnail(of: url, maxPixel: maxPixel), exposure(of: tile) == .fine else { return nil }
+        return tile
     }
 
     static func facts(of url: URL, _ facts: SBRawFacts) -> PictureDecoders.Facts {

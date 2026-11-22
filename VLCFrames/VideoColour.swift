@@ -158,6 +158,74 @@ extension LibVLCVideo {
         return nil
     }
 
+    /// The video stream's visible size and its buffer's, as VLC's stream
+    /// information states them once the decoder has said ("Video
+    /// resolution", "Buffer dimensions": the decoder pads its buffer, 240
+    /// rows into 256, 1080 into 1088). nil while VLC hasn't said.
+    public static func resolution(of media: VLCMedia) -> (visible: (width: Int, height: Int), buffer: (width: Int, height: Int)?)? {
+        guard let getInfo, let item = inputItem(of: media) else { return nil }
+        func size(_ category: String, _ key: String) -> (width: Int, height: Int)? {
+            guard let text = getInfo(item, category, key) else { return nil }
+            defer { free(text) }
+            let parts = String(cString: text).split(separator: "x").compactMap { Int($0) }
+            guard parts.count == 2, parts[0] > 0, parts[1] > 0 else { return nil }
+            return (parts[0], parts[1])
+        }
+        for stream in 0..<32 {
+            let category = "Stream \(stream)"
+            guard let visible = size(category, "Video resolution") else { continue }
+            return (visible, size(category, "Buffer dimensions"))
+        }
+        return nil
+    }
+
+    /// The video track's visible size and the shape of its pixels: from the
+    /// media's tracks (what the container states), else from VLC's stream
+    /// information (an elementary stream such as MPEG-1 video states its
+    /// size only in the stream), square pixels then. nil: not known yet.
+    public static func visibleTrack(of media: VLCMedia) -> (width: Int, height: Int, sampleAspect: Double)? {
+        if let tracks = media.tracksInformation as? [[String: Any]] {
+            for track in tracks where track[VLCMediaTracksInformationType] as? String == VLCMediaTracksInformationTypeVideo {
+                let number = { (key: String) in (track[key] as? NSNumber)?.intValue ?? 0 }
+                let width = number(VLCMediaTracksInformationVideoWidth), height = number(VLCMediaTracksInformationVideoHeight)
+                guard width > 0, height > 0 else { continue }
+                let num = number(VLCMediaTracksInformationSourceAspectRatio)
+                let den = number(VLCMediaTracksInformationSourceAspectRatioDenominator)
+                return (width, height, num > 0 && den > 0 ? Double(num) / Double(den) : 1)
+            }
+        }
+        if let stated = resolution(of: media) { return (stated.visible.width, stated.visible.height, 1) }
+        // An MPEG-1 or MPEG-2 elementary stream (".m1v", ".m2v"): VLC states
+        // its size only once its decoder has run, after its output opened
+        return media.url.flatMap(mpegSequenceSize(of:))
+    }
+
+    /// The size and pixel shape in an MPEG-1 / MPEG-2 video sequence header
+    /// (ISO/IEC 11172-2 2.4.2.3, 13818-2 6.2.2.1: 00 00 01 B3, 12 bits
+    /// width, 12 bits height, 4 bits aspect ratio) in the file's first 4 KB.
+    /// Square pixels unless MPEG-2 (an extension start code, 00 00 01 B5,
+    /// follows) states a display aspect of 4:3, 16:9 or 2.21:1.
+    static func mpegSequenceSize(of url: URL) -> (width: Int, height: Int, sampleAspect: Double)? {
+        guard url.isFileURL, let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        guard let head = try? handle.read(upToCount: 4096) else { return nil }
+        let bytes = [UInt8](head)
+        guard bytes.count >= 8 else { return nil }
+        for at in 0..<(bytes.count - 7) where bytes[at] == 0 && bytes[at + 1] == 0 && bytes[at + 2] == 1 && bytes[at + 3] == 0xB3 {
+            let width = Int(bytes[at + 4]) << 4 | Int(bytes[at + 5]) >> 4
+            let height = (Int(bytes[at + 5]) & 0x0F) << 8 | Int(bytes[at + 6])
+            guard width > 0, height > 0 else { return nil }
+            let code = Int(bytes[at + 7]) >> 4
+            let rest = bytes[(at + 8)...]
+            let mpeg2 = rest.indices.contains { i in
+                i + 3 < bytes.count && bytes[i] == 0 && bytes[i + 1] == 0 && bytes[i + 2] == 1 && bytes[i + 3] == 0xB5
+            }
+            let display: Double? = mpeg2 ? [2: 4.0 / 3, 3: 16.0 / 9, 4: 2.21][code] : nil
+            return (width, height, display.map { $0 * Double(height) / Double(width) } ?? 1)
+        }
+        return nil
+    }
+
     private typealias GetURI = @convention(c) (UnsafeMutableRawPointer) -> UnsafeMutablePointer<CChar>?
     private static let getURI: GetURI? = dlsym(dlopen(nil, RTLD_NOW), "input_item_GetURI")
         .map { unsafeBitCast($0, to: GetURI.self) }

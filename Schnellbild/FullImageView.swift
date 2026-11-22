@@ -268,33 +268,8 @@ struct FullImageView: View {
         }
         let page = shown.page
         let kept = sharper && opened?.url == url ? opened : nil
-        let attempt = await detachedCancellable(priority: .userInitiated) { [pages] () -> Result<(NSImage, CGSize, CGImage, OpenedPicture?), LoadFailure>? in
-            if let pages {
-                guard let rendered = pages.render(page: page, longestSide: maxPixel) else { return .failure(.undecodable) }
-                return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
-            }
-            if VectorPicture.isVector(url) {
-                guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return .failure(.undecodable) }
-                return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
-            }
-            var picture: (source: CGImageSource, inMemory: Int)?
-            if let source = kept?.source { picture = (source, 0) } else { picture = await MediaData.picture(url) }
-            guard var src = picture?.source else { return .failure(.unreadable) }
-            guard !Task.isCancelled else { return nil }
-            var failure = LoadFailure(status: CGImageSourceGetStatus(src))
-            var cg = failure == nil ? MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) : nil
-            // One of ImageIO's RAW formats ImageIO gives no picture of (a
-            // camera newer than this macOS): developed by LibRaw
-            if cg == nil, kept == nil, !Task.isCancelled, let developed = await RawDecoder.fallback(url) {
-                src = developed.source
-                picture = developed
-                failure = nil
-                cg = MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true)
-            }
-            if let failure { return .failure(failure) }
-            guard let cg else { return .failure(.undecodable) }
-            let native = MediaInfo.pixelSize(from: src) ?? .zero
-            return .success((NSImage(pixels: cg), native, cg, kept ?? OpenedPicture(url: url, source: src, inMemory: picture?.inMemory ?? 0)))
+        let attempt = await detachedCancellable(priority: .userInitiated) { [pages] in
+            await Self.decode(url, pages: pages, page: page, maxPixel: maxPixel, kept: kept)
         }
 
         guard !Task.isCancelled, let outcome = attempt else { return }
@@ -321,6 +296,42 @@ struct FullImageView: View {
         }
         picture = result.2
         opened = result.3
+    }
+
+    /// The picture the full view shows of `url` with `maxPixel` as its
+    /// longest side: a PDF's `page` (`pages` open), an SVG drawn, else
+    /// ImageIO's picture (`MediaData.picture`, also a preview the file
+    /// carries), with its own size and the source kept for sharper decodes.
+    /// Nil: cancelled.
+    nonisolated static func decode(_ url: URL, pages: PDFPages?, page: Int, maxPixel: Int,
+                                   kept: OpenedPicture?) async -> Result<(NSImage, CGSize, CGImage, OpenedPicture?), LoadFailure>? {
+        if let pages {
+            guard let rendered = pages.render(page: page, longestSide: maxPixel) else { return .failure(.undecodable) }
+            return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
+        }
+        if VectorPicture.isVector(url) {
+            guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return .failure(.undecodable) }
+            return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
+        }
+        var picture: (source: CGImageSource, inMemory: Int)?
+        if let source = kept?.source { picture = (source, 0) } else { picture = await MediaData.picture(url) }
+        guard var src = picture?.source else { return .failure(.unreadable) }
+        guard !Task.isCancelled else { return nil }
+        var failure = LoadFailure(status: CGImageSourceGetStatus(src))
+        var cg = failure == nil ? MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) : nil
+        // One of ImageIO's RAW formats that ImageIO gives no picture of (a
+        // camera newer than this macOS) or one all black or blown out (a
+        // Blackmagic DNG): LibRaw's development, where it isn't so itself
+        if kept == nil, !Task.isCancelled, let developed = await RawDecoder.replacement(of: cg, for: url, maxPixel: maxPixel) {
+            src = developed.source
+            picture = (developed.source, developed.inMemory)
+            failure = nil
+            cg = developed.image
+        }
+        if let failure { return .failure(failure) }
+        guard let cg else { return .failure(.undecodable) }
+        let native = MediaInfo.pixelSize(from: src) ?? .zero
+        return .success((NSImage(pixels: cg), native, cg, kept ?? OpenedPicture(url: url, source: src, inMemory: picture?.inMemory ?? 0)))
     }
 
     /// Why a picture can't be shown, as far as ImageIO tells.

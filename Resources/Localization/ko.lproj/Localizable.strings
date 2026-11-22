@@ -611,6 +611,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "목록에서: 아틀라스, 지도 위의 사진과 비디오; 아틀라스에서: 격자로 돌아가기";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "아틀라스: 그 방향으로 지도에서 가장 가까운 항목으로, 아래로 가면 위치 없는 항목 줄로";
 "Atlas: zoom the map in / out" = "아틀라스: 지도 확대 / 축소";
+"Atlas: the first / last item in time" = "아틀라스: 시간순으로 처음 / 마지막 항목";
 "Atlas: on several items, zoom in until they part; on one, open it" = "아틀라스: 여러 항목이면 나뉠 때까지 확대, 하나면 열기";
 "Atlas: on items taken at one place, the next one (%@ too)" = "아틀라스: 같은 장소의 항목이면 다음 항목(%@도)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "가로질러 드래그하거나 핸들 이동: 그 기간만 지도에 표시, 클릭: 그 시각에 가장 가깝게 찍은 항목";

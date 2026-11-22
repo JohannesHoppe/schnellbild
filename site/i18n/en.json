@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Look at it large, page with the keys",
-      "text": "<p>Space opens a picture as large as the window allows, <kbd>◀</kbd> / <kbd>▶</kbd> page through the folder. Zoom in with the trackpad or <kbd>+</kbd> / <kbd>−</kbd>, turn with <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, full screen with <kbd>f</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
+      "text": "<p>Space opens a picture as large as the window allows, <kbd>◀</kbd> / <kbd>▶</kbd> page through the folder. Zoom in with the trackpad or <kbd>+</kbd> / <kbd>−</kbd>, turn with <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, full screen with <kbd>F</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>S</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>P</kbd> opens it to reorder and weed out.</p>",
       "alt": "A photo in the full view"
     },
     {
       "title": "Your photos on the map and the globe",
-      "text": "<p><kbd>L</kbd> goes from the grid to the list and on to the Atlas. It shows the photos and videos of a folder and its subfolders where they were taken. Zoomed far out, the map is a globe in front of the stars, with day and night if you like and the cities lit on its night side; zoom in and it flattens into the map.</p><ul><li>The timeline lays the trip out by time: drag across it, and the map shows only that part</li><li><kbd>T</kbd> plays the tour: the map glides from place to place, the photos show large, the videos play a few seconds</li><li>The map is inside the app: nothing goes online, no location leaves your Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> goes from the grid to the list and on to the Atlas. It shows the photos and videos of a folder and its subfolders where they were taken. Zoomed far out, the map is a globe in front of the stars, with day and night if you like and the cities lit on its night side; zoom in and it flattens into the map.</p><ul><li>The timeline lays the trip out by time: drag across it, and the map shows only that part</li><li>The globe tilts towards the horizon, the relief exaggerated if you like, so fjords and mountains stand out</li><li><kbd>T</kbd> plays the tour: the map glides from place to place, the photos show large, the videos play a few seconds</li><li>The map is inside the app: nothing goes online, no location leaves your Mac</li></ul>",
       "alt": "The photos of a trip on the globe, in the Atlas view"
     },
     {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Audio tracks, speed (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) and one control bar for every video, which stays wherever you drag it</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Every key at hand",
-      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid, list or Atlas (<kbd>L</kbd>), sort by name, kind, date, size or distance from a place, several windows, and a boss key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid, list or Atlas (<kbd>L</kbd>), sort by name, kind, date, size or distance from a place, several windows, and a boss key (<kbd>X</kbd>). VoiceOver reads every tile, and with Reduce motion nothing glides.</p>",
       "alt": "The list of keys (F1)"
     },
     {

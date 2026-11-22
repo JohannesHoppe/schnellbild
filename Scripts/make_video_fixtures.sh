@@ -6,8 +6,10 @@
 # videos with two audio and two subtitle tracks
 # (UITests/Fixtures/tracks.mp4 and tracks.mkv), the HDR clips (`hdr` as
 # the only argument draws just those), the AC-3 / E-AC-3 sound (`sound`)
-# and Teletext subtitles (`teletext`).
-# Needs ffmpeg (with libx265 for the HDR clips); the clips are committed, so
+# Teletext subtitles (`teletext`) and the visual check's clips of the
+# reference picture (`visual`).
+# Needs ffmpeg (with libx265 for the HDR clips) and, for `visual`, swiftc;
+# the clips are committed, so
 # tests don't.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -101,6 +103,49 @@ draw_teletext() {
   rm -rf "$video"
 }
 if [ "${1:-}" = teletext ]; then draw_teletext; exit 0; fi
+
+# The visual check's clips (FormatVisualTests; `visual` as the only argument
+# draws just these): the reference picture's 20 frames at 10 per second,
+# each shown for 2.5 pictures at 25 per second (MPEG-1 and MPEG-2 know no
+# 10) (Tests/SchnellbildTests/ReferencePicture.swift, written by
+# Scripts/reference_frames.swift: a marker moving right, the frame's number
+# as digits and as blocks the test reads back), as visual.<ext> in each
+# format whose look is checked against those frames.
+draw_visual() {
+  local frames
+  frames=$(mktemp -d)
+  swiftc -parse-as-library Tests/SchnellbildTests/ReferencePicture.swift Scripts/reference_frames.swift -o "$frames/reference_frames"
+  "$frames/reference_frames" "$frames" 20
+  visual() {
+    local name=$1; shift
+    "$FFMPEG" -loglevel error -y -framerate 10 -i "$frames/frame-%02d.png" -an -r 25 -g 12 "$@" \
+      -fflags +bitexact -flags:v +bitexact "$OUT/visual.$name"
+  }
+  visual asf  -c:v wmv2 -q:v 3 -pix_fmt yuv420p -f asf
+  visual divx -c:v mpeg4 -q:v 3 -pix_fmt yuv420p -vtag DX50 -f avi
+  visual m2t  -c:v mpeg2video -q:v 3 -pix_fmt yuv420p -f mpegts
+  visual m1v  -c:v mpeg1video -q:v 3 -pix_fmt yuv420p -f mpeg1video
+  visual ogm  -c:v libvpx -crf 10 -b:v 1M -pix_fmt yuv420p -f ogg
+  visual f4v  -c:v libx264 -crf 18 -pix_fmt yuv420p -f f4v
+  visual rm   -c:v rv20 -q:v 3 -pix_fmt yuv420p -f rm
+  visual mxf  -c:v mpeg2video -q:v 3 -pix_fmt yuv422p -f mxf
+  visual insv -c:v libx264 -crf 18 -pix_fmt yuv420p -f mp4
+  # RealMedia's variable-bitrate name and GoPro MAX's ".360": the same files
+  cp "$OUT/visual.rm" "$OUT/visual.rmvb"
+  cp "$OUT/visual.insv" "$OUT/visual.360"
+  # Pictures ImageIO reads but doesn't write: an AVIF sequence (AV1, its
+  # frames at 10 per second) and AVC in HEIF (the first frame, wrapped by
+  # Scripts/make_avci.py), both BT.709 limited range with sRGB's transfer, as stated
+  local bt709=(-vf "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p" -colorspace bt709 -color_primaries bt709
+               -color_trc iec61966-2-1 -color_range tv)
+  SVT_LOG=1 "$FFMPEG" -loglevel error -y -framerate 10 -i "$frames/frame-%02d.png" "${bt709[@]}" -c:v libsvtav1 -crf 20 -g 10 \
+    -fflags +bitexact -flags:v +bitexact -f avif "$OUT/visual.avifs"
+  "$FFMPEG" -loglevel error -y -i "$frames/frame-00.png" "${bt709[@]}" -frames:v 1 -c:v libx264 -profile:v main -crf 12 \
+    -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -f h264 "$frames/still.h264"
+  python3 -I Scripts/make_avci.py "$frames/still.h264" "$OUT/visual.avci" 384 240
+  rm -rf "$frames"
+}
+if [ "${1:-}" = visual ]; then draw_visual; exit 0; fi
 
 make() { local name=$1; shift; "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -t 2 -an -g 12 "$@" "$OUT/$name"; }
 make clip.mkv  -c:v libx264 -pix_fmt yuv420p
@@ -226,4 +271,5 @@ asstags > "$SUBS/tags.ass"
 draw_hdr
 draw_sound
 draw_teletext
+draw_visual
 finished=1

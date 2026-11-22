@@ -53,8 +53,12 @@ enum EmbeddedPreview {
     /// file itself: PostScript, the ZIP documents, a Netpbm bitmap.
     nonisolated static func showsPreview(_ url: URL) -> Bool {
         let ext = DownloadName.finalExtension(of: url)
-        return (postScriptExtensions.contains(ext) || zipEntries[ext] != nil) || ext == "pbm"
+        return (postScriptExtensions.contains(ext) || zipEntries[ext] != nil) || ext == "pbm" || codeStreamExtensions.contains(ext)
     }
+
+    /// JPEG 2000 code streams without the JP2 file around them: macOS 15's
+    /// ImageIO reads none (macOS 26's does), so they are wrapped in one.
+    nonisolated static let codeStreamExtensions: Set<String> = ["j2c", "j2k"]
 
     /// Whether the Inspector names the picture shown a preview (not the
     /// Netpbm bitmap, which is shown whole).
@@ -73,7 +77,13 @@ enum EmbeddedPreview {
             bytes = await Blocking.run(.userInitiated) { zipEntry(entries, of: url) }
         } else {
             guard let data = try? await MediaData.read(url) else { return nil }
-            bytes = ext == "pbm" ? (netpbmBitmap(data) ?? data) : previewData(in: data)
+            if ext == "pbm" {
+                bytes = netpbmBitmap(data) ?? data
+            } else if codeStreamExtensions.contains(ext) {
+                bytes = jpeg2000File(around: data) ?? data   // a JP2 file under such a name stays as it is
+            } else {
+                bytes = previewData(in: data)
+            }
         }
         guard let bytes, !Task.isCancelled, let source = CGImageSourceCreateWithData(bytes as CFData, nil) else { return nil }
         return (source, bytes.count)
@@ -258,6 +268,37 @@ enum EmbeddedPreview {
             }
         }
         return Data("P5\n\(width) \(height)\n255\n".utf8) + Data(grey)
+    }
+
+    // MARK: JPEG 2000
+
+    /// A JPEG 2000 code stream (ISO/IEC 15444-1 annex A: SOC FF4F, then the
+    /// SIZ marker FF51 with the picture's size and components) inside the
+    /// boxes of a JP2 file (annex I): signature, file type, header (image
+    /// header, colour: sRGB or grey), the code stream. nil when the data
+    /// isn't a code stream or its SIZ marker is short.
+    static func jpeg2000File(around data: Data) -> Data? {
+        let bytes = [UInt8](data.prefix(64))
+        guard bytes.count >= 42, bytes[0] == 0xFF, bytes[1] == 0x4F, bytes[2] == 0xFF, bytes[3] == 0x51 else { return nil }
+        func be32(_ at: Int) -> Int { Int(bytes[at]) << 24 | Int(bytes[at + 1]) << 16 | Int(bytes[at + 2]) << 8 | Int(bytes[at + 3]) }
+        // After SIZ's marker: Lsiz, Rsiz, Xsiz, Ysiz, XOsiz, YOsiz, the tiles' four, Csiz, then each component's Ssiz
+        let width = be32(8) - be32(16), height = be32(12) - be32(20)
+        let components = Int(bytes[40]) << 8 | Int(bytes[41])
+        guard width > 0, height > 0, components > 0, components < 16_384, bytes.count > 42 else { return nil }
+        let depth = bytes[42]   // bits less one, high bit: signed
+        func box(_ type: String, _ payload: [UInt8]) -> [UInt8] {
+            let size = 8 + payload.count
+            return [UInt8(size >> 24 & 0xFF), UInt8(size >> 16 & 0xFF), UInt8(size >> 8 & 0xFF), UInt8(size & 0xFF)] + Array(type.utf8) + payload
+        }
+        func u32(_ v: Int) -> [UInt8] { [UInt8(v >> 24 & 0xFF), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)] }
+        let header = box("ihdr", u32(height) + u32(width) + [UInt8(components >> 8), UInt8(components & 0xFF), depth, 7, 0, 0])
+            + box("colr", [1, 0, 0] + u32(components >= 3 ? 16 : 17))
+        var file = box("jP  ", [0x0D, 0x0A, 0x87, 0x0A]) + box("ftyp", Array("jp2 ".utf8) + u32(0) + Array("jp2 ".utf8))
+        file += box("jp2h", header)
+        let length = 8 + data.count
+        guard length <= Int(UInt32.max) else { return nil }
+        file += u32(length) + Array("jp2c".utf8)
+        return Data(file) + data
     }
 
     // MARK: ZIP documents

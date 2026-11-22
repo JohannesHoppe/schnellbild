@@ -42,13 +42,23 @@ enum MediaInfo {
         return pixelSize(from: source)
     }
 
+    /// Types whose orientation ImageIO states without the file saying one:
+    /// ASTC (a texture's blocks row by row from the top, as ARM's astcenc
+    /// writes them; the format has no orientation), for which ImageIO
+    /// states 4, upside down, on macOS 15, 26 and 27 (its own ASTC writer
+    /// puts the rows from the bottom), so applied it turned every other
+    /// texture upside down (FormatVisualTests).
+    static let orientationIgnored: Set<String> = ["org.khronos.astc"]
+
     /// Picture `index` of `source` decoded with its longest side at most
     /// `maxPixel`, turned upright by its EXIF orientation: the picture
     /// itself, not the small preview a camera embeds. `now`: decoded at
-    /// once (to be drawn), not when first drawn.
+    /// once (to be drawn), not when first drawn. An ASTC texture keeps its
+    /// rows as they are (`orientationIgnored`).
     static func scaledDown(_ source: CGImageSource, at index: Int, maxPixel: Int, now: Bool) -> CGImage? {
+        let ignored = CGImageSourceGetType(source).map { orientationIgnored.contains($0 as String) } ?? false
         var options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,
-                                        kCGImageSourceCreateThumbnailWithTransform: true,
+                                        kCGImageSourceCreateThumbnailWithTransform: !ignored,
                                         kCGImageSourceThumbnailMaxPixelSize: maxPixel]
         if now { options[kCGImageSourceShouldCacheImmediately] = true }
         return CGImageSourceCreateThumbnailAtIndex(source, index, options as CFDictionary)

@@ -611,6 +611,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Fra listen: atlasset, fotos og videoer på kortet; fra atlasset: tilbage til gitteret";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: til det nærmeste emne på kortet i den retning; ned i rækken af emner uden placering";
 "Atlas: zoom the map in / out" = "Atlas: zoom kortet ind / ud";
+"Atlas: the first / last item in time" = "Atlas: tidsmæssigt første / sidste emne";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flere emner zoom ind, til de skilles; på ét åbn det";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: på emner fra samme sted det næste (også %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Træk hen over eller flyt et håndtag: kun den tid på kortet; klik: emnet taget nærmest det tidspunkt";

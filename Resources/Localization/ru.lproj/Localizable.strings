@@ -611,6 +611,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Из списка: атлас, фото и видео на карте; из атласа: назад к сетке";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Атлас: к ближайшему объекту на карте в этом направлении; вниз, в полосу объектов без места";
 "Atlas: zoom the map in / out" = "Атлас: приблизить / отдалить карту";
+"Atlas: the first / last item in time" = "Атлас: первый / последний объект по времени";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Атлас: на нескольких объектах приблизить, пока они не разойдутся; на одном открыть его";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Атлас: на объектах, снятых в одном месте, следующий (также %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Провести поверх или сдвинуть ручку: на карте только этот период; щелчок: объект, снятый ближе всего к этому времени";

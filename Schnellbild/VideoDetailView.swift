@@ -378,8 +378,11 @@ struct VideoDetailView: View {
     /// with their sound. AVFoundation would call them playable through
     /// Schnellbild's own (picture only, for thumbnails) or another app's
     /// extension, once one is turned on. A transport stream (".ts", a TV
-    /// recording) plays through VLC too, which reads every such stream.
-    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "ogm", "vob", "ts", "rm", "rmvb"]
+    /// recording) plays through VLC too, which reads every such stream, as
+    /// does ".m2t" (HDV and TV recordings): AVFoundation reads an SD MPEG-2
+    /// stream without colour information with BT.709's matrix, not BT.601's
+    /// (magenta came out with green 44 of 255, FormatVisualTests).
+    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "ogm", "vob", "ts", "m2t", "rm", "rmvb"]
     static func playsInVLC(_ url: URL) -> Bool { vlcFormats.contains(BrowserModel.shownExtension(of: url)) }
 
     /// Turned a quarter, the fitted video's now-swapped box is scaled to fit

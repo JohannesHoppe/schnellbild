@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Duży podgląd, przewijanie klawiszami",
-      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a <kbd>◀</kbd> / <kbd>▶</kbd> przewijają folder. Powiększaj gładzikiem lub klawiszami <kbd>+</kbd> / <kbd>−</kbd>, obracaj <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y i SVG też, PDF strona po stronie.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
+      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a <kbd>◀</kbd> / <kbd>▶</kbd> przewijają folder. Powiększaj gładzikiem lub klawiszami <kbd>+</kbd> / <kbd>−</kbd>, obracaj <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, pełny ekran włączysz klawiszem <kbd>F</kbd>. Animowane GIF-y i SVG też, PDF strona po stronie.</p><p>Pokaz slajdów (<kbd>S</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>P</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
       "alt": "Zdjęcie w pełnym widoku"
     },
     {
       "title": "Twoje zdjęcia na mapie i na globusie",
-      "text": "<p><kbd>L</kbd> przełącza z siatki na listę i dalej na atlas. Atlas pokazuje zdjęcia i filmy z folderu i jego podfolderów w miejscach, w których powstały. Przy dużym oddaleniu mapa jest globusem na tle gwiazd, jeśli chcesz z dniem i nocą oraz światłami miast po nocnej stronie; po przybliżeniu spłaszcza się w mapę.</p><ul><li>Oś czasu układa podróż według czasu: przeciągnij po fragmencie, a mapa pokaże tylko tę część</li><li><kbd>T</kbd> odtwarza podróż: mapa płynie od miejsca do miejsca, zdjęcia pojawiają się w dużym rozmiarze, filmy grają kilka sekund</li><li>Mapa jest w aplikacji: nic nie trafia do internetu, żadna lokalizacja nie opuszcza Twojego Maca</li></ul>",
+      "text": "<p><kbd>L</kbd> przełącza z siatki na listę i dalej na atlas. Atlas pokazuje zdjęcia i filmy z folderu i jego podfolderów w miejscach, w których powstały. Przy dużym oddaleniu mapa jest globusem na tle gwiazd, jeśli chcesz z dniem i nocą oraz światłami miast po nocnej stronie; po przybliżeniu spłaszcza się w mapę.</p><ul><li>Oś czasu układa podróż według czasu: przeciągnij po fragmencie, a mapa pokaże tylko tę część</li><li>Globus pochyla się ku horyzontowi, z przewyższoną rzeźbą terenu, jeśli chcesz: fiordy i góry się wyróżniają</li><li><kbd>T</kbd> odtwarza podróż: mapa płynie od miejsca do miejsca, zdjęcia pojawiają się w dużym rozmiarze, filmy grają kilka sekund</li><li>Mapa jest w aplikacji: nic nie trafia do internetu, żadna lokalizacja nie opuszcza Twojego Maca</li></ul>",
       "alt": "Zdjęcia z podróży na globusie, w widoku atlasu"
     },
     {
       "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
-      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> przeskakują o jedną dziesiątą filmu, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o jedną setną</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ustawiają głośność, dla każdego filmu</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> do następnego filmu i <kbd>⌘</kbd> + <kbd>◀</kbd> z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
+      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> przeskakują o jedną dziesiątą filmu, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o jedną setną</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ustawiają głośność, dla każdego filmu</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> do następnego filmu i <kbd>⌘</kbd> + <kbd>◀</kbd> z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Ścieżki dźwiękowe, prędkość (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) i jeden pasek sterowania dla każdego filmu, który zostaje tam, gdzie go przeciągniesz</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Każdy klawisz pod ręką",
-      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka, lista lub atlas (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty, rozmiaru lub odległości od miejsca, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka, lista lub atlas (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty, rozmiaru lub odległości od miejsca, wiele okien i klawisz szefa (<kbd>X</kbd>). VoiceOver odczytuje każdy kafelek, a przy „Ogranicz ruch” nic się nie przesuwa.</p>",
       "alt": "Lista klawiszy (F1)"
     },
     {

@@ -1,7 +1,7 @@
 // Writes the sample files of the formats the app decodes itself (QOI, PCX,
-// DCX) and the RAW files the tests give LibRaw, made from the reference
-// picture of Tests/SchnellbildTests/DecoderFixtures.swift (the same bytes
-// the unit tests make). Built and run by Scripts/make_decoder_samples.sh.
+// DCX) and the RAW files the tests give LibRaw, made from the visual checks'
+// reference picture (Tests/SchnellbildTests/ReferencePicture.swift, encoded
+// by DecoderFixtures.swift): the same bytes the unit tests make. Built and run by Scripts/make_decoder_samples.sh.
 import Foundation
 
 let folder = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "build/decoder-samples")
@@ -11,8 +11,8 @@ func write(_ name: String, _ data: Data) throws {
     print("\(name): \(data.count) bytes")
 }
 
-let reference = DecoderFixtures.reference(width: 320, height: 200, text: "QOI PCX")
-let withAlpha = DecoderFixtures.reference(width: 320, height: 200, text: "QOI PCX", alpha: true)
+let reference = DecoderFixtures.reference()
+let withAlpha = DecoderFixtures.reference(alpha: true)
 try write("reference.png", reference.png)
 try write("reference-alpha.png", withAlpha.png)
 try write("rgb.qoi", DecoderFixtures.qoi(reference, channels: 3))
@@ -23,6 +23,5 @@ for kind in DecoderFixtures.PCXKind.allCases {
     try write("\(kind.rawValue)-expected.png", pcx.expected.png)
 }
 try write("pages.dcx", DecoderFixtures.dcx([DecoderFixtures.pcx(reference, kind: .rgb).data, DecoderFixtures.pcx(reference, kind: .mono).data]))
-let raw = DecoderFixtures.reference(text: "RAW")
-try write("casio-qv2000ux.bay", DecoderFixtures.casioBay(raw))
-try write("camera.dng", DecoderFixtures.dng(DecoderFixtures.reference(text: "DNG"), preview: true))
+try write("casio-qv2000ux.bay", DecoderFixtures.casioBay(reference))
+try write("camera.dng", DecoderFixtures.dng(reference, preview: true))

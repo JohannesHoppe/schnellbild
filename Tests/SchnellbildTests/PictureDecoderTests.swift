@@ -4,13 +4,12 @@ import ImageIO
 @testable import Schnellbild
 
 /// The formats the app decodes itself (QOI, PCX, DCX) and the RAW formats
-/// LibRaw reads: files made in the test from one reference picture
-/// (`DecoderFixtures`), decoded through the app's paths (the tile's,
-/// `ThumbnailCache`, and the full view's, `MediaData.picture` scaled down
-/// by ImageIO) and compared with the reference pixel by pixel. With
-/// `DECODER_SNAPSHOT_DIR` set every decoded picture is written there as a
-/// PNG beside the reference, with a contact sheet (`contact-sheet.png`) to
-/// look at (CI's artifact `decoder-snapshots`).
+/// LibRaw reads, at the decoders' level: files made in the test from the
+/// visual checks' reference picture (`DecoderFixtures`), decoded to every
+/// pixel encoded, their place in listings, walks, archives and the
+/// Inspector, and damaged or crafted files. How they look through the
+/// app's tile and full view, with the real RAW samples, is
+/// `FormatVisualTests`' (groups "decoded" and "raw-samples").
 final class PictureDecoderTests: XCTestCase {
     private var dir: URL!
 
@@ -23,93 +22,25 @@ final class PictureDecoderTests: XCTestCase {
         try? FileManager.default.removeItem(at: dir)
     }
 
-    private typealias RGBA = DecoderFixtures.RGBA
-
     private func file(_ name: String, _ data: Data) throws -> URL {
         let url = dir.appendingPathComponent(name)
         try data.write(to: url)
         return url
     }
 
-    /// The full view's picture: `MediaData.picture` scaled down by ImageIO
-    /// to `maxPixel`, as `FullImageView` decodes it.
-    private func fullView(_ url: URL, maxPixel: Int = 4096) async throws -> CGImage {
-        let picture = await MediaData.picture(url)
-        let source = try XCTUnwrap(picture?.source, "no picture for \(url.lastPathComponent)")
-        return try XCTUnwrap(MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: true), "\(url.lastPathComponent) not decoded")
-    }
-
-    /// The tile's picture, through the thumbnail cache as the grid asks it.
-    @MainActor
-    private func tile(_ url: URL, side: CGFloat = 128) async throws -> CGImage {
-        let image = await ThumbnailCache.shared.thumbnail(for: url, side: side)
-        let tile = try XCTUnwrap(image, "no tile for \(url.lastPathComponent)")
-        var rect = CGRect(origin: .zero, size: tile.size)
-        return try XCTUnwrap(tile.cgImage(forProposedRect: &rect, context: nil, hints: nil))
-    }
-
-    // MARK: Snapshots to look at
-
-    private static var sheet: [(label: String, pictures: [(caption: String, image: CGImage)])] = []
-
-    private static var snapshotDir: URL? {
-        ProcessInfo.processInfo.environment["DECODER_SNAPSHOT_DIR"].map { URL(fileURLWithPath: $0) }
-    }
-
-    /// Writes the pictures as PNGs and adds a row to the contact sheet,
-    /// which is written again with every row.
-    private func snapshot(_ label: String, _ pictures: [(String, CGImage)]) {
-        Self.sheet.removeAll { $0.label == label }
-        Self.sheet.append((label, pictures.map { (caption: $0.0, image: $0.1) }))
-        Self.sheet.sort { $0.label < $1.label }
-        guard let folder = Self.snapshotDir else { return }
-        try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        for (caption, image) in pictures {
-            let name = "\(label)-\(caption)".replacingOccurrences(of: " ", with: "-")
-            try? RGBA.of(image, width: image.width, height: image.height).png.write(to: folder.appendingPathComponent(name + ".png"))
-        }
-        let contact = DecoderFixtures.contactSheet(Self.sheet)
-        try? RGBA.of(contact, width: contact.width, height: contact.height).png.write(to: folder.appendingPathComponent("contact-sheet.png"))
-    }
-
-    /// Checks a decoded picture against what was encoded: drawn at the
-    /// expected size (over white, as transparency shows nothing to
-    /// compare), mean and largest difference per sample within the limits.
-    private func assertMatches(_ image: CGImage, _ expected: RGBA, mean: Double, max: Int, _ what: String,
-                               file: StaticString = #filePath, line: UInt = #line) {
-        let white = CGColor(gray: 1, alpha: 1)
-        let got = RGBA.of(image, width: expected.width, height: expected.height, background: white)
-        let want = RGBA.of(expected.image, width: expected.width, height: expected.height, background: white)
-        let difference = got.difference(to: want)
-        print("decoders: \(what): \(image.width) × \(image.height), mean difference \(String(format: "%.2f", difference.mean)), largest \(difference.max)")
-        XCTAssertLessThanOrEqual(difference.mean, mean, "\(what): mean difference", file: file, line: line)
-        XCTAssertLessThanOrEqual(difference.max, max, "\(what): largest difference", file: file, line: line)
-    }
-
     // MARK: QOI
 
-    /// QOI with 3 and 4 channels decodes to every pixel encoded, also
-    /// through the app's tile and full view; its header says sRGB or linear.
-    func testQOIDecodesEveryPixel() async throws {
-        let reference = DecoderFixtures.reference(text: "QOI"), withAlpha = DecoderFixtures.reference(text: "QOI", alpha: true)
-        for (name, picture, channels) in [("qoi-rgb", reference, 3), ("qoi-rgba", withAlpha, 4)] {
-            let data = DecoderFixtures.qoi(picture, channels: channels)
-            let decoded = try XCTUnwrap(QOIDecoder.decode(data), name)
+    /// QOI with 3 and 4 channels decodes to every pixel encoded; its header
+    /// says sRGB or linear.
+    func testQOIDecodesEveryPixel() throws {
+        for (picture, channels) in [(DecoderFixtures.reference(), 3), (DecoderFixtures.reference(alpha: true), 4)] {
+            let decoded = try XCTUnwrap(QOIDecoder.decode(DecoderFixtures.qoi(picture, channels: channels)))
             var expected = picture
             if channels == 3 { for i in stride(from: 3, to: expected.pixels.count, by: 4) { expected.pixels[i] = 255 } }
-            XCTAssertEqual(decoded.pixels, expected.pixels, "\(name): every pixel as encoded")
+            XCTAssertEqual(decoded.pixels, expected.pixels, "\(channels) channels: every pixel as encoded")
             XCTAssertEqual(decoded.hasAlpha, channels == 4)
-
-            let url = try file("\(name).qoi", data)
-            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
-            let full = try await fullView(url)
-            XCTAssertEqual(full.width, picture.width)
-            assertMatches(full, expected, mean: 0.5, max: 2, "\(name) full view")
-            let tile = try await tile(url)
-            assertMatches(tile, expected, mean: 6, max: 160, "\(name) tile")
-            snapshot(name, [("reference", expected.image), ("tile", tile), ("full view", full)])
         }
-        let linear = try XCTUnwrap(QOIDecoder.header(DecoderFixtures.qoi(reference, channels: 3, linear: true)))
+        let linear = try XCTUnwrap(QOIDecoder.header(DecoderFixtures.qoi(DecoderFixtures.reference(), channels: 3, linear: true)))
         XCTAssertTrue(linear.linear)
     }
 
@@ -119,7 +50,8 @@ final class PictureDecoderTests: XCTestCase {
         ContentSniffer.shared.content(of: url)
         XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
         XCTAssertEqual(BrowserModel.shownExtension(of: url), "qoi")
-        _ = try await fullView(url)
+        let picture = await MediaData.picture(url)
+        XCTAssertNotNil(picture)
     }
 
     // MARK: PCX
@@ -127,40 +59,20 @@ final class PictureDecoderTests: XCTestCase {
     /// Every kind of PCX (1, 2 and 4 bits through the header's palette, 4
     /// planes of 1 bit, 8 bits through the palette at the end, 24 and 32
     /// bits in planes), run-length encoded or not, with padding after each
-    /// plane's line: the picture in its colours, exactly.
-    func testEveryKindOfPCXDecodesExactly() async throws {
-        let reference = DecoderFixtures.reference(text: "PCX"), withAlpha = DecoderFixtures.reference(text: "PCX", alpha: true)
+    /// plane's line: the picture in its colours, exactly. A DCX gives its
+    /// first page.
+    func testEveryKindOfPCXDecodesExactly() throws {
         for kind in DecoderFixtures.PCXKind.allCases {
-            let picture = kind == .rgba ? withAlpha : reference
+            let picture = DecoderFixtures.reference(alpha: kind == .rgba)
             for encoded in [true, false] {
                 let (data, expected) = DecoderFixtures.pcx(picture, kind: kind, encoded: encoded, extraBytes: encoded ? 0 : 3)
                 let decoded = try XCTUnwrap(PCXDecoder.decode(data), kind.rawValue)
                 XCTAssertEqual(decoded.pixels, expected.pixels, "\(kind.rawValue) \(encoded ? "encoded" : "plain"): every pixel")
             }
-            let (data, expected) = DecoderFixtures.pcx(picture, kind: kind)
-            let url = try file("pcx-\(kind.rawValue).pcx", data)
-            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
-            let full = try await fullView(url)
-            assertMatches(full, expected, mean: 0.5, max: 2, "pcx \(kind.rawValue) full view")
-            let tile = try await tile(url)
-            assertMatches(tile, expected, mean: 6, max: 160, "pcx \(kind.rawValue) tile")
-            // How far the format's colours are from the reference
-            let against = RGBA.of(full, width: picture.width, height: picture.height, background: CGColor(gray: 1, alpha: 1))
-            print("decoders: pcx \(kind.rawValue) against the reference: \(against.difference(to: RGBA.of(picture.image, width: picture.width, height: picture.height, background: CGColor(gray: 1, alpha: 1))))")
-            snapshot("pcx-\(kind.rawValue)", [("reference", picture.image), ("expected", expected.image), ("tile", tile), ("full view", full)])
         }
-    }
-
-    /// A DCX shows its first page.
-    func testADCXShowsItsFirstPage() async throws {
-        let reference = DecoderFixtures.reference(text: "DCX")
-        let first = DecoderFixtures.pcx(reference, kind: .rgb), second = DecoderFixtures.pcx(reference, kind: .mono)
-        let url = try file("pages.dcx", DecoderFixtures.dcx([first.data, second.data]))
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
-        let full = try await fullView(url)
-        assertMatches(full, first.expected, mean: 0.5, max: 2, "dcx full view")
-        let tile = try await tile(url)
-        snapshot("dcx", [("reference", reference.image), ("tile", tile), ("full view", full)])
+        let first = DecoderFixtures.pcx(DecoderFixtures.reference(), kind: .rgb), second = DecoderFixtures.pcx(DecoderFixtures.reference(), kind: .mono)
+        let page = try XCTUnwrap(PCXDecoder.firstDCXPage(DecoderFixtures.dcx([first.data, second.data])))
+        XCTAssertEqual(PCXDecoder.decode(page)?.pixels, first.expected.pixels)
     }
 
     // MARK: Everywhere a picture goes
@@ -196,8 +108,15 @@ final class PictureDecoderTests: XCTestCase {
             XCTAssertNil(facts.recommendedExtension)
             let report = PictureMetadata.report(source, named: url)
             XCTAssertTrue(report.media.contains(InfoRow(label: String(localized: "Bit Depth"), value: StreamFacts.describeDepth(depth))), name)
-            XCTAssertTrue(report.media.contains(InfoRow(label: String(localized: "Resolution"), value: "160 × 100 px")), name)
+            XCTAssertTrue(report.media.contains(InfoRow(label: String(localized: "Resolution"), value: "384 × 240 px")), name)
         }
+        // A Casio raw file: LibRaw's facts
+        let casio = folder.appendingPathComponent("c.bay")
+        let opened = await MediaData.imageSource(casio)
+        let facts = FileFacts.picture(try XCTUnwrap(opened), named: casio)
+        XCTAssertEqual(facts.camera, "Casio QV-2000UX")
+        XCTAssertEqual(facts.depth, 8)
+        XCTAssertTrue(facts.format?.hasSuffix("(LibRaw)") == true, facts.format ?? "-")
     }
 
     // MARK: Damaged and crafted files
@@ -324,54 +243,48 @@ final class PictureDecoderTests: XCTestCase {
         XCTAssertTrue(BrowserModel.imageExtensions.isSuperset(of: RawDecoder.extensions))
     }
 
-    /// A Casio QV-2000UX raw file (headerless, known by its size) shows in
-    /// the tile and the full view as the reference: developed by LibRaw
-    /// (no preview inside: the tile is developed at half size).
-    func testACasioRawFileShows() async throws {
-        let reference = DecoderFixtures.reference(text: "RAW")
-        let url = try file("casio.bay", DecoderFixtures.casioBay(reference))
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
-        let full = try await fullView(url)
-        XCTAssertEqual(full.width, 1632)
-        XCTAssertEqual(full.height, 1208)
-        // Demosaicing softens the edges between bars and letters
-        assertMatches(full, reference, mean: 8, max: 255, "casio full view")
-        let tile = try await tile(url)
-        assertMatches(tile, reference, mean: 10, max: 255, "casio tile")
-        snapshot("raw-casio-bay", [("reference", reference.image), ("tile", tile), ("full view", full)])
-        let opened = await MediaData.imageSource(url)
-        let source = try XCTUnwrap(opened)
-        let facts = FileFacts.picture(source, named: url)
-        XCTAssertEqual(facts.camera, "Casio QV-2000UX")
-        XCTAssertEqual(facts.depth, 8)
-        XCTAssertTrue(facts.format?.hasSuffix("(LibRaw)") == true, facts.format ?? "-")
-    }
-
-    /// A DNG (camera colours sRGB's, Bayer RGGB) developed by LibRaw and its
-    /// preview: as the full view takes a RAW of ImageIO's formats that
-    /// ImageIO doesn't decode (`RawDecoder.fallback`), and as a tile from
-    /// the preview the file carries.
+    /// A DNG (camera colours sRGB's, Bayer RGGB) developed by LibRaw at
+    /// full and half size, and its preview read exactly; the camera reaches
+    /// the picture's properties.
     func testLibRawDevelopsADNGAndReadsItsPreview() async throws {
-        let reference = DecoderFixtures.reference(text: "DNG")
+        let reference = DecoderFixtures.reference()
         let data = DecoderFixtures.dng(reference, preview: true)
         let url = try file("camera.dng", data)
         let fallback = await RawDecoder.fallback(url)
         let developed = try XCTUnwrap(fallback)
         let full = try XCTUnwrap(MediaInfo.scaledDown(developed.source, at: 0, maxPixel: 4096, now: true))
         XCTAssertEqual(full.width, reference.width * 2)
-        assertMatches(full, reference, mean: 8, max: 255, "dng developed")
-        let previewed = await RawDecoder.preview(data, maxPixel: 256, allowBitmap: true)
+        let previewed = await RawDecoder.preview(data, maxPixel: 384, allowBitmap: true)
         let preview = try XCTUnwrap(previewed)
-        assertMatches(preview, reference, mean: 0.5, max: 2, "dng preview")
+        XCTAssertEqual(DecoderFixtures.RGBA.of(preview, width: reference.width, height: reference.height).difference(to: reference).max, 0,
+                       "the preview as written")
         let halved = await RawDecoder.developed(data, named: url, half: true)
-        let half = try XCTUnwrap(halved)
-        let halfImage = try XCTUnwrap(MediaInfo.scaledDown(half.source, at: 0, maxPixel: 4096, now: true))
-        XCTAssertEqual(halfImage.width, reference.width)
-        snapshot("raw-dng", [("reference", reference.image), ("preview", preview), ("half size", halfImage), ("developed", full)])
-        // The camera and its facts reach the picture's properties
+        let half = try XCTUnwrap(halved.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 4096, now: true) })
+        XCTAssertEqual(half.width, reference.width)
         let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(developed.source, 0, nil) as? [CFString: Any])
         let tiff = try XCTUnwrap(props[kCGImagePropertyTIFFDictionary] as? [CFString: Any])
         XCTAssertEqual(tiff[kCGImagePropertyTIFFMake] as? String, "Schnellbild")
+    }
+
+    /// The cheap look at a picture's exposure: black, blown out or fine; a
+    /// dark scene, snow and the reference stay fine.
+    func testBlackAndBlownOutPicturesAreTold() {
+        func filled(_ grey: CGFloat, bright: Double = 0) -> CGImage {
+            let context = CGContext(data: nil, width: 200, height: 100, bitsPerComponent: 8, bytesPerRow: 0,
+                                    space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+            context.setFillColor(CGColor(gray: grey, alpha: 1))
+            context.fill(CGRect(x: 0, y: 0, width: 200, height: 100))
+            context.setFillColor(CGColor(gray: 1, alpha: 1))
+            context.fill(CGRect(x: 0, y: 0, width: 200 * bright, height: 100))
+            return context.makeImage()!
+        }
+        XCTAssertEqual(RawDecoder.exposure(of: filled(0)), .black)
+        XCTAssertEqual(RawDecoder.exposure(of: filled(0.01)), .black)
+        XCTAssertEqual(RawDecoder.exposure(of: filled(0.75, bright: 0.5)), .blownOut, "half white, the rest bright")
+        XCTAssertEqual(RawDecoder.exposure(of: filled(1)), .blownOut)
+        XCTAssertEqual(RawDecoder.exposure(of: filled(0.08)), .fine, "a dark scene")
+        XCTAssertEqual(RawDecoder.exposure(of: filled(0.85, bright: 0.3)), .fine, "snow with some white")
+        XCTAssertEqual(RawDecoder.exposure(of: ReferencePicture.image()), .fine)
     }
 
     /// LibRaw on damaged and crafted RAW files: DNGs cut at many lengths and
@@ -419,83 +332,5 @@ final class PictureDecoderTests: XCTestCase {
         let task = Task { await RawDecoder.developed(big, named: URL(fileURLWithPath: "/x/a.bay"), half: false) }
         task.cancel()
         _ = await task.value
-    }
-
-    // MARK: Real RAW files
-
-    /// The camera RAW samples (`Scripts/fetch_raw_samples.sh`: raw.pixls.us
-    /// files under CC0 1.0, `Scripts/raw_samples.env`), in `RAW_SAMPLES_DIR`
-    /// or `Vendor/RawSamples`. On CI they must be there.
-    private var rawSamples: URL? {
-        let folder = ProcessInfo.processInfo.environment["RAW_SAMPLES_DIR"].map { URL(fileURLWithPath: $0) }
-            ?? URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
-                .appendingPathComponent("Vendor/RawSamples")
-        return FileManager.default.fileExists(atPath: folder.appendingPathComponent("LICENSES.txt").path) ? folder : nil
-    }
-
-    /// Real RAW files of the formats LibRaw adds (Kodak `.kdc`, Minolta's
-    /// RD175 `.mdc`, Sinar `.sti`, Olympus `.ori` where ImageIO doesn't read
-    /// it) and of ImageIO's own (`.dng`, `.nef`, `.ori` on macOS 26) as the
-    /// control: each through the tile's and the full view's path, and
-    /// LibRaw's development beside ImageIO's where both read the file, else
-    /// beside the tile (the preview the camera wrote, where there is one).
-    /// The pictures go to the contact sheet.
-    func testRealRawSamplesShow() async throws {
-        guard let folder = rawSamples else {
-            if ProcessInfo.processInfo.environment["CI"] != nil { XCTFail("no RAW samples: Scripts/fetch_raw_samples.sh") }
-            throw XCTSkip("no RAW samples (Scripts/fetch_raw_samples.sh)")
-        }
-        let names = try FileManager.default.contentsOfDirectory(atPath: folder.path).filter { $0 != "LICENSES.txt" }.sorted()
-        XCTAssertEqual(names.count, 7)
-        let white = CGColor(gray: 1, alpha: 1)
-        /// Both drawn at 192 px wide in the full view's proportions
-        func small(_ image: CGImage, like full: CGImage) -> RGBA {
-            RGBA.of(image, width: 192, height: max(1, 192 * full.height / max(1, full.width)), background: white)
-        }
-        /// The mean of the samples: a black picture is near 0
-        func brightness(_ image: RGBA) -> Double {
-            Double(image.pixels.enumerated().reduce(0) { $1.offset % 4 == 3 ? $0 : $0 + Int($1.element) }) / Double(image.width * image.height * 3)
-        }
-        for name in names {
-            let url = folder.appendingPathComponent(name)
-            let ext = url.pathExtension
-            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image, name)
-            let byLibRaw = RawDecoder.extensions.contains(ext)
-            let full = try await fullView(url, maxPixel: 1024)
-            let tile = try await tile(url, side: 256)
-            let data = try Data(contentsOf: url)
-            let developed = await RawDecoder.developed(data, named: url, half: true)
-            let libraw = try XCTUnwrap(developed.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 1024, now: true) }, "\(name): LibRaw")
-            var pictures: [(String, CGImage)] = [("tile", tile), ("full view (\(byLibRaw ? "LibRaw" : "ImageIO"))", full)]
-            // The tile and the full view show one picture
-            let tileAgainstFull = small(tile, like: full).difference(to: small(full, like: full))
-            print("decoders: \(name): \(byLibRaw ? "LibRaw" : "ImageIO"), full view \(full.width) × \(full.height), "
-                  + "tile \(tile.width) × \(tile.height), tile against full view: mean \(String(format: "%.1f", tileAgainstFull.mean))")
-            XCTAssertGreaterThan(brightness(small(libraw, like: libraw)), 20, "\(name): LibRaw's picture is black")
-            if byLibRaw {
-                // The tile is the camera's own preview where it carries a
-                // good one: its rendering, not LibRaw's
-                XCTAssertLessThan(tileAgainstFull.mean, 30, "\(name): tile and full view differ")
-                pictures.append(("LibRaw half size", libraw))
-            } else {
-                // ImageIO and LibRaw develop the same raw data (their tone
-                // curves differ a little)
-                let source = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
-                let imageIO = try XCTUnwrap(MediaInfo.scaledDown(source, at: 0, maxPixel: 1024, now: true))
-                let against = small(libraw, like: imageIO).difference(to: small(imageIO, like: imageIO))
-                let imageIOBrightness = brightness(small(imageIO, like: imageIO))
-                print("decoders: \(name): LibRaw against ImageIO: mean \(String(format: "%.1f", against.mean)), largest \(against.max); "
-                      + "ImageIO's brightness \(String(format: "%.1f", imageIOBrightness))")
-                // ImageIO's own picture is ImageIO's matter (a black or blown out
-                // one is reported in the log), LibRaw's must match a picture it shows
-                if (20...200).contains(imageIOBrightness) {
-                    XCTAssertLessThan(against.mean, 40, "\(name): LibRaw and ImageIO differ")
-                } else {
-                    print("decoders: \(name): ImageIO shows it \(imageIOBrightness < 20 ? "black" : "blown out") on this macOS (\(ProcessInfo.processInfo.operatingSystemVersionString))")
-                }
-                pictures.append(("LibRaw half size", libraw))
-            }
-            snapshot("sample-\((name as NSString).deletingPathExtension)-\(ext)", pictures)
-        }
     }
 }

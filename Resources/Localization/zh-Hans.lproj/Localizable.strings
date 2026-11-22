@@ -611,6 +611,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "从列表：地图集，在地图上显示照片和视频；从地图集：回到网格";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "地图集：移到该方向上地图中最近的项目；向下进入无位置项目条";
 "Atlas: zoom the map in / out" = "地图集：放大 / 缩小地图";
+"Atlas: the first / last item in time" = "地图集：按时间的第一个 / 最后一个项目";
 "Atlas: on several items, zoom in until they part; on one, open it" = "地图集：在多个项目上放大直到分开；在单个项目上打开它";
 "Atlas: on items taken at one place, the next one (%@ too)" = "地图集：在同一地点的项目上选下一项（%@ 亦可）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "横向拖移或移动手柄：地图上只显示该时间段；点按：显示最接近该时间拍摄的项目";

@@ -611,6 +611,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Listeden: Atlas, fotoğraflar ve videolar haritada; Atlas'tan: ızgaraya dön";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: haritada o yöndeki en yakın ögeye; aşağı: konumsuz ögeler şeridine";
 "Atlas: zoom the map in / out" = "Atlas: haritayı yakınlaştır / uzaklaştır";
+"Atlas: the first / last item in time" = "Atlas: zamana göre ilk / son öğe";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: birden çok ögede ayrılana dek yakınlaştır; tek ögede aç";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: aynı yerde çekilmiş ögelerde sonraki (%@ ile de)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Üzerinde sürükleyin veya bir tutamacı kaydırın: haritada yalnızca o dönem; tıklama: o ana en yakın çekilen öge";
