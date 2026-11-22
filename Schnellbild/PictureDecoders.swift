@@ -249,7 +249,7 @@ enum RawDecoder {
                 image = allowBitmap ? bitmap(picture) : nil
             }
             // The preview lies as the sensor does: turned by the file's flip
-            guard let image, max(image.width, image.height) * 2 >= maxPixel, (image.colorSpace?.numberOfComponents ?? 0) >= 3,
+            guard let image, max(image.width, image.height) * 2 >= maxPixel, !isGrey(image),
                   let wrapped = PictureDecoders.source(of: image, properties: properties(info, orientation: orientation(flip: info.flip))) else { return nil }
             return MediaInfo.scaledDown(wrapped.source, at: 0, maxPixel: maxPixel, now: true)
         }
@@ -279,6 +279,26 @@ enum RawDecoder {
     static func facts(of url: URL, _ facts: SBRawFacts) -> PictureDecoders.Facts {
         PictureDecoders.Facts(format: FileFacts.formatName(ofExtension: BrowserModel.shownExtension(of: url)) + " (LibRaw)",
                               depth: facts.bits > 0 ? Int(facts.bits) : nil)
+    }
+
+    /// Whether a picture holds no colour: one component, or red, green and
+    /// blue alike everywhere (a grey JPEG in YCbCr), looked at in 32 × 32.
+    static func isGrey(_ image: CGImage) -> Bool {
+        guard (image.colorSpace?.numberOfComponents ?? 0) >= 3 else { return true }
+        let side = 32
+        var pixels = [UInt8](repeating: 0, count: side * side * 4)
+        let drawn = pixels.withUnsafeMutableBytes { raw -> Bool in
+            guard let space = CGColorSpace(name: CGColorSpace.sRGB),
+                  let context = CGContext(data: raw.baseAddress, width: side, height: side, bitsPerComponent: 8, bytesPerRow: side * 4,
+                                          space: space, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else { return false }
+            context.draw(image, in: CGRect(x: 0, y: 0, width: side, height: side))
+            return true
+        }
+        guard drawn else { return false }
+        return stride(from: 0, to: pixels.count, by: 4).allSatisfy { i in
+            let r = Int(pixels[i]), g = Int(pixels[i + 1]), b = Int(pixels[i + 2])
+            return abs(r - g) <= 6 && abs(g - b) <= 6 && abs(r - b) <= 6
+        }
     }
 
     /// EXIF orientation of LibRaw's flip.

@@ -473,7 +473,9 @@ final class PictureDecoderTests: XCTestCase {
                   + "tile \(tile.width) × \(tile.height), tile against full view: mean \(String(format: "%.1f", tileAgainstFull.mean))")
             XCTAssertGreaterThan(brightness(small(libraw, like: libraw)), 20, "\(name): LibRaw's picture is black")
             if byLibRaw {
-                XCTAssertLessThan(tileAgainstFull.mean, 15, "\(name): tile and full view differ")
+                // The tile is the camera's own preview where it carries a
+                // good one: its rendering, not LibRaw's
+                XCTAssertLessThan(tileAgainstFull.mean, 30, "\(name): tile and full view differ")
                 pictures.append(("LibRaw half size", libraw))
             } else {
                 // ImageIO and LibRaw develop the same raw data (their tone
