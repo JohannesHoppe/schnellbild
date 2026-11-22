@@ -371,7 +371,7 @@ struct InspectorView: View {
                     return (MediaReport(media: [InfoRow(label: String(localized: "Resolution"), value: shown)]), facts, created)
                 }
                 guard let source = await MediaData.imageSource(url) else { return (nil, nil, created) }
-                return (await adopting(PictureMetadata.report(source)), FileFacts.picture(source, named: url), created)
+                return (await adopting(PictureMetadata.report(source, named: url)), FileFacts.picture(source, named: url), created)
             case .video:
                 // Inside an archive there are no first bytes to read without unpacking
                 guard !ArchivePath.isInside(url) else { return (nil, nil, created) }

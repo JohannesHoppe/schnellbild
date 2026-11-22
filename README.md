@@ -501,7 +501,7 @@ Schnellbild → Settings (<kbd>⌘</kbd> + <kbd>,</kbd>) has two tabs. Keyboard 
 
 ### Supported file formats
 
-**Pictures** (shown with macOS' own ImageIO, so a newer macOS can read more):
+**Pictures** (shown with macOS' own ImageIO, so a newer macOS can read more; what macOS doesn't read, Schnellbild decodes itself or with LibRaw):
 
 | | Formats |
 |---|---|
@@ -509,10 +509,12 @@ Schnellbild → Settings (<kbd>⌘</kbd> + <kbd>,</kbd>) has two tabs. Keyboard 
 | Vector and documents | SVG (`.svg`, `.svgz`), PDF (page by page, as vector pictures), Adobe Illustrator (`.ai`: as a PDF; saved without PDF content, its built-in thumbnail) |
 | HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`, `.psb`), Targa (`.tga`), SGI (`.sgi`), Netpbm (`.pbm`, `.pgm`, `.ppm`, `.pnm`, `.pfm`), QuickDraw PICT (`.pict`, `.pct`), DICOM (`.dcm`, `.dicom`, macOS 26 and later), icons and cursors (`.ico`, `.icns`, `.cur`) |
 | Textures | DDS, ASTC, KTX (`.ktx`, `.ktx2`), PVRTC (`.pvr`), ATX |
+| Decoded by Schnellbild | QOI (`.qoi`), PCX (`.pcx`: 1 to 8 bits with a palette, 24 and 32 bits), DCX (`.dcx`: its first page) |
 | By the picture they carry | EPS and PostScript (`.eps`, `.epsf`, `.epsi`, `.epi`, `.ps`: their TIFF, XMP or EPSI preview), Krita (`.kra`), OpenRaster (`.ora`), Procreate (`.procreate`), Sketch (`.sketch`) |
-| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nefx` `.nrw`, Sony `.arw` `.axr` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf` `.ori` (`.ori` from macOS 26 on), Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw`, DxO `.dxo` |
+| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nefx` `.nrw`, Sony `.arw` `.axr` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf` `.ori` (`.ori` through LibRaw on macOS 15), Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw`, DxO `.dxo` |
+| Camera RAW through LibRaw | Casio `.bay`, Phase One `.cap`, Kodak `.dcs` `.drf` `.k25` `.kdc`, Minolta `.mdc`, Mamiya `.mef`, Pentax `.ptx`, Logitech `.pxn`, Apple QuickTake `.qtk`, Sinar `.sti` |
 
-Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view. PostScript is never run: macOS draws no PostScript since macOS 14, so an EPS or PS file shows the preview it carries, and one without a preview stays among the other files. The Inspector says "embedded preview" for such files.
+Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view; the formats macOS doesn't read, a camera newer than your macOS and a RAW file macOS shows black or blown out are developed by LibRaw. PostScript is never run: macOS draws no PostScript since macOS 14, so an EPS or PS file shows the preview it carries, and one without a preview stays among the other files. The Inspector says "embedded preview" for such files.
 
 **Videos:**
 
@@ -627,6 +629,6 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
-The MIT License covers Schnellbild's own code. The app also contains VLCKit (an LGPL-only build under the GNU LGPL 2.1 or later, made by us without any code under the GPL: none of VLC's GPL modules and none of the GPL parts of the libraries inside it, FFmpeg and the others, each under its own license), UnRAR (UnRAR license), the map data and the globe data below; each keeps its own license. The app's About window (Schnellbild → About Schnellbild) shows every one of these license texts in full, Schnellbild's MIT License first. Details and the source of VLCKit: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+The MIT License covers Schnellbild's own code. The app also contains VLCKit (an LGPL-only build under the GNU LGPL 2.1 or later, made by us without any code under the GPL: none of VLC's GPL modules and none of the GPL parts of the libraries inside it, FFmpeg and the others, each under its own license), UnRAR (UnRAR license), LibRaw (CDDL 1.0; LibRaw offers it or the LGPL 2.1), the map data and the globe data below; each keeps its own license. The app's About window (Schnellbild → About Schnellbild) shows every one of these license texts in full, Schnellbild's MIT License first. Details and the source of VLCKit: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 The offline map's data is © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, under the Open Database License (ODbL) 1.0. The map files are made from [Protomaps](https://protomaps.com)' OpenStreetMap build, with thanks to Protomaps; how they are made: `Scripts/build_map_data.py`. Country codes for places: [Natural Earth](https://www.naturalearthdata.com) (public domain). The globe's relief comes from NOAA's [ETOPO 2022](https://doi.org/10.25921/fd45-gt74) (public domain, not to be used for navigation), its night sky from [Deep Star Maps 2020](https://svs.gsfc.nasa.gov/4851) by NASA/Goddard Space Flight Center Scientific Visualization Studio (from Gaia DR2, Hipparcos and Tycho-2 data) and the lights of its night side from [Black Marble 2016](https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/) (NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC), the colours of its ground from [Blue Marble: Next Generation](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/) (NASA Earth Observatory, produced by Reto Stöckli) and its clouds from [The Blue Marble](https://science.nasa.gov/earth/earth-observatory/the-blue-marble-true-color-global-imagery-at-1km-resolution/) (NASA Goddard Space Flight Center, image by Reto Stöckli); how the files are made: `Scripts/build_globe_data.py`.

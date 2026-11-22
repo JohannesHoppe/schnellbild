@@ -1802,8 +1802,10 @@ final class BrowserModel: ObservableObject {
 
     /// Pictures by their extension: ImageIO's formats (`SystemFormatsTests`
     /// prints the types it reads on each CI runner, `ImageFormatTests` draws
-    /// each one), SVG (AppKit; ".svgz" unpacked first) and PDF (PDFKit). PostScript, Illustrator
-    /// files and ZIP documents are pictures by their content
+    /// each one), SVG (AppKit; ".svgz" unpacked first), PDF (PDFKit), and
+    /// what the app decodes itself: QOI, PCX / DCX and the RAW formats
+    /// LibRaw reads where ImageIO doesn't (`PictureDecoders`). PostScript,
+    /// Illustrator files and ZIP documents are pictures by their content
     /// (`EmbeddedPreview`).
     nonisolated static let imageExtensions: Set<String> = Set<String>([
         "jpg", "jpeg", "jpe", "png", "apng", "gif", "heic", "heif", "hif", "heics", "avci", "avif", "avifs", "jxl",
@@ -1814,7 +1816,7 @@ final class BrowserModel: ObservableObject {
         // camera RAW formats ImageIO reads
         "cr2", "cr3", "crw", "nef", "nefx", "nrw", "arw", "axr", "sr2", "srf", "dng", "raf", "orf",
         "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq", "dxo"
-    ]).union(systemImageExtensions.filter(imageIOReads))
+    ]).union(systemImageExtensions.filter(imageIOReads)).union(PictureDecoders.extensions)
 
     /// Read by ImageIO from macOS 26 on, not by macOS 15 (`SystemFormatsTests`
     /// on both): DICOM, Olympus' ".ori". Pictures only where this macOS
@@ -1822,7 +1824,7 @@ final class BrowserModel: ObservableObject {
     nonisolated static let systemImageExtensions: Set<String> = ["dcm", "dicom", "ori"]
 
     /// Whether ImageIO reads a type that the extension's type is.
-    nonisolated private static func imageIOReads(_ ext: String) -> Bool {
+    nonisolated static func imageIOReads(_ ext: String) -> Bool {
         guard let type = UTType(filenameExtension: ext), !type.isDynamic else { return false }
         let readable = (CGImageSourceCopyTypeIdentifiers() as? [String] ?? []).compactMap(UTType.init)
         return readable.contains { type.conforms(to: $0) }

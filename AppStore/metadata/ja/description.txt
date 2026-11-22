@@ -1,7 +1,7 @@
 Schnellbildは、読み込み不要の画像ビューア・動画プレーヤーです。フォルダを開けばサムネールが並び、1枚を大きく表示して、キーボードでめくれます。大きなフォルダでもネットワーク共有でも、すばやく動きます。
 
 画像
-• JPEG、HEIC、AVIF、JPEG XL、PNG、GIF、WebP、TIFF、PSD、OpenEXR、SVG、PDF、Illustrator (AI)、EPS、macOSが対応するカメラのRAW写真
+• JPEG、HEIC、AVIF、JPEG XL、PNG、GIF、WebP、TIFF、PSD、OpenEXR、SVG、PDF、Illustrator (AI)、EPS、QOI、PCX、macOSが対応するカメラのRAW写真
 • グリッド、リスト、大きな表示。すべてのサブフォルダを通したスライドショー
 • スライドショーで再生されるものが、そのままプレイリスト。P で開いて並べ替えたり、不要な項目を外したり
 • 拡大、回転、自動補正（露出、コントラスト、彩度、シャープネス）。変わるのは表示だけで、ファイルはそのまま

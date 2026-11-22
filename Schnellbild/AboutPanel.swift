@@ -123,6 +123,13 @@ enum AboutPanel {
                 link: "https://www.rarlab.com",
                 files: [.init(file: "UnRAR-license.txt")]),
             LicenseSection(
+                id: "libraw", name: "LibRaw 0.22.3", listName: "LibRaw: CDDL 1.0",
+                use: String(localized: "reads camera RAW files macOS doesn't read"),
+                holder: "© LibRaw LLC; dcraw © Dave Coffin; DCB and FBDD © Jacek Gozdz",
+                license: "Common Development and Distribution License (CDDL) 1.0",
+                link: "https://www.libraw.org",
+                files: [.init(file: "LibRaw-CDDL-1.0.txt")]),
+            LicenseSection(
                 id: "openstreetmap", name: "OpenStreetMap", listName: "OpenStreetMap: ODbL 1.0",
                 use: String(localized: "map data for the offline map"),
                 holder: String(localized: "© OpenStreetMap contributors"),

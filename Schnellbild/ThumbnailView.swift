@@ -93,9 +93,11 @@ final class ThumbnailCache {
         // PostScript, Illustrator, ZIP documents, Netpbm bitmaps: what the app
         // shows of them (QuickLook draws an Illustrator file's placeholder
         // page, or only an icon); ASTC textures, which QuickLook turns upside
-        // down (`MediaInfo.orientationIgnored`)
+        // down (`MediaInfo.orientationIgnored`); QOI, PCX and the RAW formats
+        // LibRaw reads: QuickLook knows none of them
         let ext = DownloadName.finalExtension(of: url)
-        if EmbeddedPreview.extensions.contains(ext) || EmbeddedPreview.showsPreview(url) || ext == "astc" {
+        if EmbeddedPreview.extensions.contains(ext) || EmbeddedPreview.showsPreview(url) || ext == "astc"
+            || PictureDecoders.decodes(url) {
             guard let image = await Self.pictureThumbnail(of: url, side: side), !Task.isCancelled else { return nil }
             keep(image, side: side, modified: modified, for: url)
             return image
@@ -110,6 +112,11 @@ final class ThumbnailCache {
         if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .image, !Task.isCancelled,
            let picture = await Self.pictureThumbnail(of: url, side: side) {
             image = picture
+        } else if rep?.type == .thumbnail, RawDecoder.isImageIORaw(url), !Task.isCancelled,
+                  let shown = image?.cgImage(forProposedRect: nil, context: nil, hints: nil),
+                  let tile = await RawDecoder.thumbnailReplacement(of: shown, for: url, maxPixel: Int(side * NSScreen.mainBackingScale)) {
+            // QuickLook's picture of a RAW black or blown out (a Blackmagic DNG): LibRaw's
+            image = NSImage(pixels: tile)
         }
         guard let image, !Task.isCancelled else { return nil }
         keep(image, side: side, modified: modified, for: url)
@@ -231,10 +238,21 @@ final class ThumbnailCache {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 return NSImage(pixels: rendered.0)
             }
-            guard let source = await MediaData.imageSource(url),
-                  let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
-            return NSImage(pixels: cg)
+            return await decodedThumbnail(of: url, maxPixel: maxPixel).map { NSImage(pixels: $0) }
         }
+    }
+
+    /// A picture's tile through `MediaData`: a RAW file LibRaw reads from
+    /// the preview it carries; one of ImageIO's RAW formats that ImageIO
+    /// gives no picture of (a camera newer than this macOS) through LibRaw
+    /// too; else ImageIO scaled down.
+    static func decodedThumbnail(of url: URL, maxPixel: Int) async -> CGImage? {
+        if PictureDecoders.format(of: url) == .raw { return await RawDecoder.thumbnail(of: url, maxPixel: maxPixel) }
+        let source = await MediaData.imageSource(url)
+        let cg = Task.isCancelled ? nil : source.flatMap { MediaInfo.scaledDown($0, at: 0, maxPixel: maxPixel, now: false) }
+        // ImageIO's RAW without a picture, or with a black or blown out one
+        if !Task.isCancelled, let tile = await RawDecoder.thumbnailReplacement(of: cg, for: url, maxPixel: maxPixel) { return tile }
+        return cg
     }
 
     /// Archive dates as read lately: every picture of an archive asks, and
@@ -273,9 +291,7 @@ extension ThumbnailCache {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 return NSImage(pixels: rendered.0)
             }
-            guard let source = await MediaData.imageSource(url), !Task.isCancelled,
-                  let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
-            return NSImage(pixels: cg)
+            return await decodedThumbnail(of: url, maxPixel: maxPixel).map { NSImage(pixels: $0) }
         }
     }
 }

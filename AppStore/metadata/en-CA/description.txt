@@ -1,7 +1,7 @@
 Schnellbild shows pictures and videos without importing anything: open a folder, see thumbnails, look at one picture large, page through with the keyboard. It stays quick on big folders and network shares alike.
 
 PICTURES
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS and RAW photos of the cameras macOS knows
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS, QOI, PCX and RAW photos of the cameras macOS knows
 • Grid, list and full view, slideshow through all subfolders
 • Whatever the slideshow plays is the playlist: P opens it to reorder and weed out
 • Zoom, rotate, auto enhance (exposure, contrast, saturation, sharpness), for viewing only: your files stay as they are

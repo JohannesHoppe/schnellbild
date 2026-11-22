@@ -1,7 +1,7 @@
 Schnellbild zeigt Bilder und Videos, ohne dass du etwas importieren musst: Ordner öffnen, Vorschaubilder sehen, ein Bild groß ansehen, mit der Tastatur weiterblättern. Es bleibt schnell, auch bei großen Ordnern und auf Netzlaufwerken.
 
 BILDER
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS und RAW-Fotos der Kameras, die macOS kennt
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS, QOI, PCX und RAW-Fotos der Kameras, die macOS kennt
 • Raster, Liste und Vollansicht, Diashow durch alle Unterordner
 • Was die Diashow spielt, ist die Playlist: P öffnet sie zum Umsortieren und Aussortieren
 • Zoomen, drehen, automatisch verbessern (Belichtung, Kontrast, Sättigung, Schärfe), nur für die Ansicht: deine Dateien bleiben, wie sie sind

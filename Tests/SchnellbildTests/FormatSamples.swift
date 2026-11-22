@@ -41,6 +41,15 @@ extension FormatFixtures {
         /// (255 stays, 250 comes out 237, 96 as 91).
         static let svg = Tolerance(mean: 4, probe: 10)
 
+        /// A raw mosaic developed by LibRaw (demosaicing softens edges,
+        /// its white balance and curve shift the even areas a little).
+        static let raw = Tolerance(mean: 8, probe: 24)
+        /// A real camera's RAW file against LibRaw's development of it: the
+        /// camera's own preview or ImageIO's rendering has its own curve
+        /// and colours; the probes lie in the reference picture's areas,
+        /// which a photo hasn't, so only the mean counts.
+        static let camera = Tolerance(mean: 30, probe: 255)
+
         /// A tile is the picture scaled down: its edges blend, the probes
         /// stay (they lie inside even areas).
         var scaled: Tolerance { Tolerance(mean: mean + 5, probe: probe + 4) }
@@ -179,6 +188,34 @@ extension FormatFixtures {
             try run("/usr/bin/zip", ["-q", "-X", "-r", url.path, "."], in: source)
             samples.append(Sample(name: ext, url: url, reference: reference, tolerance: .lossless))
         }
+        return samples
+    }
+
+    /// Writes the samples of the formats the app decodes itself (QOI, every
+    /// kind of PCX, DCX; `DecoderFixtures`) and a Casio QV-2000UX raw file
+    /// LibRaw develops into `dir`. A PCX of a palette is compared with the
+    /// reference in that palette's colours.
+    static func decodedSamples(in dir: URL) throws -> [Sample] {
+        let reference = DecoderFixtures.reference(), withAlpha = DecoderFixtures.reference(alpha: true)
+        var samples: [Sample] = []
+        func add(_ name: String, _ file: String, _ data: Data, _ expected: DecoderFixtures.RGBA, _ tolerance: Tolerance = .lossless) throws {
+            let url = dir.appendingPathComponent(file)
+            try data.write(to: url)
+            samples.append(Sample(name: name, url: url, reference: expected.image, tolerance: tolerance))
+        }
+        var opaque = withAlpha
+        for i in stride(from: 3, to: opaque.pixels.count, by: 4) { opaque.pixels[i] = 255 }
+        try add("qoi (RGB)", "rgb.qoi", DecoderFixtures.qoi(reference, channels: 3), reference)
+        try add("qoi (RGBA)", "rgba.qoi", DecoderFixtures.qoi(withAlpha, channels: 4), withAlpha)
+        for kind in DecoderFixtures.PCXKind.allCases {
+            let pcx = DecoderFixtures.pcx(kind == .rgba ? withAlpha : reference, kind: kind)
+            try add("pcx \(kind.rawValue)", "\(kind.rawValue).pcx", pcx.data, pcx.expected)
+        }
+        let first = DecoderFixtures.pcx(reference, kind: .rgb), second = DecoderFixtures.pcx(reference, kind: .mono)
+        try add("dcx (first page)", "pages.dcx", DecoderFixtures.dcx([first.data, second.data]), first.expected)
+        // The Casio's sensor is 1632 × 1208: the picture lies stretched over it
+        let stretched = DecoderFixtures.RGBA.of(reference.image, width: 408, height: 302)
+        try add("bay (Casio, LibRaw)", "casio.bay", DecoderFixtures.casioBay(reference), stretched, .raw)
         return samples
     }
 

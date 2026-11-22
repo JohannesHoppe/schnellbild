@@ -300,6 +300,68 @@ final class FormatVisualTests: XCTestCase {
         XCTAssertEqual(missing, [])
     }
 
+    // MARK: Decoded by the app
+
+    /// The formats the app decodes itself (QOI, PCX, DCX) and a raw file
+    /// LibRaw develops, through the tile and the full view; a DNG through
+    /// LibRaw directly (its preview as the tile, its development as the
+    /// full view: in the app ImageIO shows DNGs).
+    func testDecodedFormatsLookRight() async throws {
+        for sample in try FormatFixtures.decodedSamples(in: dir) {
+            await checkPicture(sample)
+        }
+        let reference = DecoderFixtures.reference()
+        let data = DecoderFixtures.dng(reference, preview: true)
+        let url = dir.appendingPathComponent("camera.dng")
+        try data.write(to: url)
+        let preview = await RawDecoder.preview(data, maxPixel: 384, allowBitmap: true)
+        let developed = await RawDecoder.developed(data, named: url, half: false)
+        let full = developed.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 1024, now: true) }
+        record("dng (LibRaw: preview | developed)", reference: reference.image, thumbnail: preview, full: full, tolerance: .raw)
+        try writeSnapshots(group: "decoded")
+    }
+
+    /// The camera RAW samples (`Scripts/fetch_raw_samples.sh`: raw.pixls.us
+    /// files under CC0 1.0, `Scripts/raw_samples.env`), in RAW_SAMPLES_DIR
+    /// or `Vendor/RawSamples`; on CI they must be there.
+    private var rawSamples: URL? {
+        let folder = ProcessInfo.processInfo.environment["RAW_SAMPLES_DIR"].map { URL(fileURLWithPath: $0) }
+            ?? URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+                .appendingPathComponent("Vendor/RawSamples")
+        return FileManager.default.fileExists(atPath: folder.appendingPathComponent("LICENSES.txt").path) ? folder : nil
+    }
+
+    /// Real RAW files, one per format LibRaw adds where raw.pixls.us has one
+    /// under CC0 (Kodak `.kdc`, Minolta RD175 `.mdc`, Sinar `.sti`, Olympus
+    /// `.ori` where ImageIO doesn't read it) and two of ImageIO's (`.nef`;
+    /// `.dng` of a Blackmagic camera, which ImageIO draws black on macOS 15
+    /// and blown out on macOS 26: the app shows LibRaw's development then,
+    /// `RawDecoder.replacement`). The tile and the full view are compared
+    /// with LibRaw's development at half size, and neither may be black or
+    /// blown out.
+    func testRawSamplesLookRight() async throws {
+        guard let folder = rawSamples else {
+            if ProcessInfo.processInfo.environment["CI"] != nil { XCTFail("no RAW samples: Scripts/fetch_raw_samples.sh") }
+            throw XCTSkip("no RAW samples (Scripts/fetch_raw_samples.sh)")
+        }
+        let names = try FileManager.default.contentsOfDirectory(atPath: folder.path).filter { $0 != "LICENSES.txt" }.sorted()
+        XCTAssertEqual(names.count, 7)
+        for name in names {
+            let url = folder.appendingPathComponent(name)
+            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image, name)
+            let developed = await RawDecoder.developed(try Data(contentsOf: url), named: url, half: true)
+            let reference = try XCTUnwrap(developed.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 1024, now: true) }, "\(name): LibRaw")
+            let thumbnail = await thumbnail(url), full = await fullView(url)
+            for (part, image) in [("tile", thumbnail), ("full view", full)] {
+                guard let image else { continue }
+                XCTAssertEqual(RawDecoder.exposure(of: image), .fine, "\(name) \(part): black or blown out")
+            }
+            let by = RawDecoder.extensions.contains(url.pathExtension) ? "LibRaw" : "ImageIO, else LibRaw"
+            record("\(name) (\(by))", reference: reference, thumbnail: thumbnail, full: full, tolerance: .camera)
+        }
+        try writeSnapshots(group: "raw-samples")
+    }
+
     // MARK: Videos
 
     /// A frame of the video as the full view shows it: AVKit's (when

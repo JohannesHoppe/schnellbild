@@ -29,7 +29,7 @@ The icon comes from `Scripts/make_icon.swift`, the DMG window's background from 
 
 ## Downloads
 
-Everything the app's build, its tests and CI fetch comes from this repository's own releases, each file checked against its pinned SHA-256: VLCKit (`fetch_vlckit.sh`), the UnRAR source (`fetch_unrar.sh`), the map and globe data (`fetch_map.sh`, `fetch_globe.sh`), XcodeGen (`fetch_xcodegen.sh`) and the Python wheels `dmgbuild` needs (release workflow, `Installer/requirements.txt`) from the pre-release `build-deps`. Only when our copy can't be reached does a script ask the original source, with the same pin: rarlab.com for UnRAR, XcodeGen's GitHub release, PyPI for the wheels (`--require-hashes`). The scripts that make the data (`build_map_data.py`, `build_globe_data.py`) take their inputs from the archive releases `map-source-…` and `globe-source-…` the same way.
+Everything the app's build, its tests and CI fetch comes from this repository's own releases, each file checked against its pinned SHA-256: VLCKit (`fetch_vlckit.sh`), the UnRAR source (`fetch_unrar.sh`), the LibRaw source (`fetch_libraw.sh`), the map and globe data (`fetch_map.sh`, `fetch_globe.sh`), XcodeGen (`fetch_xcodegen.sh`) and the Python wheels `dmgbuild` needs (release workflow, `Installer/requirements.txt`) from the pre-release `build-deps`. Only when our copy can't be reached does a script ask the original source, with the same pin: rarlab.com for UnRAR, libraw.org for LibRaw, XcodeGen's GitHub release, PyPI for the wheels (`--require-hashes`). The scripts that make the data (`build_map_data.py`, `build_globe_data.py`) take their inputs from the archive releases `map-source-…` and `globe-source-…` the same way.
 
 ## Tests
 
