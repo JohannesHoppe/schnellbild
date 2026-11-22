@@ -2,6 +2,7 @@
   "name": "Nederlands",
   "privacySlug": "privacy",
   "alternativesSlug": "alternatieven",
+  "formatsSlug": "formaten",
   "title": "Schnellbild: een fotoviewer en videospeler voor macOS waar je niet gek van wordt",
   "seoTitle": "Schnellbild · gratis fotoviewer en MKV-player voor de Mac",
   "seoDescription": "Snelle, gratis fotoviewer voor de Mac, speelt ook MKV, AVI en WebM: miniaturen, diavoorstelling, ZIP en RAR als mappen. Alternatief voor IrfanView en XnView.",
@@ -16,6 +17,8 @@
   "store": "Mac App Store",
   "storeSoon": "binnenkort, € 0,99 om het te steunen",
   "fineprint": "Beide versies zijn dezelfde app met alle functies; wie hem in de App Store koopt, steunt de ontwikkeling. Hartelijk dank! 🖤",
+  "starText": "Vind je Schnellbild fijn?",
+  "starLink": "Geef hem een ster op GitHub",
   "shotAlt": "Schnellbild: mappen met voorvertoningen en fotominiaturen",
   "viewsLabel": "De vier weergaven",
   "views": [
@@ -81,13 +84,14 @@
       "Kapotte bestanden, vreemde formaten en trage schijven tonen een plaatshouder, en de app blijft draaien."
     ]
   ],
+  "offlineBadge": "Geen enkele verbinding met internet",
   "featuresTitle": "Wat hij doet",
   "demoLabel": "Video: een foto geopend vanuit het raster, de foto's van de reis op de kaart en de wereldbol, daarna de reis afgespeeld",
   "featuresMore": "En nog veel meer functies: alle details op GitHub",
   "features": [
     {
       "title": "Groot bekijken, bladeren met de toetsen",
-      "text": "<p>De spatiebalk opent een afbeelding zo groot als het venster toelaat, met <kbd>◀</kbd> / <kbd>▶</kbd> blader je door de map. Zoom in met het trackpad of met <kbd>+</kbd> / <kbd>−</kbd>, draai met <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, schermvullend met <kbd>F</kbd>. Geanimeerde GIF’s en SVG inbegrepen, PDF pagina voor pagina.</p><p>Een diavoorstelling (<kbd>S</kbd>) loopt door de map en alle submappen, foto’s en video’s door elkaar. Wat de diavoorstelling afspeelt, is de afspeellijst: <kbd>P</kbd> opent hem om de volgorde te veranderen en uit te dunnen.</p>",
+      "text": "<p>De spatiebalk opent een afbeelding zo groot als het venster toelaat, met <kbd>◀</kbd> / <kbd>▶</kbd> blader je door de map. Zoom in met het trackpad of met <kbd>+</kbd> / <kbd>−</kbd>, draai met <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, schermvullend met <kbd>F</kbd>. Ook {fmt:gif} met animaties, {fmt:svg} en {fmt:pdf} pagina voor pagina (<a href=\"{formats}\">alle formaten</a>).</p><p>Een diavoorstelling (<kbd>S</kbd>) loopt door de map en alle submappen, foto’s en video’s door elkaar. Wat de diavoorstelling afspeelt, is de afspeellijst: <kbd>P</kbd> opent hem om de volgorde te veranderen en uit te dunnen.</p>",
       "alt": "Een foto in de volledige weergave"
     },
     {
@@ -97,12 +101,12 @@
     },
     {
       "title": "Video’s, ook MKV en alles wat macOS niet afspeelt",
-      "text": "<p>Wat macOS zelf afspeelt (MP4, MOV, AVCHD …) speelt af via macOS, ook in HDR; al het andere via de ingebouwde VLC-engine: MKV, WebM, AVI, WMV, FLV, MPEG, dvd-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen een tiende van de video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> een honderdste</li><li><kbd>▲</kbd> / <kbd>▼</kbd> regelen het volume, voor elke video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> naar de volgende video en <kbd>⌘</kbd> + <kbd>◀</kbd> terug: de eerste gaat verder waar hij was</li><li>Ondertitels in de video (<kbd>V</kbd>) staan er vanaf het begin; halverwege aangezet staat de lopende regel er meteen, en ASS-ondertitels houden hun positie, kleuren en lettertypen</li><li>Audiotracks, snelheid (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) en één bedieningsbalk voor elke video, die blijft waar je hem neerzet</li><li>Finder en Snelle weergave krijgen ook miniaturen voor MKV, WebM, WMV, FLV en VOB</li></ul>",
+      "text": "<p>Ze spelen allemaal af, ook in HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} en meer (<a href=\"{formats}#video\">alle videoformaten</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen een tiende van de video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> een honderdste</li><li><kbd>▲</kbd> / <kbd>▼</kbd> regelen het volume, voor elke video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> naar de volgende video en <kbd>⌘</kbd> + <kbd>◀</kbd> terug: de eerste gaat verder waar hij was</li><li>Ondertitels in de video (<kbd>V</kbd>) staan er vanaf het begin; halverwege aangezet staat de lopende regel er meteen, en ASS-ondertitels houden hun positie, kleuren en lettertypen</li><li>Audiotracks, snelheid (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) en één bedieningsbalk voor elke video, die blijft waar je hem neerzet</li><li>Finder en Snelle weergave krijgen ook miniaturen voor .mkv, .webm, .wmv, .flv en .vob</li></ul>",
       "alt": "Een video die afspeelt in Schnellbild"
     },
     {
       "title": "Archieven openen als mappen",
-      "text": "<p>ZIP, RAR en 7z, strips (CBZ, CBR) inbegrepen, ook in meerdere delen; ZIP en RAR ook met wachtwoord. Er wordt niets naar de schijf uitgepakt, en video’s spelen direct vanuit het archief.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} en {fmt:7z}, ook als strips: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Ook in meerdere delen; ZIP en RAR ook met wachtwoord. Er wordt niets naar de schijf uitgepakt, en video’s spelen direct vanuit het archief.</p>",
       "alt": "Archieven als mappen met voorvertoningen"
     },
     {
@@ -179,6 +183,62 @@
   "footerImprint": "Juridische informatie (Impressum)",
   "footerEula": "Licentieovereenkomst",
   "footerAlternatives": "Alternatieven",
+  "footerFormats": "Formaten",
+  "formats": {
+    "short": "Formaten",
+    "title": "Alle formaten die Schnellbild toont",
+    "seoTitle": "Ondersteunde formaten: afbeeldingen, RAW, video’s, archieven · Schnellbild voor Mac",
+    "description": "Alle formaten die de gratis viewer Schnellbild op de Mac opent, met volledige naam en bestandsextensie: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z en meer.",
+    "keywords": "bestandsformaten Mac, HEIC openen Mac, RAW-viewer Mac, CR3 openen, NEF openen, MKV-speler Mac, AVI afspelen Mac, WebM afspelen Mac, PSD openen zonder Photoshop, EPS openen Mac, JPEG XL viewer, AVIF openen, DDS viewer, CBR CBZ lezer Mac, Schnellbild",
+    "lead": "Schnellbild toont {count} formaten met {extensions} bestandsextensies: afbeeldingen, camera-RAW, documenten, video’s en archieven, die als mappen openen.",
+    "jump": "Groepen",
+    "columns": [
+      "Formaat",
+      "Extensies",
+      "Soort",
+      "Opmerkingen"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Afbeelding",
+      "document": "Document",
+      "video": "Video",
+      "archive": "Archief"
+    },
+    "groups": {
+      "photo": "Foto’s en afbeeldingen",
+      "pro": "HDR, bewerking en medisch",
+      "texture": "Texturen",
+      "document": "Documenten en tekeningen",
+      "raw": "Camera-RAW",
+      "video": "Video’s",
+      "archive": "Archieven, geopend als mappen"
+    },
+    "notes": {
+      "animated": "animaties spelen af",
+      "macos26": "vanaf macOS 26",
+      "firstPage": "de eerste pagina",
+      "pages": "pagina voor pagina",
+      "aiPdf": "als PDF; zonder PDF-inhoud bewaard, de ingesloten voorvertoning",
+      "embedded": "ingesloten voorvertoning",
+      "notStitched": "speelt zoals opgenomen, niet tot panorama samengevoegd",
+      "thumbnails": "miniaturen in de Finder via Schnellbild",
+      "mediaExtension": "miniaturen in de Finder via de media-extensie van Schnellbild (macOS 26)",
+      "tsContent": "alleen een video als de inhoud een MPEG-transportstream is (TypeScript-code blijft een bestand)",
+      "password": "ook met wachtwoord",
+      "rar": "alle RAR-versies, ook solide archieven en wachtwoorden",
+      "sevenZip": "op macOS 15 niet met LZMA-compressie",
+      "parts": "één keer getoond, via het eerste deel"
+    },
+    "names": {
+      "split": "Per byte gesplitst archief",
+      "zipParts": "ZIP in delen",
+      "rarParts": "RAR in delen"
+    },
+    "after": "Downloads die nog bezig zijn, tellen als wat ze worden: film.mp4.part is een MP4, fotos.rar.part een RAR. Bestanden waarvan de naam niets zegt, tellen naar hun inhoud. Alle andere bestanden staan met naam en grootte onder het raster."
+  },
   "privacy": {
     "title": "Privacyverklaring",
     "description": "Schnellbild verzamelt geen persoonsgegevens: geen account, geen analytics, geen tracking, geen netwerktoegang.",

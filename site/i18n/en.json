@@ -2,6 +2,7 @@
   "name": "English",
   "privacySlug": "privacy",
   "alternativesSlug": "alternatives",
+  "formatsSlug": "formats",
   "title": "Schnellbild: an image & video viewer for macOS that just doesn't suck",
   "seoTitle": "Schnellbild · Free Image Viewer & MKV Player for Mac",
   "seoDescription": "Fast, free image viewer and video player for Mac: thumbnails, slideshow, MKV, AVI, WebM, ZIP and RAR as folders. A Phiewer, XnView and IrfanView alternative.",
@@ -16,6 +17,8 @@
   "store": "Mac App Store",
   "storeSoon": "soon, €0.99 to support it",
   "fineprint": "Both versions are the same app with every feature; whoever buys it in the Store supports its development. Thank you! 🖤",
+  "starText": "Like Schnellbild?",
+  "starLink": "Give it a star on GitHub",
   "shotAlt": "Schnellbild: folders with previews and photo thumbnails",
   "viewsLabel": "The four views",
   "views": [
@@ -81,13 +84,14 @@
       "Broken files, odd formats and slow disks show a placeholder, and the app keeps running."
     ]
   ],
+  "offlineBadge": "Zero connection to the internet",
   "featuresTitle": "What it does",
   "demoLabel": "Video: a photo opened from the grid, the trip's photos on the map and the globe, then the tour played",
   "featuresMore": "And many more features: every last detail is on GitHub",
   "features": [
     {
       "title": "Look at it large, page with the keys",
-      "text": "<p>Space opens a picture as large as the window allows, <kbd>◀</kbd> / <kbd>▶</kbd> page through the folder. Zoom in with the trackpad or <kbd>+</kbd> / <kbd>−</kbd>, turn with <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, full screen with <kbd>F</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>S</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>P</kbd> opens it to reorder and weed out.</p>",
+      "text": "<p>Space opens a picture as large as the window allows, <kbd>◀</kbd> / <kbd>▶</kbd> page through the folder. Zoom in with the trackpad or <kbd>+</kbd> / <kbd>−</kbd>, turn with <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, full screen with <kbd>F</kbd>. Also {fmt:gif} with its animations, {fmt:svg} and {fmt:pdf} page by page (<a href=\"{formats}\">all formats</a>).</p><p>A slideshow (<kbd>S</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>P</kbd> opens it to reorder and weed out.</p>",
       "alt": "A photo in the full view"
     },
     {
@@ -97,12 +101,12 @@
     },
     {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Audio tracks, speed (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) and one control bar for every video, which stays wherever you drag it</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>All of them play, HDR included: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} and more (<a href=\"{formats}#video\">all video formats</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Audio tracks, speed (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) and one control bar for every video, which stays wherever you drag it</li><li>Finder and Quick Look get thumbnails for .mkv, .webm, .wmv, .flv and .vob too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {
       "title": "Archives open like folders",
-      "text": "<p>ZIP, RAR and 7z, comics (CBZ, CBR) included, also in several parts; ZIP and RAR also with a password. Nothing is unpacked to disk, and videos play straight from the archive.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} and {fmt:7z}, comic books included: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Also in several parts; ZIP and RAR also with a password. Nothing is unpacked to disk, and videos play straight from the archive.</p>",
       "alt": "Archives shown as folders with previews"
     },
     {
@@ -179,6 +183,62 @@
   "footerImprint": "Imprint (Impressum)",
   "footerEula": "License agreement",
   "footerAlternatives": "Alternatives",
+  "footerFormats": "Formats",
+  "formats": {
+    "short": "Formats",
+    "title": "Every format Schnellbild shows",
+    "seoTitle": "Supported formats: pictures, RAW, videos, archives · Schnellbild for Mac",
+    "description": "Every format the free Mac viewer Schnellbild opens, with full names and file extensions: JPEG, HEIC, AVIF, camera RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z and more.",
+    "keywords": "file formats Mac viewer, open HEIC on Mac, RAW viewer Mac, CR3 viewer, NEF viewer, DNG viewer, MKV player Mac, AVI player Mac, WebM player Mac, PSD viewer Mac, EPS viewer Mac, JPEG XL viewer, AVIF viewer, DDS viewer Mac, QOI viewer, PCX viewer, CBR CBZ reader Mac, Schnellbild",
+    "lead": "Schnellbild shows {count} formats with {extensions} file extensions: pictures, camera RAW, documents, videos and archives, which open like folders.",
+    "jump": "Groups",
+    "columns": [
+      "Format",
+      "Extensions",
+      "Kind",
+      "Notes"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Picture",
+      "document": "Document",
+      "video": "Video",
+      "archive": "Archive"
+    },
+    "groups": {
+      "photo": "Photos and graphics",
+      "pro": "HDR, editing and medicine",
+      "texture": "Textures",
+      "document": "Documents and drawings",
+      "raw": "Camera RAW",
+      "video": "Videos",
+      "archive": "Archives, opened like folders"
+    },
+    "notes": {
+      "animated": "animations play",
+      "macos26": "macOS 26 and later",
+      "firstPage": "its first page",
+      "pages": "page by page",
+      "aiPdf": "as a PDF; saved without PDF content, its embedded preview",
+      "embedded": "embedded preview",
+      "notStitched": "plays as recorded, not stitched into a panorama",
+      "thumbnails": "Finder thumbnails through Schnellbild",
+      "mediaExtension": "Finder thumbnails through Schnellbild's media extension (macOS 26)",
+      "tsContent": "a video only when its content is an MPEG transport stream (TypeScript code stays a file)",
+      "password": "also with a password",
+      "rar": "every RAR version, solid archives and passwords too",
+      "sevenZip": "on macOS 15 not with LZMA compression",
+      "parts": "shown once, by the first part"
+    },
+    "names": {
+      "split": "Archive split by bytes",
+      "zipParts": "ZIP in volumes",
+      "rarParts": "RAR in volumes"
+    },
+    "after": "Downloads still in progress count as what they will be: film.mp4.part is an MP4, photos.rar.part a RAR. Files whose names say nothing count by their content. Every other file is listed by name and size under the grid."
+  },
   "privacy": {
     "title": "Privacy policy",
     "description": "Schnellbild collects no personal data: no account, no analytics, no tracking, no network access.",

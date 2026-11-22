@@ -27,7 +27,7 @@
   </url>
   <url>
     <loc>https://schnellbild.haushoppe-its.de/da/privacy/</loc>
-    <lastmod>2026-11-18</lastmod>
+    <lastmod>2026-11-22</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://schnellbild.haushoppe-its.de/privacy/"/>
     <xhtml:link rel="alternate" hreflang="de" href="https://schnellbild.haushoppe-its.de/de/datenschutz/"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://schnellbild.haushoppe-its.de/fr/privacy/"/>
@@ -2074,5 +2074,30 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://schnellbild.haushoppe-its.de/zh-hans/alternatives/yacreader/"/>
     <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://schnellbild.haushoppe-its.de/zh-hant/alternatives/yacreader/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://schnellbild.haushoppe-its.de/alternatives/yacreader/"/>
+  </url>
+  <url>
+    <loc>https://schnellbild.haushoppe-its.de/da/formater/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://schnellbild.haushoppe-its.de/formats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://schnellbild.haushoppe-its.de/de/formate/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://schnellbild.haushoppe-its.de/fr/formats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://schnellbild.haushoppe-its.de/es/formatos/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://schnellbild.haushoppe-its.de/it/formati/"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://schnellbild.haushoppe-its.de/pt-br/formatos/"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://schnellbild.haushoppe-its.de/nl/formaten/"/>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://schnellbild.haushoppe-its.de/pl/formaty/"/>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://schnellbild.haushoppe-its.de/sv/format/"/>
+    <xhtml:link rel="alternate" hreflang="da" href="https://schnellbild.haushoppe-its.de/da/formater/"/>
+    <xhtml:link rel="alternate" hreflang="nb" href="https://schnellbild.haushoppe-its.de/nb/formater/"/>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://schnellbild.haushoppe-its.de/fi/formaatit/"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://schnellbild.haushoppe-its.de/cs/formaty/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://schnellbild.haushoppe-its.de/tr/formatlar/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://schnellbild.haushoppe-its.de/ru/formats/"/>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://schnellbild.haushoppe-its.de/uk/formats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://schnellbild.haushoppe-its.de/ja/formats/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://schnellbild.haushoppe-its.de/ko/formats/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://schnellbild.haushoppe-its.de/zh-hans/formats/"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://schnellbild.haushoppe-its.de/zh-hant/formats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://schnellbild.haushoppe-its.de/formats/"/>
   </url>
 </urlset>

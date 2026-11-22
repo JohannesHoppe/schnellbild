@@ -2,6 +2,7 @@
   "name": "日本語",
   "privacySlug": "privacy",
   "alternativesSlug": "alternatives",
+  "formatsSlug": "formats",
   "title": "Schnellbild：イライラしない、Mac用の画像・動画ビューア",
   "seoTitle": "Schnellbild · Mac用の画像ビューア。動画再生、漫画、スライドショーも",
   "seoDescription": "Mac用の高速で無料の画像ビューア。AVI・MKVの動画再生、ZIP・RARの漫画（CBZ・CBR）、スライドショーに対応し、キーボードでめくれます。Honeyview、MassiGra、Leeyesの代わりにMacで。",
@@ -16,6 +17,8 @@
   "store": "Mac App Store",
   "storeSoon": "近日公開。開発を応援できます",
   "fineprint": "どちらのバージョンもすべての機能を備えた同じAppです。App Storeで購入すると、開発の支援になります。ありがとうございます！🖤",
+  "starText": "Schnellbildは気に入りましたか？",
+  "starLink": "GitHubでスターを付けてください",
   "shotAlt": "Schnellbild：プレビュー付きのフォルダと写真のサムネール",
   "viewsLabel": "4つの表示",
   "views": [
@@ -81,13 +84,14 @@
       "壊れたファイル、変わったフォーマット、遅いディスクでも、プレースホルダが表示され、Appは動き続けます。"
     ]
   ],
+  "offlineBadge": "インターネット通信ゼロ",
   "featuresTitle": "できること",
   "demoLabel": "動画：グリッドから写真を開き、旅の写真を地図と地球儀で表示し、旅をたどる",
   "featuresMore": "ほかにも多くの機能があります。詳しくはGitHubで",
   "features": [
     {
       "title": "大きく表示してキーでめくる、スライドショーも",
-      "text": "<p>スペースキーで画像をウインドウいっぱいに表示し、<kbd>◀</kbd> / <kbd>▶</kbd>でフォルダ内をめくります。トラックパッドか<kbd>+</kbd> / <kbd>−</kbd>で拡大、<kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>で回転、<kbd>F</kbd>でフルスクリーン。アニメーションGIF、SVGにも対応し、PDFは1ページずつ表示します。</p><p>スライドショー（<kbd>S</kbd>）は、フォルダとそのすべてのサブフォルダを写真も動画もまとめて再生します。スライドショーで再生されるものが、そのままプレイリストです。<kbd>P</kbd>で開いて、並べ替えたり、不要な項目を外したりできます。</p>",
+      "text": "<p>スペースキーで画像をウインドウいっぱいに表示し、<kbd>◀</kbd> / <kbd>▶</kbd>でフォルダ内をめくります。トラックパッドか<kbd>+</kbd> / <kbd>−</kbd>で拡大、<kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>で回転、<kbd>F</kbd>でフルスクリーン。アニメーション付きの{fmt:gif}、{fmt:svg}にも対応し、{fmt:pdf}は1ページずつ表示します（<a href=\"{formats}\">すべてのフォーマット</a>）。</p><p>スライドショー（<kbd>S</kbd>）は、フォルダとそのすべてのサブフォルダを写真も動画もまとめて再生します。スライドショーで再生されるものが、そのままプレイリストです。<kbd>P</kbd>で開いて、並べ替えたり、不要な項目を外したりできます。</p>",
       "alt": "全体表示した写真"
     },
     {
@@ -97,12 +101,12 @@
     },
     {
       "title": "macOSで再生できないAVIやMKVも再生",
-      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで（HDRにも対応）、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ、RealMedia、MXF）は内蔵のVLCエンジンで再生します。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>で動画の10分の1、<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>で100分の1ジャンプ</li><li><kbd>▲</kbd> / <kbd>▼</kbd>で音量を調整。すべての動画に共通です</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>で次の動画へ、<kbd>⌘</kbd> + <kbd>◀</kbd>で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>オーディオトラック、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>）、すべての動画に共通のコントロールバー。ドラッグした場所にとどまります</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
+      "text": "<p>どれもHDRを含めて再生できます。{fmt:mp4}、{fmt:mov}、{fmt:avchd}、{fmt:mkv}、{fmt:webm}、{fmt:avi}、{fmt:wmv}、{fmt:flv}、{fmt:mpeg}、{fmt:vob}、{fmt:rm}、{fmt:mxf}など（<a href=\"{formats}#video\">すべての動画フォーマット</a>）。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>で動画の10分の1、<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>で100分の1ジャンプ</li><li><kbd>▲</kbd> / <kbd>▼</kbd>で音量を調整。すべての動画に共通です</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>で次の動画へ、<kbd>⌘</kbd> + <kbd>◀</kbd>で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>オーディオトラック、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>）、すべての動画に共通のコントロールバー。ドラッグした場所にとどまります</li><li>.mkv、.webm、.wmv、.flv、.vobのサムネールもFinderとクイックルックで表示されます</li></ul>",
       "alt": "Schnellbildで再生中の動画"
     },
     {
       "title": "ZIPやRARの漫画も、フォルダのように開く",
-      "text": "<p>ZIP、RAR、7z、コミック（CBZ、CBR）にも対応。分割されたものも開け、ZIPとRARはパスワード付きにも対応します。ディスクには何も展開せず、動画もアーカイブから直接再生します。</p>",
+      "text": "<p>{fmt:zip}、{fmt:rar}、{fmt:7z}に対応し、コミックの{fmt:cbz}、{fmt:cbr}、{fmt:cb7}も開けます。分割されたものも開け、ZIPとRARはパスワード付きにも対応します。ディスクには何も展開せず、動画もアーカイブから直接再生します。</p>",
       "alt": "プレビュー付きのフォルダとして表示されたアーカイブ"
     },
     {
@@ -179,6 +183,62 @@
   "footerImprint": "法的情報 (Impressum)",
   "footerEula": "使用許諾契約",
   "footerAlternatives": "代替アプリ",
+  "footerFormats": "対応フォーマット",
+  "formats": {
+    "short": "対応フォーマット",
+    "title": "Schnellbildが表示できるすべてのフォーマット",
+    "seoTitle": "対応フォーマット：画像、RAW、動画、アーカイブ · Mac用Schnellbild",
+    "description": "無料のMac用ビューアSchnellbildが開けるすべてのフォーマットを、正式名称と拡張子で一覧にしました。JPEG、HEIC、AVIF、RAW、PSD、PDF、EPS、MKV、AVI、WebM、ZIP、RAR、7zなど。",
+    "keywords": "ファイル形式 Mac, HEIC 開く Mac, RAW ビューア Mac, CR3 開く, NEF 開く, MKV 再生 Mac, AVI 再生 Mac, WebM 再生 Mac, PSD 開く Photoshopなし, EPS 開く Mac, JPEG XL ビューア, AVIF 開く, DDS ビューア, CBR CBZ リーダー Mac, Schnellbild",
+    "lead": "Schnellbildは{count}種類のフォーマット、{extensions}種類の拡張子を表示します。画像、カメラRAW、書類、動画、そしてフォルダのように開くアーカイブです。",
+    "jump": "グループ",
+    "columns": [
+      "フォーマット",
+      "拡張子",
+      "種類",
+      "備考"
+    ],
+    "macos": "macOS：{name}",
+    "nameStyle": "{name}（{abbr}、{ext}）",
+    "nameStyleBare": "{name}（{ext}）",
+    "kinds": {
+      "picture": "画像",
+      "document": "書類",
+      "video": "動画",
+      "archive": "アーカイブ"
+    },
+    "groups": {
+      "photo": "写真とグラフィック",
+      "pro": "HDR、画像編集、医療",
+      "texture": "テクスチャ",
+      "document": "書類とドローイング",
+      "raw": "カメラRAW",
+      "video": "動画",
+      "archive": "アーカイブ（フォルダのように開く）"
+    },
+    "notes": {
+      "animated": "アニメーションを再生",
+      "macos26": "macOS 26以降",
+      "firstPage": "最初のページ",
+      "pages": "1ページずつ",
+      "aiPdf": "PDFとして表示。PDFの内容なしで保存したものは埋め込みプレビュー",
+      "embedded": "埋め込みプレビュー",
+      "notStitched": "撮影したまま再生（パノラマにはつなげません）",
+      "thumbnails": "SchnellbildによりFinderでもサムネール",
+      "mediaExtension": "Schnellbildのメディア拡張機能によりFinderでもサムネール（macOS 26）",
+      "tsContent": "中身がMPEGトランスポートストリームの場合のみ動画（TypeScriptのコードはファイルのまま）",
+      "password": "パスワード付きにも対応",
+      "rar": "すべてのRARバージョン、ソリッド書庫とパスワードにも対応",
+      "sevenZip": "macOS 15ではLZMA圧縮に非対応",
+      "parts": "最初のパートで1回だけ表示"
+    },
+    "names": {
+      "split": "バイト単位で分割したアーカイブ",
+      "zipParts": "分割ZIP",
+      "rarParts": "分割RAR"
+    },
+    "after": "ダウンロード中のファイルは、完成後の形式として扱います。film.mp4.partはMP4、photos.rar.partはRARです。名前から形式がわからないファイルは中身で判断します。それ以外のファイルは、グリッドの下に名前とサイズで一覧表示します。"
+  },
   "privacy": {
     "title": "プライバシーポリシー",
     "description": "Schnellbildは個人データを一切収集しません。アカウントなし、解析なし、トラッキングなし、ネットワークアクセスなし。",

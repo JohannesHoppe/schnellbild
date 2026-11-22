@@ -2,6 +2,7 @@
   "name": "Svenska",
   "privacySlug": "privacy",
   "alternativesSlug": "alternativ",
+  "formatsSlug": "format",
   "title": "Schnellbild: en bildvisare och videospelare för macOS som helt enkelt inte suger",
   "seoTitle": "Schnellbild · gratis bildvisare och MKV-spelare för Mac",
   "seoDescription": "Snabb, gratis bildvisare för Mac som även spelar MKV, AVI och WebM: miniatyrer, bildspel, ZIP och RAR som mappar. Alternativ till IrfanView och XnView.",
@@ -16,6 +17,8 @@
   "store": "Mac App Store",
   "storeSoon": "snart, för att stödja utvecklingen",
   "fineprint": "Båda versionerna är samma app med alla funktioner; den som köper den i App Store stöder utvecklingen. Tack så mycket! 🖤",
+  "starText": "Gillar du Schnellbild?",
+  "starLink": "Ge den en stjärna på GitHub",
   "shotAlt": "Schnellbild: mappar med förhandsvisningar och miniatyrer av bilder",
   "viewsLabel": "De fyra vyerna",
   "views": [
@@ -81,13 +84,14 @@
       "Trasiga filer, udda format och långsamma diskar visar en platshållare, och appen fortsätter att fungera."
     ]
   ],
+  "offlineBadge": "Ingen anslutning till internet",
   "featuresTitle": "Vad den gör",
   "demoLabel": "Video: ett foto öppnat från rutnätet, resans foton på kartan och jordgloben, sedan resan uppspelad",
   "featuresMore": "Och många fler funktioner: alla detaljer på GitHub",
   "features": [
     {
       "title": "Se bilden stort, bläddra med tangenterna",
-      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, <kbd>◀</kbd> / <kbd>▶</kbd> bläddrar genom mappen. Zooma med styrplattan eller <kbd>+</kbd> / <kbd>−</kbd>, rotera med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, helskärm med <kbd>F</kbd>. Animerade GIF:ar och SVG ingår, PDF sida för sida.</p><p>Ett bildspel (<kbd>S</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>P</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
+      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, <kbd>◀</kbd> / <kbd>▶</kbd> bläddrar genom mappen. Zooma med styrplattan eller <kbd>+</kbd> / <kbd>−</kbd>, rotera med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, helskärm med <kbd>F</kbd>. Även {fmt:gif} med animationer, {fmt:svg} och {fmt:pdf} sida för sida (<a href=\"{formats}\">alla format</a>).</p><p>Ett bildspel (<kbd>S</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>P</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
       "alt": "Ett foto i helvyn"
     },
     {
@@ -97,12 +101,12 @@
     },
     {
       "title": "Videor, även MKV och andra som macOS inte kan spela",
-      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Ljudspår, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) och samma kontrollfält för varje video, som stannar där du drar det</li><li>Finder och Överblick får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
+      "text": "<p>Alla spelas, även i HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} med flera (<a href=\"{formats}#video\">alla videoformat</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Ljudspår, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) och samma kontrollfält för varje video, som stannar där du drar det</li><li>Finder och Överblick får miniatyrer även för .mkv, .webm, .wmv, .flv och .vob</li></ul>",
       "alt": "En video som spelas i Schnellbild"
     },
     {
       "title": "Arkiv öppnas som mappar",
-      "text": "<p>ZIP, RAR och 7z, serietidningar (CBZ, CBR) inräknade, även i flera delar; ZIP och RAR även med lösenord. Inget packas upp på disken, och videor spelas direkt från arkivet.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} och {fmt:7z}, även som serietidningar: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Även i flera delar; ZIP och RAR även med lösenord. Inget packas upp på disken, och videor spelas direkt från arkivet.</p>",
       "alt": "Arkiv som visas som mappar med förhandsvisningar"
     },
     {
@@ -179,6 +183,62 @@
   "footerImprint": "Juridisk information (Impressum)",
   "footerEula": "Licensavtal",
   "footerAlternatives": "Alternativ",
+  "footerFormats": "Format",
+  "formats": {
+    "short": "Format",
+    "title": "Alla format som Schnellbild visar",
+    "seoTitle": "Format som stöds: bilder, RAW, videor, arkiv · Schnellbild för Mac",
+    "description": "Alla format som den kostnadsfria bildvisaren Schnellbild öppnar på Mac, med fullständigt namn och filändelse: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z med flera.",
+    "keywords": "filformat Mac, öppna HEIC på Mac, RAW-visare Mac, öppna CR3, öppna NEF, MKV-spelare Mac, spela AVI på Mac, spela WebM på Mac, öppna PSD utan Photoshop, öppna EPS på Mac, JPEG XL-visare, öppna AVIF, DDS-visare, CBR CBZ-läsare Mac, Schnellbild",
+    "lead": "Schnellbild visar {count} format med {extensions} filändelser: bilder, kamera-RAW, dokument, videor och arkiv, som öppnas som mappar.",
+    "jump": "Grupper",
+    "columns": [
+      "Format",
+      "Filändelser",
+      "Typ",
+      "Anmärkningar"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Bild",
+      "document": "Dokument",
+      "video": "Video",
+      "archive": "Arkiv"
+    },
+    "groups": {
+      "photo": "Foton och grafik",
+      "pro": "HDR, bildredigering och medicin",
+      "texture": "Texturer",
+      "document": "Dokument och teckningar",
+      "raw": "Kamera-RAW",
+      "video": "Videor",
+      "archive": "Arkiv, öppnas som mappar"
+    },
+    "notes": {
+      "animated": "animationer spelas",
+      "macos26": "från macOS 26",
+      "firstPage": "första sidan",
+      "pages": "sida för sida",
+      "aiPdf": "som PDF; sparad utan PDF-innehåll, den inbäddade förhandsvisningen",
+      "embedded": "inbäddad förhandsvisning",
+      "notStitched": "spelas som inspelad, inte ihopsydd till panorama",
+      "thumbnails": "miniatyrer i Finder via Schnellbild",
+      "mediaExtension": "miniatyrer i Finder via Schnellbilds medietillägg (macOS 26)",
+      "tsContent": "en video bara när innehållet är en MPEG-transportström (TypeScript-kod förblir en fil)",
+      "password": "även med lösenord",
+      "rar": "alla RAR-versioner, även solida arkiv och lösenord",
+      "sevenZip": "på macOS 15 inte med LZMA-komprimering",
+      "parts": "visas en gång, via första delen"
+    },
+    "names": {
+      "split": "Arkiv delat i byte",
+      "zipParts": "ZIP i delar",
+      "rarParts": "RAR i delar"
+    },
+    "after": "Nedladdningar som pågår räknas som det de blir: film.mp4.part är en MP4, foton.rar.part en RAR. Filer vars namn inte säger något räknas efter innehållet. Alla andra filer listas med namn och storlek under rutnätet."
+  },
   "privacy": {
     "title": "Integritetspolicy",
     "description": "Schnellbild samlar inte in några personuppgifter: inget konto, ingen analys, ingen spårning, ingen nätverksåtkomst.",

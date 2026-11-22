@@ -2,6 +2,7 @@
   "name": "Deutsch",
   "privacySlug": "datenschutz",
   "alternativesSlug": "alternativen",
+  "formatsSlug": "formate",
   "title": "Schnellbild: ein Bild- und Videobetrachter für den Mac, der einfach nicht nervt",
   "seoTitle": "Schnellbild · kostenloser Bildbetrachter & MKV-Player für Mac",
   "seoDescription": "Kostenloser Bildbetrachter für Mac, der auch MKV, AVI und WebM abspielt: Vorschaubilder, Diashow, ZIP und RAR als Ordner. Alternative zu IrfanView und XnView.",
@@ -16,6 +17,8 @@
   "store": "Mac App Store",
   "storeSoon": "bald, 0,99 € zur Unterstützung",
   "fineprint": "Beide Versionen sind dieselbe App mit allen Funktionen; wer sie im Store kauft, unterstützt die Weiterentwicklung. Vielen Dank! 🖤",
+  "starText": "Gefällt dir Schnellbild?",
+  "starLink": "Gib ihm einen Stern auf GitHub",
   "shotAlt": "Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos",
   "viewsLabel": "Die vier Ansichten",
   "views": [
@@ -81,13 +84,14 @@
       "Kaputte Dateien, seltsame Formate und langsame Laufwerke zeigen einen Platzhalter, und die App läuft weiter."
     ]
   ],
+  "offlineBadge": "Null Verbindung ins Internet",
   "featuresTitle": "Was es kann",
   "demoLabel": "Video: ein Foto aus dem Raster geöffnet, die Fotos der Reise auf Karte und Globus, dann die Reise abgespielt",
   "featuresMore": "Und noch viel mehr Funktionen: alle Details auf GitHub",
   "features": [
     {
       "title": "Groß ansehen, mit den Tasten blättern",
-      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, <kbd>◀</kbd> / <kbd>▶</kbd> blättern durch den Ordner. Zoomen mit dem Trackpad oder <kbd>+</kbd> / <kbd>−</kbd>, drehen mit <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, Vollbild mit <kbd>F</kbd>. Animierte GIFs und SVG inklusive, PDFs Seite für Seite.</p><p>Eine Diashow (<kbd>S</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>P</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
+      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, <kbd>◀</kbd> / <kbd>▶</kbd> blättern durch den Ordner. Zoomen mit dem Trackpad oder <kbd>+</kbd> / <kbd>−</kbd>, drehen mit <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, Vollbild mit <kbd>F</kbd>. Dazu {fmt:gif} mit seinen Animationen, {fmt:svg} und {fmt:pdf} Seite für Seite (<a href=\"{formats}\">alle Formate</a>).</p><p>Eine Diashow (<kbd>S</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>P</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
       "alt": "Ein Foto in der Vollansicht"
     },
     {
@@ -97,12 +101,12 @@
     },
     {
       "title": "Videos, auch die, die macOS nicht abspielt",
-      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen ein Zehntel des Videos, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> ein Hundertstel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stellen die Lautstärke ein, für alle Videos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> zum nächsten Video und <kbd>⌘</kbd> + <kbd>◀</kbd> zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Tonspuren, Geschwindigkeit (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) und eine Steuerleiste für jedes Video, die bleibt, wohin du sie ziehst</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "text": "<p>Sie laufen alle, auch in HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} und mehr (<a href=\"{formats}#video\">alle Videoformate</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen ein Zehntel des Videos, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> ein Hundertstel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stellen die Lautstärke ein, für alle Videos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> zum nächsten Video und <kbd>⌘</kbd> + <kbd>◀</kbd> zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Tonspuren, Geschwindigkeit (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) und eine Steuerleiste für jedes Video, die bleibt, wohin du sie ziehst</li><li>Finder und Übersicht bekommen Vorschaubilder auch für .mkv, .webm, .wmv, .flv und .vob</li></ul>",
       "alt": "Ein Video in Schnellbild"
     },
     {
       "title": "Archive öffnen sich wie Ordner",
-      "text": "<p>ZIP, RAR und 7z, Comics (CBZ, CBR) eingeschlossen, auch in mehreren Teilen; ZIP und RAR auch mit Passwort. Nichts wird auf die Festplatte entpackt, und Videos spielen direkt aus dem Archiv.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} und {fmt:7z}, auch als Comics: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Auch in mehreren Teilen; ZIP und RAR auch mit Passwort. Nichts wird auf die Festplatte entpackt, und Videos spielen direkt aus dem Archiv.</p>",
       "alt": "Archive als Ordner mit Vorschau"
     },
     {
@@ -179,6 +183,62 @@
   "footerImprint": "Impressum",
   "footerEula": "Lizenzvertrag",
   "footerAlternatives": "Alternativen",
+  "footerFormats": "Formate",
+  "formats": {
+    "short": "Formate",
+    "title": "Alle Formate, die Schnellbild zeigt",
+    "seoTitle": "Unterstützte Formate: Bilder, RAW, Videos, Archive · Schnellbild für Mac",
+    "description": "Alle Formate, die der kostenlose Bildbetrachter Schnellbild auf dem Mac öffnet, mit vollem Namen und Dateiendung: JPEG, HEIC, AVIF, Kamera-RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z und mehr.",
+    "keywords": "Dateiformate Mac, HEIC öffnen Mac, RAW-Viewer Mac, CR3 öffnen, NEF öffnen, DNG Viewer, MKV abspielen Mac, AVI abspielen Mac, WebM abspielen Mac, PSD öffnen ohne Photoshop, EPS öffnen Mac, JPEG XL Viewer, AVIF öffnen, DDS Viewer Mac, PCX öffnen, CBR CBZ Reader Mac, Schnellbild",
+    "lead": "Schnellbild zeigt {count} Formate mit {extensions} Dateiendungen: Bilder, Kamera-RAW, Dokumente, Videos und Archive, die sich wie Ordner öffnen.",
+    "jump": "Gruppen",
+    "columns": [
+      "Format",
+      "Dateiendungen",
+      "Art",
+      "Hinweise"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Bild",
+      "document": "Dokument",
+      "video": "Video",
+      "archive": "Archiv"
+    },
+    "groups": {
+      "photo": "Fotos und Grafiken",
+      "pro": "HDR, Bildbearbeitung und Medizin",
+      "texture": "Texturen",
+      "document": "Dokumente und Zeichnungen",
+      "raw": "Kamera-RAW",
+      "video": "Videos",
+      "archive": "Archive, geöffnet wie Ordner"
+    },
+    "notes": {
+      "animated": "Animationen laufen",
+      "macos26": "ab macOS 26",
+      "firstPage": "seine erste Seite",
+      "pages": "Seite für Seite",
+      "aiPdf": "als PDF; ohne PDF-Inhalt gesichert, sein eingebettetes Vorschaubild",
+      "embedded": "eingebettetes Vorschaubild",
+      "notStitched": "spielt wie aufgenommen, nicht zum Panorama zusammengesetzt",
+      "thumbnails": "Vorschaubilder im Finder über Schnellbild",
+      "mediaExtension": "Vorschaubilder im Finder über Schnellbilds Medienerweiterung (macOS 26)",
+      "tsContent": "ein Video nur, wenn der Inhalt ein MPEG-Transportstrom ist (TypeScript-Code bleibt eine Datei)",
+      "password": "auch mit Passwort",
+      "rar": "alle RAR-Versionen, auch solide Archive und Passwörter",
+      "sevenZip": "auf macOS 15 nicht mit LZMA-Kompression",
+      "parts": "einmal gezeigt, über den ersten Teil"
+    },
+    "names": {
+      "split": "Byteweise geteiltes Archiv",
+      "zipParts": "ZIP in Teilen",
+      "rarParts": "RAR in Teilen"
+    },
+    "after": "Downloads, die noch laufen, zählen als das, was sie werden: film.mp4.part ist ein MP4, fotos.rar.part ein RAR. Dateien, deren Name nichts sagt, zählen nach ihrem Inhalt. Alle anderen Dateien stehen mit Name und Größe unter dem Raster."
+  },
   "privacy": {
     "title": "Datenschutzerklärung",
     "description": "Schnellbild erhebt keine personenbezogenen Daten: kein Konto, keine Analyse, kein Tracking, kein Netzwerkzugriff.",

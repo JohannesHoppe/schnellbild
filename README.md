@@ -267,8 +267,8 @@ It starts where you are: from the full view at the picture you're looking at; in
   <img src="docs/screenshots/video-light.webp" width="760" alt="A video in the full view with its control bar">
 </picture></p>
 
-- **Everything plays:** MP4 and MOV through macOS itself, what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
-- **HDR** videos (PQ and HLG) show in their full brightness on a display that can show it, through either engine.
+- **Everything plays:** MP4 and MOV, and what macOS can't play itself (AVI, MKV, WebM, DVD's VOB …). Media Extensions you turned on in System Settings are used too.
+- **HDR** videos (PQ and HLG) show in their full brightness on a display that can show it.
 - **The arrow keys skim:** each press jumps a tenth of the video, <kbd>⇧</kbd> a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; <kbd>⌘</kbd> + <kbd>◀</kbd> / <kbd>⌘</kbd> + <kbd>▶</kbd> skip a video at once.
 - **Back where you left it:** halfway through a video, <kbd>⌘</kbd> + <kbd>▶</kbd> shows what the next one brings, and <kbd>⌘</kbd> + <kbd>◀</kbd> takes you back to the place you left, playing or paused as you left it. The same when you open it again from the grid. A video watched to its end starts from the beginning. The places last as long as you stay in the folder: open another one, and back here every video starts from the beginning again.
 - **A thin bar** under the badge at the top shows how far the video has played and the time left.
@@ -501,31 +501,33 @@ Schnellbild → Settings (<kbd>⌘</kbd> + <kbd>,</kbd>) has two tabs. Keyboard 
 
 ### Supported file formats
 
-**Pictures** (shown with macOS' own ImageIO, so a newer macOS can read more; what macOS doesn't read, Schnellbild decodes itself or with LibRaw):
+Every format with its full name and file extensions, and the abbreviation where it isn't one of them (AVCHD for `.mts`), grouped as on the website's [formats page](https://schnellbild.haushoppe-its.de/formats/) (the list both are checked against: `site/formats.json`).
+
+**Pictures and documents:**
 
 | | Formats |
 |---|---|
-| Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`, `.avci`), AVIF (`.avif`, `.avifs`), JPEG XL (`.jxl`), PNG and animated PNG (`.png`, `.apng`), GIF, WebP, TIFF (`.tif`, `.tiff`), BMP (`.bmp`, `.dib`), JPEG 2000 (`.jp2`, `.j2k`, `.j2c`, `.jpf`, `.jpx`), MPO |
-| Vector and documents | SVG (`.svg`, `.svgz`), PDF (page by page, as vector pictures), Adobe Illustrator (`.ai`: as a PDF; saved without PDF content, its built-in thumbnail) |
-| HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`, `.psb`), Targa (`.tga`), SGI (`.sgi`), Netpbm (`.pbm`, `.pgm`, `.ppm`, `.pnm`, `.pfm`), QuickDraw PICT (`.pict`, `.pct`), DICOM (`.dcm`, `.dicom`, macOS 26 and later), icons and cursors (`.ico`, `.icns`, `.cur`) |
-| Textures | DDS, ASTC, KTX (`.ktx`, `.ktx2`), PVRTC (`.pvr`), ATX |
-| Decoded by Schnellbild | QOI (`.qoi`), PCX (`.pcx`: 1 to 8 bits with a palette, 24 and 32 bits), DCX (`.dcx`: its first page) |
-| By the picture they carry | EPS and PostScript (`.eps`, `.epsf`, `.epsi`, `.epi`, `.ps`: their TIFF, XMP or EPSI preview), Krita (`.kra`), OpenRaster (`.ora`), Procreate (`.procreate`), Sketch (`.sketch`) |
-| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nefx` `.nrw`, Sony `.arw` `.axr` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf` `.ori` (`.ori` through LibRaw on macOS 15), Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw`, DxO `.dxo` |
-| Camera RAW through LibRaw | Casio `.bay`, Phase One `.cap`, Kodak `.dcs` `.drf` `.k25` `.kdc`, Minolta `.mdc`, Mamiya `.mef`, Pentax `.ptx`, Logitech `.pxn`, Apple QuickTake `.qtk`, Sinar `.sti` |
+| Photos and graphics | Joint Photographic Experts Group (`.jpg` `.jpeg` `.jpe`), Portable Network Graphics (`.png`), Animated Portable Network Graphics (`.apng`; animations play), Graphics Interchange Format (`.gif`; animations play), WebP (`.webp`; animations play), High Efficiency Image File Format (`.heic` `.heif` `.hif`), HEIF Image Sequence (`.heics`), AVC HEIF Image (`.avci`), AV1 Image File Format (`.avif` `.avifs`), JPEG XL (`.jxl`), Tagged Image File Format (`.tif` `.tiff`), Windows Bitmap (`.bmp` `.dib`), JPEG 2000 (`.jp2`), JPEG 2000 Part 2 (`.jpx` `.jpf`), JPEG 2000 Codestream (`.j2k` `.j2c`), Multi-Picture Object (`.mpo`), Scalable Vector Graphics (`.svg`), Scalable Vector Graphics Compressed (`.svgz`), Macintosh PICT Image (`.pict` `.pct`), Windows Icon (`.ico`), Windows Cursor (`.cur`), Apple Icon Image Format (`.icns`), Quite OK Image Format (`.qoi`), ZSoft PC Paintbrush (`.pcx`), Multipage ZSoft PCX (`.dcx`; its first page) |
+| HDR, editing and medicine | OpenEXR (`.exr`), Radiance RGBE (`.hdr`), Adobe Photoshop Document (`.psd`), Adobe Photoshop Large Document Format (`.psb`), Truevision TGA (`.tga`), Silicon Graphics Image (`.sgi`), Portable Bitmap (`.pbm`), Portable Graymap (`.pgm`), Portable Pixmap (`.ppm`), Portable Anymap (`.pnm`), Portable Float Map (`.pfm`), Digital Imaging and Communications in Medicine (`.dcm` `.dicom`; macOS 26 and later) |
+| Textures | DirectDraw Surface (`.dds`), Adaptive Scalable Texture Compression (`.astc`), Khronos Texture (`.ktx`), Khronos Texture 2.0 (`.ktx2`), PowerVR Texture (`.pvr`), Apple Texture (`.atx`) |
+| Documents and drawings | Portable Document Format (`.pdf`; page by page), Adobe Illustrator Artwork (`.ai`; as a PDF; saved without PDF content, its embedded preview), Encapsulated PostScript (`.eps` `.epsf`; embedded preview), Encapsulated PostScript Interchange (`.epsi` `.epi`; embedded preview), PostScript (`.ps`; embedded preview), Krita Document (`.kra`; embedded preview), OpenRaster (`.ora`; embedded preview), Procreate Document (`.procreate`; embedded preview), Sketch Document (`.sketch`; embedded preview) |
+| Camera RAW | Canon Raw 2 (`.cr2`), Canon Raw 3 (`.cr3`), Canon Raw (`.crw`), Nikon Electronic Format (`.nef`), Nikon Pixel Shift Merge (`.nefx`), Nikon Coolpix Raw (`.nrw`), Sony Alpha Raw (`.arw`), Sony AXR Raw (`.axr`), Sony Raw 2 (`.sr2`), Sony Raw Format (`.srf`), Digital Negative (`.dng`), Fujifilm RAW Image Format (`.raf`), Olympus Raw Format (`.orf`), Olympus Raw Image (`.ori`), Panasonic Raw 2 (`.rw2`), Panasonic Raw (`.raw`), Leica Raw (`.rwl`), Pentax Electronic File (`.pef`), Samsung Raw (`.srw`), Hasselblad 3F Raw (`.3fr`), Hasselblad FFF Raw (`.fff`), Phase One Intelligent Image Quality (`.iiq`), Epson Raw Format (`.erf`), Kodak Digital Camera Raw (`.dcr`), Leaf Mosaic Raw (`.mos`), Minolta Raw (`.mrw`), DxO Raw (`.dxo`), Casio Raw (`.bay`), Phase One Capture Raw (`.cap`), Kodak DCS Raw (`.dcs`), Kodak DRF Raw (`.drf`), Kodak DC25 Raw (`.k25`), Kodak Digital Camera Raw (`.kdc`), Minolta RD175 Raw (`.mdc`), Mamiya Electronic Format (`.mef`), Pentax Optio Raw (`.ptx`), Logitech Fotoman Raw (`.pxn`), Apple QuickTake Raw (`.qtk`), Sinar Capture Shop Raw (`.sti`) |
 
-Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view; the formats macOS doesn't read, a camera newer than your macOS and a RAW file macOS shows black or blown out are developed by LibRaw. PostScript is never run: macOS draws no PostScript since macOS 14, so an EPS or PS file shows the preview it carries, and one without a preview stays among the other files. The Inspector says "embedded preview" for such files.
+Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and the whole picture in the full view, also those of a camera newer than your macOS. PostScript is never run: macOS draws no PostScript since macOS 14, so an EPS or PS file shows the preview it carries, and one without a preview stays among the other files. The Inspector says "embedded preview" for such files.
 
 **Videos:**
 
-| | Formats | Plays through |
-|---|---|---|
-| What macOS plays | MP4, MOV (`.mov`, `.qt`), M4V, 3GP / 3G2 | AVKit |
-| Everything else | MKV, WebM, AVI and DivX (`.avi`, `.divx`), WMV / ASF, FLV and F4V, Ogg video (`.ogv`, `.ogm`), MPEG (`.mpg`, `.mpeg`, `.m1v`, `.m2v`), DVD video (`.vob`), AVCHD (`.mts`, `.m2ts`), MPEG transport streams (`.ts`, `.m2t`), DV, RealMedia (`.rm`, `.rmvb`), MXF | VLC, built in |
+| | Formats |
+|---|---|
+| Videos | MPEG-4 Part 14 (`.mp4`), QuickTime File Format (`.mov` `.qt`), Apple MPEG-4 Video (`.m4v`), 3GPP File Format (`.3gp`), 3GPP2 File Format (`.3g2`), Advanced Video Coding High Definition (AVCHD, `.mts` `.m2ts`), MPEG Program Stream (MPEG-PS, `.mpg` `.mpeg`), MPEG-1 Video Elementary Stream (`.m1v`), MPEG-2 Video Elementary Stream (`.m2v`), Digital Video (`.dv`), Audio Video Interleave (`.avi`), DivX Video (`.divx`), Flash MP4 Video (`.f4v`), Material Exchange Format (`.mxf`), Insta360 Video (`.insv`; plays as recorded, not stitched into a panorama), GoPro MAX 360 Video (`.360`; plays as recorded, not stitched into a panorama), Matroska Video (`.mkv`), WebM (`.webm`), Windows Media Video (`.wmv`), Advanced Systems Format (`.asf`), Flash Video (`.flv`), Ogg Video (`.ogv`), Ogg Media (`.ogm`), DVD Video Object (`.vob`), MPEG Transport Stream (MPEG-TS, `.ts` `.m2t`; a video only when its content is an MPEG transport stream (TypeScript code stays a file)), RealMedia (`.rm`), RealMedia Variable Bitrate (`.rmvb`) |
 
 The MP4 files of 360° cameras (Insta360 `.insv`, GoPro MAX `.360`) play as recorded, not stitched into a panorama. A `.ts` file counts as a video when its content is an MPEG transport stream (a TV or IPTV recording); TypeScript code, which uses the same ending, stays among the other files. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
 
-**Archives** (opened like folders, see [Archives as folders](#archives-as-folders)): ZIP and comic books (`.zip`, `.cbz`), RAR (`.rar`, `.cbr`, all versions, also in volumes `.part1.rar` … and `.rar` / `.r00` …), 7z (`.7z`, `.cb7`), and archives split by bytes (`.zip.001`, `.7z.001`) or as ZIP volumes (`.z01` …).
+**Archives** (see [Archives as folders](#archives-as-folders)): RAR of every version, solid ones and those with a password too; 7z, on macOS 15 not with LZMA compression.
+
+| | Formats |
+|---|---|
+| Archives, opened like folders | ZIP Archive (`.zip`), Comic Book ZIP Archive (`.cbz`), Roshal Archive (`.rar`), Comic Book RAR Archive (`.cbr`), 7-Zip Archive (`.7z`), Comic Book 7z Archive (`.cb7`), Archive split by bytes (`.zip.001` `.7z.001`), ZIP in volumes (`.z01` `.zip`), RAR in volumes (`.part1.rar` `.r00` `.rar`) |
 
 **Downloads still in progress** count as what they will be: `film.mp4.part` is an MP4, `photos.rar.part` a RAR, whichever tool is downloading them (Firefox, JDownloader and Transmission `.part`, `.partial`, Chrome `.crdownload`, Opera `.opdownload`, qBittorrent `.!qB`, µTorrent `.!ut` / `.!bt`, `.download`). A small arrow on the tile and in the list marks them. Pictures show as far as they have arrived, videos play as far as their data reaches (an MP4 that keeps its index at the end can only play once it is complete, and the full view says so), archives open with what is there; while the file grows, a video that stopped at the end of its data goes on and an archive shows what arrived. When the download finishes and the file gets its final name, the selection and a video playing go along.
 

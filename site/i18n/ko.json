@@ -2,6 +2,7 @@
   "name": "한국어",
   "privacySlug": "privacy",
   "alternativesSlug": "alternatives",
+  "formatsSlug": "formats",
   "title": "Schnellbild: 짜증 날 일 없는 Mac용 이미지·동영상 뷰어",
   "seoTitle": "Schnellbild · 맥용 이미지 뷰어·동영상 플레이어, 꿀뷰 대안",
   "seoDescription": "맥에서 쓰는 빠르고 무료인 이미지 뷰어이자 동영상 플레이어. MKV·AVI·WebM 재생, ZIP·RAR 만화책(CBZ·CBR)을 폴더처럼, 슬라이드쇼, 키보드로 넘기기. 맥용 꿀뷰(Honeyview) 대안.",
@@ -16,6 +17,8 @@
   "store": "Mac App Store",
   "storeSoon": "곧 출시, 개발 후원용",
   "fineprint": "두 버전 모두 모든 기능을 갖춘 같은 앱입니다. App Store에서 구입하면 개발을 후원하게 됩니다. 감사합니다! 🖤",
+  "starText": "Schnellbild가 마음에 드세요?",
+  "starLink": "GitHub에서 스타를 눌러 주세요",
   "shotAlt": "Schnellbild: 미리보기가 있는 폴더와 사진 썸네일",
   "viewsLabel": "네 가지 보기",
   "views": [
@@ -81,13 +84,14 @@
       "손상된 파일, 낯선 포맷, 느린 디스크가 있어도 자리 표시자가 나타나고 앱은 계속 실행됩니다."
     ]
   ],
+  "offlineBadge": "인터넷 연결 전혀 없음",
   "featuresTitle": "주요 기능",
   "demoLabel": "동영상: 격자에서 사진을 열고, 여행 사진을 지도와 지구본에서 본 뒤 여행 재생",
   "featuresMore": "그 밖에도 많은 기능이 있습니다. 자세한 내용은 GitHub에서",
   "features": [
     {
       "title": "크게 보고, 키로 넘기기",
-      "text": "<p>스페이스 바를 누르면 이미지가 윈도우에 맞게 최대한 크게 열리고, <kbd>◀</kbd> / <kbd>▶</kbd>로 폴더를 넘겨 봅니다. 트랙패드나 <kbd>+</kbd> / <kbd>−</kbd>로 확대, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>로 회전, <kbd>F</kbd>로 전체 화면. 애니메이션 GIF, SVG도 지원하고, PDF는 한 페이지씩 보여 줍니다.</p><p>슬라이드 쇼(<kbd>S</kbd>)는 폴더와 모든 하위 폴더를 사진과 동영상 구분 없이 보여 줍니다. 슬라이드 쇼가 재생하는 것이 곧 재생 목록입니다. <kbd>P</kbd>를 누르면 열려서 순서를 바꾸거나 필요 없는 항목을 뺄 수 있습니다.</p>",
+      "text": "<p>스페이스 바를 누르면 이미지가 윈도우에 맞게 최대한 크게 열리고, <kbd>◀</kbd> / <kbd>▶</kbd>로 폴더를 넘겨 봅니다. 트랙패드나 <kbd>+</kbd> / <kbd>−</kbd>로 확대, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>로 회전, <kbd>F</kbd>로 전체 화면. 애니메이션이 있는 {fmt:gif}, {fmt:svg}도 지원하고, {fmt:pdf}는 한 페이지씩 보여 줍니다(<a href=\"{formats}\">모든 형식</a>).</p><p>슬라이드 쇼(<kbd>S</kbd>)는 폴더와 모든 하위 폴더를 사진과 동영상 구분 없이 보여 줍니다. 슬라이드 쇼가 재생하는 것이 곧 재생 목록입니다. <kbd>P</kbd>를 누르면 열려서 순서를 바꾸거나 필요 없는 항목을 뺄 수 있습니다.</p>",
       "alt": "전체 보기로 표시한 사진"
     },
     {
@@ -97,12 +101,12 @@
     },
     {
       "title": "MKV, AVI까지, macOS가 재생하지 못하는 동영상도",
-      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로(HDR 포함), 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오, RealMedia, MXF)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>로 동영상의 10분의 1, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>로 100분의 1씩 이동</li><li><kbd>▲</kbd> / <kbd>▼</kbd>로 음량 조절, 모든 동영상에 적용</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>로 다음 동영상으로, <kbd>⌘</kbd> + <kbd>◀</kbd>로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>오디오 트랙, 속도(<kbd>&lt;</kbd> / <kbd>&gt;</kbd>), 모든 동영상에 같은 컨트롤 막대. 끌어다 놓은 곳에 그대로 있습니다</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
+      "text": "<p>모두 재생되며 HDR도 지원합니다. {fmt:mp4}, {fmt:mov}, {fmt:avchd}, {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} 등(<a href=\"{formats}#video\">모든 동영상 형식</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>로 동영상의 10분의 1, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>로 100분의 1씩 이동</li><li><kbd>▲</kbd> / <kbd>▼</kbd>로 음량 조절, 모든 동영상에 적용</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>로 다음 동영상으로, <kbd>⌘</kbd> + <kbd>◀</kbd>로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>오디오 트랙, 속도(<kbd>&lt;</kbd> / <kbd>&gt;</kbd>), 모든 동영상에 같은 컨트롤 막대. 끌어다 놓은 곳에 그대로 있습니다</li><li>Finder와 훑어보기에서도 .mkv, .webm, .wmv, .flv, .vob 썸네일 표시</li></ul>",
       "alt": "Schnellbild에서 재생 중인 동영상"
     },
     {
       "title": "ZIP·RAR 만화책도 폴더처럼 열기",
-      "text": "<p>ZIP, RAR, 7z는 물론 만화(CBZ, CBR)까지, 여러 개로 분할된 파일도 열리며, ZIP과 RAR은 암호가 걸려 있어도 열립니다. 디스크에는 아무것도 풀지 않으며, 동영상도 아카이브에서 바로 재생됩니다.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar}, {fmt:7z}는 물론 만화 {fmt:cbz}, {fmt:cbr}, {fmt:cb7}까지, 여러 개로 분할된 파일도 열리며, ZIP과 RAR은 암호가 걸려 있어도 열립니다. 디스크에는 아무것도 풀지 않으며, 동영상도 아카이브에서 바로 재생됩니다.</p>",
       "alt": "미리보기가 있는 폴더로 표시된 아카이브"
     },
     {
@@ -179,6 +183,62 @@
   "footerImprint": "법적 고지 (Impressum)",
   "footerEula": "사용권 계약",
   "footerAlternatives": "대안",
+  "footerFormats": "지원 형식",
+  "formats": {
+    "short": "지원 형식",
+    "title": "Schnellbild가 보여 주는 모든 형식",
+    "seoTitle": "지원 형식: 이미지, RAW, 동영상, 아카이브 · Mac용 Schnellbild",
+    "description": "무료 Mac 뷰어 Schnellbild가 여는 모든 형식을 전체 이름과 확장자로 정리했습니다. JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z 등.",
+    "keywords": "파일 형식 Mac, 맥 HEIC 열기, RAW 뷰어 Mac, CR3 열기, NEF 열기, 맥 MKV 재생, 맥 AVI 재생, 맥 WebM 재생, 포토샵 없이 PSD 열기, 맥 EPS 열기, JPEG XL 뷰어, AVIF 열기, DDS 뷰어, CBR CBZ 뷰어 Mac, Schnellbild",
+    "lead": "Schnellbild는 {count}가지 형식, {extensions}가지 확장자를 보여 줍니다. 이미지, 카메라 RAW, 문서, 동영상, 그리고 폴더처럼 열리는 아카이브입니다.",
+    "jump": "그룹",
+    "columns": [
+      "형식",
+      "확장자",
+      "종류",
+      "참고"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name}({abbr}, {ext})",
+    "nameStyleBare": "{name}({ext})",
+    "kinds": {
+      "picture": "이미지",
+      "document": "문서",
+      "video": "동영상",
+      "archive": "아카이브"
+    },
+    "groups": {
+      "photo": "사진과 그래픽",
+      "pro": "HDR, 편집, 의료",
+      "texture": "텍스처",
+      "document": "문서와 드로잉",
+      "raw": "카메라 RAW",
+      "video": "동영상",
+      "archive": "아카이브, 폴더처럼 열림"
+    },
+    "notes": {
+      "animated": "애니메이션 재생",
+      "macos26": "macOS 26 이상",
+      "firstPage": "첫 페이지",
+      "pages": "한 페이지씩",
+      "aiPdf": "PDF로 표시, PDF 콘텐츠 없이 저장된 파일은 내장 미리보기",
+      "embedded": "내장 미리보기",
+      "notStitched": "촬영한 그대로 재생, 파노라마로 잇지 않음",
+      "thumbnails": "Schnellbild 덕분에 Finder에서도 썸네일",
+      "mediaExtension": "Schnellbild의 미디어 확장 프로그램으로 Finder에서도 썸네일(macOS 26)",
+      "tsContent": "내용이 MPEG 전송 스트림일 때만 동영상(TypeScript 코드는 파일로 남음)",
+      "password": "암호가 걸려 있어도 열림",
+      "rar": "모든 RAR 버전, 솔리드 압축과 암호도 지원",
+      "sevenZip": "macOS 15에서는 LZMA 압축 미지원",
+      "parts": "첫 번째 파트로 한 번만 표시"
+    },
+    "names": {
+      "split": "바이트 단위로 분할된 아카이브",
+      "zipParts": "분할 ZIP",
+      "rarParts": "분할 RAR"
+    },
+    "after": "아직 다운로드 중인 파일은 완성될 형식으로 취급합니다. film.mp4.part는 MP4, photos.rar.part는 RAR입니다. 이름으로 알 수 없는 파일은 내용으로 판단합니다. 그 밖의 파일은 격자 아래에 이름과 크기로 나열됩니다."
+  },
   "privacy": {
     "title": "개인정보 처리방침",
     "description": "Schnellbild는 개인 데이터를 수집하지 않습니다. 계정, 분석, 추적, 네트워크 접근이 모두 없습니다.",
