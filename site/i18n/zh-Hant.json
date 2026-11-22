@@ -78,7 +78,7 @@
     },
     {
       "title": "影片播放器，連 macOS 播不了的也行",
-      "text": "<p>macOS 本身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放（支援 HDR），其餘格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片）則由內建的 VLC 引擎播放。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> 跳轉影片的十分之一，<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> 跳轉百分之一</li><li><kbd>▲</kbd> / <kbd>▼</kbd> 調整音量，對所有影片生效</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> 切到下一個影片，<kbd>⌘</kbd> + <kbd>◀</kbd> 返回：前一個影片從離開時的位置繼續播放</li><li>影片內的字幕（<kbd>V</kbd>）從一開始就顯示；播放到一半才打開，也會立刻顯示正在進行的那一句；ASS 字幕保留位置、顏色和字體</li><li>Finder 和快速查看也能顯示 MKV、WebM、WMV、FLV 和 VOB 的縮圖</li></ul>",
+      "text": "<p>macOS 本身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放（支援 HDR），其餘格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片、RealMedia、MXF）則由內建的 VLC 引擎播放。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> 跳轉影片的十分之一，<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> 跳轉百分之一</li><li><kbd>▲</kbd> / <kbd>▼</kbd> 調整音量，對所有影片生效</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> 切到下一個影片，<kbd>⌘</kbd> + <kbd>◀</kbd> 返回：前一個影片從離開時的位置繼續播放</li><li>影片內的字幕（<kbd>V</kbd>）從一開始就顯示；播放到一半才打開，也會立刻顯示正在進行的那一句；ASS 字幕保留位置、顏色和字體</li><li>Finder 和快速查看也能顯示 MKV、WebM、WMV、FLV 和 VOB 的縮圖</li></ul>",
       "alt": "在 Schnellbild 中播放的影片"
     },
     {

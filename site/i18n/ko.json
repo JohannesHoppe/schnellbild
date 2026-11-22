@@ -78,7 +78,7 @@
     },
     {
       "title": "MKV, AVI까지, macOS가 재생하지 못하는 동영상도",
-      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로(HDR 포함), 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>로 동영상의 10분의 1, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>로 100분의 1씩 이동</li><li><kbd>▲</kbd> / <kbd>▼</kbd>로 음량 조절, 모든 동영상에 적용</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>로 다음 동영상으로, <kbd>⌘</kbd> + <kbd>◀</kbd>로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
+      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로(HDR 포함), 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오, RealMedia, MXF)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>로 동영상의 10분의 1, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>로 100분의 1씩 이동</li><li><kbd>▲</kbd> / <kbd>▼</kbd>로 음량 조절, 모든 동영상에 적용</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>로 다음 동영상으로, <kbd>⌘</kbd> + <kbd>◀</kbd>로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
       "alt": "Schnellbild에서 재생 중인 동영상"
     },
     {

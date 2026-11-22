@@ -2,6 +2,7 @@ import SwiftUI
 import ImageIO
 import CoreImage
 import AppKit
+import OfflineMap
 
 /// Full-size view for pictures, animated GIFs included. Loads the image via
 /// ImageIO downsampled directly to screen size. Zoom: keys +/-/0/1 (via the
@@ -533,11 +534,17 @@ enum VectorPicture {
     /// bytes, at full zoom; the adjusted copy needs as much again).
     static let largestSide = 4096
 
-    static func isVector(_ url: URL) -> Bool { ["svg", "pdf"].contains(BrowserModel.shownExtension(of: url)) }
+    static func isVector(_ url: URL) -> Bool {
+        let ext = BrowserModel.shownExtension(of: url)
+        return ext == "svg" || ext == "svgz" || PDFPages.isPDF(url)
+    }
 
-    /// The picture, from disk or from inside an archive (`MediaData`).
+    /// The picture, from disk or from inside an archive (`MediaData`); an
+    /// SVG compressed with gzip (".svgz") unpacked first (at most
+    /// `Gzip.largestOutput`, 64 MB).
     private static func image(_ url: URL) async -> NSImage? {
         guard let data = try? await MediaData.read(url) else { return nil }
+        if BrowserModel.shownExtension(of: url) == "svgz" { return Gzip.decompress(data).flatMap(NSImage.init(data:)) }
         return NSImage(data: data)
     }
 

@@ -1,14 +1,14 @@
 Schnellbild, hiçbir şeyi içe aktarmadan çalışan bir fotoğraf görüntüleyici ve video oynatıcıdır: bir klasör açın, küçük resimleri görün, bir resmi büyük görün, klavyeyle gezinin. Büyük klasörlerde ve ağ paylaşımlarında da hızlı kalır.
 
 FOTOĞRAFLAR
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF ve macOS’in tanıdığı kameraların RAW fotoğrafları
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS ve macOS’in tanıdığı kameraların RAW fotoğrafları
 • Izgara, liste ve tam görünüm, tüm alt klasörlerde slayt gösterisi
 • Slayt gösterisinin oynattığı her şey oynatma listesidir: P ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz
 • Yakınlaştırma, döndürme, otomatik iyileştirme (pozlama, kontrast, doygunluk, keskinlik), yalnızca görüntüleme için: dosyalarınız olduğu gibi kalır
 • Biçim, kodekler ve bit hızıyla dosya bilgisi; dosya uzantısı içeriğe uymadığında bir uyarı
 
 VİDEOLAR
-• MP4 ve MOV, ayrıca macOS’in oynatamadığı biçimler: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
+• MP4 ve MOV, ayrıca macOS’in oynatamadığı biçimler: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD, RealMedia, MXF
 • Fotoğraflarda gezinir gibi ok tuşlarıyla videolarda ileri geri atlayın
 
 FOTOĞRAFLARINIZ HARİTADA VE KÜRE ÜZERİNDE

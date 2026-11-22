@@ -78,7 +78,7 @@
     },
     {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> jump a tenth of the video, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> a hundredth</li><li><kbd>▲</kbd> / <kbd>▼</kbd> set the volume, for every video</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> to the next video and <kbd>⌘</kbd> + <kbd>◀</kbd> back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {

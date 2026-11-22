@@ -4,7 +4,7 @@ import Foundation
 /// the frame read here, the deflate inside it by `RawDeflate`. Returns nil
 /// for anything that isn't a whole, well-formed gzip member; never reads
 /// outside the bytes given.
-enum Gzip {
+public enum Gzip {
     /// Unpacked tiles and directories larger than this are refused (a tile of
     /// the bundled map is at most a few MB unpacked).
     static let largestOutput = 64 << 20
@@ -32,7 +32,7 @@ enum Gzip {
         return out.count == size ? out : nil
     }
 
-    static func decompress(_ data: Data) -> Data? {
+    public static func decompress(_ data: Data) -> Data? {
         data.withUnsafeBytes { decompress($0) }
     }
 }

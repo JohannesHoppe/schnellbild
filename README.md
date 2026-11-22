@@ -48,7 +48,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 - **Open** a folder with <kbd>⌘</kbd> + <kbd>O</kbd> or by dragging it onto the window; a single file dropped opens straight in the full view. Schnellbild reopens the last folder on launch (the very first launch opens Pictures), and <kbd>⌘</kbd> + <kbd>N</kbd> opens another window.
 - **Folders first**, each previewing its first pictures or videos like the Finder (from its subfolders, however deep, when it has none of its own; from an archive inside when that is all it holds), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
-- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos. An SVG or PDF Quick Look has no picture of, Schnellbild draws itself.
+- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos. An SVG or PDF Quick Look has no picture of, Schnellbild draws itself. Illustrator files, EPS and the other files Schnellbild shows by the picture they carry get that picture (see [Supported file formats](#supported-file-formats)).
 - **Always current:** what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection jumping; <kbd>⌘</kbd> + <kbd>R</kbd> reads the folder again. An ejected drive takes its windows back to the list of drives.
 - **The path** of the folder shown sits at the bottom right of the status bar. Right-click it (or ⌃-click) for Copy Path, Copy Path of Selected Item and Reveal in Finder; inside an archive the path runs through it (`…/Holiday.zip/Day 1`).
 - **Other files** (not pictures, videos or archives) are listed by name under the grid, so a folder never looks empty when it isn't. A folder that can't be read says so, with the reason.
@@ -441,21 +441,23 @@ Schnellbild → Settings (<kbd>⌘</kbd> + <kbd>,</kbd>) has two tabs. Keyboard 
 
 | | Formats |
 |---|---|
-| Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`), AVIF, JPEG XL (`.jxl`), PNG, GIF, WebP, TIFF (`.tif`, `.tiff`), BMP, JPEG 2000 (`.jp2`, `.j2k`), MPO |
-| Vector and documents | SVG, PDF (page by page, as vector pictures) |
-| HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`), Targa (`.tga`), DDS, icons (`.ico`, `.icns`) |
-| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nrw`, Sony `.arw` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf`, Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw` |
+| Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`, `.avci`), AVIF (`.avif`, `.avifs`), JPEG XL (`.jxl`), PNG and animated PNG (`.png`, `.apng`), GIF, WebP, TIFF (`.tif`, `.tiff`), BMP (`.bmp`, `.dib`), JPEG 2000 (`.jp2`, `.j2k`, `.j2c`, `.jpf`, `.jpx`), MPO |
+| Vector and documents | SVG (`.svg`, `.svgz`), PDF (page by page, as vector pictures), Adobe Illustrator (`.ai`: as a PDF; saved without PDF content, its built-in thumbnail) |
+| HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`, `.psb`), Targa (`.tga`), SGI (`.sgi`), Netpbm (`.pbm`, `.pgm`, `.ppm`, `.pnm`, `.pfm`), QuickDraw PICT (`.pict`, `.pct`), DICOM (`.dcm`, `.dicom`, macOS 26 and later), icons and cursors (`.ico`, `.icns`, `.cur`) |
+| Textures | DDS, ASTC, KTX (`.ktx`, `.ktx2`), PVRTC (`.pvr`), ATX |
+| By the picture they carry | EPS and PostScript (`.eps`, `.epsf`, `.epsi`, `.epi`, `.ps`: their TIFF, XMP or EPSI preview), Krita (`.kra`), OpenRaster (`.ora`), Procreate (`.procreate`), Sketch (`.sketch`) |
+| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nefx` `.nrw`, Sony `.arw` `.axr` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf` `.ori` (`.ori` from macOS 26 on), Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw`, DxO `.dxo` |
 
-Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view.
+Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view. PostScript is never run: macOS draws no PostScript since macOS 14, so an EPS or PS file shows the preview it carries, and one without a preview stays among the other files. The Inspector says "embedded preview" for such files.
 
 **Videos:**
 
 | | Formats | Plays through |
 |---|---|---|
 | What macOS plays | MP4, MOV (`.mov`, `.qt`), M4V, 3GP / 3G2 | AVKit |
-| Everything else | MKV, WebM, AVI, WMV, FLV, Ogg video (`.ogv`), MPEG (`.mpg`, `.mpeg`, `.m2v`), DVD video (`.vob`), AVCHD (`.mts`, `.m2ts`), MPEG transport streams (`.ts`), DV | VLC, built in |
+| Everything else | MKV, WebM, AVI and DivX (`.avi`, `.divx`), WMV / ASF, FLV and F4V, Ogg video (`.ogv`, `.ogm`), MPEG (`.mpg`, `.mpeg`, `.m1v`, `.m2v`), DVD video (`.vob`), AVCHD (`.mts`, `.m2ts`), MPEG transport streams (`.ts`, `.m2t`), DV, RealMedia (`.rm`, `.rmvb`), MXF | VLC, built in |
 
-A `.ts` file counts as a video when its content is an MPEG transport stream (a TV or IPTV recording); TypeScript code, which uses the same ending, stays among the other files. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
+The MP4 files of 360° cameras (Insta360 `.insv`, GoPro MAX `.360`) play as recorded, not stitched into a panorama. A `.ts` file counts as a video when its content is an MPEG transport stream (a TV or IPTV recording); TypeScript code, which uses the same ending, stays among the other files. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
 
 **Archives** (opened like folders, see [Archives as folders](#archives-as-folders)): ZIP and comic books (`.zip`, `.cbz`), RAR (`.rar`, `.cbr`, all versions, also in volumes `.part1.rar` … and `.rar` / `.r00` …), 7z (`.7z`, `.cb7`), and archives split by bytes (`.zip.001`, `.7z.001`) or as ZIP volumes (`.z01` …).
 

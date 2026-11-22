@@ -90,6 +90,14 @@ final class ThumbnailCache {
             keep(image, side: side, modified: modified, for: url)
             return image
         }
+        // PostScript, Illustrator, ZIP documents, Netpbm bitmaps: what the app
+        // shows of them (QuickLook draws an Illustrator file's placeholder
+        // page, or only an icon)
+        if EmbeddedPreview.extensions.contains(DownloadName.finalExtension(of: url)) || EmbeddedPreview.showsPreview(url) {
+            guard let image = await Self.pictureThumbnail(of: url, side: side), !Task.isCancelled else { return nil }
+            keep(image, side: side, modified: modified, for: url)
+            return image
+        }
         let rep = await Self.quickLook(request)
         guard !Task.isCancelled else { return nil }
         var image = rep?.nsImage
@@ -207,11 +215,13 @@ final class ThumbnailCache {
             answer.finish()
         }
     }
-    /// A picture scaled down by ImageIO, off the main thread; an SVG or PDF
-    /// (which ImageIO can't read) drawn as the full view draws it
-    /// (`VectorPicture`), for when QuickLook answered with the icon or not
-    /// at all. An SVG AppKit can't draw either (broken XML, a web font
-    /// without a picture size) keeps QuickLook's icon.
+    /// A picture scaled down by ImageIO, off the main thread; an SVG, PDF or
+    /// Illustrator file (which ImageIO can't read) drawn as the full view
+    /// draws it (`VectorPicture`), for when QuickLook answered with the icon
+    /// or not at all; a file shown by the picture it carries through that
+    /// picture (`MediaData.imageSource`, `EmbeddedPreview`). An SVG AppKit
+    /// can't draw either (broken XML, a web font without a picture size)
+    /// keeps QuickLook's icon.
     static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
         let maxPixel = Int(side * NSScreen.mainBackingScale)
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
@@ -219,7 +229,7 @@ final class ThumbnailCache {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 return NSImage(pixels: rendered.0)
             }
-            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+            guard let source = await MediaData.imageSource(url),
                   let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
             return NSImage(pixels: cg)
         }

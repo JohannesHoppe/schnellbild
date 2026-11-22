@@ -1800,17 +1800,37 @@ final class BrowserModel: ObservableObject {
     private var sortKeyKey: String { settingsPrefix + Self.sortKeyKey }
     private var sortAscendingKey: String { settingsPrefix + Self.sortAscendingKey }
 
-    nonisolated static let imageExtensions: Set<String> = [
-        "jpg", "jpeg", "jpe", "png", "gif", "heic", "heif", "hif", "heics", "avif", "jxl",
-        "tiff", "tif", "bmp", "webp", "psd", "pdf", "jp2", "j2k", "exr", "hdr", "tga",
-        "ico", "icns", "mpo", "dds", "svg",
+    /// Pictures by their extension: ImageIO's formats (`SystemFormatsTests`
+    /// prints the types it reads on each CI runner, `ImageFormatTests` draws
+    /// each one), SVG (AppKit; ".svgz" unpacked first) and PDF (PDFKit). PostScript, Illustrator
+    /// files and ZIP documents are pictures by their content
+    /// (`EmbeddedPreview`).
+    nonisolated static let imageExtensions: Set<String> = Set<String>([
+        "jpg", "jpeg", "jpe", "png", "apng", "gif", "heic", "heif", "hif", "heics", "avci", "avif", "avifs", "jxl",
+        "tiff", "tif", "bmp", "dib", "webp", "psd", "psb", "pdf", "jp2", "j2k", "j2c", "jpf", "jpx", "exr", "hdr", "tga",
+        "ico", "cur", "icns", "mpo", "svg", "svgz", "pict", "pct", "sgi", "pbm", "pgm", "ppm", "pnm", "pfm",
+        // textures
+        "dds", "astc", "ktx", "ktx2", "pvr", "atx",
         // camera RAW formats ImageIO reads
-        "cr2", "cr3", "crw", "nef", "nrw", "arw", "sr2", "srf", "dng", "raf", "orf",
-        "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq"
-    ]
+        "cr2", "cr3", "crw", "nef", "nefx", "nrw", "arw", "axr", "sr2", "srf", "dng", "raf", "orf",
+        "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq", "dxo"
+    ]).union(systemImageExtensions.filter(imageIOReads))
+
+    /// Read by ImageIO from macOS 26 on, not by macOS 15 (`SystemFormatsTests`
+    /// on both): DICOM, Olympus' ".ori". Pictures only where this macOS
+    /// reads them, else other files.
+    nonisolated static let systemImageExtensions: Set<String> = ["dcm", "dicom", "ori"]
+
+    /// Whether ImageIO reads a type that the extension's type is.
+    nonisolated private static func imageIOReads(_ ext: String) -> Bool {
+        guard let type = UTType(filenameExtension: ext), !type.isDynamic else { return false }
+        let readable = (CGImageSourceCopyTypeIdentifiers() as? [String] ?? []).compactMap(UTType.init)
+        return readable.contains { type.conforms(to: $0) }
+    }
     nonisolated static let videoExtensions: Set<String> = [
-        "mp4", "mov", "qt", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
-        "mpg", "mpeg", "m2v", "vob", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
+        "mp4", "mov", "qt", "m4v", "f4v", "insv", "360", "avi", "divx", "mkv", "webm", "m2ts", "mts", "m2t",
+        "mpg", "mpeg", "m2v", "m1v", "vob", "3gp", "3g2", "dv", "wmv", "asf", "flv", "ogv", "ogm",
+        "rm", "rmvb", "mxf"
         // (".ts" by its content: `isTransportStream`)
     ]
 
@@ -1826,6 +1846,9 @@ final class BrowserModel: ObservableObject {
         if imageExtensions.contains(ext) { return .image }
         if videoExtensions.contains(ext) { return .video }
         if ext == "ts" { return isTransportStream(url) ? .video : nil }
+        // PostScript, Illustrator, ZIP documents: by what their first bytes
+        // held, read by the listing off the main thread (no disk access here)
+        if EmbeddedPreview.extensions.contains(ext) { return EmbeddedPreview.isPicture(url, ext: ext) ? .image : nil }
         return ContentSniffer.shared.known(url)?.mediaKind
     }
 
@@ -1844,7 +1867,8 @@ final class BrowserModel: ObservableObject {
     /// JPEG named "IMG"), else its own.
     nonisolated static func shownExtension(of url: URL) -> String {
         let ext = DownloadName.finalExtension(of: url)
-        if imageExtensions.contains(ext) || videoExtensions.contains(ext) || ext == "ts" { return ext }
+        if imageExtensions.contains(ext) || videoExtensions.contains(ext) || ext == "ts"
+            || EmbeddedPreview.extensions.contains(ext) { return ext }
         return ContentSniffer.shared.known(url)?.fileExtension ?? ext
     }
 
@@ -2237,7 +2261,33 @@ final class BrowserModel: ObservableObject {
     /// says. Runs off the main thread; metadata is prefetched during
     /// enumeration (no extra round-trips).
     nonisolated static func scan(_ url: URL, kept: Set<String> = []) async -> [GridEntry] {
-        (try? await listing(url, kept: kept).get().entries) ?? []
+        guard let listing = try? await listing(url, kept: kept).get() else { return [] }
+        // The walks (slideshow, the Atlas's subfolders) take files shown by
+        // what their bytes hold at once: no listing is shown for them to sniff later
+        let candidates = listing.others.map(\.url).filter(isSniffedForWalks)
+        guard !candidates.isEmpty else { return listing.entries }
+        let found = await Blocking.run(.utility) { () -> [GridEntry] in
+            candidates.compactMap { file in
+                readForWalk(file)
+                return entry(for: file, keys: entryKeys)
+            }
+        }
+        return listing.entries + found
+    }
+
+    /// Files a walk reads the first bytes of itself (off the main thread):
+    /// those shown by what they hold (`EmbeddedPreview.extensions`), on disk.
+    nonisolated static func isSniffedForWalks(_ url: URL) -> Bool {
+        EmbeddedPreview.extensions.contains(DownloadName.finalExtension(of: url)) && !ArchivePath.isInside(url)
+    }
+
+    /// Reads such a file's first bytes, unless kept for its size and date
+    /// (`ContentSniffer`), so `mediaKind` knows it. Walks only: never on
+    /// the main thread.
+    nonisolated static func readForWalk(_ url: URL) {
+        assert(!Thread.isMainThread, "a walk's read on the main thread")
+        guard isSniffedForWalks(url) else { return }
+        ContentSniffer.shared.content(of: url)
     }
 
     /// What the grid shows of a folder, plus its other files, or why it
@@ -2469,7 +2519,10 @@ final class BrowserModel: ObservableObject {
     /// being greyed out alike: a picture or video file, or an archive
     /// (opened like a folder).
     nonisolated private static func isPreviewSource(_ url: URL) -> Bool {
-        (mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil) && isFile(url)
+        // (the walks run off the main thread: a file shown by what its bytes
+        // hold is read here, so a folder of Illustrator files gets its fan)
+        readForWalk(url)
+        return (mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil) && isFile(url)
     }
 
     /// How many pictures a folder tile fans out.
@@ -3177,6 +3230,9 @@ final class BrowserModel: ObservableObject {
                        (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
                         ArchivePath.noteFolder(url)
                     }
+                    // A file shown by what its bytes hold: read here (this
+                    // queue, not the main thread), for the results and the facts
+                    readForWalk(url)
                     if matcher.matches(url.lastPathComponent, stop: stop),
                        let match = entry(for: url, keys: keys) {
                         batch.entries.append(match)
@@ -5563,6 +5619,8 @@ final class BrowserModel: ObservableObject {
         let ext = DownloadName.finalExtension(of: new)
         if imageExtensions.contains(ext) { return kind == .image }
         if videoExtensions.contains(ext) { return kind == .video }
+        // Shown by their content (a PDF inside, a preview): only under their own extension
+        if EmbeddedPreview.extensions.contains(ext) { return kind == .image && ext == DownloadName.finalExtension(of: old) }
         return ext == DownloadName.finalExtension(of: old)
     }
 

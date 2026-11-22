@@ -1,14 +1,14 @@
 Schnellbild 是一款不必匯入的看圖軟體，也是影片播放器：打開檔案夾，瀏覽縮圖，放大檢視單張照片，用鍵盤翻頁。即使是大型檔案夾和網路共享，它也一樣快。
 
 圖片
-• JPEG、HEIC、AVIF、JPEG XL、PNG、GIF、WebP、TIFF、PSD、OpenEXR、SVG、PDF，以及 macOS 支援的相機所拍的 RAW 照片
+• JPEG、HEIC、AVIF、JPEG XL、PNG、GIF、WebP、TIFF、PSD、OpenEXR、SVG、PDF、Illustrator (AI)、EPS，以及 macOS 支援的相機所拍的 RAW 照片
 • 格狀、列表和完整檢視，幻燈片秀可播放所有子檔案夾
 • 幻燈片秀播放的內容就是播放列表：按 P 開啟，可調整順序、移出不需要的項目
 • 縮放、旋轉、自動增強（曝光、對比、飽和度、銳利度），僅用於檢視：你的檔案保持原樣
 • 檔案資訊，包括格式、編解碼器和位元率；檔案的副檔名和內容不符時會提醒你
 
 影片
-• MP4 和 MOV，還有 macOS 播不了的格式：MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片、AVCHD
+• MP4 和 MOV，還有 macOS 播不了的格式：MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片、AVCHD、RealMedia、MXF
 • 用方向鍵在影片中快速跳轉，就像翻看照片一樣
 
 照片在地圖和地球儀上

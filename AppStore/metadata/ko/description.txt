@@ -1,14 +1,14 @@
 Schnellbild는 가져오기 없이 쓰는 이미지 뷰어이자 동영상 플레이어입니다. 폴더를 열면 썸네일이 보이고, 사진 한 장을 크게 띄워 키보드로 넘겨 봅니다. 큰 폴더에서도, 네트워크 공유에서도 빠릅니다.
 
 사진
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, 그리고 macOS가 아는 카메라의 RAW 사진
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS, 그리고 macOS가 아는 카메라의 RAW 사진
 • 그리드, 목록, 크게 보기, 모든 하위 폴더를 도는 슬라이드쇼
 • 슬라이드쇼가 재생하는 것이 곧 재생 목록: P로 열어 순서를 바꾸거나 필요 없는 항목 빼기
 • 확대, 회전, 자동 보정(노출, 대비, 채도, 선명도), 보기에만 적용: 파일은 그대로입니다
 • 형식, 코덱, 비트레이트를 보여 주는 파일 정보, 확장자가 내용과 맞지 않으면 알림
 
 동영상
-• MP4와 MOV, 그리고 macOS가 재생하지 못하는 형식: MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오, AVCHD
+• MP4와 MOV, 그리고 macOS가 재생하지 못하는 형식: MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오, AVCHD, RealMedia, MXF
 • 사진을 넘기듯 화살표 키로 동영상을 훑어보기
 
 지도와 지구본 위의 내 사진

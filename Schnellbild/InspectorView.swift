@@ -363,7 +363,12 @@ struct InspectorView: View {
                         return (nil, nil, created)
                     }
                     let shown = "\(Int(max(0, min(size.width, 1e15)))) × \(Int(max(0, min(size.height, 1e15)))) px"
-                    return (MediaReport(media: [InfoRow(label: String(localized: "Resolution"), value: shown)]), nil, created)
+                    // An Illustrator file shown by the picture it carries says so
+                    var facts: FileFacts?
+                    if PDFPages.isPDF(url), BrowserModel.shownExtension(of: url) == "ai", await PDFPages.open(url)?.isPreview == true {
+                        facts = FileFacts(format: FileFacts.previewFormat(of: url))
+                    }
+                    return (MediaReport(media: [InfoRow(label: String(localized: "Resolution"), value: shown)]), facts, created)
                 }
                 guard let source = await MediaData.imageSource(url) else { return (nil, nil, created) }
                 return (await adopting(PictureMetadata.report(source)), FileFacts.picture(source, named: url), created)

@@ -32,11 +32,28 @@ struct FileFacts: Equatable, Sendable {
         // Models often name their make already ("Canon EOS R6")
         let camera = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
         facts.camera = camera.isEmpty ? nil : camera
-        if let identifier = CGImageSourceGetType(source) as String?, let type = UTType(identifier) {
+        if EmbeddedPreview.isPreview(url) {
+            // The picture shown is the one the file carries: the file's own
+            // format, and no other extension to recommend
+            facts.format = previewFormat(of: url)
+            facts.camera = nil
+        } else if let identifier = CGImageSourceGetType(source) as String?, let type = UTType(identifier) {
             facts.format = type.localizedDescription
             facts.recommendedExtension = recommendedExtension(for: DownloadName.finalExtension(of: url), content: type)
         }
         return facts
+    }
+
+    /// "Encapsulated PostScript, embedded preview": the format its name
+    /// says, and that what is shown is the preview it carries.
+    static func previewFormat(of url: URL) -> String {
+        String(localized: "\(formatName(ofExtension: DownloadName.finalExtension(of: url))), embedded preview")
+    }
+
+    /// The system's name of the format an extension names ("Encapsulated
+    /// PostScript"), else the extension in capitals.
+    static func formatName(ofExtension ext: String) -> String {
+        UTType(filenameExtension: ext).flatMap { $0.isDynamic ? nil : $0.localizedDescription } ?? ext.uppercased()
     }
 
     /// The extension for a picture whose content is `content` but whose
@@ -57,6 +74,13 @@ struct FileFacts: Equatable, Sendable {
             "public.heic": ["heif", "hif"],
             "public.heif": ["heic", "hif"],
             "public.heics": ["heic", "heif"],
+            "public.avif": ["avifs"],
+            "public.avis": ["avifs", "avif"],
+            "public.png": ["apng"],
+            "public.pbm": ["pnm"],
+            "public.jpeg-2000": ["j2c", "jpf", "jpx", "j2k"],
+            "com.adobe.photoshop-image": ["psb"],
+            "org.nema.dicom": ["dcm", "dicom"],
         ]
         if alike[content.identifier]?.contains(ext) == true { return nil }
         return content.preferredFilenameExtension ?? extensions.first
@@ -83,16 +107,22 @@ struct FileFacts: Equatable, Sendable {
         case "ts":
             // 192-byte packets (a time code before each): Blu-ray / AVCHD
             let timecoded = head.count > 4 && head[head.startIndex + 4] == 0x47 && head.first != 0x47
-            return Container(name: "MPEG-TS", extensions: timecoded ? ["m2ts", "mts", "ts"] : ["ts", "m2ts", "mts"])
+            return Container(name: "MPEG-TS", extensions: timecoded ? ["m2ts", "mts", "ts"] : ["ts", "m2ts", "mts", "m2t"])
         case "mp4":
             let quickTime = b.count >= 12 && String(decoding: b[8..<12], as: UTF8.self) == "qt  "
             return Container(name: quickTime ? "QuickTime" : "MPEG-4",
-                             extensions: quickTime ? ["mov", "qt", "mp4", "m4v"] : ["mp4", "m4v", "mov", "qt", "3gp", "3g2"])
-        case "avi":      return Container(name: "AVI", extensions: ["avi"])
+                             extensions: quickTime ? ["mov", "qt", "mp4", "m4v"] : ["mp4", "m4v", "mov", "qt", "3gp", "3g2", "insv", "360"])
+        case "avi":      return Container(name: "AVI", extensions: ["avi", "divx"])
         case "ps":       return Container(name: "MPEG-PS", extensions: ["mpg", "mpeg", "vob"])
         case "asf":      return Container(name: "ASF / WMV", extensions: ["wmv", "asf"])
-        case "avformat": return Container(name: "FLV", extensions: ["flv"])
-        case "ogg":      return Container(name: "Ogg", extensions: ["ogv", "ogg"])
+        case "ogg":      return Container(name: "Ogg", extensions: ["ogv", "ogg", "ogm"])
+        case "avformat":
+            switch reader.ffmpegFormat {
+            case "rm":  return Container(name: "RealMedia", extensions: ["rm", "rmvb"])
+            case "mov": return Container(name: "F4V", extensions: ["f4v"])
+            case "mxf": return Container(name: "MXF", extensions: ["mxf"])
+            default:    return Container(name: "FLV", extensions: ["flv"])
+            }
         default:         return nil
         }
     }
@@ -379,7 +409,13 @@ final class ContentSniffer: @unchecked Sendable {
         let stamp = "\(info.st_size) \(info.st_mtimespec.tv_sec).\(info.st_mtimespec.tv_nsec)"
         let path = BrowserModel.canonicalPath(url)
         if let answer = lock.withLock({ answers[path] }), answer.stamp == stamp { return answer.content }
-        let content = VLCSafety.head(of: url).flatMap(FileFacts.content(in:))
+        // PostScript, Illustrator files and ZIP documents: a picture when
+        // their bytes hold one the app shows (`EmbeddedPreview`), never an
+        // archive (a Krita file is a ZIP)
+        let ext = DownloadName.finalExtension(of: url)
+        let content = EmbeddedPreview.extensions.contains(ext)
+            ? EmbeddedPreview.content(of: url, ext: ext, size: Int(info.st_size))
+            : VLCSafety.head(of: url).flatMap(FileFacts.content(in:))
         lock.withLock {
             if answers.count >= limit {
                 // The archives found stay: one may be open, its paths go through `ArchivePath`
@@ -411,13 +447,17 @@ final class ContentSniffer: @unchecked Sendable {
 
     /// Names whose content is worth a look: no extension, one that names
     /// nothing the system knows ("x.xyz"; "x.part" of a file without one),
-    /// or a catch-all ("x.bin", "x.dat"). Never a later volume of a split
+    /// a catch-all ("x.bin", "x.dat"), or a format shown by what its bytes
+    /// hold (PostScript, Illustrator, ZIP documents: `EmbeddedPreview`).
+    /// Never a later volume of a split
     /// archive ("x.r00", "x.z01" start like archives of their own).
     static func isUnknown(_ name: String) -> Bool {
         guard !name.hasPrefix(".") else { return false }
         let final = DownloadName.finalName(of: name)
         let ext = (final as NSString).pathExtension.lowercased()
         if ext.isEmpty { return true }
+        // PostScript, Illustrator files, ZIP documents: pictures by their content
+        if EmbeddedPreview.extensions.contains(ext) { return true }
         if BrowserModel.imageExtensions.contains(ext) || BrowserModel.videoExtensions.contains(ext) || ext == "ts" { return false }
         if ArchiveName.format(of: name) != nil || !ArchiveName.firstVolumeNames(of: final).isEmpty { return false }
         if ["bin", "dat", "data", "tmp", "temp", "file", "unknown"].contains(ext) { return true }

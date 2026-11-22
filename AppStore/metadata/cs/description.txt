@@ -1,14 +1,14 @@
 Schnellbild zobrazuje obrázky a videa, aniž byste cokoli importovali: otevřete složku, prohlédněte si náhledy, podívejte se na obrázek ve velkém a listujte klávesnicí. Tento prohlížeč fotek zůstává rychlý i u velkých složek a na síťových discích.
 
 OBRÁZKY A FOTKY
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF a RAW fotky z fotoaparátů, které macOS zná
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS a RAW fotky z fotoaparátů, které macOS zná
 • Mřížka, seznam a plné zobrazení, prezentace přes všechny podsložky
 • Co prezentace přehrává, to je playlist: P ho otevře, abyste změnili pořadí a vyřadili, co tam být nemá
 • Zvětšení, otočení, automatické vylepšení (expozice, kontrast, sytost, ostrost), jen pro prohlížení: soubory zůstanou, jak jsou
 • Informace o souboru s formátem, kodeky a datovým tokem; upozornění, když přípona souboru neodpovídá jeho obsahu
 
 VIDEA
-• MP4 a MOV a k tomu formáty, které macOS neumí přehrát: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
+• MP4 a MOV a k tomu formáty, které macOS neumí přehrát: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD, RealMedia, MXF
 • Procházení videí šipkami, stejně jako listujete fotkami
 
 VAŠE FOTKY NA MAPĚ A NA GLÓBU
