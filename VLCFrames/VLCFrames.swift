@@ -2,6 +2,7 @@
 // libVLC's video callbacks, one frame of a video for a thumbnail, and what VLC
 // may do with a file someone else made.
 import AppKit
+import CoreImage
 import VLCKit
 
 /// libVLC's video callback functions, looked up in VLCKit at run time.
@@ -109,11 +110,6 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
     /// VLC scaled the visible part into it, and the picture is brought to
     /// the visible shape once VLC states it.
     private var sizeFromBuffer = false
-    /// The decoder's pictures have more than 8 bits per sample
-    /// (`LibVLCVideo.isDeep`): HDR, or SDR when VLC says so.
-    private var deep = false
-    /// More than 576 visible rows: BT.709's colours, else BT.601's.
-    private var hd = false
 
     private var finished = false
 
@@ -219,12 +215,14 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         }
     }
 
-    /// RGBA at the wanted width, the height by the picture's visible shape:
-    /// VLC's size here is the decoder's buffer, often padded (240 rows decode
-    /// into 256), and VLC scales the visible part to the size set here; so
-    /// the track's visible size (its pixels made square) decides, the
-    /// buffer's only while it isn't known. The source's chroma and visible
-    /// height decide the colours it is shown with (`pictureDone`).
+    /// The wanted width, the height by the picture's visible shape: VLC's
+    /// size here is the decoder's buffer, often padded (240 rows decode into
+    /// 256), and VLC scales the visible part to the size set here; so the
+    /// track's visible size (its pixels made square) decides, the buffer's
+    /// only while it isn't known. An 8-bit source comes as NV12, the form
+    /// `VLCFrameOutput` hands to the full view (full range for VLC's
+    /// JPEG-style chromas, BT.709 by the visible height as it decides:
+    /// `pictureDone`), a deeper one (HDR) as VLC's RGBA.
     private func setUp(chroma: UnsafeMutablePointer<CChar>, width: UnsafeMutablePointer<UInt32>,
                        height: UnsafeMutablePointer<UInt32>, pitches: UnsafeMutablePointer<UInt32>,
                        lines: UnsafeMutablePointer<UInt32>) -> UInt32 {
@@ -248,21 +246,40 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
             let aspect = track.sampleAspect.isFinite && track.sampleAspect > 0 ? min(max(track.sampleAspect, 0.25), 4) : 1
             shape = (Double(track.width) * aspect, Double(track.height))
         }
-        let w = min(wantedWidth, 4096)
-        let h = max(2, min(4096, Int((shape.height * Double(w) / shape.width).rounded())))
-        for (i, c) in "RGBA".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
+        let format: Format = LibVLCVideo.isDeep(chroma: source)
+            ? .rgba
+            : .nv12(fullRange: source.hasPrefix("J"), hd: VideoColour.isHD(visibleHeight: visibleHeight))
+        var w = min(wantedWidth, 4096)
+        var h = max(2, min(4096, Int((shape.height * Double(w) / shape.width).rounded())))
+        let pitch: Int, bytes: Int
+        switch format {
+        case .rgba:
+            pitch = w * 4
+            bytes = pitch * h
+            pitches[0] = UInt32(pitch)
+            lines[0] = UInt32(h)
+        case .nv12:
+            // Even sides (colour at half the resolution), rows of whole 64 bytes
+            w += w % 2
+            h += h % 2
+            pitch = (w + 63) & ~63
+            bytes = pitch * h * 3 / 2
+            pitches[0] = UInt32(pitch)
+            pitches[1] = UInt32(pitch)
+            lines[0] = UInt32(h)
+            lines[1] = UInt32(h / 2)
+        }
+        for (i, c) in format.chroma.utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
         width.pointee = UInt32(w)
         height.pointee = UInt32(h)
-        pitches[0] = UInt32(w * 4)
-        lines[0] = UInt32(h)
         lock.lock()
         defer { lock.unlock() }
         pixels?.deallocate()
-        pixels = UnsafeMutableRawPointer.allocate(byteCount: w * 4 * h, alignment: 16)
+        pixels = UnsafeMutableRawPointer.allocate(byteCount: bytes, alignment: 64)
         size = (w, h)
+        self.pitch = pitch
+        self.format = format
         sizeFromBuffer = track == nil
-        deep = LibVLCVideo.isDeep(chroma: source)
-        hd = VideoColour.isHD(visibleHeight: visibleHeight)
         _ = Unmanaged.passUnretained(self).retain()
         return 1
     }
@@ -271,54 +288,106 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         lock.lock()
         defer { lock.unlock() }
         planes?.pointee = pixels
+        if case .nv12 = format { planes?.advanced(by: 1).pointee = pixels.map { $0 + pitch * size.height } }
         return nil
     }
 
     /// The first picture shown is the frame, in the colours the full view
-    /// shows: VLC's RGB is the video's own, which `VLCFrameOutput` hands to
-    /// the screen tagged with the video's colours (`VideoColour`), so it is
-    /// converted to sRGB from the colour space those make. An HDR picture
-    /// (and one of more than 8 bits whose colours VLC doesn't state) is
-    /// taken as VLC's RGB is.
+    /// shows: an SDR picture as NV12 tagged as `VLCFrameOutput` tags its
+    /// own (`VideoColour.attachSDR`) and made sRGB by Core Image, as the
+    /// screen shows those; an HDR one as VLC's RGBA.
     private func pictureDone() {
         lock.lock()
-        let image = finished ? nil : makeImage()
-        let fromBuffer = sizeFromBuffer, media = self.media, deep = self.deep, hd = self.hd
+        let picture = finished ? nil : copyPicture()
+        let fromBuffer = sizeFromBuffer, media = self.media
         lock.unlock()
-        guard let image else { return }
+        guard let image = picture.flatMap(Self.image(of:)) else { return }
         // Made at the buffer's shape: brought to the visible one VLC states by now
-        var visible: (width: Int, height: Int)?
         if fromBuffer, let media, let resolution = LibVLCVideo.resolution(of: media),
            let buffer = resolution.buffer, buffer != resolution.visible {
-            visible = resolution.visible
+            return finish(with: .frame(Self.reshaped(image, visible: resolution.visible)))
         }
-        let sdr = !deep || media.flatMap(LibVLCVideo.colour(of:)).map { !$0.isHDR } == true
-        finish(with: .frame(Self.shown(image, in: sdr ? VideoColour.sdrColourSpace(hd: hd) : nil, visible: visible)))
+        finish(with: .frame(image))
     }
 
-    /// The picture in sRGB from `colourSpace` (nil: as it is), at the
-    /// wanted width with the visible size's shape (nil: as it is).
-    private static func shown(_ picture: CGImage, in colourSpace: CGColorSpace?, visible: (width: Int, height: Int)?) -> CGImage {
+    /// The picture at the wanted width with the visible size's shape.
+    private static func reshaped(_ picture: CGImage, visible: (width: Int, height: Int)) -> CGImage {
         let w = picture.width
-        let h = visible.map { max(2, Int((Double($0.height) * Double(w) / Double($0.width)).rounded())) } ?? picture.height
-        guard colourSpace != nil || h != picture.height,
+        let h = max(2, Int((Double(visible.height) * Double(w) / Double(visible.width)).rounded()))
+        guard h != picture.height,
               let context = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
                                       space: CGColorSpace(name: CGColorSpace.sRGB)!,
                                       bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else { return picture }
         context.interpolationQuality = .high
-        context.draw(colourSpace.flatMap(picture.copy(colorSpace:)) ?? picture, in: CGRect(x: 0, y: 0, width: w, height: h))
+        context.draw(picture, in: CGRect(x: 0, y: 0, width: w, height: h))
         return context.makeImage() ?? picture
     }
 
+    /// The form VLC hands its picture over in.
+    private enum Format {
+        case rgba
+        case nv12(fullRange: Bool, hd: Bool)
+
+        var chroma: String {
+            if case .rgba = self { return "RGBA" }
+            return "NV12"
+        }
+    }
+    private var format = Format.rgba
+    /// The bytes from one row to the next (NV12: both planes).
+    private var pitch = 0
+
+    /// A copy of the picture VLC wrote (`lock` held).
+    private enum Picture {
+        case rgba(CGImage)
+        case nv12(CVPixelBuffer)
+    }
+
     /// (`lock` held)
-    private func makeImage() -> CGImage? {
+    private func copyPicture() -> Picture? {
         guard let pixels, size.width > 0 else { return nil }
-        let data = Data(bytes: pixels, count: size.width * 4 * size.height)
-        guard let provider = CGDataProvider(data: data as CFData) else { return nil }
-        return CGImage(width: size.width, height: size.height, bitsPerComponent: 8, bitsPerPixel: 32,
-                       bytesPerRow: size.width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                       bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue),
-                       provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+        switch format {
+        case .rgba:
+            let data = Data(bytes: pixels, count: size.width * 4 * size.height)
+            guard let provider = CGDataProvider(data: data as CFData),
+                  let image = CGImage(width: size.width, height: size.height, bitsPerComponent: 8, bitsPerPixel: 32,
+                                      bytesPerRow: size.width * 4, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                      bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue),
+                                      provider: provider, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+            else { return nil }
+            return .rgba(image)
+        case .nv12(let fullRange, let hd):
+            var made: CVPixelBuffer?
+            CVPixelBufferCreate(nil, size.width, size.height,
+                                fullRange ? kCVPixelFormatType_420YpCbCr8BiPlanarFullRange : kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+                                nil, &made)
+            guard let buffer = made else { return nil }
+            CVPixelBufferLockBaseAddress(buffer, [])
+            for plane in 0..<2 {
+                guard let target = CVPixelBufferGetBaseAddressOfPlane(buffer, plane) else { continue }
+                let rows = CVPixelBufferGetHeightOfPlane(buffer, plane), row = CVPixelBufferGetBytesPerRowOfPlane(buffer, plane)
+                let from = pixels + plane * pitch * size.height
+                for y in 0..<rows { (target + y * row).copyMemory(from: from + y * pitch, byteCount: min(row, pitch, size.width)) }
+            }
+            CVPixelBufferUnlockBaseAddress(buffer, [])
+            VideoColour.attachSDR(to: buffer, hd: hd)
+            return .nv12(buffer)
+        }
+    }
+
+    /// Core Image for the NV12 pictures: it reads their matrix, range and
+    /// colours from their attachments, as the screen does.
+    private static let context = CIContext(options: [.workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                                     .cacheIntermediates: false])
+
+    private static func image(of picture: Picture) -> CGImage? {
+        switch picture {
+        case .rgba(let image):
+            return image
+        case .nv12(let buffer):
+            let image = CIImage(cvPixelBuffer: buffer)
+            return context.createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)
+        }
     }
 
     /// Answers once, then stops the player on the grab's queue (waiting

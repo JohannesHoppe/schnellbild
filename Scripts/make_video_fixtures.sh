@@ -136,14 +136,16 @@ draw_visual() {
   # The tiles' colours against the full view's with the colours stated:
   # HD BT.709 (1152 × 720, each pixel three times) and SD BT.601, each as
   # Matroska (VLC) and MP4 (AVFoundation); stated on the pictures
-  # (setparams), as the PNGs' own sRGB would otherwise be written
+  # (setparams), as the PNGs' own sRGB would otherwise be written. The MP4s
+  # are keyframes only: QuickLook on CI's virtual Macs (macOS 15 and 26)
+  # drew the frame it took from a group of 12 with the bars' right half
+  # green, a Mac with a GPU the same file right
   local hd709=(-vf "scale=1152:720:flags=neighbor:out_color_matrix=bt709:out_range=tv,format=yuv420p,setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709")
   local sd601=(-vf "scale=out_color_matrix=bt601:out_range=tv,format=yuv420p,setparams=range=tv:color_primaries=smpte170m:color_trc=smpte170m:colorspace=smpte170m")
-  local ext
-  for ext in mkv mp4; do
-    visual "bt709.$ext" "${hd709[@]}" -c:v libx264 -crf 18
-    visual "bt601.$ext" "${sd601[@]}" -c:v libx264 -crf 18
-  done
+  visual bt709.mkv "${hd709[@]}" -c:v libx264 -crf 18
+  visual bt601.mkv "${sd601[@]}" -c:v libx264 -crf 18
+  visual bt709.mp4 "${hd709[@]}" -c:v libx264 -crf 18 -g 1
+  visual bt601.mp4 "${sd601[@]}" -c:v libx264 -crf 18 -g 1
   # Pictures ImageIO reads but doesn't write: an AVIF sequence (AV1, its
   # frames at 10 per second) and AVC in HEIF (the first frame, wrapped by
   # Scripts/make_avci.py), both BT.709 limited range with sRGB's transfer, as stated
