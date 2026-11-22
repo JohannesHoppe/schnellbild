@@ -111,9 +111,12 @@ let package = Package(
         // Camera RAW formats ImageIO doesn't read: LibRaw's source as LibRaw
         // LLC publishes it (Scripts/fetch_libraw.sh vendors it;
         // Native/CRaw/libraw points there), unchanged, behind a small C face.
-        // Built thread-safe (no LIBRAW_NOTHREADS); zlib from the SDK for
-        // deflate-compressed DNG; no libjpeg, LCMS, RawSpeed, DNG SDK or X3F
-        // (USE_X3FTOOLS stays off: Sigma's X3F decoder is left out).
+        // Built thread-safe (no LIBRAW_NOTHREADS), with no library of its
+        // own: no zlib (USE_ZLIB off: VLCKit exports zlib's names, and the
+        // app's executable may take nothing but VLC's from it, see
+        // build_app.sh; deflate-compressed DNGs stay ImageIO's), libjpeg,
+        // LCMS, RawSpeed, DNG SDK or X3F (USE_X3FTOOLS off: Sigma's X3F
+        // decoder is left out).
         .target(
             name: "CRaw",
             path: "Native/CRaw",
@@ -121,12 +124,10 @@ let package = Package(
             publicHeadersPath: "include",
             cxxSettings: [
                 .headerSearchPath("libraw"),
-                .define("USE_ZLIB"),
                 .define("LIBRAW_MAX_ALLOC_MB_DEFAULT", to: "1024L"),
                 .define("LIBRAW_MAX_THUMBNAIL_MB", to: "64L"),
                 .unsafeFlags(["-w"])
-            ],
-            linkerSettings: [.linkedLibrary("z")]
+            ]
         ),
         // Official VideoLAN VLCKit, vendored locally — fetch it first with
         // Scripts/fetch_vlckit.sh. The xcframework is gitignored (large binary).

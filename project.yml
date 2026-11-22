@@ -186,7 +186,7 @@ targets:
           - src/write/apply_profile.cpp
     settings:
       base:
-        GCC_PREPROCESSOR_DEFINITIONS: ["USE_ZLIB", "LIBRAW_MAX_ALLOC_MB_DEFAULT=1024L", "LIBRAW_MAX_THUMBNAIL_MB=64L"]
+        GCC_PREPROCESSOR_DEFINITIONS: ["LIBRAW_MAX_ALLOC_MB_DEFAULT=1024L", "LIBRAW_MAX_THUMBNAIL_MB=64L"]
         CLANG_CXX_LANGUAGE_STANDARD: c++17
         GCC_WARN_INHIBIT_ALL_WARNINGS: YES
         HEADER_SEARCH_PATHS: ["$(SRCROOT)/Native/CRaw", "$(SRCROOT)/Vendor/libraw"]
@@ -277,7 +277,7 @@ targets:
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
         INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License."
         SWIFT_INCLUDE_PATHS: ["$(SRCROOT)/Native/CArchives/include", "$(SRCROOT)/Native/CRaw/include"]
-        OTHER_LDFLAGS: ["-lc++", "-lz"]
+        OTHER_LDFLAGS: ["-lc++"]
     dependencies:
       - target: CArchives
       - target: CRaw
