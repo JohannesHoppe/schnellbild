@@ -26,22 +26,31 @@ final class TooltipUITests: SchnellbildUITestCase {
             return
         }
         let tags = app.descendants(matching: .helpTag)
-        // Off the window, until the tooltip shown before is gone (on macOS 15
-        // one stayed for more than 5 s once)
+        // Off the window, until the tooltip shown before is gone; on macOS 15
+        // one now and then stayed for more than 15 s, so a tooltip counts only
+        // where none stood before the pointer came (its frame is new)
         for y in [0.5, 0.3, 0.7] {
             app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: -0.02, dy: y)).hover()
             let gone = Date().addingTimeInterval(5)
             while tags.firstMatch.exists, Date() < gone { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
             if !tags.firstMatch.exists { break }
         }
-        XCTAssertFalse(tags.firstMatch.exists, "the tooltip before \(name) is gone")
+        let before = Set(tags.allElementsBoundByIndex.map { NSStringFromRect($0.frame) })
+        func shown(within seconds: TimeInterval) -> Bool {
+            let until = Date().addingTimeInterval(seconds)
+            repeat {
+                if tags.allElementsBoundByIndex.contains(where: { !before.contains(NSStringFromRect($0.frame)) }) { return true }
+                RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+            } while Date() < until
+            return false
+        }
         element.hover()
-        if tags.firstMatch.waitForExistence(timeout: 6) { return }
+        if shown(within: 6) { return }
         // The pointer moved on a little inside it, as a hand does (a
         // tooltip that didn't show on the way in from a neighbour's)
         for x in [0.35, 0.65] {
             element.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0.5)).hover()
-            if tags.firstMatch.waitForExistence(timeout: 6) {
+            if shown(within: 6) {
                 print("tooltip of \(name) after moving inside it")
                 return
             }
