@@ -272,7 +272,7 @@ final class PictureDecoderTests: XCTestCase {
             var d = Data("qoif".utf8)
             for v in [width, height] { d.append(contentsOf: [UInt8(v >> 24), UInt8(v >> 16 & 0xFF), UInt8(v >> 8 & 0xFF), UInt8(v & 0xFF)]) }
             d.append(contentsOf: [channels, colorspace])
-            return d + Data([0xFE, 1, 2, 3, 0xC0 | 61]) + Data([0, 0, 0, 0, 0, 0, 0, 1])
+            return d + Data([0xFE, 1, 2, 3, 0xFD, 0, 0, 0, 0, 0, 0, 0, 1])   // RGB, a run of 62, the end
         }
         XCTAssertNil(QOIDecoder.decode(qoiHeader(width: 0xFFFF_FFFF, height: 0xFFFF_FFFF)))
         XCTAssertNil(QOIDecoder.decode(qoiHeader(width: 9000, height: 9000)), "81 Mpx: beyond the limit")
