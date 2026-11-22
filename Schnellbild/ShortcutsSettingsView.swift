@@ -47,12 +47,12 @@ struct ShortcutsSettingsView: View {
                 }
                 .pickerStyle(.segmented)
                 .fixedSize()
-                .help("Schnellbild's keys, or Phiewer's where they differ")
+                .toolTip(String(localized: "Schnellbild's keys, or Phiewer's where they differ"))
                 .accessibilityIdentifier("shortcuts.preset")
                 Spacer()
                 Button("Reset All") { stopRecording(); shortcuts.resetAll() }
                     .disabled(!shortcuts.hasChanges)
-                    .help("Every action back to the preset's keys")
+                    .toolTip(String(localized: "Every action back to the preset's keys"))
                     .accessibilityIdentifier("shortcuts.resetAll")
             }
             Text("Click a key to type a new one, + adds one more. Keys with ⌘ or ⌃ also show in the menus.")
@@ -61,12 +61,12 @@ struct ShortcutsSettingsView: View {
                 .fixedSize(horizontal: false, vertical: true)
             TextField("Search actions or keys, such as “rename” or “⌘R”", text: $search)
                 .textFieldStyle(.roundedBorder)
-                .help("Finds actions by their names or by their keys")
+                .toolTip(String(localized: "Finds actions by their names or by their keys"))
                 .accessibilityIdentifier("shortcuts.search")
             HStack {
                 Toggle("Only actions whose keys differ from Schnellbild's", isOn: $onlyDiffering)
                     .disabled(differing == 0)
-                    .help("Lists only the actions with keys of their own or Phiewer's")
+                    .toolTip(String(localized: "Lists only the actions with keys of their own or Phiewer's"))
                     .accessibilityIdentifier("shortcuts.onlyDiffering")
                 Spacer()
                 Text(String(localized: "Keys other than Schnellbild's: \(differing)"))
@@ -153,25 +153,25 @@ struct ShortcutsSettingsView: View {
                     if let old = recording?.replacing {
                         Button { stopRecording(); shortcuts.remove(old, from: action) } label: { Image(systemName: "trash") }
                             .buttonStyle(.borderless)
-                            .help("Remove this key")
+                            .toolTip(String(localized: "Remove this key"))
                             .accessibilityLabel("Remove Key")
                             .accessibilityIdentifier("shortcut.\(action.rawValue).remove")
                     }
                     Button { stopRecording() } label: { Image(systemName: "xmark.circle") }
                         .buttonStyle(.borderless)
-                        .help("Stop: keep the keys as they are")
+                        .toolTip(String(localized: "Stop: keep the keys as they are"))
                         .accessibilityLabel("Cancel")
                         .accessibilityIdentifier("shortcut.\(action.rawValue).cancel")
                 } else {
                     Button { startRecording(Recording(action: action, replacing: nil)) } label: { Image(systemName: "plus") }
                         .buttonStyle(.borderless)
-                        .help("Add a key")
+                        .toolTip(String(localized: "Add a key"))
                         .accessibilityLabel("Add a key")
                         .accessibilityIdentifier("shortcut.\(action.rawValue).add")
                 }
                 Button { stopRecording(); shortcuts.reset(action) } label: { Image(systemName: "arrow.uturn.backward") }
                     .buttonStyle(.borderless)
-                    .help("Reset to the preset's keys")
+                    .toolTip(String(localized: "Reset to the preset's keys"))
                     .accessibilityLabel("Reset to the preset's keys")
                     .accessibilityIdentifier("shortcut.\(action.rawValue).reset")
                     .opacity(changed ? 1 : 0)
@@ -240,7 +240,7 @@ struct ShortcutsSettingsView: View {
                         .fixedSize()
                 }
                 .buttonStyle(.plain)
-                .help("Click to type another key; right-click to remove it")
+                .toolTip(String(localized: "Click to type another key; right-click to remove it"))
                 .accessibilityLabel(Text(verbatim: chord.text))
                 .accessibilityIdentifier("shortcut.\(action.rawValue).\(index)")
                 .contextMenu {

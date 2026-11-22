@@ -49,14 +49,14 @@ struct GeneralSettingsView: View {
                     Text("Light").tag(AppAppearance.light)
                     Text("Dark").tag(AppAppearance.dark)
                 }
-                .help("Light or dark, or as macOS is set")
+                .toolTip(String(localized: "Light or dark, or as macOS is set"))
                 .accessibilityIdentifier("settings.appearance")
                 .onChange(of: appearance) { _, chosen in AppAppearance.choose(chosen) }
             }
             Section {
                 Toggle("Show hidden files and folders",
                        isOn: Binding(get: { window.showHiddenFiles }, set: { window.showHiddenFiles = $0 }))
-                    .help(Shortcuts.shared.tip(String(localized: "Hidden files and folders in every window"), .hiddenFiles))
+                    .toolTip(Shortcuts.shared.tip(String(localized: "Hidden files and folders in every window"), .hiddenFiles))
                     .accessibilityIdentifier("settings.showHiddenFiles")
                 Text("Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild.")
                     .font(.callout)
@@ -67,7 +67,7 @@ struct GeneralSettingsView: View {
                         in: BrowserModel.slideshowSecondsRange) {
                     LabeledContent("Each picture stays", value: String(localized: "\(window.slideshowSeconds) s"))
                 }
-                .help("How long each picture shows in the slideshow, 1 to 60 seconds")
+                .toolTip(String(localized: "How long each picture shows in the slideshow, 1 to 60 seconds"))
                 .accessibilityIdentifier("settings.slideshowSeconds")
                 Text("Videos play to their end.")
                     .font(.callout)
@@ -78,7 +78,7 @@ struct GeneralSettingsView: View {
                                value: formatsOn.map { $0 ? String(localized: "On") : String(localized: "Off") } ?? String(localized: "Checking…"))
                     .accessibilityIdentifier("settings.formatsStatus")
                 Button("Open System Settings…") { MediaFormats.openSystemSettings() }
-                    .help("Opens Media Extensions in System Settings, where Schnellbild Video Formats is turned on")
+                    .toolTip(String(localized: "Opens Media Extensions in System Settings, where Schnellbild Video Formats is turned on"))
                 Text("Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -88,7 +88,7 @@ struct GeneralSettingsView: View {
                     LabeledContent("Folders opened to Schnellbild", value: "\(grantedFolders)")
                     Button("Forget Folder Access…") { forgettingAccess = true }
                         .disabled(grantedFolders == 0)
-                        .help("Schnellbild asks again before it shows those folders")
+                        .toolTip(String(localized: "Schnellbild asks again before it shows those folders"))
                     Text("Schnellbild may show only the folders you choose or drop on its window, with everything inside them.")
                         .font(.callout)
                         .foregroundStyle(.secondary)
@@ -98,7 +98,7 @@ struct GeneralSettingsView: View {
                 LabeledContent("Saved passwords", value: "\(savedPasswords)")
                 Button("Forget Saved Passwords…") { confirming = true }
                     .disabled(savedPasswords == 0)
-                    .help("Removes the saved passwords from your keychain")
+                    .toolTip(String(localized: "Removes the saved passwords from your keychain"))
                     .accessibilityIdentifier("settings.forgetPasswords")
                 Text("Passwords that opened an archive are kept in your keychain, so the archive opens without asking.")
                     .font(.callout)

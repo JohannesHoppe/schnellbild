@@ -360,7 +360,7 @@ struct ThumbnailView: View {
         } else if failed {
             Image(systemName: "exclamationmark.triangle")
                 .foregroundStyle(.secondary)
-                .help("This picture can't be shown")
+                .toolTip(String(localized: "This picture can't be shown"))
         } else {
             ProgressView()
                 .controlSize(.small)
@@ -447,7 +447,7 @@ struct DownloadBadge: View {
             .symbolRenderingMode(.palette)
             .foregroundStyle(.white, .black.opacity(0.5))
             .font(.system(size: size))
-            .help(note)
+            .toolTip(note)
             .accessibilityHidden(true)
     }
 }

@@ -108,7 +108,7 @@ struct EntryListView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help(Shortcuts.shared.tip(String(localized: "Sort by this column; a second click reverses the order"),
+        .toolTip(Shortcuts.shared.tip(String(localized: "Sort by this column; a second click reverses the order"),
                                    ShortcutAction.sorts[BrowserModel.SortKey.allCases.firstIndex(of: key) ?? 0]))
         .accessibilityIdentifier("column.\(key.rawValue)")
         .accessibilityValue(model.sortKey == key ? (model.sortAscending ? String(localized: "ascending") : String(localized: "descending")) : "")
@@ -135,7 +135,7 @@ struct EntryListView: View {
                         if let note = entry.unfinishedNote {
                             Image(systemName: "arrow.down.circle")
                                 .foregroundStyle(cursor ? Color.white : Color.secondary)
-                                .help(note)
+                                .toolTip(note)
                                 .accessibilityHidden(true)
                         }
                     }
@@ -209,7 +209,7 @@ struct EntryListView: View {
         Text(text)
             .lineLimit(1)
             .truncationMode(.tail)
-            .help(text)
+            .toolTip(text)
             .frame(width: width, alignment: .leading)
     }
 

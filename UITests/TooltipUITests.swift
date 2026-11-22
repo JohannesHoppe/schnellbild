@@ -1,65 +1,116 @@
 import XCTest
 import AppKit
 
-/// Probe: what XCUITest sees of a tooltip (help tags, attributes) after
-/// resting the pointer on a control, with a picture of each.
+/// Every button of the main window shows a tooltip when the pointer rests
+/// on it: the toolbar, the search bar, the status bar, the list's headers,
+/// the full view, the Inspector, the Atlas with its map, the video control
+/// bar and the mini keyboard. XCUITest reads no control's tooltip text (no
+/// such attribute), but the tooltip macOS shows is an element of its own
+/// (a help tag): each control is hovered and the help tag must appear. The
+/// texts and their keys are the code's (`Shortcuts.tip`, `toolTip`), in
+/// every language through `LocalizationTests`. With the CI workflow's
+/// shell (SCREEN_MEASURE=1) a control whose tooltip doesn't show is
+/// photographed into `measurements-<runner>` (`tooltip-missing-*.png`).
 final class TooltipUITests: SchnellbildUITestCase {
     private var osName: String { "macos\(ProcessInfo.processInfo.operatingSystemVersion.majorVersion)" }
+    /// Controls whose tooltip didn't show.
+    private var missing: [String] = []
+
+    /// Rests the pointer on `element` (after moving it off the window, so a
+    /// tooltip shown before is gone) and waits for a tooltip; once more if
+    /// none came (the first hover after a move across the window was now and
+    /// then too quick for the tooltip's timer on CI).
+    private func expectTooltip(_ element: XCUIElement, _ name: String) {
+        guard element.waitForExistence(timeout: 10) else {
+            missing.append("\(name) (not found)")
+            return
+        }
+        let tags = app.descendants(matching: .helpTag)
+        for _ in 0..<2 {
+            app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: -0.02, dy: 0.5)).hover()
+            eventually("the tooltip before \(name) is gone", timeout: 5) { !tags.firstMatch.exists }
+            element.hover()
+            if tags.firstMatch.waitForExistence(timeout: 6) { return }
+        }
+        missing.append(name)
+        photograph(around: element.frame, as: name)
+    }
 
     private func photograph(around frame: CGRect, as name: String) {
         guard ProcessInfo.processInfo.environment["SCREEN_MEASURE"] == "1" else { return }
         let screen = NSScreen.main?.frame ?? CGRect(x: 0, y: 0, width: 1024, height: 768)
-        let area = frame.insetBy(dx: -260, dy: -80).intersection(screen)
+        let area = frame.insetBy(dx: -200, dy: -60).intersection(screen)
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
-        pasteboard.setString("shot:tooltip-\(name)-\(osName):\(Int(area.minX)),\(Int(area.minY)),\(Int(area.width)),\(Int(area.height))",
-                             forType: .string)
-        eventually("\(name) photographed", timeout: 30) {
-            pasteboard.string(forType: .string) == "shot-done:tooltip-\(name)-\(osName)"
-        }
+        let shot = "tooltip-missing-\(name)-\(osName)"
+        pasteboard.setString("shot:\(shot):\(Int(area.minX)),\(Int(area.minY)),\(Int(area.width)),\(Int(area.height))", forType: .string)
+        eventually("\(name) photographed", timeout: 30) { pasteboard.string(forType: .string) == "shot-done:\(shot)" }
     }
 
-    private func probe(_ element: XCUIElement, _ name: String) {
-        guard element.waitForExistence(timeout: 5) else { print("PROBE \(name): not found"); return }
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).hover()
-        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
-        element.hover()
-        RunLoop.current.run(until: Date().addingTimeInterval(3))
-        print("PROBE \(name): \(element.debugDescription.prefix(600))")
-        let tags = app.descendants(matching: .helpTag).allElementsBoundByIndex
-        print("PROBE \(name) helpTags: \(tags.count) \(tags.map { "[\($0.label)|\(String(describing: $0.value))|\($0.title)]" })")
-        if let snapshot = try? element.snapshot() {
-            print("PROBE \(name) snapshot: \(snapshot.dictionaryRepresentation)")
-        }
-        let windows = app.windows.allElementsBoundByIndex.map { "\($0.identifier)|\($0.title)|\($0.frame)" }
-        print("PROBE \(name) windows: \(windows)")
-        photograph(around: element.frame, as: name)
+    private func assertAllShown(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(missing.isEmpty, "no tooltip showed on: \(missing.joined(separator: ", "))", file: file, line: line)
     }
 
-    private func probeStatusBar(_ prefix: String) {
-        probe(element("keyboardButton").firstMatch, prefix + "keyboard")
-        probe(element("viewModePicker").firstMatch, prefix + "viewMode")
-        probe(element("statusText").firstMatch, prefix + "statusText")
-    }
-
-    func testProbeTooltips() throws {
+    func testTheWindowsControlsShowTooltips() throws {
         for name in ["a.jpg", "b.jpg", "c.jpg"] { try FileManager.default.removeItem(at: tempDir.appendingPathComponent(name)) }
         for name in ["norway-01-bryggen.jpg", "norway-05-flam.jpg", "norway-08-geiranger.jpg"] { try put(name, at: name) }
-        let empty = try folder("empty")
-        for (prefix, extra) in [("base-", [String]()), ("overlay-", ["--probe-tip=overlay"]), ("background-", ["--probe-tip=background"]),
-                                ("notilehelp-", ["--probe-no-tile-help"])] {
-            launch(open: tempDir.path, extra: extra)
-            XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
-            probeStatusBar(prefix)
-            if prefix == "background-" {
-                // the controls still take clicks
-                element("keyboardButton").firstMatch.click()
-                print("PROBE background click: mini keyboard \(element("miniKeyboard").waitForExistence(timeout: 3))")
-            }
-            app.terminate()
+        try folder("Day 2")
+        launch(open: tempDir.path)
+        XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
+
+        // The toolbar
+        for id in ["backButton", "forwardButton", "upButton", "folderTitle", "bookmarksMenu", "dualPaneButton", "enhanceButton",
+                   "adjustButton", "slideshowButton", "sortMenu"] {
+            expectTooltip(element(id).firstMatch, id)
         }
-        launch(open: empty.path)
-        RunLoop.current.run(until: Date().addingTimeInterval(3))
-        probeStatusBar("empty-")
+        expectTooltip(app.toolbars.buttons["Open Folder"].firstMatch, "openFolder")
+        // The search bar and the status bar
+        for id in ["searchField", "searchMode", "statusText", "statusPath", "viewModePicker", "keyboardButton"] {
+            expectTooltip(element(id).firstMatch, id)
+        }
+        // A click goes through the tooltip to the button below; the mini keyboard's keys
+        element("keyboardButton").firstMatch.click()
+        XCTAssertTrue(element("miniKeyboard").waitForExistence(timeout: 5), "the keyboard button still takes clicks")
+        expectTooltip(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'key.'")).firstMatch, "miniKey")
+        element("keyboardButton").firstMatch.click()
+
+        // The list's column headers
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("list").waitForExistence(timeout: 10), "the list")
+        expectTooltip(element("column.name").firstMatch, "column.name")
+
+        // The Atlas: its header, the map's buttons, the timeline
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10), "the Atlas")
+        for id in ["tourButton", "atlasSubfolders", "timeline.start", "timeline.end"] {
+            expectTooltip(element(id).firstMatch, id)
+        }
+        for title in ["Zoom in", "Zoom out", "Tilt the view", "Hide day and night", "Hide the clouds"] {
+            expectTooltip(app.buttons[title].firstMatch, title)
+        }
+
+        // The full view: back to the grid, the Inspector
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(tile("norway-01-bryggen.jpg").waitForExistence(timeout: 10), "the grid again")
+        openInFullView("norway-01-bryggen.jpg")
+        expectTooltip(app.toolbars.buttons["Grid"].firstMatch, "grid")
+        app.typeKey("i", modifierFlags: [])
+        expectTooltip(element("inspectorClose").firstMatch, "inspectorClose")
+        assertAllShown()
+    }
+
+    func testTheVideoControlBarShowsTooltips() throws {
+        try put("tracks.mp4", at: "tracks.mp4")
+        launch(open: tempDir.appendingPathComponent("tracks.mp4").path, extra: ["--hold-video-bar"])
+        let video = element("video.avkit")
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        eventually("the tracks are known", timeout: 20) { self.text(of: video).contains("subtitles 1/2") }
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "the control bar")
+        for id in ["videoBar.grip", "videoBar.playPause", "videoBar.position", "videoBar.volume", "videoBar.speed",
+                   "videoBar.subtitles", "videoBar.audio", "videoBar.fullScreen"] {
+            expectTooltip(element(id).firstMatch, id)
+        }
+        assertAllShown()
     }
 }

@@ -85,7 +85,6 @@ public final class XCUICoordinate {
     public func click() {}
     public func rightClick() {}
 }
-public final class XCUIElementSnapshot { public var dictionaryRepresentation: [String: Any] { [:] } }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public final class XCUIScreen {
     public static let main = XCUIScreen()
@@ -112,7 +111,6 @@ public class XCUIElement {
     public var value: Any? { nil }
     public var firstMatch: XCUIElement { self }
     public var debugDescription: String { "" }
-    public func snapshot() throws -> XCUIElementSnapshot { XCUIElementSnapshot() }
     public func click() {}
     public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
     public func doubleClick() {}

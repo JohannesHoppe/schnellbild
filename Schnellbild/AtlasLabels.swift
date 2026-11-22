@@ -90,7 +90,7 @@ struct AtlasHeader: View {
         }
         .buttonStyle(HeaderButtonStyle())
         .disabled(!tourEnabled)
-        .help(texts.tourHelp)
+        .toolTip(texts.tourHelp)
         .accessibilityLabel(Text(verbatim: texts.tourLabel))
         .accessibilityIdentifier("tourButton")
     }
@@ -121,11 +121,11 @@ struct AtlasHeader: View {
                 .toggleStyle(.checkbox)
                 .controlSize(.small)
                 .fixedSize(horizontal: !stacked, vertical: true)
-                .help(texts.subfoldersHelp)
+                .toolTip(texts.subfoldersHelp)
                 .accessibilityIdentifier("atlasSubfolders")
             if walking {
                 ProgressView().controlSize(.mini)
-                    .help(texts.walking)
+                    .toolTip(texts.walking)
                     .accessibilityLabel(Text(verbatim: texts.walking))
                     .accessibilityIdentifier("atlasWalking")
             }
@@ -218,7 +218,7 @@ struct TimelineLabels: View {
             Text(verbatim: count).fixedSize().accessibilityIdentifier("timeline.count")
             Button(action: onShowAll) { Text(verbatim: texts.showAll).fixedSize() }
                 .buttonStyle(HeaderButtonStyle(link: true))
-                .help(texts.showAllHelp)
+                .toolTip(texts.showAllHelp)
                 .accessibilityIdentifier("timeline.all")
         }
     }

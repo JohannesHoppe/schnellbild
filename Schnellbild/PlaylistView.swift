@@ -99,7 +99,7 @@ struct PlaylistPanel: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(model.playlistPinned ? Color.accentColor : Color.secondary)
-            .help(model.playlistPinned ? "Unpin: the playlist lies over the picture" : "Pin: the picture makes room for the playlist")
+            .toolTip(model.playlistPinned ? String(localized: "Unpin: the playlist lies over the picture") : String(localized: "Pin: the picture makes room for the playlist"))
             .accessibilityLabel(model.playlistPinned ? "Unpin playlist" : "Pin playlist")
             .accessibilityIdentifier("playlistPin")
             Button { model.closePlaylist() } label: {
@@ -109,7 +109,7 @@ struct PlaylistPanel: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
-            .help(shortcuts.tip(String(localized: "Close the playlist"), .playlist))
+            .toolTip(shortcuts.tip(String(localized: "Close the playlist"), .playlist))
             .accessibilityLabel("Close playlist")
             .accessibilityIdentifier("playlistClose")
         }
@@ -190,7 +190,7 @@ struct PlaylistPanel: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(model.playlistCursorIndex == nil)
-                .help(shortcuts.tip(String(localized: "Take the chosen item out of the playlist; the file stays where it is"), .listTakeOut))
+                .toolTip(shortcuts.tip(String(localized: "Take the chosen item out of the playlist; the file stays where it is"), .listTakeOut))
                 .accessibilityIdentifier("playlistTakeOut")
             }
             Text("The file stays where it is.").foregroundStyle(.secondary)
@@ -287,7 +287,7 @@ struct PlaylistRow: View {
             .onDrag { dragProvider() }
             .onDrop(of: [PlaylistPanel.dragType], delegate: PlaylistRowDrop(index: index, mark: $dropMark, drop: drop))
             .contextMenu { menu }
-            .help(Text(verbatim: item.name + "\n") + Text("Click to show it, drag to move it, right-click for more"))
+            .toolTip(item.name + "\n" + String(localized: "Click to show it, drag to move it, right-click for more"))
     }
 
     @ViewBuilder private var menu: some View {
@@ -383,6 +383,6 @@ private struct PlaylistGrip: View {
             .accessibilityElement()
             .accessibilityIdentifier("playlistGrip")
             .accessibilityLabel("Playlist width")
-            .help("Drag to widen or narrow the playlist; double-click: standard width")
+            .toolTip(String(localized: "Drag to widen or narrow the playlist; double-click: standard width"))
     }
 }

@@ -98,8 +98,8 @@ struct ThumbnailGridView: View {
         .contentShape(Rectangle())
         .modifier(EntryInteractions(entry: entry))
         // Where a result lives; sorting by distance, how far away it was taken
-        .modifier(ProbeTileHelp(text: [location.map { "\($0)/\(entry.name)" }, model.knownDistance(of: entry.url).map(GeoPoint.describeDistance)]
-            .compactMap { $0 }.joined(separator: "\n")))
+        .toolTip([location.map { "\($0)/\(entry.name)" }, model.knownDistance(of: entry.url).map(GeoPoint.describeDistance)]
+            .compactMap { $0 }.joined(separator: "\n"))
     }
 
     @ViewBuilder
@@ -1022,10 +1022,3 @@ enum ModifierClicks {
     }
 }
 
-/// Probe: the tile's help left out.
-struct ProbeTileHelp: ViewModifier {
-    let text: String
-    func body(content: Content) -> some View {
-        if TestSwitches.has("--probe-no-tile-help") { content } else { content.help(text) }
-    }
-}

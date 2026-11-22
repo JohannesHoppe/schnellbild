@@ -79,7 +79,7 @@ struct InspectorView: View {
                 Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
-            .help(Shortcuts.shared.tip(String(localized: "Hide the info"), .info))
+            .toolTip(Shortcuts.shared.tip(String(localized: "Hide the info"), .info))
             .accessibilityLabel("Hide the info")
             .accessibilityIdentifier("inspectorClose")
         }
@@ -131,14 +131,14 @@ struct InspectorView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize()
                         .contextMenu { Button("Copy") { Self.copy(row.value) } }
-                        .help("Right-click to copy")
+                        .toolTip(String(localized: "Right-click to copy"))
                     // A value longer than its column wraps, never cut off
                     Text(row.value)
                         .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contextMenu { Button("Copy") { Self.copy(row.value) } }
-                        .help("Right-click to copy")
+                        .toolTip(String(localized: "Right-click to copy"))
                 }
             }
         }
@@ -155,7 +155,7 @@ struct InspectorView: View {
             Button { model.sortByDistance(from: location.point) } label: {
                 Label("Sort by Distance from Here", systemImage: "location.circle")
             }
-            .help("Sorts the folder by how far each photo or video was taken from this place")
+            .toolTip(String(localized: "Sorts the folder by how far each photo or video was taken from this place"))
             .accessibilityIdentifier("inspectorSortByDistance")
         }
         .controlSize(.small)
@@ -166,7 +166,7 @@ struct InspectorView: View {
                 Label("Open in Maps", systemImage: "map")
             }
             .controlSize(.small)
-            .help("Opens Apple Maps, which goes online")
+            .toolTip(String(localized: "Opens Apple Maps, which goes online"))
             .accessibilityIdentifier("openInMaps")
             Label("Opens Apple Maps, which goes online", systemImage: "globe")
                 .font(.caption)
@@ -279,10 +279,10 @@ struct InspectorView: View {
             HStack(spacing: 6) {
                 TextField("Filter", text: $filter)
                     .textFieldStyle(.roundedBorder)
-                    .help("Shows only the entries whose name or value holds this text")
+                    .toolTip(String(localized: "Shows only the entries whose name or value holds this text"))
                     .accessibilityIdentifier("metadataFilter")
                 Button("Copy All") { Self.copy(allText) }
-                    .help("Copy everything the Inspector shows as text")
+                    .toolTip(String(localized: "Copy everything the Inspector shows as text"))
                     .accessibilityIdentifier("copyAllMetadata")
             }
             .controlSize(.small)
@@ -302,7 +302,7 @@ struct InspectorView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contextMenu { Button("Copy") { Self.copy(item.value) } }
-                            .help("Right-click to copy")
+                            .toolTip(String(localized: "Right-click to copy"))
                         }
                     }
                     .padding(.leading, 4)

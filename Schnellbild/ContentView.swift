@@ -546,7 +546,7 @@ struct PaneView: View {
                     .modifier(CoversTiles(pane: ObjectIdentifier(model), view: "searchBar"))
             }
         }
-        .modifier(BottomBar(below: TestSwitches.has("--probe-bars-below")) { bottomBar })
+        .safeAreaInset(edge: .bottom, spacing: 0) { bottomBar }
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
         .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
@@ -573,7 +573,7 @@ struct PaneView: View {
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
-            .help(shortcuts.tip(String(localized: "Search names of folders, archives, pictures and videos (incl. subfolders)"), .search))
+            .toolTip(shortcuts.tip(String(localized: "Search names of folders, archives, pictures and videos (incl. subfolders)"), .search))
             SearchModePicker(model: model)
             if model.isSearching {
                 ProgressView().controlSize(.small)
@@ -581,7 +581,7 @@ struct PaneView: View {
                     Image(systemName: "stop.circle.fill")
                 }
                 .buttonStyle(.borderless)
-                .help("Stop search (keeps the results found so far)")
+                .toolTip(String(localized: "Stop search (keeps the results found so far)"))
                 .accessibilityLabel("Stop search")
                 .accessibilityIdentifier("stopSearch")
             }
@@ -632,7 +632,7 @@ struct PaneView: View {
         Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
         Button("Allow Access…") { model.allowAccess() }
             .buttonStyle(.link)
-            .help("Choose the folder in the open panel, so Schnellbild may show all of it")
+            .toolTip(String(localized: "Choose the folder in the open panel, so Schnellbild may show all of it"))
             .accessibilityIdentifier("allowAccess")
     }
 
@@ -654,9 +654,8 @@ struct PaneView: View {
             }
             .foregroundStyle(.secondary)
             .layoutPriority(1)
-            .help(statusText)
+            .toolTip(statusText)
             .accessibilityIdentifier("statusText")
-            .modifier(ProbeTip(text: "probe tip"))
             if model.isSearching {
                 Text("Searching subfolders…").foregroundStyle(.secondary).lineLimit(1)
             }
@@ -690,9 +689,8 @@ struct PaneView: View {
             .pickerStyle(.segmented)
             .labelsHidden()
             .fixedSize()
-            .help(shortcuts.tip(String(localized: "Grid, list or Atlas (the map)"), .toggleList))
+            .toolTip(shortcuts.tip(String(localized: "Grid, list or Atlas (the map)"), .toggleList))
             .accessibilityIdentifier("viewModePicker")
-            .modifier(ProbeTip(text: "probe tip"))
             if let key = shortcuts.keys(.toggleList).first { KeyCap(key) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
@@ -701,9 +699,8 @@ struct PaneView: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(model.showMiniKeyboard ? Color.accentColor : Color.secondary)
-            .help(shortcuts.tip(model.showMiniKeyboard ? String(localized: "Hide the mini keyboard") : String(localized: "Mini keyboard: the keys of what's on screen, clickable"), .miniKeyboard))
+            .toolTip(shortcuts.tip(model.showMiniKeyboard ? String(localized: "Hide the mini keyboard") : String(localized: "Mini keyboard: the keys of what's on screen, clickable"), .miniKeyboard))
             .accessibilityIdentifier("keyboardButton")
-            .modifier(ProbeTip(text: "probe tip"))
         }
     }
 
@@ -718,7 +715,7 @@ struct PaneView: View {
             .truncationMode(.head)
             .frame(minWidth: 60, idealWidth: 60, maxWidth: .infinity, alignment: .trailing)
             .contentShape(Rectangle())
-            .help(Text(verbatim: shown + "\n") + Text("Right-click to copy"))
+            .toolTip(shown + "\n" + String(localized: "Right-click to copy"))
             .contextMenu { pathMenu }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text("Path"))
@@ -873,7 +870,7 @@ struct EmptyStateView: View {
                     .multilineTextAlignment(.center)
                 Button("Allow Access…") { model.allowAccess() }
                     .keyboardShortcut(.defaultAction)
-                    .help("Choose the folder in the open panel, so Schnellbild may show all of it")
+                    .toolTip(String(localized: "Choose the folder in the open panel, so Schnellbild may show all of it"))
                     .accessibilityIdentifier("allowAccess")
             } else if let failure = model.loadError {
                 Image(systemName: "exclamationmark.triangle")
@@ -907,7 +904,7 @@ struct EmptyStateView: View {
                 Button { model.chooseFolder() } label: {
                     HStack(spacing: 6) { Text("Open Another Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key) } }
                 }
-                .help(shortcuts.tip(String(localized: "Open another folder"), .openFolder))
+                .toolTip(shortcuts.tip(String(localized: "Open another folder"), .openFolder))
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 56))
@@ -935,7 +932,7 @@ struct EmptyStateView: View {
                 Button { model.chooseFolder() } label: {
                     HStack(spacing: 6) { Text("Open Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key) } }
                 }
-                .help(shortcuts.tip(String(localized: "Open a folder"), .openFolder))
+                .toolTip(shortcuts.tip(String(localized: "Open a folder"), .openFolder))
             }
         }
         .padding(40)
@@ -1063,7 +1060,7 @@ struct AdjustmentsView: View {
         VStack(alignment: .leading, spacing: 12) {
             Toggle("Auto enhance", isOn: $model.enhance)
                 .toggleStyle(.switch)
-                .help(Shortcuts.shared.tip(String(localized: "Sets the four values below for each picture or video"), .enhance))
+                .toolTip(Shortcuts.shared.tip(String(localized: "Sets the four values below for each picture or video"), .enhance))
                 .accessibilityIdentifier("autoSwitch")
             slider("Exposure", \.exposure, -1...1, id: "exposure", help: String(localized: "Darker or lighter"))
             slider("Contrast", \.contrast, -1...1, id: "contrast", help: String(localized: "Flatter or with more contrast"))
@@ -1097,7 +1094,7 @@ struct AdjustmentsView: View {
     private var resetButton: some View {
         Button("Reset to original") { model.resetLook() }
             .disabled(model.enhancement == .off)
-            .help("Auto enhance off, every slider at 0")
+            .toolTip(String(localized: "Auto enhance off, every slider at 0"))
             .accessibilityIdentifier("resetLook")
     }
 
@@ -1118,7 +1115,7 @@ struct AdjustmentsView: View {
                     look[keyPath: key] = value
                     model.adjust(look)
                 }), in: range)
-            .help(help)
+            .toolTip(help)
             .accessibilityLabel(Text(title))
             .accessibilityIdentifier("slider.\(id)")
             .accessibilityValue(Self.format(model.look[keyPath: key]))
@@ -1458,8 +1455,8 @@ private struct SearchModePicker: View {
         .labelsHidden()
         .font(.system(.callout, design: .monospaced))
         .fixedSize()
-        .help(model.searchMode == .ignoringCase ? "Ignore case"
-              : model.searchMode == .matchingCase ? "Match case" : "Regular expression")
+        .toolTip(model.searchMode == .ignoringCase ? String(localized: "Ignore case")
+                 : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
         .accessibilityLabel("Search mode")
         // The UI tests read the mode's name
         .accessibilityValue(test: model.searchMode.rawValue,
@@ -1505,7 +1502,7 @@ private struct BookmarksButton: View {
         } label: {
             Label("Bookmarks", systemImage: marked ? "star.fill" : "star")
         }
-        .help(String(localized: "Bookmarks (\(shortcuts.hint(.bookmark)): this folder; \(HelpKeys.range(ShortcutAction.bookmarks).text(shortcuts) ?? String(localized: "no key")): go)"))
+        .toolTip(String(localized: "Bookmarks (\(shortcuts.hint(.bookmark)): this folder; \(HelpKeys.range(ShortcutAction.bookmarks).text(shortcuts) ?? String(localized: "no key")): go)"))
         .accessibilityIdentifier("bookmarksMenu")
         .accessibilityValue(marked ? "bookmarked" : "")
     }
@@ -1664,7 +1661,7 @@ struct PaneDivider: View {
         .accessibilityElement()
         .accessibilityIdentifier("paneDivider")
         .accessibilityLabel("Divider between the panes")
-        .help("Drag to give one pane more room; double-click to share equally")
+        .toolTip(String(localized: "Drag to give one pane more room; double-click to share equally"))
     }
 }
 
@@ -1715,42 +1712,3 @@ struct StatusFlow: Layout {
     }
 }
 
-/// Probe: the status bar over the content (safe area) or below it.
-private struct BottomBar<Bar: View>: ViewModifier {
-    let below: Bool
-    @ViewBuilder let bar: () -> Bar
-    func body(content: Content) -> some View {
-        if below {
-            VStack(spacing: 0) { content; bar() }
-        } else {
-            content.safeAreaInset(edge: .bottom, spacing: 0) { bar() }
-        }
-    }
-}
-
-/// Probe: a tooltip through AppKit (`NSView.toolTip`), over or behind the control.
-struct ProbeTip: ViewModifier {
-    let text: String
-    static let mode = TestSwitches.value("--probe-tip=")
-    func body(content: Content) -> some View {
-        switch Self.mode {
-        case "overlay": content.overlay(AppKitTip(text: text, passThrough: true))
-        case "background": content.background(AppKitTip(text: text, passThrough: false))
-        default: content
-        }
-    }
-}
-
-struct AppKitTip: NSViewRepresentable {
-    let text: String
-    let passThrough: Bool
-    final class TipView: NSView {
-        var passThrough = true
-        override func hitTest(_ point: NSPoint) -> NSView? { passThrough ? nil : super.hitTest(point) }
-    }
-    func makeNSView(context: Context) -> TipView { TipView() }
-    func updateNSView(_ view: TipView, context: Context) {
-        view.passThrough = passThrough
-        view.toolTip = text
-    }
-}

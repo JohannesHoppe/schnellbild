@@ -195,7 +195,7 @@ private struct AtlasTile: View {
         }, double: {
             if cluster.count > 1 && !cluster.staysTogether { atlas.zoom(into: cluster) } else { atlas.open(shown) }
         }))
-        .help(help)
+        .help(help)   // (SwiftUI's: tiles move with every frame of the map; its tooltips show in the Atlas)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: label))
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
@@ -308,7 +308,7 @@ private struct AtlasStrip: View, Equatable {
                                 .padding(2)
                                 .contentShape(Rectangle())
                                 .modifier(Clicks(single: { atlas.select(item.url) }, double: { atlas.open(item.url) }))
-                                .help(item.name)
+                                .toolTip(item.name)
                                 .id(item.url)
                                 .accessibilityElement(children: .ignore)
                                 .accessibilityLabel(Text(verbatim: item.name))
@@ -423,7 +423,7 @@ private struct AtlasTimelineView: View {
                     atlas.jump(to: AtlasTimeline.date(at: Double(drag.location.x / width), span: span))
                 }
             })
-            .help("Click: the photo or video nearest that time; drag across: show only that time")
+            .toolTip(String(localized: "Click: the photo or video nearest that time; drag across: show only that time"))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("timeline.track")
         }
@@ -460,7 +460,7 @@ private struct AtlasTimelineView: View {
                 let f = min(1, max(0, Double((fraction * width + drag.translation.width) / width)))
                 move(isStart: isStart, to: AtlasTimeline.date(at: f, span: span), span: span)
             })
-            .help(isStart ? "Start of the time shown: drag to the right to leave out what came before" : "End of the time shown: drag to the left to leave out what came after")
+            .toolTip(isStart ? String(localized: "Start of the time shown: drag to the right to leave out what came before") : String(localized: "End of the time shown: drag to the left to leave out what came after"))
             .accessibilityElement()
             .accessibilityLabel(Text(isStart ? "Start of the range" : "End of the range"))
             .accessibilityValue(Text(verbatim: label(of: date)))
@@ -637,7 +637,7 @@ private struct TourStage: View {
                         perform: @escaping () -> Void) -> some View {
         Button(action: perform) { Image(systemName: symbol).frame(width: 22, height: 22).contentShape(Rectangle()) }
             .buttonStyle(.plain)
-            .help(shortcuts.tip(help, action))
+            .toolTip(shortcuts.tip(help, action))
             .accessibilityLabel(Text(title))
             .accessibilityIdentifier(id)
     }
