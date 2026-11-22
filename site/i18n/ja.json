@@ -97,7 +97,7 @@
     },
     {
       "title": "macOSで再生できないAVIやMKVも再生",
-      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで（HDRにも対応）、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ、RealMedia、MXF）は内蔵のVLCエンジンで再生します。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>で動画の10分の1、<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>で100分の1ジャンプ</li><li><kbd>▲</kbd> / <kbd>▼</kbd>で音量を調整。すべての動画に共通です</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>で次の動画へ、<kbd>⌘</kbd> + <kbd>◀</kbd>で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>オーディオトラック、速度(<kbd>&lt;</kbd> / <kbd>&gt;</kbd>)、すべての動画に共通のコントロールバー。ドラッグした場所にとどまります</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
+      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで（HDRにも対応）、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ、RealMedia、MXF）は内蔵のVLCエンジンで再生します。</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd>で動画の10分の1、<kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd>で100分の1ジャンプ</li><li><kbd>▲</kbd> / <kbd>▼</kbd>で音量を調整。すべての動画に共通です</li><li><kbd>⌘</kbd> + <kbd>▶</kbd>で次の動画へ、<kbd>⌘</kbd> + <kbd>◀</kbd>で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>オーディオトラック、速度（<kbd>&lt;</kbd> / <kbd>&gt;</kbd>）、すべての動画に共通のコントロールバー。ドラッグした場所にとどまります</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
       "alt": "Schnellbildで再生中の動画"
     },
     {
