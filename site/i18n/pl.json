@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "wkrótce, na wsparcie projektu",
   "fineprint": "Obie wersje to ta sama aplikacja ze wszystkimi funkcjami; kto kupi ją w App Store, wspiera jej rozwój. Dziękujemy! 🖤",
+  "starText": "Podoba Ci się Schnellbild?",
+  "starLink": "Daj mu gwiazdkę na GitHubie",
   "shotAlt": "Schnellbild: foldery z podglądami i miniatury zdjęć",
   "viewsLabel": "Cztery widoki",
   "views": [
@@ -81,6 +83,7 @@
       "Uszkodzone pliki, nietypowe formaty i wolne dyski pokazują symbol zastępczy, a aplikacja działa dalej."
     ]
   ],
+  "offlineBadge": "Zero połączeń z internetem",
   "featuresTitle": "Co potrafi",
   "demoLabel": "Wideo: zdjęcie otwarte z siatki, zdjęcia z podróży na mapie i globusie, potem odtworzona podróż",
   "featuresMore": "I wiele innych funkcji: wszystkie szczegóły na GitHubie",

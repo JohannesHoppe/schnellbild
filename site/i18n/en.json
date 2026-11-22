@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "soon, €0.99 to support it",
   "fineprint": "Both versions are the same app with every feature; whoever buys it in the Store supports its development. Thank you! 🖤",
+  "starText": "Like Schnellbild?",
+  "starLink": "Give it a star on GitHub",
   "shotAlt": "Schnellbild: folders with previews and photo thumbnails",
   "viewsLabel": "The four views",
   "views": [
@@ -81,6 +83,7 @@
       "Broken files, odd formats and slow disks show a placeholder, and the app keeps running."
     ]
   ],
+  "offlineBadge": "Zero connection to the internet",
   "featuresTitle": "What it does",
   "demoLabel": "Video: a photo opened from the grid, the trip's photos on the map and the globe, then the tour played",
   "featuresMore": "And many more features: every last detail is on GitHub",

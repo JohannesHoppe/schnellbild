@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "pronto, por 0,99 € para apoyarlo",
   "fineprint": "Las dos versiones son la misma app con todas las funciones; quien la compra en la tienda apoya su desarrollo. ¡Muchas gracias! 🖤",
+  "starText": "¿Te gusta Schnellbild?",
+  "starLink": "Dale una estrella en GitHub",
   "shotAlt": "Schnellbild: carpetas con previsualizaciones y miniaturas de fotos",
   "viewsLabel": "Las cuatro vistas",
   "views": [
@@ -81,6 +83,7 @@
       "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición y la app sigue funcionando."
     ]
   ],
+  "offlineBadge": "Cero conexión a internet",
   "featuresTitle": "Qué hace",
   "demoLabel": "Vídeo: una foto abierta desde la cuadrícula, las fotos del viaje en el mapa y el globo, y luego el viaje reproducido",
   "featuresMore": "Y muchas más funciones: todos los detalles en GitHub",

@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "binnenkort, € 0,99 om het te steunen",
   "fineprint": "Beide versies zijn dezelfde app met alle functies; wie hem in de App Store koopt, steunt de ontwikkeling. Hartelijk dank! 🖤",
+  "starText": "Vind je Schnellbild fijn?",
+  "starLink": "Geef hem een ster op GitHub",
   "shotAlt": "Schnellbild: mappen met voorvertoningen en fotominiaturen",
   "viewsLabel": "De vier weergaven",
   "views": [
@@ -81,6 +83,7 @@
       "Kapotte bestanden, vreemde formaten en trage schijven tonen een plaatshouder, en de app blijft draaien."
     ]
   ],
+  "offlineBadge": "Geen enkele verbinding met internet",
   "featuresTitle": "Wat hij doet",
   "demoLabel": "Video: een foto geopend vanuit het raster, de foto's van de reis op de kaart en de wereldbol, daarna de reis afgespeeld",
   "featuresMore": "En nog veel meer functies: alle details op GitHub",

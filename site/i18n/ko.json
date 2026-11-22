@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "곧 출시, 개발 후원용",
   "fineprint": "두 버전 모두 모든 기능을 갖춘 같은 앱입니다. App Store에서 구입하면 개발을 후원하게 됩니다. 감사합니다! 🖤",
+  "starText": "Schnellbild가 마음에 드세요?",
+  "starLink": "GitHub에서 스타를 눌러 주세요",
   "shotAlt": "Schnellbild: 미리보기가 있는 폴더와 사진 썸네일",
   "viewsLabel": "네 가지 보기",
   "views": [
@@ -81,6 +83,7 @@
       "손상된 파일, 낯선 포맷, 느린 디스크가 있어도 자리 표시자가 나타나고 앱은 계속 실행됩니다."
     ]
   ],
+  "offlineBadge": "인터넷 연결 전혀 없음",
   "featuresTitle": "주요 기능",
   "demoLabel": "동영상: 격자에서 사진을 열고, 여행 사진을 지도와 지구본에서 본 뒤 여행 재생",
   "featuresMore": "그 밖에도 많은 기능이 있습니다. 자세한 내용은 GitHub에서",

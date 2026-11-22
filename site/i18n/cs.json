@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "brzy, na podporu projektu",
   "fineprint": "Obě verze jsou stejná aplikace se všemi funkcemi; kdo si ji koupí v App Storu, podpoří její vývoj. Děkujeme! 🖤",
+  "starText": "Líbí se vám Schnellbild?",
+  "starLink": "Dejte mu hvězdičku na GitHubu",
   "shotAlt": "Schnellbild: složky s náhledy a miniatury fotek",
   "viewsLabel": "Čtyři zobrazení",
   "views": [
@@ -81,6 +83,7 @@
       "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol a aplikace běží dál."
     ]
   ],
+  "offlineBadge": "Žádné připojení k internetu",
   "featuresTitle": "Co umí",
   "demoLabel": "Video: fotka otevřená z mřížky, fotky z cesty na mapě a glóbu, potom přehraná cesta",
   "featuresMore": "A mnoho dalších funkcí: všechny podrobnosti na GitHubu",

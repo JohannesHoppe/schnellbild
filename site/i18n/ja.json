@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "近日公開。開発を応援できます",
   "fineprint": "どちらのバージョンもすべての機能を備えた同じAppです。App Storeで購入すると、開発の支援になります。ありがとうございます！🖤",
+  "starText": "Schnellbildは気に入りましたか？",
+  "starLink": "GitHubでスターを付けてください",
   "shotAlt": "Schnellbild：プレビュー付きのフォルダと写真のサムネール",
   "viewsLabel": "4つの表示",
   "views": [
@@ -81,6 +83,7 @@
       "壊れたファイル、変わったフォーマット、遅いディスクでも、プレースホルダが表示され、Appは動き続けます。"
     ]
   ],
+  "offlineBadge": "インターネット通信ゼロ",
   "featuresTitle": "できること",
   "demoLabel": "動画：グリッドから写真を開き、旅の写真を地図と地球儀で表示し、旅をたどる",
   "featuresMore": "ほかにも多くの機能があります。詳しくはGitHubで",

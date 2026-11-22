@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "即將上架，用來支持開發",
   "fineprint": "兩個版本是同一個 App，功能完全相同；在 App Store 購買就能支持它的開發。謝謝！🖤",
+  "starText": "喜歡 Schnellbild？",
+  "starLink": "在 GitHub 上給它一顆星",
   "shotAlt": "Schnellbild：附預覽的檔案夾和照片縮圖",
   "viewsLabel": "四種顯示方式",
   "views": [
@@ -81,6 +83,7 @@
       "遇到損壞的檔案、奇怪的格式或緩慢的磁碟，只會顯示預留圖，App 不會因此當掉。"
     ]
   ],
+  "offlineBadge": "完全不連網",
   "featuresTitle": "功能一覽",
   "demoLabel": "影片：從網格中打開一張照片，在地圖和地球儀上查看旅途照片，然後播放旅程",
   "featuresMore": "還有更多功能：所有細節請見 GitHub",

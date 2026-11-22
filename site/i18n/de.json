@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "bald, 0,99 € zur Unterstützung",
   "fineprint": "Beide Versionen sind dieselbe App mit allen Funktionen; wer sie im Store kauft, unterstützt die Weiterentwicklung. Vielen Dank! 🖤",
+  "starText": "Gefällt dir Schnellbild?",
+  "starLink": "Gib ihm einen Stern auf GitHub",
   "shotAlt": "Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos",
   "viewsLabel": "Die vier Ansichten",
   "views": [
@@ -81,6 +83,7 @@
       "Kaputte Dateien, seltsame Formate und langsame Laufwerke zeigen einen Platzhalter, und die App läuft weiter."
     ]
   ],
+  "offlineBadge": "Null Verbindung ins Internet",
   "featuresTitle": "Was es kann",
   "demoLabel": "Video: ein Foto aus dem Raster geöffnet, die Fotos der Reise auf Karte und Globus, dann die Reise abgespielt",
   "featuresMore": "Und noch viel mehr Funktionen: alle Details auf GitHub",

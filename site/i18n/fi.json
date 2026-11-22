@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "pian, 0,99 € kehityksen tukemiseksi",
   "fineprint": "Molemmat versiot ovat sama ohjelma kaikkine ominaisuuksineen; App Storesta ostava tukee sen kehitystä. Kiitos! 🖤",
+  "starText": "Pidätkö Schnellbildistä?",
+  "starLink": "Anna sille tähti GitHubissa",
   "shotAlt": "Schnellbild: kansiot esikatseluineen ja kuvien miniatyyrit",
   "viewsLabel": "Neljä näkymää",
   "views": [
@@ -81,6 +83,7 @@
       "Rikkinäiset tiedostot, oudot formaatit ja hitaat levyt näyttävät paikkamerkin, ja ohjelma toimii edelleen."
     ]
   ],
+  "offlineBadge": "Ei mitään yhteyttä internetiin",
   "featuresTitle": "Mitä se tekee",
   "demoLabel": "Video: kuva avataan ruudukosta, matkan kuvat kartalla ja maapallolla, sitten matka toistetaan",
   "featuresMore": "Ja paljon muita ominaisuuksia: kaikki yksityiskohdat GitHubissa",

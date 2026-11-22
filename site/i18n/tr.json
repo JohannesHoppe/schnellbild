@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "yakında, projeye destek için",
   "fineprint": "İki sürüm de tüm özellikleriyle aynı uygulamadır; App Store’dan satın alan, geliştirmesine destek olur. Çok teşekkürler! 🖤",
+  "starText": "Schnellbild’i beğendiniz mi?",
+  "starLink": "GitHub’da bir yıldız verin",
   "shotAlt": "Schnellbild: önizlemeli klasörler ve fotoğraf küçük resimleri",
   "viewsLabel": "Dört görünüm",
   "views": [
@@ -81,6 +83,7 @@
       "Bozuk dosyalar, alışılmadık biçimler ve yavaş diskler bir yer tutucu gösterir, uygulama çalışmaya devam eder."
     ]
   ],
+  "offlineBadge": "İnternete sıfır bağlantı",
   "featuresTitle": "Neler yapabiliyor",
   "demoLabel": "Video: ızgaradan açılan bir fotoğraf, gezinin fotoğrafları haritada ve kürede, ardından gezi oynatılıyor",
   "featuresMore": "Ve çok daha fazla özellik: tüm ayrıntılar GitHub'da",

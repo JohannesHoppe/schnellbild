@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "snart, for at støtte udviklingen",
   "fineprint": "Begge versioner er den samme app med alle funktioner; den, der køber den i App Store, støtter udviklingen. Mange tak! 🖤",
+  "starText": "Kan du lide Schnellbild?",
+  "starLink": "Giv den en stjerne på GitHub",
   "shotAlt": "Schnellbild: mapper med eksempelbilleder og miniaturer af fotos",
   "viewsLabel": "De fire visninger",
   "views": [
@@ -81,6 +83,7 @@
       "Ødelagte filer, mærkelige formater og langsomme diske viser en pladsholder, og appen kører videre."
     ]
   ],
+  "offlineBadge": "Ingen forbindelse til internettet",
   "featuresTitle": "Hvad den kan",
   "demoLabel": "Video: et foto åbnet fra gitteret, turens fotos på kortet og globussen, derefter turen afspillet",
   "featuresMore": "Og mange flere funktioner: alle detaljer på GitHub",

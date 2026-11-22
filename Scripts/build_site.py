@@ -65,6 +65,13 @@ WHY_ICONS = [
 ]
 # GitHub's mark (Octicons "mark-github"), drawn in the link's colour
 OCTOCAT = ('<svg class="mark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>')
+# The star in the link to the repository under the download buttons (site.css: .star)
+STAR = ('<svg class="star-i" viewBox="0 0 24 24" aria-hidden="true">'
+        '<path d="M12 3L14.41 9.28L21.13 9.63L15.9 13.87L17.64 20.37L12 16.7L6.36 20.37L8.1 13.87L2.87 9.63L9.59 9.28Z"/></svg>')
+# Wi-Fi struck through, in the badge on the first "why" card (site.css: .offline)
+OFFLINE = ('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 9a15 15 0 0 1 21 0"/>'
+           '<path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><path d="M12 19.5h.01"/>'
+           '<path d="M3 3l18 18"/></svg>')
 # The light / dark switch: a moon where the page is light, a sun where it is dark (site.css).
 THEME_ICONS = ('<svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>'
                '<svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/>'
@@ -417,9 +424,12 @@ def home(code, t):
     stats = "".join(
         f'<div class="stat" data-reveal style="--i:{i}"><b>{esc(value)}</b><span>{esc(label)}</span></div>'
         for i, (value, label) in enumerate(t["stats"]))
+    # The first card ("no ads, no tracking, no account") carries the badge: neither the
+    # app's App Sandbox nor its extensions' has the network entitlement.
+    offline = f'<span class="offline">{OFFLINE}{esc(t["offlineBadge"])}</span>'
     why = "".join(
         f'<div class="card" data-reveal style="--i:{i % 3}"><svg class="i" viewBox="0 0 24 24" aria-hidden="true">{WHY_ICONS[i]}</svg>'
-        f'<h3>{esc(title)}</h3><p>{esc(text)}</p></div>'
+        f'<h3>{esc(title)}</h3>{offline if i == 0 else ""}<p>{esc(text)}</p></div>'
         for i, (title, text) in enumerate(t["why"]))
     def feature(name, f):
         text = f"""<div class="text" data-reveal><h3>{esc(f['title'])}</h3>{f['text']}</div>"""
@@ -442,7 +452,8 @@ def home(code, t):
     buttons = f"""<div class="actions">
     <a class="button primary" href="{DMG}">{esc(t['download'])}<small>Schnellbild.dmg</small></a>
     <span class="button soon">{esc(t['store'])}<small>{esc(t['storeSoon'])}</small></span>
-  </div>"""
+  </div>
+    <p class="star-row"><a class="star" href="{REPO}">{STAR}<span>{esc(t['starText'])} <b>{esc(t['starLink'])}</b></span>{OCTOCAT}</a></p>"""
     return head(code, t, t["seoTitle"], t["seoDescription"], path_of, share_title=t["title"],
                 keywords=t["keywords"], data=app_data(code, t)) + topbar(code, t, path_of) + f"""
 <main>

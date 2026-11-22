@@ -16,6 +16,8 @@
   "store": "Mac App Store",
   "storeSoon": "snart, för att stödja utvecklingen",
   "fineprint": "Båda versionerna är samma app med alla funktioner; den som köper den i App Store stöder utvecklingen. Tack så mycket! 🖤",
+  "starText": "Gillar du Schnellbild?",
+  "starLink": "Ge den en stjärna på GitHub",
   "shotAlt": "Schnellbild: mappar med förhandsvisningar och miniatyrer av bilder",
   "viewsLabel": "De fyra vyerna",
   "views": [
@@ -81,6 +83,7 @@
       "Trasiga filer, udda format och långsamma diskar visar en platshållare, och appen fortsätter att fungera."
     ]
   ],
+  "offlineBadge": "Ingen anslutning till internet",
   "featuresTitle": "Vad den gör",
   "demoLabel": "Video: ett foto öppnat från rutnätet, resans foton på kartan och jordgloben, sedan resan uppspelad",
   "featuresMore": "Och många fler funktioner: alla detaljer på GitHub",
