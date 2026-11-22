@@ -50,6 +50,18 @@ def listed_extensions(formats):
     return {last_extension(ext) for f in formats for ext in f["ext"]}
 
 
+def shown_abbr(f):
+    """The abbreviation, where it says more than the extensions: "AVCHD" for .mts .m2ts.
+    Left out where it is the extension in capitals ("GIF", "TIFF" beside .tiff) or
+    names only extensions ("HEIF / HEIC"); a hyphen stays part of it, "MPEG-PS" isn't .mpeg."""
+    abbr = f.get("abbr")
+    if not abbr:
+        return None
+    extensions = {ext.casefold() for ext in f["ext"]}
+    parts = [part for part in re.split(r"[\s/]+", abbr.casefold()) if part]
+    return None if all(part in extensions for part in parts) else abbr
+
+
 def _strings(block):
     return set(re.findall(r'"([^"\\]+)"', block))
 
@@ -116,12 +128,13 @@ README_SKIPS = {"thumbnails", "mediaExtension", "password", "rar", "sevenZip", "
 
 
 def readme_tables(formats, words):
-    """The README's tables: per group a row, each format as "Full name (ABBR, `.ext`; note)"."""
+    """The README's tables: per group a row, each format as "Full name (`.ext`; note)",
+    with the abbreviation first where it says more than the extensions ("(AVCHD, `.mts` …")."""
     def item(f):
         exts = " ".join(f"`.{ext}`" for ext in f["ext"])
         notes = "".join(f"; {words['notes'][n]}" for n in f.get("notes", []) if n not in README_SKIPS)
         name = words["names"].get(f["id"]) or f["name"]
-        abbr = f.get("abbr")
+        abbr = shown_abbr(f)
         return f"{name} ({abbr}, {exts}{notes})" if abbr and abbr != name else f"{name} ({exts}{notes})"
     lines = []
     for group in GROUPS:
@@ -176,10 +189,11 @@ class Formats:
         return self.ctx["tr"][code]["formats"]["names"].get(f["id"]) or f["name"]
 
     def label(self, code, f, ext_html=False):
-        """The format's name with its abbreviation and extensions, as the language writes it."""
+        """The format's name with its extensions (and its abbreviation where it says more
+        than they do), as the language writes it."""
         esc = self.ctx["esc"]
         w = self.ctx["tr"][code]["formats"]
-        name, abbr = self.name(code, f), f.get("abbr")
+        name, abbr = self.name(code, f), shown_abbr(f)
         exts = " ".join((f"<code>.{esc(e)}</code>" if ext_html else f".{esc(e)}") for e in f["ext"])
         style = w["nameStyle"] if abbr and abbr != name else w["nameStyleBare"]
         return style.replace("{name}", esc(name)).replace("{abbr}", esc(abbr or "")).replace("{ext}", exts)
@@ -193,6 +207,15 @@ class Formats:
                 return match.group(0)
             return f'<a href="{self.path(code)}#{f["id"]}">{self.label(code, f)}</a>'
         return re.sub(r"\{fmt:([A-Za-z0-9]+)\}", link, text).replace("{formats}", self.path(code))
+
+    def row_name(self, code, f):
+        """The name in the table: with the abbreviation where it says more than the
+        extensions, in the language's brackets ("… High Definition (AVCHD)")."""
+        esc = self.ctx["esc"]
+        name, abbr = self.name(code, f), shown_abbr(f)
+        if not abbr or abbr == name:
+            return esc(name)
+        return self.ctx["tr"][code]["formats"]["nameStyleBare"].replace("{name}", esc(name)).replace("{ext}", esc(abbr))
 
     def macos_name(self, code, f):
         """macOS's own name of the type in the language, unless it only repeats the name or
@@ -221,13 +244,12 @@ class Formats:
                 macos = f'<small>{esc(w["macos"].replace("{name}", macos))}</small>' if macos else ""
                 exts = " ".join(f"<code>.{esc(e)}</code>" for e in f["ext"])
                 notes = "; ".join(esc(w["notes"][n]) for n in f.get("notes", []))
-                cells = [(columns[1], esc(f.get("abbr") or "")), (columns[2], exts),
-                         (columns[3], esc(w["kinds"][f["kind"]])), (columns[4], notes)]
+                cells = [(columns[1], exts), (columns[2], esc(w["kinds"][f["kind"]])), (columns[3], notes)]
                 empty = ' class="empty"'
                 # The value in a span of its own: on phones the cell is a grid of the label and the value
                 tds = "".join(f'<td data-label="{esc(label)}"{"" if value else empty}><span>{value}</span></td>' for label, value in cells)
-                rows.append(f'<tr id="{f["id"]}"><th scope="row">{esc(self.name(code, f))}{macos}</th>{tds}</tr>')
-            bodies.append(f'<tbody><tr class="group"><th colspan="5" scope="colgroup" id="{group}">{esc(w["groups"][group])}</th></tr>'
+                rows.append(f'<tr id="{f["id"]}"><th scope="row">{self.row_name(code, f)}{macos}</th>{tds}</tr>')
+            bodies.append(f'<tbody><tr class="group"><th colspan="{len(columns)}" scope="colgroup" id="{group}">{esc(w["groups"][group])}</th></tr>'
                           + "".join(rows) + "</tbody>")
         return (f'<table class="formats" id="formats-table"><caption class="sr">{esc(w["title"])}</caption>'
                 f'<thead><tr>{head}</tr></thead>' + "".join(bodies) + "</table>")
@@ -239,11 +261,10 @@ class Formats:
         home = ctx["SITE"] + ctx["home_path"](code)
         items = []
         for i, f in enumerate(self.formats, 1):
+            abbr, macos = shown_abbr(f), self.macos_name(code, f)
             term = {"@type": "DefinedTerm", "@id": f"{url}#{f['id']}", "name": self.name(code, f),
-                    "alternateName": [f".{e}" for e in f["ext"]] + ([self.macos_name(code, f)] if self.macos_name(code, f) else []),
+                    "alternateName": ([abbr] if abbr else []) + [f".{e}" for e in f["ext"]] + ([macos] if macos else []),
                     "description": w["groups"][f["group"]], "inDefinedTermSet": {"@id": url + "#formats"}}
-            if f.get("abbr"):
-                term["termCode"] = f["abbr"]
             items.append({"@type": "ListItem", "position": i, "item": term})
         page = {"@type": "WebPage", "@id": url, "url": url, "name": w["title"], "description": w["description"],
                 "inLanguage": code, "isPartOf": {"@id": ctx["SITE"] + "/#website"}, "about": {"@id": home + "#app"},

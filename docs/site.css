@@ -502,9 +502,9 @@ dialog.lightbox .close:hover { background: #454545; }
 .formats tbody:first-of-type tr.group th { padding-top: 14px; }
 .formats tr[id] { scroll-margin-top: 110px; }
 .formats tr[id]:target { background: var(--surface); }
-.formats td:nth-of-type(2) { white-space: nowrap; }
-.formats td:nth-of-type(2) code { display: inline-block; margin: 0 2px 4px 0; }
-.formats td:nth-of-type(4) { color: var(--muted); font-size: 14px; }
+.formats td:nth-of-type(1) { white-space: nowrap; }
+.formats td:nth-of-type(1) code { display: inline-block; margin: 0 2px 4px 0; }
+.formats td:nth-of-type(3) { color: var(--muted); font-size: 14px; }
 @media (max-width: 700px) {
   .formats, .formats tbody, .formats tr, .formats th, .formats td { display: block; width: auto; }
   .formats thead { display: none; }
@@ -514,7 +514,7 @@ dialog.lightbox .close:hover { background: #454545; }
   .formats td.empty { display: none; }
   .formats td { display: grid; grid-template-columns: minmax(96px, 34%) minmax(0, 1fr); gap: 10px; font-size: 14px; }
   .formats td::before { content: attr(data-label); color: var(--muted); font-size: 13px; }
-  .formats td:nth-of-type(2) { white-space: normal; }
+  .formats td:nth-of-type(1) { white-space: normal; }
 }
 
 /* Lists of alternatives: columns on the overview, pills on the home page and under a page */

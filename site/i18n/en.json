@@ -194,7 +194,6 @@
     "jump": "Groups",
     "columns": [
       "Format",
-      "Abbreviation",
       "Extensions",
       "Kind",
       "Notes"

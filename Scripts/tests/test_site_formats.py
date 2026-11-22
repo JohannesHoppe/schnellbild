@@ -44,6 +44,14 @@ class FormatListTests(unittest.TestCase):
                 for ext in f["ext"]:
                     self.assertIn(f"<code>.{ext}</code>", html, f"{page.relative_to(ROOT)}: .{ext}")
 
+    def test_an_abbreviation_shows_where_it_says_more_than_the_extensions(self):
+        shown = site_formats.shown_abbr
+        self.assertEqual(shown({"abbr": "AVCHD", "ext": ["mts", "m2ts"]}), "AVCHD")
+        self.assertEqual(shown({"abbr": "MPEG-PS", "ext": ["mpg", "mpeg"]}), "MPEG-PS")
+        self.assertIsNone(shown({"abbr": "TIFF", "ext": ["tif", "tiff"]}))
+        self.assertIsNone(shown({"abbr": "HEIF / HEIC", "ext": ["heic", "heif", "hif"]}))
+        self.assertIsNone(shown({"ext": ["sketch"]}))
+
     def test_an_extension_added_to_the_app_is_missed(self):
         """A copy of the sources with one more video extension: the list lacks it."""
         with tempfile.TemporaryDirectory() as folder:
