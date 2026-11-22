@@ -420,4 +420,66 @@ final class PictureDecoderTests: XCTestCase {
         task.cancel()
         _ = await task.value
     }
+
+    // MARK: Real RAW files
+
+    /// The camera RAW samples (`Scripts/fetch_raw_samples.sh`: raw.pixls.us
+    /// files under CC0 1.0, `Scripts/raw_samples.env`), in `RAW_SAMPLES_DIR`
+    /// or `Vendor/RawSamples`. On CI they must be there.
+    private var rawSamples: URL? {
+        let folder = ProcessInfo.processInfo.environment["RAW_SAMPLES_DIR"].map { URL(fileURLWithPath: $0) }
+            ?? URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+                .appendingPathComponent("Vendor/RawSamples")
+        return FileManager.default.fileExists(atPath: folder.appendingPathComponent("LICENSES.txt").path) ? folder : nil
+    }
+
+    /// Real RAW files of the formats LibRaw adds (Kodak `.kdc`, Minolta's
+    /// RD175 `.mdc`, Sinar `.sti`, Olympus `.ori` where ImageIO doesn't read
+    /// it) and of ImageIO's own (`.dng`, `.nef`, `.ori` on macOS 26) as the
+    /// control: each through the tile's and the full view's path, and
+    /// LibRaw's development beside ImageIO's where both read the file, else
+    /// beside the tile (the preview the camera wrote, where there is one).
+    /// The pictures go to the contact sheet.
+    func testRealRawSamplesShow() async throws {
+        guard let folder = rawSamples else {
+            if ProcessInfo.processInfo.environment["CI"] != nil { XCTFail("no RAW samples: Scripts/fetch_raw_samples.sh") }
+            throw XCTSkip("no RAW samples (Scripts/fetch_raw_samples.sh)")
+        }
+        let names = try FileManager.default.contentsOfDirectory(atPath: folder.path).filter { $0 != "LICENSES.txt" }.sorted()
+        XCTAssertEqual(names.count, 7)
+        let white = CGColor(gray: 1, alpha: 1)
+        func small(_ image: CGImage) -> RGBA {
+            RGBA.of(image, width: 192, height: max(1, 192 * image.height / max(1, image.width)), background: white)
+        }
+        for name in names {
+            let url = folder.appendingPathComponent(name)
+            let ext = url.pathExtension
+            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image, name)
+            let byLibRaw = RawDecoder.extensions.contains(ext)
+            let full = try await fullView(url, maxPixel: 1024)
+            let tile = try await tile(url, side: 256)
+            let data = try Data(contentsOf: url)
+            let developed = await RawDecoder.developed(data, named: url, half: true)
+            let libraw = try XCTUnwrap(developed.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 1024, now: true) }, "\(name): LibRaw")
+            var pictures: [(String, CGImage)] = [("tile", tile), ("full view (\(byLibRaw ? "LibRaw" : "ImageIO"))", full)]
+            // The tile and the full view show one picture
+            let tileAgainstFull = small(tile).difference(to: small(full))
+            print("decoders: \(name): \(byLibRaw ? "LibRaw" : "ImageIO"), full view \(full.width) × \(full.height), "
+                  + "tile \(tile.width) × \(tile.height), tile against full view: mean \(String(format: "%.1f", tileAgainstFull.mean))")
+            XCTAssertLessThan(tileAgainstFull.mean, 40, "\(name): tile and full view differ")
+            if byLibRaw {
+                pictures.append(("LibRaw half size", libraw))
+            } else {
+                // ImageIO and LibRaw develop the same raw data (their tone
+                // curves differ a little)
+                let source = try XCTUnwrap(CGImageSourceCreateWithURL(url as CFURL, nil))
+                let imageIO = try XCTUnwrap(MediaInfo.scaledDown(source, at: 0, maxPixel: 1024, now: true))
+                let against = small(libraw).difference(to: small(imageIO))
+                print("decoders: \(name): LibRaw against ImageIO: mean \(String(format: "%.1f", against.mean)), largest \(against.max)")
+                XCTAssertLessThan(against.mean, 40, "\(name): LibRaw and ImageIO differ")
+                pictures.append(("LibRaw half size", libraw))
+            }
+            snapshot("sample-\((name as NSString).deletingPathExtension)-\(ext)", pictures)
+        }
+    }
 }

@@ -16,6 +16,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 ./Scripts/fetch_vlckit.sh
+# The camera RAW samples PictureDecoderTests decodes (test data, not in the app)
+./Scripts/fetch_raw_samples.sh
 
 swift build --build-tests
 BIN="$(swift build --show-bin-path)"
