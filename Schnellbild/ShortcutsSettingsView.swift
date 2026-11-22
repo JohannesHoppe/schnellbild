@@ -197,17 +197,15 @@ struct ShortcutsSettingsView: View {
                     .accessibilityIdentifier("shortcut.bossKeyOff.title")
                 Spacer(minLength: 8)
                 if let key {
-                    HStack(spacing: 4) {
-                        ForEach(0..<3, id: \.self) { _ in cap(Text(verbatim: key.text), highlighted: false) }
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(Text(verbatim: Array(repeating: key.text, count: 3).joined(separator: " ")))
-                    .accessibilityIdentifier("shortcut.bossKeyOff.keys")
+                    // A sequence: three caps side by side, no sign between
+                    KeyCapsView(KeyCaps.sequence(key, times: 3), style: KeyCapStyle(size: 12, minWidth: 22, minHeight: 20, padding: 4))
+                        .fixedSize()
+                        .accessibilityIdentifier("shortcut.bossKeyOff.keys")
                 } else {
                     Text("no key").foregroundStyle(.tertiary)
                 }
             }
-            explanation(Text("Press the boss key three times within a second with Schnellbild in front (⌘-Tab)."))
+            explanation(Text("Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)."))
         }
         .padding(.vertical, 1)
     }
@@ -233,7 +231,9 @@ struct ShortcutsSettingsView: View {
                 recordingCap
             } else {
                 Button { startRecording(Recording(action: action, replacing: chord)) } label: {
-                    cap(Text(verbatim: chord.text), highlighted: false)
+                    // A cap per key, joined by "+"
+                    KeyCapsView(chord.caps, style: KeyCapStyle(size: 12, minWidth: 22, minHeight: 20, padding: 4))
+                        .fixedSize()
                 }
                 .buttonStyle(.plain)
                 .help("Click to type another key")

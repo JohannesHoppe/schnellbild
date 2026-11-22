@@ -412,10 +412,10 @@
 "Boss key on" = "Klawisz szefa włączony";
 "Boss key off" = "Klawisz szefa wyłączony";
 "Boss key on: every window turns invisible and every video silent at once" = "Klawisz szefa włączony: każde okno od razu znika, a każde wideo milknie";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Klawisz szefa wyłączony: naciśnij go trzy razy w ciągu sekundy, gdy Schnellbild jest na pierwszym planie (⌘-Tab)";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Klawisz szefa wyłączony: naciśnij go trzy razy w ciągu sekundy, gdy Schnellbild jest na pierwszym planie (⌘ + Tab)";
 "Every window turns invisible and every video silent at once." = "Każde okno od razu znika, a każde wideo milknie.";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Naciśnij klawisz szefa trzy razy w ciągu sekundy, gdy Schnellbild jest na pierwszym planie (⌘-Tab).";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild od razu znika, a każde wideo milknie. Kliknięcie ikony w Docku go nie przywraca. Aby go przywrócić, przełącz się na Schnellbild (⌘-Tab) i naciśnij %@ trzy razy w ciągu sekundy.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Naciśnij klawisz szefa trzy razy w ciągu sekundy, gdy Schnellbild jest na pierwszym planie (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild od razu znika, a każde wideo milknie. Kliknięcie ikony w Docku go nie przywraca. Aby go przywrócić, przełącz się na Schnellbild (⌘ + Tab) i naciśnij %@ trzy razy w ciągu sekundy.";
 "End the slideshow" = "Zakończ pokaz slajdów";
 "First item" = "Pierwszy element";
 "Last item" = "Ostatni element";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: do najbliższego elementu na mapie w tym kierunku; w dół do paska elementów bez lokalizacji";
 "Atlas: zoom the map in / out" = "Atlas: przybliż / oddal mapę";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: na kilku elementach przybliż, aż się rozdzielą; na jednym otwórz go";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: na elementach z jednego miejsca następny (także → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: na elementach z jednego miejsca następny (także %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Przeciągnij po niej lub przesuń uchwyt: na mapie tylko ten okres; kliknięcie: element zrobiony najbliżej tej chwili";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Podróż: miejsca w kolejności czasu, na pełnym ekranie, trasa narysowana na mapie";
 "arrows" = "strzałki";
@@ -655,7 +655,7 @@
 "Public domain" = "Domena publiczna";
 "No endorsement by NASA is implied." = "Nie oznacza poparcia ze strony NASA.";
 "NASA's media usage guidelines" = "Wytyczne NASA dotyczące mediów";
-"⌘F searches the license texts." = "⌘F przeszukuje teksty licencji.";
+"⌘ + F searches the license texts." = "⌘ + F przeszukuje teksty licencji.";
 "License texts" = "Teksty licencji";
 "Tilt the view" = "Pochyl widok";
 "Look straight down" = "Patrz pionowo w dół";

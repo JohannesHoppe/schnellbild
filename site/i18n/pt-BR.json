@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Veja em tamanho grande, navegue pelas teclas",
-      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e ← → percorrem a pasta. Amplie com o trackpad ou com + −, gire com ⌥← ⌥→, tela cheia com <kbd>f</kbd>. GIFs animados e SVG incluídos, PDF página por página.</p><p>Uma apresentação (<kbd>s</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>p</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
+      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e <kbd>◀</kbd> / <kbd>▶</kbd> percorrem a pasta. Amplie com o trackpad ou com <kbd>+</kbd> / <kbd>−</kbd>, gire com <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, tela cheia com <kbd>f</kbd>. GIFs animados e SVG incluídos, PDF página por página.</p><p>Uma apresentação (<kbd>s</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>p</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
       "alt": "Uma foto na visualização completa"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Vídeos, até MKV e AVI, que o macOS não reproduz",
-      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>⌘→ para o próximo vídeo e ⌘← de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> pulam um décimo do vídeo, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> um centésimo</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ajustam o volume, para todos os vídeos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> para o próximo vídeo e <kbd>⌘</kbd> + <kbd>◀</kbd> de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Um vídeo sendo reproduzido no Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "O que o arquivo realmente é",
-      "text": "<p><kbd>I</kbd> ou <kbd>⌘</kbd><kbd>I</kbd> abre as informações ao lado da imagem: quando e onde foi feita, com um pequeno mapa e a cidade próxima, câmera e lente, formato, resolução, codecs, taxa de bits, profundidade de bits e perfil de cor, e cada chave de metadados (EXIF, GPS, IPTC, XMP, QuickTime) para filtrar e copiar. Datas e lugares também vêm de arquivos XMP auxiliares, dos dados de GPS de uma GoPro ou de um drone DJI, dos arquivos de clipe da Sony e de trilhas GPX na pasta.</p><p>Quando a extensão do arquivo não corresponde ao conteúdo, aparece um aviso. Arquivos cujo nome não diz nada contam pelo conteúdo, e downloads ainda em andamento (.part, .crdownload…) aparecem até onde chegaram.</p>",
+      "text": "<p><kbd>I</kbd> ou <kbd>⌘</kbd> + <kbd>I</kbd> abre as informações ao lado da imagem: quando e onde foi feita, com um pequeno mapa e a cidade próxima, câmera e lente, formato, resolução, codecs, taxa de bits, profundidade de bits e perfil de cor, e cada chave de metadados (EXIF, GPS, IPTC, XMP, QuickTime) para filtrar e copiar. Datas e lugares também vêm de arquivos XMP auxiliares, dos dados de GPS de uma GoPro ou de um drone DJI, dos arquivos de clipe da Sony e de trilhas GPX na pasta.</p><p>Quando a extensão do arquivo não corresponde ao conteúdo, aparece um aviso. Arquivos cujo nome não diz nada contam pelo conteúdo, e downloads ainda em andamento (.part, .crdownload…) aparecem até onde chegaram.</p>",
       "alt": "As informações do arquivo ao lado de uma foto"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Claro ou escuro, você escolhe",
-      "text": "<p>Uns juram pelo modo escuro, outros não o suportam. Então você decide: Igual ao sistema, Claro ou Escuro, nos Ajustes (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Uns juram pelo modo escuro, outros não o suportam. Então você decide: Igual ao sistema, Claro ou Escuro, nos Ajustes (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Ajustes: aparência igual ao sistema, clara ou escura"
     }
   ],

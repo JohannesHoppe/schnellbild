@@ -63,8 +63,8 @@ final class InspectorIntegrationTests: XCTestCase {
         let s = Shortcuts(defaults: makeTestDefaults())
         let rows = ShortcutsHelpView.groups(s).flatMap(\.shortcuts)
         func keys(_ action: String) -> String? { rows.first { $0.action == String(localized: String.LocalizationValue(action)) }?.keys }
-        XCTAssertEqual(keys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘1 … ⌘6")
-        XCTAssertEqual(keys("File info"), "I / ⌘I")
+        XCTAssertEqual(keys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘ + 1 … ⌘ + 6")
+        XCTAssertEqual(keys("File info"), "I / ⌘ + I")
     }
 
     func testPerformingTheActions() async throws {

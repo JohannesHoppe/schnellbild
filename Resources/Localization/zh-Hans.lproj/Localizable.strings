@@ -412,10 +412,10 @@
 "Boss key on" = "老板键：开启";
 "Boss key off" = "老板键：关闭";
 "Boss key on: every window turns invisible and every video silent at once" = "老板键开启：所有窗口立即隐藏，所有视频立即静音";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "老板键关闭：将 Schnellbild 置于前台（⌘-Tab），在一秒内按三次";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "老板键关闭：将 Schnellbild 置于前台（⌘ + Tab），在一秒内按三次";
 "Every window turns invisible and every video silent at once." = "所有窗口立即隐藏，所有视频立即静音。";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "将 Schnellbild 置于前台（⌘-Tab），在一秒内按三次老板键。";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild 会立即消失，所有视频立即静音。点按程序坞图标不会让它恢复。要恢复，请切换到 Schnellbild（⌘-Tab），然后在一秒内按三次 %@。";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "将 Schnellbild 置于前台（⌘ + Tab），在一秒内按三次老板键。";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild 会立即消失，所有视频立即静音。点按程序坞图标不会让它恢复。要恢复，请切换到 Schnellbild（⌘ + Tab），然后在一秒内按三次 %@。";
 "End the slideshow" = "结束幻灯片放映";
 "First item" = "第一个项目";
 "Last item" = "最后一个项目";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "地图集：移到该方向上地图中最近的项目；向下进入无位置项目条";
 "Atlas: zoom the map in / out" = "地图集：放大 / 缩小地图";
 "Atlas: on several items, zoom in until they part; on one, open it" = "地图集：在多个项目上放大直到分开；在单个项目上打开它";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "地图集：在同一地点的项目上选下一项（→ ← 亦可）";
+"Atlas: on items taken at one place, the next one (%@ too)" = "地图集：在同一地点的项目上选下一项（%@ 亦可）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "横向拖移或移动手柄：地图上只显示该时间段；点按：显示最接近该时间拍摄的项目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅程：按时间顺序逐个地点，全屏显示，路线绘制在地图上";
 "arrows" = "方向键";
@@ -655,7 +655,7 @@
 "Public domain" = "公有领域";
 "No endorsement by NASA is implied." = "不代表 NASA 的认可。";
 "NASA's media usage guidelines" = "NASA 媒体使用准则";
-"⌘F searches the license texts." = "⌘F 可在许可证文本中搜索。";
+"⌘ + F searches the license texts." = "⌘ + F 可在许可证文本中搜索。";
 "License texts" = "许可证文本";
 "Tilt the view" = "倾斜视角";
 "Look straight down" = "垂直向下看";

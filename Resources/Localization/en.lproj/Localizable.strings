@@ -412,10 +412,10 @@
 "Boss key on" = "Boss key on";
 "Boss key off" = "Boss key off";
 "Boss key on: every window turns invisible and every video silent at once" = "Boss key on: every window turns invisible and every video silent at once";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)";
 "Every window turns invisible and every video silent at once." = "Every window turns invisible and every video silent at once.";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Press the boss key three times within a second with Schnellbild in front (⌘-Tab).";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Press the boss key three times within a second with Schnellbild in front (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second.";
 "End the slideshow" = "End the slideshow";
 "First item" = "First item";
 "Last item" = "Last item";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: to the nearest item on the map that way; down into the strip of items without a location";
 "Atlas: zoom the map in / out" = "Atlas: zoom the map in / out";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: on several items, zoom in until they part; on one, open it";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: on items taken at one place, the next one (→ ← too)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: on items taken at one place, the next one (%@ too)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Drag across or move a handle: only that time on the map; click: the item taken nearest then";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Tour: the places in the order of time, full screen, the route drawn on the map";
 "arrows" = "arrows";
@@ -655,7 +655,7 @@
 "Public domain" = "Public domain";
 "No endorsement by NASA is implied." = "No endorsement by NASA is implied.";
 "NASA's media usage guidelines" = "NASA's media usage guidelines";
-"⌘F searches the license texts." = "⌘F searches the license texts.";
+"⌘ + F searches the license texts." = "⌘ + F searches the license texts.";
 "License texts" = "License texts";
 "Tilt the view" = "Tilt the view";
 "Look straight down" = "Look straight down";

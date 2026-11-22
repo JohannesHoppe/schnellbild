@@ -91,42 +91,51 @@ struct KeyChord: Hashable {
 
     // MARK: Shown
 
-    /// As Apple's keyboards and menus show it: ⌃⌥⇧⌘ in that order, then the
-    /// key (⌫ ↩ ⎋ ⇥ ↖ ↘, letters in capitals, the space bar by its name in
-    /// the user's language).
-    var text: String { modifierText + keyText }
+    /// As plain text, for tooltips and sentences: each key as macOS's menus
+    /// draw it (`KeyGlyphs`), modifiers in Apple's order
+    /// ⌃ ⌥ ⇧ ⌘, joined by "+" ("⇧ + ⌘ + N"); letters in capitals, the space
+    /// bar by its name in the user's language; Home / End with the way to
+    /// type them on a Mac keyboard ("⤒ (fn + ◀)").
+    var text: String { caps.text }
 
-    /// The same, with words in English where `text` has words: stable in
-    /// every language, for the mini keyboard's accessibility identifiers.
+    /// The keys as caps (`KeyCapsView`), each key its own.
+    var caps: KeyCaps { KeyCaps.chord(self) }
+
+    /// On a button's key caps: Esc as "esc", as on the keyboard and the
+    /// sheets' buttons; every other key as `caps`.
+    var buttonCaps: KeyCaps { KeyCaps.chord(self, escWord: true) }
+
+    /// The modifiers and the key in one word, without the fn way ("⇧⌘N"):
+    /// what a search in Settings → Keyboard is compared with.
+    var compactText: String { modifierGlyphs.joined() + keyText(.current) }
+
+    /// The same with words in English where `text` has words, and the
+    /// plain arrows: stable, for the mini keyboard's accessibility
+    /// identifiers ("key.→").
     var idText: String {
+        let modifiers = modifierGlyphs.joined()
         switch key {
-        case .space:  return modifierText + "space"
-        case .escape: return modifierText + "esc"
-        case .tab:    return modifierText + "Tab"
-        default:      return text
+        case .space:  return modifiers + "space"
+        case .escape: return modifiers + "esc"
+        case .tab:    return modifiers + "Tab"
+        default:      return modifiers + keyText(.arrows)
         }
     }
 
-    /// On a button's key cap: Esc as "esc", as on the keyboard and the
-    /// sheets' buttons; every other key as `text`.
-    var capText: String { key == .escape && modifierText.isEmpty ? "esc" : text }
-
-    private var modifierText: String {
-        (control ? "⌃" : "") + (option ? "⌥" : "") + (shift ? "⇧" : "") + (command ? "⌘" : "")
+    /// ⌃ ⌥ ⇧ ⌘, in Apple's order, those held.
+    var modifierGlyphs: [String] {
+        (control ? ["⌃"] : []) + (option ? ["⌥"] : []) + (shift ? ["⇧"] : []) + (command ? ["⌘"] : [])
     }
 
-    private var keyText: String {
+    /// The key alone; the arrows, Home and End as `glyphs` draw them.
+    func keyText(_ glyphs: KeyGlyphs) -> String {
+        if let glyph = glyphs.glyph(key) { return glyph }
         switch key {
-        case .left: return "←"
-        case .right: return "→"
-        case .up: return "↑"
-        case .down: return "↓"
+        case .left, .right, .up, .down, .home, .end: return ""
         case .space: return String(localized: "Space")
         case .enter: return "↩"
         case .escape: return "⎋"
         case .backspace: return "⌫"
-        case .home: return "↖"
-        case .end: return "↘"
         case .insert: return "Insert"
         case .tab: return "⇥"
         case .f1: return "F1"
@@ -553,7 +562,10 @@ final class Shortcuts: ObservableObject {
     func keys(_ action: ShortcutAction) -> [KeyChord] { bindings[action] ?? action.keys(in: preset) }
 
     /// The keys as F1 lists them: "Space / F3"; "" without any.
-    func text(_ action: ShortcutAction) -> String { keys(action).map(\.text).joined(separator: " / ") }
+    func text(_ action: ShortcutAction) -> String { caps(action).text }
+
+    /// The same as caps.
+    func caps(_ action: ShortcutAction) -> KeyCaps { KeyCaps.either(keys(action).map(\.caps)) }
 
     /// The keys for a tooltip or a sentence; the localized "no key" without any.
     func hint(_ action: ShortcutAction) -> String {
@@ -570,27 +582,36 @@ final class Shortcuts: ObservableObject {
         if action.name.range(of: words, options: [.caseInsensitive, .diacriticInsensitive]) != nil { return true }
         let wanted = Self.keySearch(words)
         guard !wanted.isEmpty else { return false }
-        return keys(action).contains { $0.text.uppercased().replacingOccurrences(of: " ", with: "").contains(wanted) }
+        return keys(action).contains { $0.compactText.uppercased().replacingOccurrences(of: " ", with: "").contains(wanted) }
     }
 
-    /// Typed keys as `KeyChord.text` writes them: names of modifiers and
-    /// keys become glyphs, spaces and the "+" between keys go, capitals.
-    static func keySearch(_ typed: String) -> String {
+    /// Typed keys as `KeyChord.compactText` writes them: names of modifiers
+    /// and keys become `glyphs` (also a plain arrow typed, ← for ◀), spaces
+    /// and the "+" between keys go, capitals.
+    static func keySearch(_ typed: String, glyphs: KeyGlyphs = .current) -> String {
         let names: [(String, String)] = [
             ("command", "⌘"), ("cmd", "⌘"), ("option", "⌥"), ("opt", "⌥"), ("alt", "⌥"), ("control", "⌃"), ("ctrl", "⌃"),
             ("shift", "⇧"), ("escape", "⎋"), ("esc", "⎋"), ("return", "↩"), ("enter", "↩"), ("backspace", "⌫"),
-            ("delete", "⌫"), ("tab", "⇥"), ("left", "←"), ("right", "→"), ("up", "↑"), ("down", "↓"),
+            ("delete", "⌫"), ("tab", "⇥"), ("left", glyphs.left), ("right", glyphs.right), ("up", glyphs.up),
+            ("down", glyphs.down), ("home", glyphs.home), ("end", glyphs.end),
         ]
         var parts = typed.lowercased().split(whereSeparator: { $0 == " " || $0 == "+" }).map(String.init)
         // A "+" typed last is the plus key itself ("⌘+")
         if typed.hasSuffix("+"), typed.count > 1 { parts.append("+") }
         if typed == "+" { parts = ["+"] }
-        let glyphs = parts.map { part in names.first { $0.0 == part }?.1 ?? part }
-        // Modifiers in Apple's order, as `text` writes them
+        let named = parts.map { part in names.first { $0.0 == part }?.1 ?? part }
+        // Modifiers in Apple's order, as `compactText` writes them
         let order = ["⌃", "⌥", "⇧", "⌘"]
-        let modifiers = order.filter { glyph in glyphs.contains { $0.contains(glyph) && $0.count == 1 } }
-        let rest = glyphs.filter { !(order.contains($0)) }.joined()
-        return (modifiers.joined() + rest).replacingOccurrences(of: "-", with: "−").uppercased()
+        let modifiers = order.filter { glyph in named.contains { $0.contains(glyph) && $0.count == 1 } }
+        var text = modifiers.joined() + named.filter { !(order.contains($0)) }.joined()
+        // The plain arrows typed (←, ↖) for the glyphs shown (◀, ⤒)
+        for other in [KeyGlyphs.arrows, .menus] where other != glyphs {
+            for (from, to) in [(other.left, glyphs.left), (other.right, glyphs.right), (other.up, glyphs.up), (other.down, glyphs.down),
+                               (other.home, glyphs.home), (other.end, glyphs.end)] {
+                text = text.replacingOccurrences(of: from, with: to)
+            }
+        }
+        return text.replacingOccurrences(of: "-", with: "−").uppercased()
     }
 
     /// The first key with ⌘ or ⌃, for the action's menu item.

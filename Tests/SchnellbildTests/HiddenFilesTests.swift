@@ -486,7 +486,7 @@ final class HiddenFilesTests: XCTestCase {
         let window = WindowModel(left: left, defaults: defaults) { BrowserModel(defaults: defaults, settingsPrefix: "rightPane.") }
         window.shortcuts = Shortcuts(defaults: defaults)
         let key = try XCTUnwrap(KeyChord(stored: "$@."))
-        XCTAssertEqual(key.text, "⇧⌘.")
+        XCTAssertEqual(key.text, "⇧ + ⌘ + .")
         XCTAssertTrue(key.isOnKey)
         XCTAssertEqual(window.shortcuts.keys(.hiddenFiles), [key])
         XCTAssertEqual(key.menuShortcut, KeyboardShortcut(".", modifiers: [.command, .shift]))

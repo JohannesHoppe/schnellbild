@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Se billedet stort, bladr med tasterne",
-      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er og SVG er med, PDF side for side.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod. Det, diasshowet afspiller, er afspilningslisten: <kbd>p</kbd> åbner den, så du kan ændre rækkefølgen og sortere fra.</p>",
+      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, <kbd>◀</kbd> / <kbd>▶</kbd> blader gennem mappen. Zoom med pegefeltet eller <kbd>+</kbd> / <kbd>−</kbd>, drej med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, fuld skærm med <kbd>f</kbd>. Animerede GIF'er og SVG er med, PDF side for side.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod. Det, diasshowet afspiller, er afspilningslisten: <kbd>p</kbd> åbner den, så du kan ændre rækkefølgen og sortere fra.</p>",
       "alt": "Et foto i fuld visning"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Videoer, også MKV og andre, som macOS ikke kan afspille",
-      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>⌘→ til næste video og ⌘← tilbage: den første fortsætter, hvor den slap</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem til midt i, står den igangværende linje der med det samme, og ASS-undertekster beholder placering, farver og skrifter</li><li>Finder og funktionen Vis får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springer en tiendedel af videoen, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundrededel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> indstiller lydstyrken, for alle videoer</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> til næste video og <kbd>⌘</kbd> + <kbd>◀</kbd> tilbage: den første fortsætter, hvor den slap</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem til midt i, står den igangværende linje der med det samme, og ASS-undertekster beholder placering, farver og skrifter</li><li>Finder og funktionen Vis får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video, der afspilles i Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Hvad filen i virkeligheden er",
-      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd><kbd>I</kbd> åbner filinfo ved siden af billedet: hvornår og hvor det blev taget, med et lille kort og byen i nærheden, kamera og objektiv, format, opløsning, codecs, bitrate, bitdybde og farveprofil, og hver metadatanøgle (EXIF, GPS, IPTC, XMP, QuickTime) til at filtrere og kopiere. Tid og sted kommer også fra XMP-sidefiler, GPS-data fra en GoPro eller DJI-drone, Sonys klipfiler og GPX-spor i mappen.</p><p>Passer filtypen ikke til indholdet, får du en bemærkning. Filer, hvis navn intet siger, tæller efter indholdet, og downloads, der stadig er i gang (.part, .crdownload …), vises så langt, de er nået.</p>",
+      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd> + <kbd>I</kbd> åbner filinfo ved siden af billedet: hvornår og hvor det blev taget, med et lille kort og byen i nærheden, kamera og objektiv, format, opløsning, codecs, bitrate, bitdybde og farveprofil, og hver metadatanøgle (EXIF, GPS, IPTC, XMP, QuickTime) til at filtrere og kopiere. Tid og sted kommer også fra XMP-sidefiler, GPS-data fra en GoPro eller DJI-drone, Sonys klipfiler og GPX-spor i mappen.</p><p>Passer filtypen ikke til indholdet, får du en bemærkning. Filer, hvis navn intet siger, tæller efter indholdet, og downloads, der stadig er i gang (.part, .crdownload …), vises så langt, de er nået.</p>",
       "alt": "Filinfo ved siden af et foto"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Lyst eller mørkt, du vælger",
-      "text": "<p>Nogle sværger til mørk tilstand, andre kan ikke fordrage den. Så du vælger: Som systemet, Lys eller Mørk, i Indstillinger (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Nogle sværger til mørk tilstand, andre kan ikke fordrage den. Så du vælger: Som systemet, Lys eller Mørk, i Indstillinger (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Indstillinger: udseende som systemet, lyst eller mørkt"
     }
   ],

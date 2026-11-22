@@ -44,7 +44,7 @@ enum BossKey {
     /// The first use's alert, with the boss key as set.
     static func explanation(_ shortcuts: Shortcuts) -> String {
         let key = shortcuts.keys(.bossKey).first?.text ?? String(localized: "no key")
-        return String(localized: "Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press \(key) three times within a second.")
+        return String(localized: "Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press \(key) three times within a second.")
     }
 
     private static func explain() {

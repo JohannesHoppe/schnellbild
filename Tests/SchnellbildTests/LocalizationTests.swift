@@ -374,25 +374,18 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
-    /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥
-    /// ↖ ↘) where Apple has them, and the space bar by its name in each
-    /// language. The actions' keys are drawn by `KeyChord.text`
-    /// (`ShortcutsTests.testKeysAreShownAsOnApplesKeyboards`); the keys the
-    /// F1 help writes out itself hold no English key names either, and the
-    /// mini keyboard names its keys in the stored form only.
+    /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥,
+    /// the arrows, Home and End as macOS's menus draw them, `KeyGlyphs`) where
+    /// Apple has them, and the space bar by its name in each language. The
+    /// actions' keys and the F1 help's own keys (`HelpKeys.fixed`, chords)
+    /// are drawn by `KeyChord.caps`
+    /// (`ShortcutsTests.testKeysAreShownAsOnApplesKeyboards`); the mini
+    /// keyboard names its keys in the stored form only.
     func testKeyNamesAreGlyphsOrTranslated() throws {
         let sources = root.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Schnellbild")
         let help = try String(contentsOf: sources.appendingPathComponent("ShortcutsHelpView.swift"), encoding: .utf8)
-        let fixed = try NSRegularExpression(pattern: "\\.fixed\\(\"([^\"]+)\"\\)")
-        let names = try NSRegularExpression(pattern: "\\b(Backspace|Delete|Return|Enter|Esc|Escape|Tab|Home|End|Page ?Up|Page ?Down|space)\\b")
-        var found = 0
-        for match in fixed.matches(in: help, range: NSRange(help.startIndex..., in: help)) {
-            let text = (help as NSString).substring(with: match.range(at: 1))
-            found += 1
-            XCTAssertEqual(names.numberOfMatches(in: text, range: NSRange(text.startIndex..., in: text)), 0,
-                           "F1 help: “\(text)” names a key in English; Apple's glyph instead")
-        }
-        XCTAssertGreaterThan(found, 3, "the scanner finds the help's own keys")
+        XCTAssertFalse(help.contains(".fixed(\""), "F1 help: its own keys are chords, drawn as every key is")
+        XCTAssertGreaterThan(help.components(separatedBy: ".fixed([KeyChord(").count - 1, 3, "the help's own keys are found")
         // The mini keyboard's keys: an action and its key in the stored form ("space", "@f")
         let keyboard = try String(contentsOf: sources.appendingPathComponent("MiniKeyboard.swift"), encoding: .utf8)
         let keys = try NSRegularExpression(pattern: "Key\\(\\.[A-Za-z0-9]+, \"([^\"]+)\", word:")

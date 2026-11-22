@@ -412,10 +412,10 @@
 "Boss key on" = "Chefsknapp på";
 "Boss key off" = "Chefsknapp av";
 "Boss key on: every window turns invisible and every video silent at once" = "Chefsknapp på: varje fönster blir osynligt och varje video tyst direkt";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Chefsknapp av: tryck på den tre gånger inom en sekund med Schnellbild längst fram (⌘-Tab)";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Chefsknapp av: tryck på den tre gånger inom en sekund med Schnellbild längst fram (⌘ + Tab)";
 "Every window turns invisible and every video silent at once." = "Varje fönster blir osynligt och varje video tyst direkt.";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Tryck på chefsknappen tre gånger inom en sekund med Schnellbild längst fram (⌘-Tab).";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild försvinner direkt och varje video tystnar. Ett klick på symbolen i Dock tar inte tillbaka det. Byt till Schnellbild (⌘-Tab) och tryck på %@ tre gånger inom en sekund för att ta tillbaka det.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Tryck på chefsknappen tre gånger inom en sekund med Schnellbild längst fram (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild försvinner direkt och varje video tystnar. Ett klick på symbolen i Dock tar inte tillbaka det. Byt till Schnellbild (⌘ + Tab) och tryck på %@ tre gånger inom en sekund för att ta tillbaka det.";
 "End the slideshow" = "Avsluta bildspelet";
 "First item" = "Första objektet";
 "Last item" = "Sista objektet";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: till närmaste objekt på kartan åt det hållet; ned till raden med objekt utan plats";
 "Atlas: zoom the map in / out" = "Atlas: zooma in / ut på kartan";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flera objekt zooma in tills de delas; på ett öppna det";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: på objekt från samma plats nästa (även → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: på objekt från samma plats nästa (även %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Dra över eller flytta ett handtag: bara den tiden på kartan; klick: objektet som togs närmast den tiden";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Resa: platserna i tidsordning, i helskärm, rutten ritad på kartan";
 "arrows" = "pilar";
@@ -655,7 +655,7 @@
 "Public domain" = "Allmän egendom";
 "No endorsement by NASA is implied." = "Inget godkännande från NASA avses.";
 "NASA's media usage guidelines" = "NASA:s riktlinjer för användning av media";
-"⌘F searches the license texts." = "⌘F söker i licenstexterna.";
+"⌘ + F searches the license texts." = "⌘ + F söker i licenstexterna.";
 "License texts" = "Licenstexter";
 "Tilt the view" = "Luta vyn";
 "Look straight down" = "Titta rakt ned";

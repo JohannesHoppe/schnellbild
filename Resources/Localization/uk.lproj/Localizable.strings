@@ -412,10 +412,10 @@
 "Boss key on" = "Клавіша «бос»: увімк.";
 "Boss key off" = "Клавіша «бос»: вимк.";
 "Boss key on: every window turns invisible and every video silent at once" = "Клавіша «бос», увімк.: кожне вікно одразу стає невидимим, кожне відео замовкає";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Клавіша «бос», вимк.: натисніть її тричі протягом секунди, коли Schnellbild на передньому плані (⌘-Tab)";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Клавіша «бос», вимк.: натисніть її тричі протягом секунди, коли Schnellbild на передньому плані (⌘ + Tab)";
 "Every window turns invisible and every video silent at once." = "Кожне вікно одразу стає невидимим, кожне відео замовкає.";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Натисніть клавішу «бос» тричі протягом секунди, коли Schnellbild на передньому плані (⌘-Tab).";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild одразу зникає, і кожне відео замовкає. Клацання значка в Dock його не повертає. Щоб повернути його, перейдіть до Schnellbild (⌘-Tab) і натисніть %@ тричі протягом секунди.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Натисніть клавішу «бос» тричі протягом секунди, коли Schnellbild на передньому плані (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild одразу зникає, і кожне відео замовкає. Клацання значка в Dock його не повертає. Щоб повернути його, перейдіть до Schnellbild (⌘ + Tab) і натисніть %@ тричі протягом секунди.";
 "End the slideshow" = "Завершити слайд-шоу";
 "First item" = "Перший об’єкт";
 "Last item" = "Останній об’єкт";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Атлас: до найближчого об'єкта на мапі в цьому напрямку; вниз, у смугу об'єктів без місця";
 "Atlas: zoom the map in / out" = "Атлас: наблизити / віддалити мапу";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Атлас: на кількох об'єктах наближати, доки вони не розійдуться; на одному відкрити його";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Атлас: на об'єктах, знятих в одному місці, наступний (також → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Атлас: на об'єктах, знятих в одному місці, наступний (також %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Провести поверх або посунути ручку: на мапі лише цей період; клацання: об'єкт, знятий найближче до цього часу";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Подорож: місця в порядку часу, на весь екран, маршрут намальовано на мапі";
 "arrows" = "стрілки";
@@ -655,7 +655,7 @@
 "Public domain" = "Суспільне надбання";
 "No endorsement by NASA is implied." = "Це не означає схвалення з боку NASA.";
 "NASA's media usage guidelines" = "Правила NASA щодо медіаматеріалів";
-"⌘F searches the license texts." = "⌘F шукає в текстах ліцензій.";
+"⌘ + F searches the license texts." = "⌘ + F шукає в текстах ліцензій.";
 "License texts" = "Тексти ліцензій";
 "Tilt the view" = "Нахилити вигляд";
 "Look straight down" = "Дивитися прямо вниз";

@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Büyük görüntüleyin, tuşlarla gezinin",
-      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, ← → klasörde gezinir. İzleme dörtgeniyle veya + − ile yakınlaştırın, ⌥← ⌥→ ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler ve SVG de dahil, PDF sayfa sayfa.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>p</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
+      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, <kbd>◀</kbd> / <kbd>▶</kbd> klasörde gezinir. İzleme dörtgeniyle veya <kbd>+</kbd> / <kbd>−</kbd> ile yakınlaştırın, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler ve SVG de dahil, PDF sayfa sayfa.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>p</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
       "alt": "Büyük görünümde bir fotoğraf"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Videolar, macOS’in oynatamadığı MKV ve AVI de",
-      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>⌘→ ile sonraki videoya, ⌘← ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> videonun onda biri kadar, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> yüzde biri kadar atlar</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ses düzeyini ayarlar, tüm videolar için</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> ile sonraki videoya, <kbd>⌘</kbd> + <kbd>◀</kbd> ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
       "alt": "Schnellbild’de oynayan bir video"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Dosya aslında ne",
-      "text": "<p><kbd>I</kbd> veya <kbd>⌘</kbd><kbd>I</kbd>, dosya bilgilerini resmin yanında açar: ne zaman ve nerede çekildiği, küçük bir harita ve yakındaki yerleşimle, fotoğraf makinesi ve objektif, biçim, çözünürlük, kodekler, bit hızı, bit derinliği ve renk profili, ayrıca filtrelenip kopyalanabilen her meta veri anahtarı (EXIF, GPS, IPTC, XMP, QuickTime). Zaman ve yer bilgisi XMP yan dosyalarından, bir GoPro’nun ya da DJI drone’un GPS verilerinden, Sony’nin klip dosyalarından ve klasördeki GPX izlerinden de gelir.</p><p>Dosya uzantısı içerikle uyuşmazsa bir not düşer. Adı bir şey söylemeyen dosyalar içeriklerine göre tanınır, süren indirmeler (.part, .crdownload vb.) de geldikleri yere kadar gösterilir.</p>",
+      "text": "<p><kbd>I</kbd> veya <kbd>⌘</kbd> + <kbd>I</kbd>, dosya bilgilerini resmin yanında açar: ne zaman ve nerede çekildiği, küçük bir harita ve yakındaki yerleşimle, fotoğraf makinesi ve objektif, biçim, çözünürlük, kodekler, bit hızı, bit derinliği ve renk profili, ayrıca filtrelenip kopyalanabilen her meta veri anahtarı (EXIF, GPS, IPTC, XMP, QuickTime). Zaman ve yer bilgisi XMP yan dosyalarından, bir GoPro’nun ya da DJI drone’un GPS verilerinden, Sony’nin klip dosyalarından ve klasördeki GPX izlerinden de gelir.</p><p>Dosya uzantısı içerikle uyuşmazsa bir not düşer. Adı bir şey söylemeyen dosyalar içeriklerine göre tanınır, süren indirmeler (.part, .crdownload vb.) de geldikleri yere kadar gösterilir.</p>",
       "alt": "Bir fotoğrafın yanında dosya bilgileri"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Açık ya da koyu, sen seç",
-      "text": "<p>Kimi koyu moda bayılır, kimi ona katlanamaz. Seçim senin: Sistemle aynı, Açık ya da Koyu, Ayarlar'da (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Kimi koyu moda bayılır, kimi ona katlanamaz. Seçim senin: Sistemle aynı, Açık ya da Koyu, Ayarlar'da (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Ayarlar: görünüm sistemle aynı, açık veya koyu"
     }
   ],

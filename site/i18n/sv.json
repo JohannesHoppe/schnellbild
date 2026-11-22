@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Se bilden stort, bläddra med tangenterna",
-      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, ← → bläddrar genom mappen. Zooma med styrplattan eller + −, rotera med ⌥← ⌥→, helskärm med <kbd>f</kbd>. Animerade GIF:ar och SVG ingår, PDF sida för sida.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>p</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
+      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, <kbd>◀</kbd> / <kbd>▶</kbd> bläddrar genom mappen. Zooma med styrplattan eller <kbd>+</kbd> / <kbd>−</kbd>, rotera med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, helskärm med <kbd>f</kbd>. Animerade GIF:ar och SVG ingår, PDF sida för sida.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>p</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
       "alt": "Ett foto i helvyn"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Videor, även MKV och andra som macOS inte kan spela",
-      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hoppar en tiondel av videon, ⇧← ⇧→ en hundradel</li><li>↑ ↓ ställer in volymen, för alla videor</li><li>⌘→ till nästa video och ⌘← tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Finder och Överblick får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
+      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Finder och Överblick får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
       "alt": "En video som spelas i Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Vad filen egentligen är",
-      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd><kbd>I</kbd> öppnar filinfon bredvid bilden: när och var den togs, med en liten karta och orten i närheten, kamera och objektiv, format, upplösning, kodekar, bithastighet, bitdjup och färgprofil, och varje metadatanyckel (EXIF, GPS, IPTC, XMP, QuickTime) att filtrera och kopiera. Tid och plats kommer också från XMP-sidofiler, GPS-data från en GoPro eller DJI-drönare, Sonys klippfiler och GPX-spår i mappen.</p><p>Stämmer filändelsen inte med innehållet får du en notering. Filer vars namn inte säger något räknas efter innehållet, och nedladdningar som pågår (.part, .crdownload …) visas så långt de har kommit.</p>",
+      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd> + <kbd>I</kbd> öppnar filinfon bredvid bilden: när och var den togs, med en liten karta och orten i närheten, kamera och objektiv, format, upplösning, kodekar, bithastighet, bitdjup och färgprofil, och varje metadatanyckel (EXIF, GPS, IPTC, XMP, QuickTime) att filtrera och kopiera. Tid och plats kommer också från XMP-sidofiler, GPS-data från en GoPro eller DJI-drönare, Sonys klippfiler och GPX-spår i mappen.</p><p>Stämmer filändelsen inte med innehållet får du en notering. Filer vars namn inte säger något räknas efter innehållet, och nedladdningar som pågår (.part, .crdownload …) visas så långt de har kommit.</p>",
       "alt": "Filinfo bredvid ett foto"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Ljust eller mörkt, du väljer",
-      "text": "<p>Vissa svär vid mörkt läge, andra står inte ut med det. Så du väljer: Som systemet, Ljust eller Mörkt, i Inställningar (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Vissa svär vid mörkt läge, andra står inte ut med det. Så du väljer: Som systemet, Ljust eller Mörkt, i Inställningar (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Inställningar: utseende som systemet, ljust eller mörkt"
     }
   ],

@@ -412,10 +412,10 @@
 "Boss key on" = "ボスキーをオン";
 "Boss key off" = "ボスキーをオフ";
 "Boss key on: every window turns invisible and every video silent at once" = "ボスキーをオン：すべてのウインドウがすぐに見えなくなり、すべてのビデオが消音";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "ボスキーをオフ：Schnellbild を前面にして（⌘-Tab）1 秒以内に 3 回押す";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "ボスキーをオフ：Schnellbild を前面にして（⌘ + Tab）1 秒以内に 3 回押す";
 "Every window turns invisible and every video silent at once." = "すべてのウインドウがすぐに見えなくなり、すべてのビデオが消音になります。";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Schnellbild を前面にして（⌘-Tab）ボスキーを 1 秒以内に 3 回押します。";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild はすぐに消え、すべてのビデオが消音になります。Dock のアイコンをクリックしても元に戻りません。元に戻すには、Schnellbild に切り替えて（⌘-Tab）%@ を 1 秒以内に 3 回押します。";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Schnellbild を前面にして（⌘ + Tab）ボスキーを 1 秒以内に 3 回押します。";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild はすぐに消え、すべてのビデオが消音になります。Dock のアイコンをクリックしても元に戻りません。元に戻すには、Schnellbild に切り替えて（⌘ + Tab）%@ を 1 秒以内に 3 回押します。";
 "End the slideshow" = "スライドショーを終了";
 "First item" = "最初の項目";
 "Last item" = "最後の項目";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "アトラス：その方向で地図上の最も近い項目へ。下で位置情報のない項目の列へ";
 "Atlas: zoom the map in / out" = "アトラス：地図を拡大 / 縮小";
 "Atlas: on several items, zoom in until they part; on one, open it" = "アトラス：複数の項目では分かれるまで拡大、1件なら開く";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "アトラス：同じ場所の項目では次の項目（→ ← でも）";
+"Atlas: on items taken at one place, the next one (%@ too)" = "アトラス：同じ場所の項目では次の項目（%@ でも）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "ドラッグするかハンドルを動かす：その期間だけを地図に表示。クリック：その時刻に最も近い項目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅：撮影順に場所を巡り、フルスクリーンで表示し、ルートを地図に描く";
 "arrows" = "矢印";
@@ -655,7 +655,7 @@
 "Public domain" = "パブリックドメイン";
 "No endorsement by NASA is implied." = "NASA による推奨を意味するものではありません。";
 "NASA's media usage guidelines" = "NASA のメディア利用ガイドライン";
-"⌘F searches the license texts." = "⌘F でライセンス文を検索できます。";
+"⌘ + F searches the license texts." = "⌘ + F でライセンス文を検索できます。";
 "License texts" = "ライセンス文";
 "Tilt the view" = "視点を傾ける";
 "Look straight down" = "真上から見る";

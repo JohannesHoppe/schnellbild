@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "Duży podgląd, przewijanie klawiszami",
-      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a ← → przewijają folder. Powiększaj gładzikiem lub klawiszami + −, obracaj ⌥← ⌥→, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y i SVG też, PDF strona po stronie.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
+      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a <kbd>◀</kbd> / <kbd>▶</kbd> przewijają folder. Powiększaj gładzikiem lub klawiszami <kbd>+</kbd> / <kbd>−</kbd>, obracaj <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y i SVG też, PDF strona po stronie.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
       "alt": "Zdjęcie w pełnym widoku"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
-      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>⌘→ do następnego filmu i ⌘← z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
+      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> przeskakują o jedną dziesiątą filmu, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o jedną setną</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ustawiają głośność, dla każdego filmu</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> do następnego filmu i <kbd>⌘</kbd> + <kbd>◀</kbd> z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Czym naprawdę jest plik",
-      "text": "<p><kbd>I</kbd> lub <kbd>⌘</kbd><kbd>I</kbd> otwiera informacje obok obrazu: kiedy i gdzie powstał, z małą mapą i pobliską miejscowością, aparat i obiektyw, format, rozdzielczość, kodeki, przepływność, głębia bitowa i profil kolorów, a do tego każdy klucz metadanych (EXIF, GPS, IPTC, XMP, QuickTime) do filtrowania i kopiowania. Czas i miejsce pochodzą też z plików XMP obok zdjęć, z danych GPS kamery GoPro lub drona DJI, z plików klipów Sony i ze ścieżek GPX w folderze.</p><p>Gdy rozszerzenie pliku nie pasuje do zawartości, pojawia się uwaga. Pliki o nic niemówiących nazwach liczą się według zawartości, a pobierane jeszcze pliki (.part, .crdownload itp.) widać w takim stopniu, w jakim już dotarły.</p>",
+      "text": "<p><kbd>I</kbd> lub <kbd>⌘</kbd> + <kbd>I</kbd> otwiera informacje obok obrazu: kiedy i gdzie powstał, z małą mapą i pobliską miejscowością, aparat i obiektyw, format, rozdzielczość, kodeki, przepływność, głębia bitowa i profil kolorów, a do tego każdy klucz metadanych (EXIF, GPS, IPTC, XMP, QuickTime) do filtrowania i kopiowania. Czas i miejsce pochodzą też z plików XMP obok zdjęć, z danych GPS kamery GoPro lub drona DJI, z plików klipów Sony i ze ścieżek GPX w folderze.</p><p>Gdy rozszerzenie pliku nie pasuje do zawartości, pojawia się uwaga. Pliki o nic niemówiących nazwach liczą się według zawartości, a pobierane jeszcze pliki (.part, .crdownload itp.) widać w takim stopniu, w jakim już dotarły.</p>",
       "alt": "Informacje o pliku obok zdjęcia"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Jasny albo ciemny, jak wolisz",
-      "text": "<p>Jedni nie wyobrażają sobie życia bez trybu ciemnego, inni go nie znoszą. Więc wybierasz sam: Jak w systemie, Jasny albo Ciemny, w Ustawieniach (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Jedni nie wyobrażają sobie życia bez trybu ciemnego, inni go nie znoszą. Więc wybierasz sam: Jak w systemie, Jasny albo Ciemny, w Ustawieniach (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Ustawienia: wygląd jak w systemie, jasny lub ciemny"
     }
   ],

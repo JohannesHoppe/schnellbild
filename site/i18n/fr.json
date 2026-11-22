@@ -68,7 +68,7 @@
   "features": [
     {
       "title": "En grand, au clavier, en diaporama",
-      "text": "<p>La barre d’espace ouvre une image aussi grande que la fenêtre le permet, ← → feuillettent le dossier. Zoomez au trackpad ou avec + −, faites pivoter avec ⌥← ⌥→, passez en plein écran avec <kbd>f</kbd>. GIF animés et SVG compris, PDF page par page.</p><p>Un diaporama (<kbd>s</kbd>) parcourt le dossier et tous ses sous-dossiers, photos comme vidéos. Ce que lit le diaporama, c’est la liste de lecture : <kbd>p</kbd> l’ouvre pour changer l’ordre et faire le tri.</p>",
+      "text": "<p>La barre d’espace ouvre une image aussi grande que la fenêtre le permet, <kbd>◀</kbd> / <kbd>▶</kbd> feuillettent le dossier. Zoomez au trackpad ou avec <kbd>+</kbd> / <kbd>−</kbd>, faites pivoter avec <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, passez en plein écran avec <kbd>f</kbd>. GIF animés et SVG compris, PDF page par page.</p><p>Un diaporama (<kbd>s</kbd>) parcourt le dossier et tous ses sous-dossiers, photos comme vidéos. Ce que lit le diaporama, c’est la liste de lecture : <kbd>p</kbd> l’ouvre pour changer l’ordre et faire le tri.</p>",
       "alt": "Une photo en affichage complet"
     },
     {
@@ -78,7 +78,7 @@
     },
     {
       "title": "Les vidéos aussi, même les MKV et AVI que macOS ne lit pas",
-      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, HDR compris ; tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>⌘→ vers la vidéo suivante et ⌘← retour : la première reprend là où elle s’était arrêtée</li><li>Les sous-titres de la vidéo (<kbd>V</kbd>) s’affichent dès le début ; activés en cours de lecture, la ligne en cours apparaît aussitôt, et les sous-titres ASS gardent leur position, leurs couleurs et leurs polices</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
+      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, HDR compris ; tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> avancent ou reculent d’un dixième de la vidéo, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> d’un centième</li><li><kbd>▲</kbd> / <kbd>▼</kbd> règlent le volume, pour toutes les vidéos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> vers la vidéo suivante et <kbd>⌘</kbd> + <kbd>◀</kbd> retour : la première reprend là où elle s’était arrêtée</li><li>Les sous-titres de la vidéo (<kbd>V</kbd>) s’affichent dès le début ; activés en cours de lecture, la ligne en cours apparaît aussitôt, et les sous-titres ASS gardent leur position, leurs couleurs et leurs polices</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
       "alt": "Une vidéo en lecture dans Schnellbild"
     },
     {
@@ -103,7 +103,7 @@
     },
     {
       "title": "Ce qu’est vraiment le fichier",
-      "text": "<p><kbd>I</kbd> ou <kbd>⌘</kbd><kbd>I</kbd> ouvre les infos à côté de l’image : quand et où elle a été prise, avec une petite carte et la ville la plus proche, appareil et objectif, format, résolution, codecs, débit, profondeur de bits et profil colorimétrique, ainsi que chaque clé de métadonnées (EXIF, GPS, IPTC, XMP, QuickTime), à filtrer et à copier. Dates et lieux viennent aussi des fichiers XMP annexes, des données GPS d’une GoPro ou d’un drone DJI, des fichiers de clip Sony et des traces GPX du dossier.</p><p>Un fichier dont l’extension ne correspond pas au contenu est signalé. Les fichiers dont le nom ne dit rien comptent selon leur contenu, et les téléchargements en cours (.part, .crdownload…) s’affichent jusqu’où ils sont arrivés.</p>",
+      "text": "<p><kbd>I</kbd> ou <kbd>⌘</kbd> + <kbd>I</kbd> ouvre les infos à côté de l’image : quand et où elle a été prise, avec une petite carte et la ville la plus proche, appareil et objectif, format, résolution, codecs, débit, profondeur de bits et profil colorimétrique, ainsi que chaque clé de métadonnées (EXIF, GPS, IPTC, XMP, QuickTime), à filtrer et à copier. Dates et lieux viennent aussi des fichiers XMP annexes, des données GPS d’une GoPro ou d’un drone DJI, des fichiers de clip Sony et des traces GPX du dossier.</p><p>Un fichier dont l’extension ne correspond pas au contenu est signalé. Les fichiers dont le nom ne dit rien comptent selon leur contenu, et les téléchargements en cours (.part, .crdownload…) s’affichent jusqu’où ils sont arrivés.</p>",
       "alt": "Les infos sur le fichier à côté d’une photo"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "title": "Clair ou sombre, à vous de choisir",
-      "text": "<p>Certains ne jurent que par le mode sombre, d'autres ne le supportent pas. Alors à vous de choisir : Comme le système, Clair ou Sombre, dans les Réglages (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
+      "text": "<p>Certains ne jurent que par le mode sombre, d'autres ne le supportent pas. Alors à vous de choisir : Comme le système, Clair ou Sombre, dans les Réglages (<kbd>⌘</kbd> + <kbd>,</kbd>).</p>",
       "alt": "Réglages : apparence comme le système, clair ou sombre"
     }
   ],

@@ -412,10 +412,10 @@
 "Boss key on" = "Šéfovo tlačítko zapnout";
 "Boss key off" = "Šéfovo tlačítko vypnout";
 "Boss key on: every window turns invisible and every video silent at once" = "Šéfovo tlačítko zapnout: každé okno hned zmizí a každé video ztichne";
-"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Šéfovo tlačítko vypnout: stiskněte ho třikrát během sekundy, se Schnellbildem v popředí (⌘-Tab)";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘ + Tab)" = "Šéfovo tlačítko vypnout: stiskněte ho třikrát během sekundy, se Schnellbildem v popředí (⌘ + Tab)";
 "Every window turns invisible and every video silent at once." = "Každé okno hned zmizí a každé video ztichne.";
-"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Stiskněte šéfovo tlačítko třikrát během sekundy, se Schnellbildem v popředí (⌘-Tab).";
-"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild hned zmizí a každé video ztichne. Kliknutí na ikonu v Docku ho nevrátí. Chcete-li ho vrátit, přepněte na Schnellbild (⌘-Tab) a stiskněte třikrát během sekundy %@.";
+"Press the boss key three times within a second with Schnellbild in front (⌘ + Tab)." = "Stiskněte šéfovo tlačítko třikrát během sekundy, se Schnellbildem v popředí (⌘ + Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘ + Tab) and press %@ three times within a second." = "Schnellbild hned zmizí a každé video ztichne. Kliknutí na ikonu v Docku ho nevrátí. Chcete-li ho vrátit, přepněte na Schnellbild (⌘ + Tab) a stiskněte třikrát během sekundy %@.";
 "End the slideshow" = "Ukončit prezentaci";
 "First item" = "První položka";
 "Last item" = "Poslední položka";
@@ -611,7 +611,7 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: k nejbližší položce na mapě tím směrem; dolů do pruhu položek bez polohy";
 "Atlas: zoom the map in / out" = "Atlas: přiblížit / oddálit mapu";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: na více položkách přiblížit, až se oddělí; na jedné ji otevřít";
-"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: na položkách z jednoho místa další z nich (také → ←)";
+"Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: na položkách z jednoho místa další z nich (také %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Táhnout přes ni nebo posunout úchyt: na mapě jen toto období; kliknutí: položka pořízená nejblíže tomuto času";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Cesta: místa v časovém pořadí, na celou obrazovku, trasa zakreslená na mapě";
 "arrows" = "šipky";
@@ -655,7 +655,7 @@
 "Public domain" = "Volné dílo";
 "No endorsement by NASA is implied." = "Neznamená to žádné schválení ze strany NASA.";
 "NASA's media usage guidelines" = "Pravidla NASA pro užití médií";
-"⌘F searches the license texts." = "⌘F hledá v textech licencí.";
+"⌘ + F searches the license texts." = "⌘ + F hledá v textech licencí.";
 "License texts" = "Texty licencí";
 "Tilt the view" = "Naklonit pohled";
 "Look straight down" = "Dívat se kolmo dolů";
