@@ -143,7 +143,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // converts them to NV12 without changing the values
         let fullRange = chroma[0] == CChar(bitPattern: UInt8(ascii: "J"))
         let source = String(decoding: (0..<4).map { UInt8(bitPattern: chroma[$0]) }, as: UTF8.self)
-        let deep = Self.isDeep(chroma: source)
+        let deep = LibVLCVideo.isDeep(chroma: source)
         let wanted: [UInt8] = Array((deep ? "P010" : "NV12").utf8)
         for i in 0..<4 { chroma[i] = CChar(bitPattern: wanted[i]) }
         lock.lock()
@@ -177,7 +177,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         // HD and larger use the HD colour standard (BT.709), smaller ones SD
         // (BT.601), decided by the visible height as VLC does
-        hd = shown.visibleHeight > 576
+        hd = VideoColour.isHD(visibleHeight: shown.visibleHeight)
         self.deep = deep
         self.colour = colour
         colourLookups = deep && colour == nil ? Self.colourLookupLimit : 0
@@ -217,17 +217,6 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     private static let colourLookupLimit = 120
     /// The layer shows EDR (main thread).
     private(set) var showsEDR = false
-
-    /// VLC's chromas of more than 8 bits per sample (`vlc_fourcc.h`):
-    /// VideoToolbox's 10-bit pictures, P010, and the planar YUV and RGB
-    /// ones with 9, 10, 12 or 16 bits.
-    static func isDeep(chroma: String) -> Bool {
-        if chroma == "CVPP" || chroma == "P010" { return true }
-        let c = Array(chroma)
-        guard c.count == 4 else { return false }
-        if ["I0", "I2", "I4"].contains(String(c[0...1])), "9ACF".contains(c[2]), "LB".contains(c[3]) { return true }
-        return chroma.hasPrefix("GB") && "9ACF".contains(c[2]) && "LB".contains(c[3])
-    }
 
     /// While the colours aren't known, each picture asks VLC again, up to
     /// `colourLookupLimit` pictures.
@@ -362,11 +351,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         if deep, let hdr = self.colour, hdr.isHDR {
             hdr.attach(to: buffer)
         } else {
-            let matrix = hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4
-            let primaries = hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C
-            CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, matrix, .shouldPropagate)
-            CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, primaries, .shouldPropagate)
-            CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, .shouldPropagate)
+            VideoColour.attachSDR(to: buffer, hd: hd)
         }
         planes?.pointee = base
         planes?.advanced(by: 1).pointee = colour

@@ -121,6 +121,38 @@ public struct VideoColour: Equatable, Sendable {
     }
 }
 
+extension VideoColour {
+    /// An SD or HD picture's colours as the app shows them, decided by the
+    /// visible height as VLC decides (`isHD`): HD with BT.709's matrix and
+    /// primaries, SD with BT.601's matrix and SMPTE C's primaries; BT.709's
+    /// transfer function either way. `VLCFrameOutput` tags its SDR buffers
+    /// with them, and a tile (`VLCFrameGrab`) is shown in the colour space
+    /// they make, so both show the same colours.
+    public static func sdrAttachments(hd: Bool) -> [CFString: CFString] {
+        [kCVImageBufferYCbCrMatrixKey: hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4,
+         kCVImageBufferColorPrimariesKey: hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C,
+         kCVImageBufferTransferFunctionKey: kCVImageBufferTransferFunction_ITU_R_709_2]
+    }
+
+    /// HD: more than 576 visible rows (BT.709), else SD (BT.601).
+    public static func isHD(visibleHeight: Int) -> Bool { visibleHeight > 576 }
+
+    /// Tags an SDR pixel buffer (`sdrAttachments`).
+    public static func attachSDR(to buffer: CVPixelBuffer, hd: Bool) {
+        for (key, value) in sdrAttachments(hd: hd) { CVBufferSetAttachment(buffer, key, value, .shouldPropagate) }
+    }
+
+    /// The colour space of an SDR picture's RGB as the screen shows it: the
+    /// one Core Video makes of `sdrAttachments` (SD: "Composite NTSC", HD:
+    /// "HDTV").
+    public static func sdrColourSpace(hd: Bool) -> CGColorSpace? { hd ? hdSpace : sdSpace }
+    private static let sdSpace = colourSpace(sdrAttachments(hd: false))
+    private static let hdSpace = colourSpace(sdrAttachments(hd: true))
+    private static func colourSpace(_ attachments: [CFString: CFString]) -> CGColorSpace? {
+        CVImageBufferCreateColorSpaceFromAttachments(attachments as CFDictionary)?.takeRetainedValue()
+    }
+}
+
 extension LibVLCVideo {
     private typealias GetInfo = @convention(c) (UnsafeMutableRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> UnsafeMutablePointer<CChar>?
     private static let getInfo: GetInfo? = dlsym(dlopen(nil, RTLD_NOW), "input_item_GetInfo")

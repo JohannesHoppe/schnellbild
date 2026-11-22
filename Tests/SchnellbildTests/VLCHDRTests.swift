@@ -134,10 +134,10 @@ final class VLCHDRTests: XCTestCase {
     /// The chromas VLC hands over for sources of more than 8 bits.
     func testDeepChromas() {
         for chroma in ["CVPP", "P010", "I0AL", "I0AB", "I0CL", "I2AL", "I4AL", "I0FL", "GBAL"] {
-            XCTAssertTrue(VLCFrameOutput.isDeep(chroma: chroma), chroma)
+            XCTAssertTrue(LibVLCVideo.isDeep(chroma: chroma), chroma)
         }
         for chroma in ["CVPN", "CVPB", "NV12", "I420", "J420", "I422", "I444", "RV32", "UYVY", "I40A"] {
-            XCTAssertFalse(VLCFrameOutput.isDeep(chroma: chroma), chroma)
+            XCTAssertFalse(LibVLCVideo.isDeep(chroma: chroma), chroma)
         }
     }
 
