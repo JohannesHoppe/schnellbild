@@ -32,7 +32,14 @@ struct FileFacts: Equatable, Sendable {
         // Models often name their make already ("Canon EOS R6")
         let camera = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
         facts.camera = camera.isEmpty ? nil : camera
-        if EmbeddedPreview.isPreview(url) {
+        if let decoded = PictureDecoders.facts(of: url),
+           PictureDecoders.decodes(url) || RawDecoder.imageIOExtensions.contains(BrowserModel.shownExtension(of: url)) {
+            // Decoded by the app (QOI, PCX, LibRaw): the format and depth of
+            // the file, not of the picture handed to ImageIO
+            facts.format = decoded.format
+            facts.depth = decoded.depth
+            facts.profile = nil
+        } else if EmbeddedPreview.isPreview(url) {
             // The picture shown is the one the file carries: the file's own
             // format, and no other extension to recommend
             facts.format = previewFormat(of: url)
@@ -347,6 +354,10 @@ extension FileFacts {
             case .sevenZip: ext = "7z"
             }
             return Content(kind: .archive(format), fileExtension: ext, name: ext.uppercased())
+        }
+        // QOI (ImageIO doesn't read it): its header
+        if QOIDecoder.header(head) != nil {
+            return Content(kind: .picture, fileExtension: "qoi", name: "QOI")
         }
         // Pictures before videos: HEIF and AVIF are boxes with an "ftyp" too
         if let source = CGImageSourceCreateWithData(head as CFData, nil),

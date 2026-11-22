@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
@@ -145,6 +145,8 @@ jobs:
           CHEATSHEET_PDF: ${{ github.workspace }}/build/cheat-sheet.pdf
           # OfflineMapTests draws its sample views there (light and dark)
           MAP_SNAPSHOT_DIR: ${{ github.workspace }}/build/map-snapshots
+          # PictureDecoderTests writes what it decoded (QOI, PCX, LibRaw) and a contact sheet
+          DECODER_SNAPSHOT_DIR: ${{ github.workspace }}/build/decoder-snapshots
         run: mkdir -p build && ./Scripts/test.sh
 
       - name: Keep the map's sample views
@@ -153,6 +155,14 @@ jobs:
         with:
           name: map-snapshots
           path: build/map-snapshots/*.png
+          if-no-files-found: error
+
+      - name: Keep the decoded pictures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: decoder-snapshots
+          path: build/decoder-snapshots/*.png
           if-no-files-found: error
 
       - name: Keep the printed cheat sheet
@@ -259,7 +269,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
@@ -407,7 +417,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
@@ -416,5 +426,14 @@ jobs:
         env:
           UNIT: ${{ inputs.unit }}
           REPEAT: ${{ inputs.repeat || '1' }}
+          DECODER_SNAPSHOT_DIR: ${{ github.workspace }}/build/decoder-snapshots
         # Each run of them ends after 20 min, a hang with the hanging test named
         run: ./Scripts/test.sh --filter "$UNIT"
+
+      - name: Keep the decoded pictures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: decoder-snapshots-${{ matrix.os }}
+          path: build/decoder-snapshots/*.png
+          if-no-files-found: ignore

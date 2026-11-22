@@ -1,7 +1,7 @@
 Schnellbild 是一款无需导入的看图软件，也是视频播放器：打开文件夹，浏览缩略图，单张大图查看，用键盘翻页。即使是大文件夹和网络共享，它也一样快。
 
 图片
-• JPEG、HEIC、AVIF、JPEG XL、PNG、GIF、WebP、TIFF、PSD、OpenEXR、SVG、PDF、Illustrator (AI)、EPS，以及 macOS 支持的相机拍摄的 RAW 照片
+• JPEG、HEIC、AVIF、JPEG XL、PNG、GIF、WebP、TIFF、PSD、OpenEXR、SVG、PDF、Illustrator (AI)、EPS、QOI、PCX，以及 macOS 支持的相机拍摄的 RAW 照片
 • 网格、列表和完整视图，幻灯片可播放所有子文件夹
 • 幻灯片播放的内容就是播放列表：按 P 打开，可调整顺序、移出不需要的项目
 • 缩放、旋转、自动增强（曝光、对比度、饱和度、锐度），仅用于查看：你的文件保持原样

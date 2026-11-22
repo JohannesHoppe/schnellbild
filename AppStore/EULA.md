@@ -14,7 +14,7 @@ Schnellbild's own source code is also free software under the MIT License: <http
 
 ## 3. Components under their own licenses
 
-Schnellbild contains VLCKit (libVLC) by VideoLAN and the VLC authors, under the GNU Lesser General Public License 2.1 or later, which includes FFmpeg and other libraries, each under its own license, and UnRAR by Alexander Roshal, under the UnRAR license. Their terms apply to those components and take precedence over this agreement where they give you more rights. The app shows their full license texts in its About window (Schnellbild > About Schnellbild); they are also listed at <https://github.com/JohannesHoppe/schnellbild/blob/main/THIRD-PARTY-NOTICES.md>.
+Schnellbild contains VLCKit (libVLC) by VideoLAN and the VLC authors, under the GNU Lesser General Public License 2.1 or later, which includes FFmpeg and other libraries, each under its own license, UnRAR by Alexander Roshal, under the UnRAR license, and LibRaw by LibRaw LLC, under the Common Development and Distribution License 1.0 (its source code: <https://www.libraw.org/download>). Their terms apply to those components and take precedence over this agreement where they give you more rights. The app shows their full license texts in its About window (Schnellbild > About Schnellbild); they are also listed at <https://github.com/JohannesHoppe/schnellbild/blob/main/THIRD-PARTY-NOTICES.md>.
 
 ## 4. Modifying VLCKit
 

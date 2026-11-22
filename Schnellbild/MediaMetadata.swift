@@ -112,9 +112,14 @@ enum MetadataText {
 enum PictureMetadata {
     /// The report of a picture, from its image source (header only; also a
     /// picture inside an archive).
-    static func report(_ source: CGImageSource) -> MediaReport {
+    static func report(_ source: CGImageSource, named url: URL? = nil) -> MediaReport {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
-        let props = CGImageSourceCopyPropertiesAtIndex(source, 0, options) as? [CFString: Any] ?? [:]
+        var props = CGImageSourceCopyPropertiesAtIndex(source, 0, options) as? [CFString: Any] ?? [:]
+        // A picture the app decoded (QOI, PCX, LibRaw): the file's own
+        // bits, not those of the picture handed to ImageIO
+        if let url, PictureDecoders.decodes(url), let decoded = PictureDecoders.facts(of: url) {
+            props[kCGImagePropertyDepth] = decoded.depth
+        }
         var report = MediaReport()
         report.capture = capture(props)
         report.location = MediaLocation.picture(props)

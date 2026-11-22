@@ -1,7 +1,7 @@
 Schnellbild pokazuje zdjęcia i filmy bez importowania czegokolwiek: otwórz folder, zobacz miniatury, obejrzyj jedno zdjęcie w dużym rozmiarze, przewijaj klawiaturą. Ta przeglądarka zdjęć działa szybko także przy dużych folderach i na dyskach sieciowych.
 
 ZDJĘCIA
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS i zdjęcia RAW z aparatów, które zna macOS
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS, QOI, PCX i zdjęcia RAW z aparatów, które zna macOS
 • Siatka, lista i pełny widok, pokaz slajdów przez wszystkie podfoldery
 • To, co odtwarza pokaz slajdów, jest playlistą: P otwiera ją, by zmienić kolejność i odsiać zbędne pozycje
 • Powiększanie, obracanie, automatyczna poprawa (ekspozycja, kontrast, nasycenie, ostrość), tylko do oglądania: pliki pozostają nietknięte

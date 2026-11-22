@@ -279,11 +279,21 @@ struct FullImageView: View {
             }
             var picture: (source: CGImageSource, inMemory: Int)?
             if let source = kept?.source { picture = (source, 0) } else { picture = await MediaData.picture(url) }
-            guard let src = picture?.source else { return .failure(.unreadable) }
+            guard var src = picture?.source else { return .failure(.unreadable) }
             guard !Task.isCancelled else { return nil }
-            if let failure = LoadFailure(status: CGImageSourceGetStatus(src)) { return .failure(failure) }
+            var failure = LoadFailure(status: CGImageSourceGetStatus(src))
+            var cg = failure == nil ? MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) : nil
+            // One of ImageIO's RAW formats ImageIO gives no picture of (a
+            // camera newer than this macOS): developed by LibRaw
+            if cg == nil, kept == nil, !Task.isCancelled, let developed = await RawDecoder.fallback(url) {
+                src = developed.source
+                picture = developed
+                failure = nil
+                cg = MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true)
+            }
+            if let failure { return .failure(failure) }
+            guard let cg else { return .failure(.undecodable) }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
-            guard let cg = MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) else { return .failure(.undecodable) }
             return .success((NSImage(pixels: cg), native, cg, kept ?? OpenedPicture(url: url, source: src, inMemory: picture?.inMemory ?? 0)))
         }
 

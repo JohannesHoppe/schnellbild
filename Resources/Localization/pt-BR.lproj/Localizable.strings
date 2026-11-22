@@ -182,6 +182,7 @@
 "VLCKit includes FFmpeg and other libraries, each under its own license." = "O VLCKit inclui o FFmpeg e outras bibliotecas, cada uma sob sua própria licença.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "reproduz os formatos de vídeo que o macOS não reproduz (AVI, MKV, WebM …)";
 "reads RAR archives" = "lê arquivos RAR";
+"reads camera RAW files macOS doesn't read" = "lê arquivos RAW de câmeras que o macOS não lê";
 "out of memory" = "memória insuficiente";
 "damaged data" = "dados danificados";
 "damaged archive" = "arquivo compactado danificado";

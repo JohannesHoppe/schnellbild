@@ -12,6 +12,29 @@ let unrarSources = [
     "filestr", "scantree", "dll", "qopen"
 ]
 
+/// LibRaw's library: LIB_OBJECTS of its Makefile.dist, under src/ (the
+/// "_ph" placeholders and the samples are not part of it).
+let librawSources = [
+    "libraw_datastream", "libraw_c_api", "tables/cameralist", "decoders/fuji_compressed", "decoders/crx",
+    "decoders/pana8", "decoders/fp_dng", "decoders/decoders_libraw", "decoders/olympus14", "decoders/sonycc",
+    "decompressors/losslessjpeg", "decoders/unpack", "decoders/unpack_thumb", "integration/rawspeed_glue",
+    "integration/dngsdk_glue", "tables/colorconst", "utils/utils_libraw", "utils/init_close_utils",
+    "utils/decoder_info", "utils/open", "utils/phaseone_processing", "utils/thumb_utils", "write/tiff_writer",
+    "preprocessing/subtract_black", "postprocessing/postprocessing_utils", "postprocessing/dcraw_process",
+    "preprocessing/raw2image", "postprocessing/mem_image", "x3f/x3f_utils_patched", "x3f/x3f_parse_process",
+    "utils/read_utils", "utils/curves", "utils/utils_dcraw", "tables/colordata", "decoders/canon_600",
+    "decoders/decoders_dcraw", "decoders/decoders_libraw_dcrdefs", "decoders/generic", "decoders/kodak_decoders",
+    "decoders/dng", "decoders/smal", "decoders/load_mfbacks", "metadata/sony", "metadata/nikon",
+    "metadata/samsung", "metadata/cr3_parser", "metadata/canon", "metadata/epson", "metadata/olympus",
+    "metadata/leica", "metadata/fuji", "metadata/adobepano", "metadata/pentax", "metadata/p1", "metadata/makernotes",
+    "metadata/exif_gps", "metadata/kodak", "metadata/tiff", "metadata/ciff", "metadata/mediumformat",
+    "metadata/minolta", "metadata/identify_tools", "metadata/hasselblad_model", "metadata/normalize_model",
+    "metadata/identify", "metadata/misc_parsers", "tables/wblists", "postprocessing/postprocessing_aux",
+    "postprocessing/postprocessing_utils_dcrdefs", "postprocessing/aspect_ratio", "demosaic/misc_demosaic",
+    "demosaic/xtrans_demosaic", "demosaic/ahd_demosaic", "demosaic/dht_demosaic", "demosaic/aahd_demosaic",
+    "demosaic/dcb_demosaic", "write/file_write", "preprocessing/ext_preprocess", "write/apply_profile",
+]
+
 let package = Package(
     name: "Schnellbild",
     platforms: [
@@ -20,7 +43,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Schnellbild",
-            dependencies: ["VLCKit", "VLCFrames", "CArchives", "OfflineMap"],
+            dependencies: ["VLCKit", "VLCFrames", "CArchives", "CRaw", "OfflineMap"],
             path: "Schnellbild",
             linkerSettings: [
                 // Linked explicitly: without it, AVPlayerView can be missing
@@ -84,6 +107,26 @@ let package = Package(
                 .define("RAR_SMP"),
                 .unsafeFlags(["-Wno-logical-op-parentheses", "-Wno-switch", "-Wno-dangling-else", "-w"])
             ]
+        ),
+        // Camera RAW formats ImageIO doesn't read: LibRaw's source as LibRaw
+        // LLC publishes it (Scripts/fetch_libraw.sh vendors it;
+        // Native/CRaw/libraw points there), unchanged, behind a small C face.
+        // Built thread-safe (no LIBRAW_NOTHREADS); zlib from the SDK for
+        // deflate-compressed DNG; no libjpeg, LCMS, RawSpeed, DNG SDK or X3F
+        // (USE_X3FTOOLS stays off: Sigma's X3F decoder is left out).
+        .target(
+            name: "CRaw",
+            path: "Native/CRaw",
+            sources: ["raw_shim.cpp"] + librawSources.map { "libraw/src/\($0).cpp" },
+            publicHeadersPath: "include",
+            cxxSettings: [
+                .headerSearchPath("libraw"),
+                .define("USE_ZLIB"),
+                .define("LIBRAW_MAX_ALLOC_MB_DEFAULT", to: "1024L"),
+                .define("LIBRAW_MAX_THUMBNAIL_MB", to: "64L"),
+                .unsafeFlags(["-w"])
+            ],
+            linkerSettings: [.linkedLibrary("z")]
         ),
         // Official VideoLAN VLCKit, vendored locally — fetch it first with
         // Scripts/fetch_vlckit.sh. The xcframework is gitignored (large binary).

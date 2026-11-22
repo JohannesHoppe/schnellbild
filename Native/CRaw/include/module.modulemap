@@ -1,0 +1,4 @@
+module CRaw {
+    header "CRaw.h"
+    export *
+}

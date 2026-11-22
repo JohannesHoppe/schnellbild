@@ -94,6 +94,103 @@ targets:
         GCC_WARN_INHIBIT_ALL_WARNINGS: YES
         HEADER_SEARCH_PATHS: ["$(SRCROOT)/Native/CArchives"]
 
+  # Camera RAW formats ImageIO doesn't read: the vendored LibRaw source
+  # (Scripts/fetch_libraw.sh) behind a small C face; Swift imports it as the
+  # module CRaw. The same build as in Package.swift (sources: LIB_OBJECTS
+  # of LibRaw's Makefile.dist).
+  CRaw:
+    type: library.static
+    platform: macOS
+    sources:
+      - path: Native/CRaw/raw_shim.cpp
+      - path: Vendor/libraw
+        includes:
+          - src/libraw_datastream.cpp
+          - src/libraw_c_api.cpp
+          - src/tables/cameralist.cpp
+          - src/decoders/fuji_compressed.cpp
+          - src/decoders/crx.cpp
+          - src/decoders/pana8.cpp
+          - src/decoders/fp_dng.cpp
+          - src/decoders/decoders_libraw.cpp
+          - src/decoders/olympus14.cpp
+          - src/decoders/sonycc.cpp
+          - src/decompressors/losslessjpeg.cpp
+          - src/decoders/unpack.cpp
+          - src/decoders/unpack_thumb.cpp
+          - src/integration/rawspeed_glue.cpp
+          - src/integration/dngsdk_glue.cpp
+          - src/tables/colorconst.cpp
+          - src/utils/utils_libraw.cpp
+          - src/utils/init_close_utils.cpp
+          - src/utils/decoder_info.cpp
+          - src/utils/open.cpp
+          - src/utils/phaseone_processing.cpp
+          - src/utils/thumb_utils.cpp
+          - src/write/tiff_writer.cpp
+          - src/preprocessing/subtract_black.cpp
+          - src/postprocessing/postprocessing_utils.cpp
+          - src/postprocessing/dcraw_process.cpp
+          - src/preprocessing/raw2image.cpp
+          - src/postprocessing/mem_image.cpp
+          - src/x3f/x3f_utils_patched.cpp
+          - src/x3f/x3f_parse_process.cpp
+          - src/utils/read_utils.cpp
+          - src/utils/curves.cpp
+          - src/utils/utils_dcraw.cpp
+          - src/tables/colordata.cpp
+          - src/decoders/canon_600.cpp
+          - src/decoders/decoders_dcraw.cpp
+          - src/decoders/decoders_libraw_dcrdefs.cpp
+          - src/decoders/generic.cpp
+          - src/decoders/kodak_decoders.cpp
+          - src/decoders/dng.cpp
+          - src/decoders/smal.cpp
+          - src/decoders/load_mfbacks.cpp
+          - src/metadata/sony.cpp
+          - src/metadata/nikon.cpp
+          - src/metadata/samsung.cpp
+          - src/metadata/cr3_parser.cpp
+          - src/metadata/canon.cpp
+          - src/metadata/epson.cpp
+          - src/metadata/olympus.cpp
+          - src/metadata/leica.cpp
+          - src/metadata/fuji.cpp
+          - src/metadata/adobepano.cpp
+          - src/metadata/pentax.cpp
+          - src/metadata/p1.cpp
+          - src/metadata/makernotes.cpp
+          - src/metadata/exif_gps.cpp
+          - src/metadata/kodak.cpp
+          - src/metadata/tiff.cpp
+          - src/metadata/ciff.cpp
+          - src/metadata/mediumformat.cpp
+          - src/metadata/minolta.cpp
+          - src/metadata/identify_tools.cpp
+          - src/metadata/hasselblad_model.cpp
+          - src/metadata/normalize_model.cpp
+          - src/metadata/identify.cpp
+          - src/metadata/misc_parsers.cpp
+          - src/tables/wblists.cpp
+          - src/postprocessing/postprocessing_aux.cpp
+          - src/postprocessing/postprocessing_utils_dcrdefs.cpp
+          - src/postprocessing/aspect_ratio.cpp
+          - src/demosaic/misc_demosaic.cpp
+          - src/demosaic/xtrans_demosaic.cpp
+          - src/demosaic/ahd_demosaic.cpp
+          - src/demosaic/dht_demosaic.cpp
+          - src/demosaic/aahd_demosaic.cpp
+          - src/demosaic/dcb_demosaic.cpp
+          - src/write/file_write.cpp
+          - src/preprocessing/ext_preprocess.cpp
+          - src/write/apply_profile.cpp
+    settings:
+      base:
+        GCC_PREPROCESSOR_DEFINITIONS: ["USE_ZLIB", "LIBRAW_MAX_ALLOC_MB_DEFAULT=1024L", "LIBRAW_MAX_THUMBNAIL_MB=64L"]
+        CLANG_CXX_LANGUAGE_STANDARD: c++17
+        GCC_WARN_INHIBIT_ALL_WARNINGS: YES
+        HEADER_SEARCH_PATHS: ["$(SRCROOT)/Native/CRaw", "$(SRCROOT)/Vendor/libraw"]
+
   # The offline map (OpenStreetMap data drawn with CoreGraphics, the place
   # index, the SwiftUI map view); its files come from Scripts/fetch_map.sh
   OfflineMap:
@@ -179,10 +276,11 @@ targets:
         INFOPLIST_FILE: Resources/ExportedTypes.plist
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
         INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License."
-        SWIFT_INCLUDE_PATHS: ["$(SRCROOT)/Native/CArchives/include"]
-        OTHER_LDFLAGS: ["-lc++"]
+        SWIFT_INCLUDE_PATHS: ["$(SRCROOT)/Native/CArchives/include", "$(SRCROOT)/Native/CRaw/include"]
+        OTHER_LDFLAGS: ["-lc++", "-lz"]
     dependencies:
       - target: CArchives
+      - target: CRaw
       - target: VLCFrames
       - target: OfflineMap
       - target: SchnellbildThumbnails

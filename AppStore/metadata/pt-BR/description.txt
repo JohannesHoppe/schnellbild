@@ -1,7 +1,7 @@
 O Schnellbild é um visualizador de fotos e player de vídeo para Mac que não pede para importar nada: abra uma pasta, veja as miniaturas, olhe uma imagem em tamanho grande e navegue pelo teclado. Ele continua rápido em pastas grandes e em compartilhamentos de rede.
 
 IMAGENS
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS e fotos RAW das câmeras que o macOS conhece
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS, QOI, PCX e fotos RAW das câmeras que o macOS conhece
 • Grade, lista e visualização ampliada, apresentação de slides por todas as subpastas
 • O que a apresentação de slides mostra é a playlist: P abre a lista para mudar a ordem e tirar o que sobra
 • Zoom, girar, melhoria automática (exposição, contraste, saturação, nitidez), só na visualização: seus arquivos continuam como estão

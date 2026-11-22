@@ -1,7 +1,7 @@
 Schnellbild on kuvankatselin, joka näyttää kuvat ja videot ilman, että mitään tarvitsee tuoda: avaa kansio, katso pienoiskuvat, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Se pysyy nopeana myös suurissa kansioissa ja verkkolevyillä.
 
 KUVAT
-• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS ja RAW-kuvat kameroista, jotka macOS tuntee
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF, Illustrator (AI), EPS, QOI, PCX ja RAW-kuvat kameroista, jotka macOS tuntee
 • Ruudukko, luettelo ja koko näkymä, diaesitys kaikkien alikansioiden läpi
 • Mitä diaesitys toistaa, se on soittolista: P avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta
 • Zoomaus, kierto, automaattinen parannus (valotus, kontrasti, värikylläisyys, terävyys) vain katselua varten: tiedostot pysyvät ennallaan
