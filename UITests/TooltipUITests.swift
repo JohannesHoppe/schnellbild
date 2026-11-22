@@ -26,11 +26,18 @@ final class TooltipUITests: SchnellbildUITestCase {
             return
         }
         let tags = app.descendants(matching: .helpTag)
-        for _ in 0..<2 {
-            app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: -0.02, dy: 0.5)).hover()
-            eventually("the tooltip before \(name) is gone", timeout: 5) { !tags.firstMatch.exists }
-            element.hover()
-            if tags.firstMatch.waitForExistence(timeout: 6) { return }
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: -0.02, dy: 0.5)).hover()
+        eventually("the tooltip before \(name) is gone", timeout: 5) { !tags.firstMatch.exists }
+        element.hover()
+        if tags.firstMatch.waitForExistence(timeout: 6) { return }
+        // The pointer moved on a little inside it, as a hand does (a
+        // tooltip that didn't show on the way in from a neighbour's)
+        for x in [0.35, 0.65] {
+            element.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0.5)).hover()
+            if tags.firstMatch.waitForExistence(timeout: 6) {
+                print("tooltip of \(name) after moving inside it")
+                return
+            }
         }
         missing.append(name)
         photograph(around: element.frame, as: name)
@@ -68,7 +75,13 @@ final class TooltipUITests: SchnellbildUITestCase {
         for id in ["searchField", "searchMode", "statusText", "statusPath", "viewModePicker", "keyboardButton"] {
             expectTooltip(element(id).firstMatch, id)
         }
-        // A click goes through the tooltip to the button below; the mini keyboard's keys
+        // A click goes through the tooltip to the control below: the list's
+        // segment, the keyboard button; the mini keyboard's keys
+        element("viewModePicker").firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+        XCTAssertTrue(element("list").waitForExistence(timeout: 5), "the view switch still takes clicks")
+        app.typeKey("l", modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(tile("norway-01-bryggen.jpg").waitForExistence(timeout: 10), "the grid again")
         element("keyboardButton").firstMatch.click()
         XCTAssertTrue(element("miniKeyboard").waitForExistence(timeout: 5), "the keyboard button still takes clicks")
         expectTooltip(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'key.'")).firstMatch, "miniKey")

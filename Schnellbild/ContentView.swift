@@ -696,6 +696,8 @@ struct PaneView: View {
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {
                 ShortcutLabel("Keyboard", systemImage: "keyboard", action: .miniKeyboard)
+                    // Also between the symbol and the key cap
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .foregroundStyle(model.showMiniKeyboard ? Color.accentColor : Color.secondary)
