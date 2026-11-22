@@ -145,6 +145,8 @@ jobs:
           CHEATSHEET_PDF: ${{ github.workspace }}/build/cheat-sheet.pdf
           # OfflineMapTests draws its sample views there (light and dark)
           MAP_SNAPSHOT_DIR: ${{ github.workspace }}/build/map-snapshots
+          # FormatVisualTests: each format's sample decoded, contact sheets, the numbers
+          FORMAT_SNAPSHOT_DIR: ${{ github.workspace }}/build/format-snapshots
         run: mkdir -p build && ./Scripts/test.sh
 
       - name: Keep the map's sample views
@@ -153,6 +155,14 @@ jobs:
         with:
           name: map-snapshots
           path: build/map-snapshots/*.png
+          if-no-files-found: error
+
+      - name: Keep the formats' pictures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: format-snapshots
+          path: build/format-snapshots/
           if-no-files-found: error
 
       - name: Keep the printed cheat sheet
@@ -416,5 +426,15 @@ jobs:
         env:
           UNIT: ${{ inputs.unit }}
           REPEAT: ${{ inputs.repeat || '1' }}
+          # FormatVisualTests' pictures (what macOS reads differs by version: DICOM …)
+          FORMAT_SNAPSHOT_DIR: ${{ github.workspace }}/build/format-snapshots
         # Each run of them ends after 20 min, a hang with the hanging test named
         run: ./Scripts/test.sh --filter "$UNIT"
+
+      - name: Keep the formats' pictures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: format-snapshots-${{ matrix.os }}
+          path: build/format-snapshots/
+          if-no-files-found: ignore
