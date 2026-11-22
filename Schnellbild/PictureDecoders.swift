@@ -227,7 +227,9 @@ enum RawDecoder {
     }
 
     /// The preview the file carries, at most about `maxPixel` on its
-    /// longest side, upright; nil without one.
+    /// longest side, upright; nil without one, or with one less than half
+    /// as large as asked (an old camera's 80 × 60 thumbnail: developing the
+    /// raw data at half size gives a sharper tile).
     static func preview(_ data: Data, maxPixel: Int) async -> CGImage? {
         await onQueue { _ -> CGImage? in
             guard let info = facts(data) else { return nil }
@@ -244,7 +246,8 @@ enum RawDecoder {
                 image = bitmap(picture)
             }
             // The preview lies as the sensor does: turned by the file's flip
-            guard let image, let wrapped = PictureDecoders.source(of: image, properties: properties(info, orientation: orientation(flip: info.flip))) else { return nil }
+            guard let image, max(image.width, image.height) * 2 >= maxPixel,
+                  let wrapped = PictureDecoders.source(of: image, properties: properties(info, orientation: orientation(flip: info.flip))) else { return nil }
             return MediaInfo.scaledDown(wrapped.source, at: 0, maxPixel: maxPixel, now: true)
         }
     }
