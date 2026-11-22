@@ -17,6 +17,25 @@
   "storeSoon": "bald, 0,99 € zur Unterstützung",
   "fineprint": "Beide Versionen sind dieselbe App mit allen Funktionen; wer sie im Store kauft, unterstützt die Weiterentwicklung. Vielen Dank! 🖤",
   "shotAlt": "Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos",
+  "viewsLabel": "Die vier Ansichten",
+  "views": [
+    {
+      "caption": "Raster",
+      "alt": "Das Raster: Ordner mit Vorschau, Fotos und Videos als Vorschaubilder"
+    },
+    {
+      "caption": "Liste",
+      "alt": "Die Liste: Name, Art, Datum und Größe jedes Objekts, sortiert per Klick auf eine Spalte"
+    },
+    {
+      "caption": "Karte",
+      "alt": "Die Karte: die Fotos einer Reise durch Norwegen dort, wo sie entstanden sind, darunter die Zeitleiste"
+    },
+    {
+      "caption": "Globus",
+      "alt": "Der Globus: dieselbe Reise aus der Nähe, geneigt über Norwegens Fjorden und Bergen"
+    }
+  ],
   "stats": [
     [
       "0",

@@ -24,6 +24,12 @@ enum SampleScenes {
         var seed: UInt64 = 1
         /// How far the sun sinks over a video (fraction of the height).
         var sunDrift: CGFloat = 0
+        /// The sky a video's sky turns into as the sun sinks (top → horizon).
+        var lateSky: [(CGFloat, CGFloat, CGFloat)]? = nil
+        /// Soft clouds drifting to the right over a video, the near ones faster.
+        var clouds = 0
+        /// The sun's light glittering on the water below it.
+        var glitter = false
     }
 
     static let fjord = Scene(sky: [(34, 24, 74), (196, 82, 122), (255, 176, 96)],
@@ -75,10 +81,25 @@ enum SampleScenes {
 
     static func with(_ scene: Scene, seed: UInt64) -> Scene { var s = scene; s.seed = seed; return s }
 
-    /// Timelapse videos: 6 s, 1280×720, 30 fps.
-    static let videos: [(path: String, scene: Scene)] = [
-        ("Sunset Timelapse.mp4", { var s = fjord; s.sunDrift = 0.32; s.seed = 61; return s }()),
-        ("Lofoten/Aurora Timelapse.mp4", with(night, seed: 67)),
+    /// Timelapse videos: 6 s, 1280×720, 30 fps. The sunset is the one the
+    /// website shows playing (Scripts/make_video_animation.py): the sun sets
+    /// calmly from mid-sky (below the position badge) behind the ridges while
+    /// the sky deepens, clouds drift by and the water glitters; its first
+    /// frames dissolve from the scene after its end (the sun set) into its
+    /// own, so it loops without a jump.
+    static let sunsetVideo: Scene = {
+        var s = fjord
+        s.sun = (0.62, 0.7, 0.055, (255, 220, 150))
+        s.sunDrift = 0.38
+        s.lateSky = [(26, 14, 58), (172, 54, 104), (255, 128, 70)]
+        s.clouds = 7
+        s.glitter = true
+        s.seed = 61
+        return s
+    }()
+    static let videos: [(path: String, scene: Scene, dissolve: Int)] = [
+        ("Sunset Timelapse.mp4", sunsetVideo, 36),
+        ("Lofoten/Aurora Timelapse.mp4", with(night, seed: 67), 0),
     ]
 
     /// What a phone's camera writes besides the date, for the Inspector's
@@ -133,8 +154,8 @@ enum SampleScenes {
             let url = try prepare(path, in: folder)
             try writeJPEG(render(scene), taken: taken, extra: cameraFacts[path] ?? [:], to: url)
         }
-        for (path, scene) in videos {
-            try await writeVideo(scene, to: try prepare(path, in: folder))
+        for (path, scene, dissolve) in videos {
+            try await writeVideo(scene, to: try prepare(path, in: folder), dissolve: dissolve)
         }
         for (path, taken, place, scene) in norway {
             var extra: [CFString: Any] = [kCGImagePropertyExifDictionary: [kCGImagePropertyExifOffsetTimeOriginal: "+02:00"]]
@@ -158,7 +179,10 @@ enum SampleScenes {
         return url
     }
 
-    static func writeVideo(_ scene: Scene, to url: URL, seconds: Int = 6, fps: Int32 = 30,
+    /// `dissolve`: the first that many frames show the scene after the end
+    /// fading into their own, so the last frame leads into the first and the
+    /// video loops without a jump.
+    static func writeVideo(_ scene: Scene, to url: URL, seconds: Int = 6, fps: Int32 = 30, dissolve: Int = 0,
                            metadata: [(AVMetadataIdentifier, String)] = []) async throws {
         let width = 1280, height = 720
         let writer = try AVAssetWriter(outputURL: url, fileType: url.pathExtension == "mov" ? .mov : .mp4)
@@ -186,7 +210,19 @@ enum SampleScenes {
         let frames = seconds * Int(fps)
         for frame in 0..<frames {
             while !input.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(5)) }
-            let image = render(scene, width: width, height: height, time: CGFloat(frame) / CGFloat(frames - 1))
+            // A looping video's time runs from 0 to just before 1, so its last
+            // frame leads into its first
+            let image: CGImage
+            if dissolve > 0 {
+                let time = CGFloat(frame) / CGFloat(frames)
+                let now = render(scene, width: width, height: height, time: time)
+                image = frame < dissolve
+                    ? blend(render(scene, width: width, height: height, time: time + 1), now,
+                            CGFloat(frame) / CGFloat(dissolve))
+                    : now
+            } else {
+                image = render(scene, width: width, height: height, time: CGFloat(frame) / CGFloat(frames - 1))
+            }
             guard let pool = adaptor.pixelBufferPool else { throw CocoaError(.fileWriteUnknown) }
             var buffer: CVPixelBuffer?
             CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
@@ -205,6 +241,17 @@ enum SampleScenes {
         if writer.status != .completed { throw writer.error ?? CocoaError(.fileWriteUnknown) }
     }
 
+    /// `over` laid on `under` with the opacity `amount`.
+    static func blend(_ under: CGImage, _ over: CGImage, _ amount: CGFloat) -> CGImage {
+        let ctx = CGContext(data: nil, width: under.width, height: under.height, bitsPerComponent: 8, bytesPerRow: 0,
+                            space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        let rect = CGRect(x: 0, y: 0, width: under.width, height: under.height)
+        ctx.draw(under, in: rect)
+        ctx.setAlpha(amount)
+        ctx.draw(over, in: rect)
+        return ctx.makeImage()!
+    }
+
     // MARK: Drawing
 
     private struct RNG {
@@ -219,11 +266,16 @@ enum SampleScenes {
         CGColor(red: c.0 / 255, green: c.1 / 255, blue: c.2 / 255, alpha: a)
     }
 
-    /// `time` (0 … 1) animates a video frame: the sun sinks by `sunDrift`,
-    /// the aurora waves move.
+    /// `time` (0 … 1, a little beyond for a dissolve) animates a video frame:
+    /// the sun sinks by `sunDrift`, the sky turns into `lateSky`, the clouds
+    /// drift, the water glitters, the aurora waves move.
     static func render(_ scene: Scene, width: Int = 2400, height: Int = 1600, time: CGFloat = 0) -> CGImage {
         var scene = scene
         if let sun = scene.sun { scene.sun = (sun.x, sun.y - scene.sunDrift * time, sun.r, sun.color) }
+        if let late = scene.lateSky {
+            let k = min(max(time, 0), 1)
+            scene.sky = zip(scene.sky, late).map { a, b in (a.0 + (b.0 - a.0) * k, a.1 + (b.1 - a.1) * k, a.2 + (b.2 - a.2) * k) }
+        }
         let W = CGFloat(width), H = CGFloat(height)
         let cs = CGColorSpaceCreateDeviceRGB()
         let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
@@ -275,6 +327,8 @@ enum SampleScenes {
             ctx.fillEllipse(in: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
         }
 
+        if scene.clouds > 0 { drawClouds(scene, in: ctx, width: W, height: H, time: time) }
+
         // Ridges: far ones higher and hazier, near ones lower and darker
         let count = scene.ridges.count
         for (i, tone) in scene.ridges.enumerated() {
@@ -325,9 +379,64 @@ enum SampleScenes {
                 ctx.drawRadialGradient(glow, startCenter: .zero, startRadius: 0, endCenter: .zero,
                                        endRadius: H * sun.r * 1.6, options: [])
                 ctx.restoreGState()
+                if scene.glitter { drawGlitter(scene, sun: sun, in: ctx, width: W, height: H, horizon: horizon, time: time) }
             }
         }
         return ctx.makeImage()!
+    }
+
+    /// Soft clouds: each a row of blurred lobes, lit by the sun from below,
+    /// drifting to the right (the near ones lower, larger and faster) and
+    /// coming back in on the left. Their own random numbers, so the rest of
+    /// the scene stays as it is.
+    private static func drawClouds(_ scene: Scene, in ctx: CGContext, width W: CGFloat, height H: CGFloat, time: CGFloat) {
+        var rng = RNG(state: scene.seed &* 977 &+ 5)
+        let cs = CGColorSpaceCreateDeviceRGB()
+        let lit = scene.sun?.color ?? (255, 230, 220)
+        let shade = scene.sky[1]
+        for _ in 0..<scene.clouds {
+            let near = rng.next()
+            let y = H * (0.9 - 0.3 * near + 0.06 * rng.next())
+            let length = W * (0.16 + 0.14 * rng.next()) * (0.7 + 0.6 * near)
+            let thickness = H * (0.018 + 0.02 * near)
+            let travel = W * (0.06 + 0.12 * near) * time
+            let span = W + 2 * length
+            let x = (rng.next() * span + travel).truncatingRemainder(dividingBy: span) - length
+            let tone = (shade.0 + (lit.0 - shade.0) * 0.55, shade.1 + (lit.1 - shade.1) * 0.55, shade.2 + (lit.2 - shade.2) * 0.55)
+            let lobes = 5 + Int(rng.next() * 4)
+            for k in 0..<lobes {
+                let u = (CGFloat(k) + rng.next() * 0.6) / CGFloat(lobes)
+                let c = CGPoint(x: x + length * u, y: y + thickness * (rng.next() - 0.3))
+                let r = thickness * (1.4 + 1.4 * sin(u * .pi)) * (0.8 + 0.4 * rng.next())
+                ctx.saveGState()
+                ctx.translateBy(x: c.x, y: c.y)
+                ctx.scaleBy(x: 2.2, y: 0.6)
+                let blob = CGGradient(colorsSpace: cs, colors: [color(tone, 0.42), color(tone, 0.18), color(tone, 0)] as CFArray,
+                                      locations: [0, 0.55, 1])!
+                ctx.drawRadialGradient(blob, startCenter: .zero, startRadius: 0, endCenter: .zero, endRadius: r, options: [])
+                ctx.restoreGState()
+            }
+        }
+    }
+
+    /// Short bright strokes on the water below the sun, each flaring up and
+    /// fading at its own pace; wider apart and longer towards the viewer.
+    private static func drawGlitter(_ scene: Scene, sun: (x: CGFloat, y: CGFloat, r: CGFloat, color: (CGFloat, CGFloat, CGFloat)),
+                                    in ctx: CGContext, width W: CGFloat, height H: CGFloat, horizon: CGFloat, time: CGFloat) {
+        var rng = RNG(state: scene.seed &* 31 &+ 7)
+        for _ in 0..<50 {
+            let near = rng.next()
+            let y = horizon * (1 - 0.08 - 0.8 * near * near)
+            let spread = H * sun.r * (0.5 + 2.2 * near)
+            let x = W * sun.x + (rng.next() * 2 - 1) * spread
+            let phase = rng.next() * 2 * .pi
+            let rate = 3 + rng.next() * 4      // flares per video
+            let flare = pow(max(0, sin(phase + time * 2 * .pi * rate)), 4)
+            guard flare > 0.02 else { continue }
+            let length = H * (0.008 + 0.03 * near), thickness = max(1.5, H * 0.003 * (0.6 + near))
+            ctx.setFillColor(color((255, 226, 176), 0.8 * flare))
+            ctx.fill(CGRect(x: x - length / 2, y: y - thickness / 2, width: length, height: thickness))
+        }
     }
 
     /// `taken` is the EXIF form "yyyy:MM:dd HH:mm:ss" (local time, no offset).

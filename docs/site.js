@@ -119,6 +119,7 @@ if ("IntersectionObserver" in window) {
       button.setAttribute("aria-label", label);
       button.title = label;
     }
+    document.dispatchEvent(new Event("themeshown"));
   }
   if (button) {
     root.classList.add("theme-switch");
@@ -136,10 +137,55 @@ if ("IntersectionObserver" in window) {
   apply();
 })();
 
+// The video's still carries the video playing, the badge and the bar moving along
+// (build_site.py motion): the theme's video (data-light / data-dark: "url|type,…"),
+// shown once it plays, while it is on screen. With "reduce motion" (site.css hides
+// it) or without script the still stands alone.
+const motion = (() => {
+  const root = document.documentElement;
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const theme = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
+  // The sources of the theme shown, in `video` (another video's when given)
+  function use(video, from = video) {
+    const list = from.dataset[theme()];
+    if (!list || video.dataset.shown === list) return;
+    video.dataset.shown = list;
+    video.classList.remove("on");
+    video.replaceChildren(...list.split(",").map((entry) => {
+      const [src, type] = entry.split("|");
+      const source = document.createElement("source");
+      source.src = src;
+      source.type = type;
+      return source;
+    }));
+    video.load();
+  }
+  function play(video) {
+    if (!still) video.play().catch(() => {});
+  }
+  const videos = [...document.querySelectorAll("video.motion")];
+  if (!still && videos.length && "IntersectionObserver" in window) {
+    const seen = new Set();
+    const watch = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) { seen.add(entry.target); use(entry.target); play(entry.target); }
+        else { seen.delete(entry.target); entry.target.pause(); }
+      }
+    }, { threshold: 0.25 });
+    videos.forEach((video) => {
+      video.addEventListener("playing", () => video.classList.add("on"));
+      watch.observe(video);
+    });
+    document.addEventListener("themeshown", () => seen.forEach((video) => { use(video); play(video); }));
+  }
+  return { use, play, still };
+})();
+
 // Screenshots open large in a dialog: ← → step through all of them, a click or Esc closes.
-// The video's still opens with the video moving over it, as on the page.
+// The video's still opens with the video playing over it, as on the page.
 (() => {
-  const shots = [...document.querySelectorAll(".shot img, .media img:not(.motion)")];
+  const shots = [...document.querySelectorAll(".shot img, .views img, .media img")];
   if (!shots.length || !("HTMLDialogElement" in window)) return;
   const labels = document.body.dataset;
   const dialog = document.createElement("dialog");
@@ -152,13 +198,18 @@ if ("IntersectionObserver" in window) {
   close.setAttribute("aria-label", labels.close || "Close");
   const frame = document.createElement("span");
   frame.className = "playing";
-  const moving = document.createElement("img");
+  const moving = document.createElement("video");
   moving.className = "motion";
-  moving.alt = "";
+  moving.muted = true;
+  moving.loop = true;
+  moving.playsInline = true;
+  moving.setAttribute("aria-hidden", "true");
+  moving.addEventListener("playing", () => moving.classList.add("on"));
   frame.append(large, moving);
   dialog.append(frame, close);
   document.body.append(dialog);
   let index = 0;
+  let source = null;   // the page's video over the still shown
   // The page shows each screenshot as wide as its place needs; the dialog loads the
   // widest (the last of a srcset) of the source the browser would take for the theme
   // shown. So ← → also reach screenshots that haven't loaded yet.
@@ -173,17 +224,15 @@ if ("IntersectionObserver" in window) {
     const shot = shots[index];
     large.src = widest(shot);
     large.alt = shot.alt;
-    const motion = shot.closest(".playing")?.querySelector("img.motion");
-    moving.hidden = !motion;
-    if (motion) {
-      moving.style.cssText = motion.style.cssText;
-      moving.sizes = "96vw";
-      moving.srcset = motion.srcset;
-      moving.src = motion.src;
-    } else {
-      moving.removeAttribute("srcset");
-      moving.removeAttribute("src");
+    source = shot.closest(".playing")?.querySelector("video.motion") || null;
+    moving.hidden = !source || motion.still;
+    if (moving.hidden) {
+      moving.pause();
+      return;
     }
+    moving.style.cssText = source.style.cssText;
+    motion.use(moving, source);
+    motion.play(moving);
   }
   shots.forEach((shot, at) => {
     shot.classList.add("zoomable");
@@ -197,8 +246,12 @@ if ("IntersectionObserver" in window) {
     });
   });
   dialog.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("close", () => moving.pause());
   dialog.addEventListener("keydown", (event) => {
     if (event.key === "ArrowRight") { event.preventDefault(); show(index + 1); }
     if (event.key === "ArrowLeft") { event.preventDefault(); show(index - 1); }
+  });
+  document.addEventListener("themeshown", () => {
+    if (dialog.open && source && !moving.hidden) { motion.use(moving, source); motion.play(moving); }
   });
 })();

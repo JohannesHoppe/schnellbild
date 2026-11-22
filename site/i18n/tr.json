@@ -17,6 +17,25 @@
   "storeSoon": "yakında, projeye destek için",
   "fineprint": "İki sürüm de tüm özellikleriyle aynı uygulamadır; App Store’dan satın alan, geliştirmesine destek olur. Çok teşekkürler! 🖤",
   "shotAlt": "Schnellbild: önizlemeli klasörler ve fotoğraf küçük resimleri",
+  "viewsLabel": "Dört görünüm",
+  "views": [
+    {
+      "caption": "Izgara",
+      "alt": "Izgara: önizlemeli klasörler, küçük resim olarak fotoğraflar ve videolar"
+    },
+    {
+      "caption": "Liste",
+      "alt": "Liste: her öğenin adı, türü, tarihleri ve boyutu, bir sütuna tıklayarak sıralanır"
+    },
+    {
+      "caption": "Harita",
+      "alt": "Harita: Norveç gezisinin fotoğrafları çekildikleri yerde, altta zaman çizelgesi"
+    },
+    {
+      "caption": "Küre",
+      "alt": "Küre: aynı gezi yakından, Norveç'in fiyortları ve dağları üzerinde eğik"
+    }
+  ],
   "stats": [
     [
       "0",

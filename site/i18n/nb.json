@@ -17,6 +17,25 @@
   "storeSoon": "snart, for å støtte utviklingen",
   "fineprint": "Begge versjonene er den samme appen med alle funksjoner; den som kjøper den i App Store, støtter utviklingen. Tusen takk! 🖤",
   "shotAlt": "Schnellbild: mapper med forhåndsvisninger og miniatyrer av bilder",
+  "viewsLabel": "De fire visningene",
+  "views": [
+    {
+      "caption": "Rutenett",
+      "alt": "Rutenettet: mapper med forhåndsvisning, bilder og videoer som miniatyrer"
+    },
+    {
+      "caption": "Liste",
+      "alt": "Listen: navn, type, datoer og størrelse for hvert element, sortert med et klikk på en kolonne"
+    },
+    {
+      "caption": "Kart",
+      "alt": "Kartet: bildene fra en tur gjennom Norge der de ble tatt, med tidslinjen under"
+    },
+    {
+      "caption": "Globus",
+      "alt": "Globusen: den samme turen på nært hold, vippet over Norges fjorder og fjell"
+    }
+  ],
   "stats": [
     [
       "0",

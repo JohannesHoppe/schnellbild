@@ -46,9 +46,9 @@ SIMILAR_COUNT = 6
 HOME_COUNT = 8
 # The screenshot that shows what a section's visitors look for.
 SECTION_SHOT = {"image": "grid", "video": "video", "comic": "archives", "files": "dualpane",
-                "photos": "grid", "maps": "atlas-globe", "windows": "grid"}
+                "photos": "grid", "maps": "atlas-globe-near", "windows": "grid"}
 # The home page feature whose words describe a screenshot that has no feature of its own.
-SHOT_FEATURE = {"atlas-globe": "atlas"}
+SHOT_FEATURE = {"atlas-globe-near": "atlas"}
 CATEGORY_KIND = {"image": "image", "both": "image", "video": "video", "comic": "comic",
                  "file-manager": "files", "photo-manager": "photos"}
 

@@ -17,6 +17,25 @@
   "storeSoon": "presto, a 0,99 € per sostenerlo",
   "fineprint": "Le due versioni sono la stessa app con tutte le funzioni; chi la acquista sull’App Store ne sostiene lo sviluppo. Grazie mille! 🖤",
   "shotAlt": "Schnellbild: cartelle con anteprime e miniature delle foto",
+  "viewsLabel": "Le quattro viste",
+  "views": [
+    {
+      "caption": "Griglia",
+      "alt": "La griglia: cartelle con anteprima, foto e video come miniature"
+    },
+    {
+      "caption": "Elenco",
+      "alt": "L’elenco: nome, tipo, date e dimensione di ogni elemento, ordinati con un clic su una colonna"
+    },
+    {
+      "caption": "Mappa",
+      "alt": "La mappa: le foto di un viaggio in Norvegia dove sono state scattate, sotto la linea del tempo"
+    },
+    {
+      "caption": "Globo",
+      "alt": "Il globo: lo stesso viaggio da vicino, inclinato sopra i fiordi e le montagne della Norvegia"
+    }
+  ],
   "stats": [
     [
       "0",

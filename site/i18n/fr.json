@@ -17,6 +17,25 @@
   "storeSoon": "bientôt, 0,99 € pour soutenir le projet",
   "fineprint": "Les deux versions sont la même app, avec toutes les fonctionnalités ; l’acheter sur l’App Store, c’est soutenir son développement. Merci beaucoup ! 🖤",
   "shotAlt": "Schnellbild : dossiers avec aperçus et vignettes de photos",
+  "viewsLabel": "Les quatre vues",
+  "views": [
+    {
+      "caption": "Grille",
+      "alt": "La grille : dossiers avec aperçu, photos et vidéos en vignettes"
+    },
+    {
+      "caption": "Liste",
+      "alt": "La liste : nom, type, dates et taille de chaque élément, triés d’un clic sur une colonne"
+    },
+    {
+      "caption": "Carte",
+      "alt": "La carte : les photos d’un voyage en Norvège là où elles ont été prises, la frise chronologique en dessous"
+    },
+    {
+      "caption": "Globe",
+      "alt": "Le globe : le même voyage de près, incliné au-dessus des fjords et des montagnes de Norvège"
+    }
+  ],
   "stats": [
     [
       "0",

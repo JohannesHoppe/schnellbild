@@ -65,6 +65,35 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         }
     }
 
+    /// The video's control bar in the middle of each of the sample video's
+    /// six seconds, paused ("bartime-1" … "bartime-6": 0:01 / −0:06 …
+    /// 0:06 / −0:01): Scripts/make_video_animation.py takes the times from
+    /// them, so the bar counts along with the website's moving video. Left
+    /// paused within the last seconds, so the video isn't resumed there later.
+    private func shootVideoTimes() {
+        // The bar shows while the mouse moves over the video and stays while
+        // the mouse rests on it: here on the time played, off the slider
+        element("video.avkit").coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.4)).hover()
+        let bar = element("videoBar").firstMatch
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        let rest = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.13, dy: 0.5))
+        rest.hover()
+        // Paused: back to the start first, so it doesn't reach its end (which
+        // pauses it too) between the look at the badge and the key
+        let position = element("videoBar.position").firstMatch
+        XCTAssertTrue(position.waitForExistence(timeout: 5))
+        position.adjust(toNormalizedSliderPosition: 0)
+        rest.hover()
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        if !text(of: badge).contains(ui("Paused")) { app.typeKey(.space, modifierFlags: []) }
+        waitForBadge(containing: ui("Paused"))
+        for second in 1...6 {
+            position.adjust(toNormalizedSliderPosition: (CGFloat(second) - 0.5) / 6)
+            rest.hover()
+            shoot("bartime-\(second)", settle: 1)
+        }
+    }
+
     func testReadmeScreenshots() throws {
         launchOnTempDir(waitFor: "Lofoten")
         tile("Fjord at Sunset.jpg").click()
@@ -132,6 +161,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         element("video.avkit").hover()   // the control bar shows
         XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
         shoot("video", settle: 0.5)
+        if uiLanguage == "en" { shootVideoTimes() }
 
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("s", modifierFlags: [])   // the whole library, full screen
@@ -191,6 +221,25 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.escape, modifierFlags: [])
         eventually("the tour ended", timeout: 10) { !status.exists }
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
+    }
+
+    /// The Atlas's globe close up over the Norway trip (`atlas-globe-near`,
+    /// the website's four views and its maps alternatives): tilted towards
+    /// the horizon over the fjords, the relief exaggerated as the app shows
+    /// it, the June Sun of the early afternoon from the south-west, the trip's
+    /// photos on the coast.
+    func testAtlasGlobeNearScreenshot() throws {
+        launch(open: tempDir.appendingPathComponent("Norway").path,
+               extra: ["--globe-camera=61.0,6.9,6.8,62,0", "--globe-date=2026-06-16T13:00:00Z"])
+        XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
+        app.typeKey("w", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+        let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
+        let deadline = Date().addingTimeInterval(20)
+        while tiles.count < 2, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+        XCTAssertGreaterThanOrEqual(tiles.count, 2, "the trip's photos on the globe: \(text(of: element("atlasMapState")))")
+        shoot("atlas-globe-near", settle: 6)
+        app.terminate()
     }
 
     /// The globe for the website's hero: the world trip (`WORLD_DIR`, real

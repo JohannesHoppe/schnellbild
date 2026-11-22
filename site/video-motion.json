@@ -9,22 +9,22 @@
   960,
   540
  ],
- "holes": [
+ "still": [
   [
-   168,
-   496,
-   792,
-   540
-  ],
-  [
-   348,
-   0,
-   613,
-   48
+   390,
+   7,
+   571,
+   25
   ]
  ],
  "files": {
-  "960": "video-motion-960.webp",
-  "480": "video-motion-480.webp"
+  "light": {
+   "webm": "video-motion-light.webm",
+   "mp4": "video-motion-light.mp4"
+  },
+  "dark": {
+   "webm": "video-motion-dark.webm",
+   "mp4": "video-motion-dark.mp4"
+  }
  }
 }

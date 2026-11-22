@@ -17,6 +17,25 @@
   "storeSoon": "em breve, para apoiar o projeto",
   "fineprint": "As duas versões são o mesmo app, com todos os recursos; quem compra na App Store apoia o desenvolvimento. Muito obrigado! 🖤",
   "shotAlt": "Schnellbild: pastas com pré-visualizações e miniaturas de fotos",
+  "viewsLabel": "As quatro visualizações",
+  "views": [
+    {
+      "caption": "Grade",
+      "alt": "A grade: pastas com prévia, fotos e vídeos como miniaturas"
+    },
+    {
+      "caption": "Lista",
+      "alt": "A lista: nome, tipo, datas e tamanho de cada item, ordenados com um clique numa coluna"
+    },
+    {
+      "caption": "Mapa",
+      "alt": "O mapa: as fotos de uma viagem pela Noruega onde foram tiradas, com a linha do tempo abaixo"
+    },
+    {
+      "caption": "Globo",
+      "alt": "O globo: a mesma viagem de perto, inclinado sobre os fiordes e montanhas da Noruega"
+    }
+  ],
   "stats": [
     [
       "0",
