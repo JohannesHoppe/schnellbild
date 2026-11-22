@@ -44,10 +44,14 @@ extension FormatFixtures {
     }
 
     /// The middles of the reference picture's even areas (x, y from the top left).
-    static let probePoints: [(String, Int, Int)] = (0..<8).map { ("bar \($0 + 1)", 24 + 48 * $0, 24) }
-        + [48, 144, 240, 336].map { ("grey ramp \($0)", $0, 64) }
-        + [48, 192, 336].map { ("red-blue ramp \($0)", $0, 92) }
-        + [("F", 22, 170), ("circle", 112, 152), ("triangle", 180, 152), ("background", 232, 130), ("strip", 322, 228)]
+    static let probePoints: [(String, Int, Int)] = {
+        var points: [(String, Int, Int)] = []
+        for bar in 0..<8 { points.append(("bar \(bar + 1)", 24 + 48 * bar, 24)) }
+        for x in [48, 144, 240, 336] { points.append(("grey ramp \(x)", x, 64)) }
+        for x in [48, 192, 336] { points.append(("red-blue ramp \(x)", x, 92)) }
+        points += [("F", 22, 170), ("circle", 112, 152), ("triangle", 180, 152), ("background", 232, 130), ("strip", 322, 228)]
+        return points
+    }()
 
     /// The reference's grey (Rec. 601, as the grey formats are written).
     static func grey(of image: CGImage) -> CGImage { remapped(image) { r, g, b in let v = grey(r, g, b); return (v, v, v) } }

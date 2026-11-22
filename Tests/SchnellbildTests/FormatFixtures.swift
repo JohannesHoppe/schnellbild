@@ -91,7 +91,8 @@ enum FormatFixtures {
     }
 
     static func grey(_ r: UInt8, _ g: UInt8, _ b: UInt8) -> UInt8 {
-        UInt8((299 * Int(r) + 587 * Int(g) + 114 * Int(b) + 500) / 1000)
+        let red: Int = 299 * Int(r), green: Int = 587 * Int(g), blue: Int = 114 * Int(b)
+        return UInt8((red + green + blue + 500) / 1000)
     }
 
     /// Netpbm (netpbm.sourceforge.net/doc): P1 bitmap as text, P2 grey as
@@ -160,7 +161,7 @@ enum FormatFixtures {
     static func astc(picture: CGImage) -> (data: Data, expected: CGImage) {
         let p = Pixels(picture)
         var bytes: [UInt8] = [0x13, 0xAB, 0xA1, 0x5C, 4, 4, 1]
-        bytes += [UInt8(p.width & 0xFF), UInt8(p.width >> 8 & 0xFF), 0, UInt8(p.height & 0xFF), UInt8(p.height >> 8 & 0xFF), 0, 1, 0, 0]
+        for side in [p.width, p.height, 1] { bytes += Array(le32(side).prefix(3)) }
         var blocky = p.rows
         for by in stride(from: 0, to: p.height, by: 4) {
             for bx in stride(from: 0, to: p.width, by: 4) {
@@ -206,7 +207,11 @@ enum FormatFixtures {
 
     /// An sRGB picture of RGB rows from the top.
     static func image(width: Int, height: Int, rows: [[UInt8]]) -> CGImage {
-        let rgba = rows.flatMap { row in (0..<width).flatMap { [row[$0 * 3], row[$0 * 3 + 1], row[$0 * 3 + 2], UInt8(255)] } }
+        var rgba = [UInt8]()
+        rgba.reserveCapacity(width * height * 4)
+        for row in rows {
+            for x in 0..<width { rgba += [row[x * 3], row[x * 3 + 1], row[x * 3 + 2], 255] }
+        }
         return CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
                        space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue),
                        provider: CGDataProvider(data: Data(rgba) as CFData)!, decode: nil, shouldInterpolate: false, intent: .defaultIntent)!
