@@ -70,8 +70,10 @@ struct RenameView: View {
                 Spacer()
                 Button(action: close) { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
+                    .help("Close without changing anything")
                 Button(action: commit) { HStack(spacing: 6) { Text("Rename"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
+                    .help("Give it this name")
             }
         }
         .padding(20)

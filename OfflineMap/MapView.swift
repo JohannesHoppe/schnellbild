@@ -137,12 +137,13 @@ struct MapAttribution: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .help(Text("Map credits"))
+        .help(Text("Map credits: click for who made the map data"))
         .accessibilityLabel(Text("Map credits"))
         .popover(isPresented: $showing, arrowEdge: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Map data © OpenStreetMap contributors")
                 Link(destination: Self.copyrightPage) { Text(verbatim: "openstreetmap.org/copyright") }
+                    .help(Text("Opens in your browser (online)"))
                 Text("Opens in your browser (online)").font(.caption).foregroundStyle(.secondary)
             }
             .font(.callout)

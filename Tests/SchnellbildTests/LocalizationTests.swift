@@ -98,7 +98,9 @@ final class LocalizationTests: XCTestCase {
     /// `LocalizedStringKey` returns, the help's `action: "…"`, and its keys
     /// where they hold words (`.words("drag")`), with each interpolation
     /// `\(…)` kept as a marker. A small scanner, not a regular expression:
-    /// interpolations can hold quotes of their own.
+    /// interpolations can hold quotes of their own. It goes on inside each
+    /// argument, so a text handed through another call
+    /// (`.help(shortcuts.tip(String(localized: "…"), .back))`) is found too.
     static func uiTexts(in source: String) -> [String] {
         let calls = ["Text(", "Button(", "Label(", "Toggle(", "TextField(", "SecureField(", "ShortcutLabel(", "CommandMenu(",
                      "Menu(", "Section(", "Picker(", "LabeledContent(", "Stepper(", ".confirmationDialog(", ".alert(",
@@ -111,9 +113,9 @@ final class LocalizationTests: XCTestCase {
             guard let start = calls.first(where: { matches($0, chars, at: i) }) else { i += 1; continue }
             // Right after a letter or digit it's another call ("myText(")
             if i > 0, chars[i - 1].isLetter || chars[i - 1].isNumber || chars[i - 1] == "_", !start.hasPrefix(".") { i += 1; continue }
-            let (literals, end) = argument(chars, from: i + start.count)
+            let (literals, _) = argument(chars, from: i + start.count)
             texts += literals.filter { $0.contains(where: \.isLetter) && !names.contains($0) }
-            i = max(end, i + 1)
+            i += start.count
         }
         // What helpers returning a `LocalizedStringKey` return ("Undo Rename")
         i = 0
@@ -264,6 +266,11 @@ final class LocalizationTests: XCTestCase {
         let source = #"Label("Sort: \(key.title) \(up ? "↑" : "↓")", systemImage: "x") .help("Back (⌘[)") myText("no")"#
         XCTAssertEqual(Self.uiTexts(in: source), ["Sort: \u{1} \u{1}", "Back (⌘[)"])
         XCTAssertTrue(Self.keys(for: "Sort: \u{1} \u{1}").contains("Sort: %@ %@"))
+    }
+
+    func testTheScannerReadsTextsInsideOtherCalls() {
+        let source = #".help(shortcuts.tip(String(localized: "Back"), .back)) .help(Shortcuts.tip(model.on ? String(localized: "Pause") : String(localized: "Play"), keys: k))"#
+        XCTAssertEqual(Self.uiTexts(in: source).sorted(), ["Back", "Pause", "Play"])
     }
 
     func testTheScannerReadsEveryFormOfText() {

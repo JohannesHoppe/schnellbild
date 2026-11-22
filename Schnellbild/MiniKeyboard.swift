@@ -264,6 +264,7 @@ private struct MiniKeyButton: View {
             }
         }
         .buttonStyle(.plain)
+        .help(Shortcuts.shared.tip(key.action.name, key.action))
         .accessibilityIdentifier("key.\(key.id)")
         .accessibilityValue(test: presses > 0 ? "pressed \(presses)" : "")
         .onChange(of: model.lastKeyPress) { _, press in

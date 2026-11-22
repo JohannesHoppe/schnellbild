@@ -416,6 +416,8 @@ private struct AboutView: View {
                             }
                         }
                         .padding(.vertical, 2)
+                        // What it does in whole (the row cuts it after two lines)
+                        .help(Text(verbatim: section.use.map { $0 + "\n" } ?? "") + Text("Click to show its license"))
                         .accessibilityElement(children: .combine)
                         .accessibilityIdentifier("aboutSection.\(section.id)")
                     }
@@ -445,8 +447,11 @@ private struct AboutView: View {
                 Text(verbatim: info["NSHumanReadableCopyright"] as? String ?? "").font(.callout).foregroundStyle(.secondary)
                 HStack(spacing: 16) {
                     Link(destination: URL(string: AboutPanel.website)!) { Text(verbatim: "schnellbild.haushoppe-its.de") }
+                        .help("Opens in your browser (online)")
                     Link(destination: URL(string: AboutPanel.repository)!) { Text(verbatim: "GitHub") }
+                        .help("The source code, opens in your browser (online)")
                     Link("Privacy Policy", destination: URL(string: AboutPanel.privacyPolicy)!)
+                        .help("Opens in your browser (online)")
                 }
                 .font(.callout)
                 .padding(.top, 2)

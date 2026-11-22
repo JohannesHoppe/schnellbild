@@ -108,6 +108,8 @@ struct EntryListView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .help(Shortcuts.shared.tip(String(localized: "Sort by this column; a second click reverses the order"),
+                                   ShortcutAction.sorts[BrowserModel.SortKey.allCases.firstIndex(of: key) ?? 0]))
         .accessibilityIdentifier("column.\(key.rawValue)")
         .accessibilityValue(model.sortKey == key ? (model.sortAscending ? String(localized: "ascending") : String(localized: "descending")) : "")
     }

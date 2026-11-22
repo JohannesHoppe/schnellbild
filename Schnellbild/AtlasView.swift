@@ -70,6 +70,8 @@ private struct AtlasMap: View {
     @ObservedObject var camera: AtlasModel.CameraState
     let selected: URL?
     @Environment(\.colorScheme) private var colorScheme
+    /// The keys + and − name in their tooltips.
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
     var body: some View {
         let palette = MapPalette.appearance(dark: colorScheme == .dark)
@@ -84,6 +86,8 @@ private struct AtlasMap: View {
                     AtlasTiles(atlas: atlas, proxy: proxy, palette: palette, selected: selected)
                 }
             }
+            // + and − zoom it in the Atlas: the keys that send them (`atlasKey`)
+            .environment(\.mapZoomKeys, MapZoomKeys(zoomIn: shortcuts.text(.largerThumbnails), zoomOut: shortcuts.text(.smallerThumbnails)))
             .onAppear { atlas.mapSize = geometry.size }
             .onChange(of: geometry.size) { _, size in atlas.mapSize = size }
         }
@@ -419,6 +423,7 @@ private struct AtlasTimelineView: View {
                     atlas.jump(to: AtlasTimeline.date(at: Double(drag.location.x / width), span: span))
                 }
             })
+            .help("Click: the photo or video nearest that time; drag across: show only that time")
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("timeline.track")
         }
@@ -455,7 +460,7 @@ private struct AtlasTimelineView: View {
                 let f = min(1, max(0, Double((fraction * width + drag.translation.width) / width)))
                 move(isStart: isStart, to: AtlasTimeline.date(at: f, span: span), span: span)
             })
-            .help(isStart ? "Start of the range: drag" : "End of the range: drag")
+            .help(isStart ? "Start of the time shown: drag to the right to leave out what came before" : "End of the time shown: drag to the left to leave out what came after")
             .accessibilityElement()
             .accessibilityLabel(Text(isStart ? "Start of the range" : "End of the range"))
             .accessibilityValue(Text(verbatim: label(of: date)))
@@ -613,12 +618,13 @@ private struct TourStage: View {
     private var controls: some View {
         HStack(spacing: 18) {
             if let tour = atlas.tour {
-                button("backward.fill", "Previous place", .tourPrevious, id: "tour.previous") { atlas.previousStation() }
-                button(tour.paused ? "play.fill" : "pause.fill", tour.paused ? "Resume" : "Pause", .tourPause, id: "tour.pause") { atlas.togglePause() }
-                button("forward.fill", "Next place", .tourNext, id: "tour.next") { atlas.nextStation() }
+                button("backward.fill", "Previous place", .tourPrevious, id: "tour.previous", help: String(localized: "Previous place")) { atlas.previousStation() }
+                button(tour.paused ? "play.fill" : "pause.fill", tour.paused ? "Resume" : "Pause", .tourPause, id: "tour.pause",
+                       help: tour.paused ? String(localized: "Resume the tour") : String(localized: "Pause the tour")) { atlas.togglePause() }
+                button("forward.fill", "Next place", .tourNext, id: "tour.next", help: String(localized: "Next place")) { atlas.nextStation() }
                 TourStatusLabel.localized(station: tour.station + 1, of: tour.stations.count)
                     .accessibilityValue(test: "station \(tour.station + 1) of \(tour.stations.count), \(tour.phase == .flying ? "flying" : "showing")\(tour.paused ? ", paused" : "")")
-                button("xmark", "End the tour", .endTour, id: "tour.end") { atlas.endTour() }
+                button("xmark", "End the tour", .endTour, id: "tour.end", help: String(localized: "End the tour")) { atlas.endTour() }
             }
         }
         .font(.system(size: 15, weight: .semibold))
@@ -627,11 +633,11 @@ private struct TourStage: View {
         .overlay(Capsule().stroke(.separator, lineWidth: 0.5))
     }
 
-    private func button(_ symbol: String, _ title: LocalizedStringKey, _ action: ShortcutAction, id: String,
+    private func button(_ symbol: String, _ title: LocalizedStringKey, _ action: ShortcutAction, id: String, help: String,
                         perform: @escaping () -> Void) -> some View {
         Button(action: perform) { Image(systemName: symbol).frame(width: 22, height: 22).contentShape(Rectangle()) }
             .buttonStyle(.plain)
-            .help(Text(title) + Text(verbatim: " (\(shortcuts.hint(action)))"))
+            .help(shortcuts.tip(help, action))
             .accessibilityLabel(Text(title))
             .accessibilityIdentifier(id)
     }

@@ -567,10 +567,23 @@ final class Shortcuts: ObservableObject {
     /// The same as caps.
     func caps(_ action: ShortcutAction) -> KeyCaps { KeyCaps.either(keys(action).map(\.caps)) }
 
-    /// The keys for a tooltip or a sentence; the localized "no key" without any.
+    /// The keys for a sentence; the localized "no key" without any.
     func hint(_ action: ShortcutAction) -> String {
         let text = text(action)
         return text.isEmpty ? String(localized: "no key") : text
+    }
+
+    /// A tooltip: what the control does, then the action's keys as set, in
+    /// plain text ("Back (⌘ + [)"); an action without keys, the words alone.
+    func tip(_ text: String, _ action: ShortcutAction) -> String {
+        Self.tip(text, keys: self.text(action))
+    }
+
+    /// A tooltip with keys of several actions, a pair or a range
+    /// (`HelpKeys.text`); nil or empty keys, the words alone.
+    static func tip(_ text: String, keys: String?) -> String {
+        guard let keys, !keys.isEmpty else { return text }
+        return String(localized: "\(text) (\(keys))", comment: "A tooltip: what a control does, then its keys")
     }
 
     /// Whether the action fits a search in Settings → Keyboard: its name

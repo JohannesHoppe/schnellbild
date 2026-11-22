@@ -234,9 +234,11 @@ struct ShortcutsHelpView: View {
                 Spacer()
                 Button { Self.printCheatSheet() } label: { HStack(spacing: 6) { Text("Print…"); KeyCap(KeyChord(.char("p"), command: true)) } }
                     .keyboardShortcut("p", modifiers: .command)
+                    .help("Print these keys, or save them as a PDF")
                     .accessibilityIdentifier("printCheatSheet")
                 Button { dismiss() } label: { HStack(spacing: 6) { Text("Done"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
+                    .help("Close the keyboard shortcuts")
                 // Esc closes it too
                 Button { dismiss() } label: { EmptyView() }
                     .keyboardShortcut(.cancelAction)

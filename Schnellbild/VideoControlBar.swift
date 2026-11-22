@@ -192,7 +192,7 @@ struct VideoControlBar: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(model.videoPaused ? String(localized: "Play (\(playKeys))") : String(localized: "Pause (\(playKeys))"))
+            .help(shortcuts.tip(model.videoPaused ? String(localized: "Play") : String(localized: "Pause"), model.slideshow == nil ? .fullSpace : .showPause))
             .accessibilityLabel(model.videoPaused ? "Play" : "Pause")
             .accessibilityIdentifier("videoBar.playPause")
             position
@@ -206,7 +206,7 @@ struct VideoControlBar: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(String(localized: "Full Screen (\(shortcuts.hint(.fullScreen)))"))
+            .help(shortcuts.tip(String(localized: "Full screen on or off"), .fullScreen))
             .accessibilityLabel("Full Screen")
             .accessibilityIdentifier("videoBar.fullScreen")
         }
@@ -250,6 +250,7 @@ struct VideoControlBar: View {
                 Text(verbatim: length.map { VideoProgressBar.clock($0 * progress) } ?? "0:00")
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
+                    .help("Time played")
                 Slider(value: Binding(get: { progress }, set: { value in
                     scrubbing = value
                     model.activePlayer?.seek(toProgress: value)
@@ -258,12 +259,15 @@ struct VideoControlBar: View {
                 }
                 .controlSize(.small)
                 .frame(minWidth: 60)
+                .help(Shortcuts.tip(String(localized: "Position: drag to go to another time"),
+                                    keys: HelpKeys.pair(.fullPrevious, .fullNext).text(shortcuts)))
                 .accessibilityLabel("Position")
                 .accessibilityValue(length.map { VideoProgressBar.clock($0 * progress) } ?? progress.formatted(.percent.precision(.fractionLength(0))))
                 .accessibilityIdentifier("videoBar.position")
                 Text(verbatim: "−" + (length.map { VideoProgressBar.clock($0 * (1 - progress)) } ?? "0:00"))
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.secondary)
+                    .help("Time left")
             }
         }
     }
@@ -277,15 +281,12 @@ struct VideoControlBar: View {
             Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...1)
                 .controlSize(.mini)
                 .frame(width: 60)
-                .help(String(localized: "Volume (\(HelpKeys.pair(.fullUp, .fullDown).text(shortcuts) ?? String(localized: "no key")))"))
+                .help(Shortcuts.tip(String(localized: "Volume"), keys: HelpKeys.pair(.fullUp, .fullDown).text(shortcuts)))
                 .accessibilityLabel("Volume")
                 .accessibilityValue(model.volume.formatted(.percent.precision(.fractionLength(0))))
                 .accessibilityIdentifier("videoBar.volume")
         }
     }
-
-    /// Play / pause: Space in the full view, as the slideshow's pause there.
-    private var playKeys: String { shortcuts.hint(model.slideshow == nil ? .fullSpace : .showPause) }
 
     private var speedMenu: some View {
         Menu {
@@ -296,7 +297,7 @@ struct VideoControlBar: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help(String(localized: "Speed (\(HelpKeys.pair(.slower, .faster).text(shortcuts) ?? String(localized: "no key")))"))
+        .help(Shortcuts.tip(String(localized: "Speed"), keys: HelpKeys.pair(.slower, .faster).text(shortcuts)))
         .accessibilityLabel("Speed")
         .accessibilityValue(PlaybackSpeed.text(model.playbackSpeed))
         .accessibilityIdentifier("videoBar.speed")
@@ -311,7 +312,7 @@ struct VideoControlBar: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help(String(localized: "Subtitles (\([shortcuts.text(.subtitles), shortcuts.text(.nextSubtitle)].filter { !$0.isEmpty }.joined(separator: ", ")))"))
+        .help(shortcuts.tip(model.videoTracks.subtitleID == nil ? String(localized: "Subtitles off: choose a track") : String(localized: "Subtitles on: choose another track or Off"), .subtitles))
         .accessibilityLabel("Subtitles")
         .accessibilityValue(model.videoTracks.currentSubtitle?.name ?? String(localized: "Off"))
         .accessibilityIdentifier("videoBar.subtitles")
@@ -326,7 +327,7 @@ struct VideoControlBar: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help(String(localized: "Audio track (\(shortcuts.hint(.nextAudio)))"))
+        .help(shortcuts.tip(String(localized: "Audio track: choose another one"), .nextAudio))
         .accessibilityLabel("Audio Track")
         .accessibilityValue(model.videoTracks.currentAudio?.name ?? "")
         .accessibilityIdentifier("videoBar.audio")

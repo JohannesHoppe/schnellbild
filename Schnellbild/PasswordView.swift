@@ -31,8 +31,10 @@ struct PasswordView: View {
                 Spacer()
                 Button { model.cancelPassword() } label: { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
+                    .help("Back without opening the archive")
                 Button { model.submitPassword(password) } label: { HStack(spacing: 6) { Text("Open"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
+                    .help("Open the archive with this password")
             }
         }
         .padding(20)

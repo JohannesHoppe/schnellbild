@@ -21,6 +21,7 @@ struct MapChrome<Surface: View, Buttons: View, Overlay: View>: View {
     let overlay: (MapProxy) -> Overlay
     @State private var attributionCollapsed = false
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.mapZoomKeys) private var zoomKeys
 
     init(camera: MapCamera, markers: [MapMarker], interactive: Bool, link: MapLink, onGlobe: Bool, buttonsHeight: CGFloat,
          @ViewBuilder surface: @escaping (_ keepFree: [CGRect], _ onInteraction: @escaping () -> Void) -> Surface,
@@ -83,9 +84,9 @@ struct MapChrome<Surface: View, Buttons: View, Overlay: View>: View {
     private var allButtons: some View {
         VStack(spacing: 8) {
             VStack(spacing: 0) {
-                mapButton("plus", title: "Zoom in") { zoom(by: 1) }
+                mapButton("plus", title: "Zoom in", keys: zoomKeys.zoomIn) { zoom(by: 1) }
                 Divider().frame(width: 20)
-                mapButton("minus", title: "Zoom out") { zoom(by: -1) }
+                mapButton("minus", title: "Zoom out", keys: zoomKeys.zoomOut) { zoom(by: -1) }
             }
             .modifier(MapButtonGroup())
             buttons()
@@ -98,14 +99,38 @@ struct MapChrome<Surface: View, Buttons: View, Overlay: View>: View {
 }
 
 /// A button of the map's groups; `title` is its help and VoiceOver label
-/// (the label "title:" is what LocalizationTests' scanner reads).
+/// (the label "title:" is what LocalizationTests' scanner reads), the help
+/// followed by its keys where it has any.
 @MainActor
-func mapButton(_ symbol: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+func mapButton(_ symbol: String, title: LocalizedStringKey, keys: String? = nil, action: @escaping () -> Void) -> some View {
     Button(action: action) {
         Image(systemName: symbol).frame(width: 28, height: 26).contentShape(Rectangle())
     }
-    .help(Text(title))
+    .help(keys.flatMap { $0.isEmpty ? nil : Text("\(Text(title)) (\($0))") } ?? Text(title))
     .accessibilityLabel(Text(title))
+}
+
+/// The keys of the map's + and − where the view that shows it has them
+/// (the Atlas), as plain text; nil: none named.
+public struct MapZoomKeys: Equatable, Sendable {
+    public var zoomIn: String?
+    public var zoomOut: String?
+    public init(zoomIn: String? = nil, zoomOut: String? = nil) {
+        self.zoomIn = zoomIn
+        self.zoomOut = zoomOut
+    }
+}
+
+private struct MapZoomKeysKey: EnvironmentKey {
+    static let defaultValue = MapZoomKeys()
+}
+
+extension EnvironmentValues {
+    /// The keys the map's + and − name in their tooltips.
+    public var mapZoomKeys: MapZoomKeys {
+        get { self[MapZoomKeysKey.self] }
+        set { self[MapZoomKeysKey.self] = newValue }
+    }
 }
 
 /// The look of the map's button groups: small, on material, outlined.

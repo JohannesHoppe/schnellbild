@@ -79,8 +79,8 @@ struct InspectorView: View {
                 Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
-            .help("Hide the info (I)")
-            .accessibilityLabel("Hide the info (I)")
+            .help(Shortcuts.shared.tip(String(localized: "Hide the info"), .info))
+            .accessibilityLabel("Hide the info")
             .accessibilityIdentifier("inspectorClose")
         }
         .padding(.horizontal, 14)
@@ -131,12 +131,14 @@ struct InspectorView: View {
                         .foregroundStyle(.secondary)
                         .fixedSize()
                         .contextMenu { Button("Copy") { Self.copy(row.value) } }
+                        .help("Right-click to copy")
                     // A value longer than its column wraps, never cut off
                     Text(row.value)
                         .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contextMenu { Button("Copy") { Self.copy(row.value) } }
+                        .help("Right-click to copy")
                 }
             }
         }
@@ -153,6 +155,7 @@ struct InspectorView: View {
             Button { model.sortByDistance(from: location.point) } label: {
                 Label("Sort by Distance from Here", systemImage: "location.circle")
             }
+            .help("Sorts the folder by how far each photo or video was taken from this place")
             .accessibilityIdentifier("inspectorSortByDistance")
         }
         .controlSize(.small)
@@ -276,6 +279,7 @@ struct InspectorView: View {
             HStack(spacing: 6) {
                 TextField("Filter", text: $filter)
                     .textFieldStyle(.roundedBorder)
+                    .help("Shows only the entries whose name or value holds this text")
                     .accessibilityIdentifier("metadataFilter")
                 Button("Copy All") { Self.copy(allText) }
                     .help("Copy everything the Inspector shows as text")
@@ -298,6 +302,7 @@ struct InspectorView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contextMenu { Button("Copy") { Self.copy(item.value) } }
+                            .help("Right-click to copy")
                         }
                     }
                     .padding(.leading, 4)

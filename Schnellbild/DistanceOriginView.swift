@@ -110,6 +110,7 @@ struct DistanceOriginView: View {
             TextField("Coordinates or map link", text: $picker.text)
                 .textFieldStyle(.roundedBorder)
                 .focused($fieldFocused)
+                .help("Type or paste coordinates or a map link; Use My Location and a click on the map write theirs here")
                 .accessibilityIdentifier("distanceOriginField")
                 .onSubmit(sort)
             parsed
@@ -142,9 +143,11 @@ struct DistanceOriginView: View {
                 Spacer()
                 Button { model.distanceOriginRequested = false } label: { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
+                    .help("Close without changing anything")
                 Button(action: sort) { HStack(spacing: 6) { Text("Sort"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
                     .disabled(picker.point == nil)
+                    .help("Sort by the distance from this place, nearest first")
                     .accessibilityIdentifier("distanceOriginSort")
             }
         }

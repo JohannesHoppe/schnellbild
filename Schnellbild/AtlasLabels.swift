@@ -24,7 +24,7 @@ struct AtlasHeaderTexts {
     static func localized(onMap: Int, progress: BrowserModel.Progress?, shortcuts: Shortcuts) -> AtlasHeaderTexts {
         AtlasHeaderTexts(
             tour: String(localized: "Tour"),
-            tourHelp: String(localized: "Play the tour: the places in the order of time, full screen (\(shortcuts.hint(.startTour)))"),
+            tourHelp: shortcuts.tip(String(localized: "Play the tour: the places in the order of time, full screen"), .startTour),
             tourLabel: String(localized: "Play the tour"),
             tourKey: shortcuts.keys(.startTour).first,
             count: progress.map { String(localized: "Reading locations: \($0.done) of \($0.total)") } ?? String(localized: "\(onMap) on the map"),

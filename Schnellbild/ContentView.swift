@@ -154,28 +154,28 @@ private struct WindowView: View {
             Button { model.navigateBack() } label: {
                 Label("Back", systemImage: "chevron.left")
             }
-            .help(String(localized: "Back (\(shortcuts.hint(.back)))"))
+            .help(shortcuts.tip(String(localized: "Back"), .back))
             .disabled(!model.canGoBack)
             .accessibilityIdentifier("backButton")
 
             Button { model.navigateForward() } label: {
                 Label("Forward", systemImage: "chevron.right")
             }
-            .help(String(localized: "Forward (\(shortcuts.hint(.forward)))"))
+            .help(shortcuts.tip(String(localized: "Forward"), .forward))
             .disabled(!model.canGoForward)
             .accessibilityIdentifier("forwardButton")
 
             Button { model.goToParentFolder() } label: {
                 Label("Enclosing Folder", systemImage: "arrow.up")
             }
-            .help(String(localized: "Enclosing folder (\(shortcuts.hint(.enclosingFolder)))"))
+            .help(shortcuts.tip(String(localized: "Enclosing folder"), .enclosingFolder))
             .disabled(!model.canGoUp)
             .accessibilityIdentifier("upButton")
 
             Button { model.chooseFolder() } label: {
                 Label("Open Folder", systemImage: "folder")
             }
-            .help(String(localized: "Open folder (\(shortcuts.hint(.openFolder)))"))
+            .help(shortcuts.tip(String(localized: "Open another folder"), .openFolder))
 
             // The folder's name, where the window's title stands; a click
             // makes it editable to rename the folder
@@ -190,6 +190,7 @@ private struct WindowView: View {
                 Button { model.closeDetail() } label: {
                     ShortcutLabel("Grid", systemImage: "square.grid.2x2", action: .closeFullView, showsTitle: true)
                 }
+                .help(shortcuts.tip(String(localized: "Back to the grid"), .closeFullView))
             }
         }
         ToolbarItem(placement: .primaryAction) {
@@ -198,7 +199,8 @@ private struct WindowView: View {
                 ShortcutLabel("Dual Pane", systemImage: "rectangle.split.2x1", action: .toggleDual)
             }
             .toggleStyle(.button)
-            .help(String(localized: "Dual pane: two folders side by side; \(shortcuts.hint(.switchPane)) switches, \(shortcuts.hint(.copyToOther)) copies, \(shortcuts.hint(.moveToOther)) moves to the other (\(shortcuts.hint(.toggleDual)))"))
+            .help(shortcuts.tip(window.dual ? String(localized: "Back to one pane") : String(localized: "Dual pane: two folders side by side"), .toggleDual)
+                   + "\n" + String(localized: "\(shortcuts.hint(.switchPane)) switches, \(shortcuts.hint(.copyToOther)) copies, \(shortcuts.hint(.moveToOther)) moves to the other"))
             .accessibilityIdentifier("dualPaneButton")
         }
         ToolbarItem(placement: .primaryAction) {
@@ -206,14 +208,14 @@ private struct WindowView: View {
                 ShortcutLabel("Auto Enhance", systemImage: "wand.and.stars", action: .enhance)
             }
             .toggleStyle(.button)
-            .help(String(localized: "Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (\(shortcuts.hint(.enhance)))"))
+            .help(shortcuts.tip(model.enhance ? String(localized: "Auto enhance off: the files as they are") : String(localized: "Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed"), .enhance))
             .accessibilityIdentifier("enhanceButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.showAdjustments.toggle() } label: {
                 ShortcutLabel("Adjust", systemImage: "slider.horizontal.3", action: .adjust)
             }
-            .help(String(localized: "Exposure, contrast, saturation and sharpness by hand (\(shortcuts.hint(.adjust)))"))
+            .help(shortcuts.tip(String(localized: "Exposure, contrast, saturation and sharpness by hand"), .adjust))
             .accessibilityIdentifier("adjustButton")
             // In the window; during a slideshow the toolbar is hidden, so the
             // sliders show as a panel over the picture instead (see body).
@@ -227,7 +229,7 @@ private struct WindowView: View {
                 ShortcutLabel("Slideshow", systemImage: "play.fill", action: .startSlideshow, showsTitle: true)
             }
             .buttonStyle(.borderedProminent)
-            .help(String(localized: "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (\(shortcuts.hint(.startSlideshow)))"))
+            .help(shortcuts.tip(String(localized: "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results"), .startSlideshow))
             .disabled(model.folderURL == nil)
             .accessibilityIdentifier("slideshowButton")
         }
@@ -247,7 +249,7 @@ private struct WindowView: View {
                 }
                 .labelStyle(.titleAndIcon)
             }
-            .help(String(localized: "Sort by (\(HelpKeys.range(ShortcutAction.sorts).text(shortcuts) ?? String(localized: "no key")); press again to reverse)"))
+            .help(Shortcuts.tip(String(localized: "Sort by name, kind, date, size or distance; choosing the same again reverses the order"), keys: HelpKeys.range(ShortcutAction.sorts).text(shortcuts)))
             .accessibilityIdentifier("sortMenu")
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
@@ -579,7 +581,7 @@ struct PaneView: View {
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
-            .help("Search names of folders, archives, pictures and videos (incl. subfolders)")
+            .help(shortcuts.tip(String(localized: "Search names of folders, archives, pictures and videos (incl. subfolders)"), .search))
             SearchModePicker(model: model)
             if model.isSearching {
                 ProgressView().controlSize(.small)
@@ -628,6 +630,7 @@ struct PaneView: View {
         Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
         Button("Allow Access…") { model.allowAccess() }
             .buttonStyle(.link)
+            .help("Choose the folder in the open panel, so Schnellbild may show all of it")
             .accessibilityIdentifier("allowAccess")
     }
 
@@ -684,7 +687,7 @@ struct PaneView: View {
             .pickerStyle(.segmented)
             .labelsHidden()
             .fixedSize()
-            .help(String(localized: "Next view: grid, list, Atlas (\(shortcuts.hint(.toggleList)))"))
+            .help(shortcuts.tip(String(localized: "Grid, list or Atlas (the map)"), .toggleList))
             .accessibilityIdentifier("viewModePicker")
             if let key = shortcuts.keys(.toggleList).first { KeyCap(key) }
             // The mini keyboard's switch (here, not in the toolbar: that has
@@ -694,7 +697,7 @@ struct PaneView: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(model.showMiniKeyboard ? Color.accentColor : Color.secondary)
-            .help(String(localized: "Mini keyboard: the keys of what's on screen, clickable (\(shortcuts.hint(.miniKeyboard)))"))
+            .help(shortcuts.tip(model.showMiniKeyboard ? String(localized: "Hide the mini keyboard") : String(localized: "Mini keyboard: the keys of what's on screen, clickable"), .miniKeyboard))
             .accessibilityIdentifier("keyboardButton")
         }
     }
@@ -865,6 +868,7 @@ struct EmptyStateView: View {
                     .multilineTextAlignment(.center)
                 Button("Allow Access…") { model.allowAccess() }
                     .keyboardShortcut(.defaultAction)
+                    .help("Choose the folder in the open panel, so Schnellbild may show all of it")
                     .accessibilityIdentifier("allowAccess")
             } else if let failure = model.loadError {
                 Image(systemName: "exclamationmark.triangle")
@@ -898,6 +902,7 @@ struct EmptyStateView: View {
                 Button { model.chooseFolder() } label: {
                     HStack(spacing: 6) { Text("Open Another Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key) } }
                 }
+                .help(shortcuts.tip(String(localized: "Open another folder"), .openFolder))
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 56))
@@ -925,6 +930,7 @@ struct EmptyStateView: View {
                 Button { model.chooseFolder() } label: {
                     HStack(spacing: 6) { Text("Open Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key) } }
                 }
+                .help(shortcuts.tip(String(localized: "Open a folder"), .openFolder))
             }
         }
         .padding(40)
@@ -1052,11 +1058,12 @@ struct AdjustmentsView: View {
         VStack(alignment: .leading, spacing: 12) {
             Toggle("Auto enhance", isOn: $model.enhance)
                 .toggleStyle(.switch)
+                .help(Shortcuts.shared.tip(String(localized: "Sets the four values below for each picture or video"), .enhance))
                 .accessibilityIdentifier("autoSwitch")
-            slider("Exposure", \.exposure, -1...1, id: "exposure")
-            slider("Contrast", \.contrast, -1...1, id: "contrast")
-            slider("Saturation", \.saturation, -1...1, id: "saturation")
-            slider("Sharpness", \.sharpness, 0...1, id: "sharpness")
+            slider("Exposure", \.exposure, -1...1, id: "exposure", help: String(localized: "Darker or lighter"))
+            slider("Contrast", \.contrast, -1...1, id: "contrast", help: String(localized: "Flatter or with more contrast"))
+            slider("Saturation", \.saturation, -1...1, id: "saturation", help: String(localized: "Paler or more colourful"))
+            slider("Sharpness", \.sharpness, 0...1, id: "sharpness", help: String(localized: "Sharpens edges"))
             // Note and button side by side where both fit whole; in languages
             // with a longer button (de, es, ru …) the note goes above it
             ViewThatFits(in: .horizontal) {
@@ -1085,11 +1092,12 @@ struct AdjustmentsView: View {
     private var resetButton: some View {
         Button("Reset to original") { model.resetLook() }
             .disabled(model.enhancement == .off)
+            .help("Auto enhance off, every slider at 0")
             .accessibilityIdentifier("resetLook")
     }
 
     private func slider(_ title: LocalizedStringKey, _ key: WritableKeyPath<Look, Double>,
-                        _ range: ClosedRange<Double>, id: String) -> some View {
+                        _ range: ClosedRange<Double>, id: String, help: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {
                 Text(title)
@@ -1105,6 +1113,7 @@ struct AdjustmentsView: View {
                     look[keyPath: key] = value
                     model.adjust(look)
                 }), in: range)
+            .help(help)
             .accessibilityLabel(Text(title))
             .accessibilityIdentifier("slider.\(id)")
             .accessibilityValue(Self.format(model.look[keyPath: key]))

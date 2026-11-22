@@ -26,8 +26,10 @@ struct NewFolderView: View {
                 Spacer()
                 Button { model.newFolderRequested = false } label: { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
+                    .help("Close without changing anything")
                 Button(action: create) { HStack(spacing: 6) { Text("Create"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
+                    .help("Make the folder with this name here")
             }
         }
         .padding(20)

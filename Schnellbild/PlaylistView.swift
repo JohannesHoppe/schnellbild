@@ -109,7 +109,7 @@ struct PlaylistPanel: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
-            .help(String(localized: "Close the playlist (\(shortcuts.hint(.playlist)))"))
+            .help(shortcuts.tip(String(localized: "Close the playlist"), .playlist))
             .accessibilityLabel("Close playlist")
             .accessibilityIdentifier("playlistClose")
         }
@@ -190,7 +190,7 @@ struct PlaylistPanel: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(model.playlistCursorIndex == nil)
-                .help(String(localized: "Take the chosen item out of the playlist (\(shortcuts.hint(.listTakeOut)) after a click in the list); the file stays where it is"))
+                .help(shortcuts.tip(String(localized: "Take the chosen item out of the playlist; the file stays where it is"), .listTakeOut))
                 .accessibilityIdentifier("playlistTakeOut")
             }
             Text("The file stays where it is.").foregroundStyle(.secondary)
@@ -287,6 +287,7 @@ struct PlaylistRow: View {
             .onDrag { dragProvider() }
             .onDrop(of: [PlaylistPanel.dragType], delegate: PlaylistRowDrop(index: index, mark: $dropMark, drop: drop))
             .contextMenu { menu }
+            .help(Text(verbatim: item.name + "\n") + Text("Click to show it, drag to move it, right-click for more"))
     }
 
     @ViewBuilder private var menu: some View {
