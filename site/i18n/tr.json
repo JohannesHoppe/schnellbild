@@ -2,6 +2,7 @@
   "name": "Türkçe",
   "privacySlug": "privacy",
   "alternativesSlug": "alternatifler",
+  "formatsSlug": "formatlar",
   "title": "Schnellbild: Mac için sinir bozmayan bir fotoğraf ve video görüntüleyici",
   "seoTitle": "Schnellbild · Mac için fotoğraf görüntüleyici ve MKV oynatıcı",
   "seoDescription": "Mac için hızlı, ücretsiz fotoğraf görüntüleyici ve video oynatıcı: MKV, AVI, WebM, klasör gibi ZIP ve RAR, slayt gösterisi. XnView ve Phiewer alternatifi.",
@@ -87,7 +88,7 @@
   "features": [
     {
       "title": "Büyük görüntüleyin, tuşlarla gezinin",
-      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, <kbd>◀</kbd> / <kbd>▶</kbd> klasörde gezinir. İzleme dörtgeniyle veya <kbd>+</kbd> / <kbd>−</kbd> ile yakınlaştırın, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> ile döndürün, <kbd>F</kbd> ile tam ekran. Hareketli GIF’ler ve SVG de dahil, PDF sayfa sayfa.</p><p>Slayt gösterisi (<kbd>S</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>P</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
+      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, <kbd>◀</kbd> / <kbd>▶</kbd> klasörde gezinir. İzleme dörtgeniyle veya <kbd>+</kbd> / <kbd>−</kbd> ile yakınlaştırın, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> ile döndürün, <kbd>F</kbd> ile tam ekran. Animasyonlarıyla {fmt:gif}, {fmt:svg} ve sayfa sayfa {fmt:pdf} de dahil (<a href=\"{formats}\">tüm formatlar</a>).</p><p>Slayt gösterisi (<kbd>S</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>P</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
       "alt": "Büyük görünümde bir fotoğraf"
     },
     {
@@ -97,12 +98,12 @@
     },
     {
       "title": "Videolar, macOS’in oynatamadığı MKV ve AVI de",
-      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> videonun onda biri kadar, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> yüzde biri kadar atlar</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ses düzeyini ayarlar, tüm videolar için</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> ile sonraki videoya, <kbd>⌘</kbd> + <kbd>◀</kbd> ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Ses parçaları, hız (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) ve her video için tek bir kontrol çubuğu; onu nereye sürüklersen orada kalır</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "text": "<p>macOS’un kendi oynatabildikleri macOS ile oynar, HDR dahil: {fmt:mp4}, {fmt:mov}, {fmt:avchd} ve daha fazlası. Geri kalan her şey yerleşik VLC motoruyla oynar: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">tüm video formatları</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> videonun onda biri kadar, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> yüzde biri kadar atlar</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ses düzeyini ayarlar, tüm videolar için</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> ile sonraki videoya, <kbd>⌘</kbd> + <kbd>◀</kbd> ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Ses parçaları, hız (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) ve her video için tek bir kontrol çubuğu; onu nereye sürüklersen orada kalır</li><li>Finder ve Göz At, .mkv, .webm, .wmv, .flv ve .vob için de küçük resim alır</li></ul>",
       "alt": "Schnellbild’de oynayan bir video"
     },
     {
       "title": "Arşivler ve çizgi romanlar klasör gibi açılır",
-      "text": "<p>ZIP, RAR ve 7z, çizgi romanlar (CBZ, CBR) dahil, çok parçalı olanlar da; ZIP ve RAR parolalı olsa bile. Diske hiçbir şey açılmaz, videolar doğrudan arşivden oynar.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} ve {fmt:7z}, çizgi romanlar da dahil: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Çok parçalı olanlar da; ZIP ve RAR parolalı olsa bile. Diske hiçbir şey açılmaz, videolar doğrudan arşivden oynar.</p>",
       "alt": "Önizlemeli klasörler olarak gösterilen arşivler"
     },
     {
@@ -179,6 +180,67 @@
   "footerImprint": "Künye (Impressum)",
   "footerEula": "Lisans sözleşmesi",
   "footerAlternatives": "Alternatifler",
+  "footerFormats": "Formatlar",
+  "formats": {
+    "short": "Formatlar",
+    "title": "Schnellbild’in gösterdiği tüm formatlar",
+    "seoTitle": "Desteklenen formatlar: görüntüler, RAW, videolar, arşivler · Mac için Schnellbild",
+    "description": "Ücretsiz Mac görüntüleyicisi Schnellbild’in açtığı tüm formatlar, tam adları ve dosya uzantılarıyla: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z ve daha fazlası.",
+    "keywords": "dosya formatları Mac, Mac’te HEIC açma, RAW görüntüleyici Mac, CR3 açma, NEF açma, MKV oynatıcı Mac, Mac’te AVI oynatma, Mac’te WebM oynatma, Photoshop olmadan PSD açma, Mac’te EPS açma, JPEG XL görüntüleyici, AVIF açma, DDS görüntüleyici, CBR CBZ okuyucu Mac, Schnellbild",
+    "lead": "Schnellbild, {extensions} dosya uzantısıyla {count} formatı gösterir. Görüntüler macOS’un ImageIO kitaplığından geçer, yani daha yeni bir macOS daha fazlasını okur; macOS’un okumadığını Schnellbild kendisi ya da LibRaw ile çözer. macOS’un oynatmadığı videolar yerleşik VLC motoruyla oynar, arşivler de klasör gibi açılır.",
+    "jump": "Gruplar",
+    "columns": [
+      "Format",
+      "Kısaltma",
+      "Uzantılar",
+      "Tür",
+      "Notlar"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Görüntü",
+      "document": "Belge",
+      "video": "Video",
+      "archive": "Arşiv"
+    },
+    "groups": {
+      "photo": "Fotoğraflar ve grafikler",
+      "pro": "HDR, düzenleme ve tıp",
+      "texture": "Dokular",
+      "decoded": "Schnellbild’in çözdükleri",
+      "document": "Belgeler ve çizimler",
+      "raw": "Kamera RAW, macOS ile işlenir",
+      "libraw": "Kamera RAW, LibRaw ile işlenir",
+      "videoMac": "macOS oynatabiliyorsa macOS ile, yoksa VLC ile videolar",
+      "videoVlc": "Her zaman yerleşik VLC motoruyla videolar",
+      "archive": "Arşivler, klasör gibi açılır"
+    },
+    "notes": {
+      "animated": "animasyonlar oynar",
+      "macos26": "macOS 26 ve sonrası",
+      "oriLibraw": "macOS 15’te LibRaw ile",
+      "firstPage": "ilk sayfası",
+      "pages": "sayfa sayfa",
+      "aiPdf": "PDF olarak; PDF içeriği olmadan kaydedildiyse gömülü önizlemesi",
+      "embedded": "gömülü önizleme",
+      "notStitched": "kaydedildiği gibi oynar, panoramaya birleştirilmez",
+      "thumbnails": "Schnellbild sayesinde Finder’da küçük resimler",
+      "mediaExtension": "Schnellbild’in medya uzantısıyla Finder’da küçük resimler (macOS 26)",
+      "tsContent": "yalnızca içeriği bir MPEG aktarım akışıysa video (TypeScript kodu dosya olarak kalır)",
+      "password": "parolalı olsa bile",
+      "rar": "tüm RAR sürümleri, katı arşivler ve parolalar dahil",
+      "sevenZip": "macOS’un arşiv kitaplığı okur: macOS 15’te LZMA sıkıştırmasıyla değil",
+      "parts": "bir kez, ilk parçasıyla gösterilir"
+    },
+    "names": {
+      "split": "Bayt olarak bölünmüş arşiv",
+      "zipParts": "Parçalı ZIP",
+      "rarParts": "Parçalı RAR"
+    },
+    "after": "Hâlâ inen dosyalar, olacakları şey sayılır: film.mp4.part bir MP4, fotograflar.rar.part bir RAR. Adı hiçbir şey söylemeyen dosyalar içeriklerine göre sayılır. Diğer tüm dosyalar ızgaranın altında adı ve boyutuyla listelenir."
+  },
   "privacy": {
     "title": "Gizlilik politikası",
     "description": "Schnellbild hiçbir kişisel veri toplamaz: hesap yok, analiz yok, izleme yok, ağ erişimi yok.",

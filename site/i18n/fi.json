@@ -2,6 +2,7 @@
   "name": "Suomi",
   "privacySlug": "privacy",
   "alternativesSlug": "vaihtoehdot",
+  "formatsSlug": "formaatit",
   "title": "Schnellbild: kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä",
   "seoTitle": "Schnellbild · ilmainen kuvankatselin ja MKV-soitin Macille",
   "seoDescription": "Nopea, ilmainen kuvankatselin Macille, joka toistaa myös MKV-, AVI- ja WebM-videot: pienoiskuvat, diaesitys, ZIP ja RAR kansioina. Vaihtoehto IrfanViewille.",
@@ -87,7 +88,7 @@
   "features": [
     {
       "title": "Katso isona, selaa näppäimillä",
-      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, <kbd>◀</kbd> / <kbd>▶</kbd> selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä <kbd>+</kbd> / <kbd>−</kbd>, käännä <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, koko näyttö näppäimellä <kbd>F</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>S</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>P</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
+      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, <kbd>◀</kbd> / <kbd>▶</kbd> selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä <kbd>+</kbd> / <kbd>−</kbd>, käännä <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, koko näyttö näppäimellä <kbd>F</kbd>. Myös {fmt:gif} animaatioineen, {fmt:svg} ja {fmt:pdf} sivu kerrallaan (<a href=\"{formats}\">kaikki formaatit</a>).</p><p>Diaesitys (<kbd>S</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>P</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
       "alt": "Kuva koko näkymässä"
     },
     {
@@ -97,12 +98,12 @@
     },
     {
       "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
-      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hyppäävät kymmenesosan videosta, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> sadasosan</li><li><kbd>▲</kbd> / <kbd>▼</kbd> säätävät äänenvoimakkuutta, kaikille videoille</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> seuraavaan videoon ja <kbd>⌘</kbd> + <kbd>◀</kbd> takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Ääniraidat, nopeus (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) ja sama ohjauspalkki jokaiselle videolle, ja se pysyy siellä, minne sen vedät</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
+      "text": "<p>Minkä macOS toistaa itse, sen toistaa macOS, myös HDR-muodossa: {fmt:mp4}, {fmt:mov}, {fmt:avchd} ja muita. Kaiken muun toistaa sisäänrakennettu VLC-moottori: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">kaikki videoformaatit</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hyppäävät kymmenesosan videosta, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> sadasosan</li><li><kbd>▲</kbd> / <kbd>▼</kbd> säätävät äänenvoimakkuutta, kaikille videoille</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> seuraavaan videoon ja <kbd>⌘</kbd> + <kbd>◀</kbd> takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Ääniraidat, nopeus (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) ja sama ohjauspalkki jokaiselle videolle, ja se pysyy siellä, minne sen vedät</li><li>Finder ja Pikakatselu saavat miniatyyrit myös tiedostoille .mkv, .webm, .wmv, .flv ja .vob</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
     {
       "title": "Arkistot aukeavat kuin kansiot",
-      "text": "<p>ZIP, RAR ja 7z, sarjakuvat (CBZ, CBR) mukaan lukien, myös useaan osaan jaetut; ZIP ja RAR myös salasanalla suojattuina. Mitään ei pureta levylle, ja videot toistuvat suoraan arkistosta.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} ja {fmt:7z}, myös sarjakuvina: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Myös useaan osaan jaetut; ZIP ja RAR myös salasanalla suojattuina. Mitään ei pureta levylle, ja videot toistuvat suoraan arkistosta.</p>",
       "alt": "Arkistot kansioina esikatseluineen"
     },
     {
@@ -179,6 +180,67 @@
   "footerImprint": "Oikeudelliset tiedot (Impressum)",
   "footerEula": "Käyttöoikeussopimus",
   "footerAlternatives": "Vaihtoehdot",
+  "footerFormats": "Formaatit",
+  "formats": {
+    "short": "Formaatit",
+    "title": "Kaikki formaatit, jotka Schnellbild näyttää",
+    "seoTitle": "Tuetut formaatit: kuvat, RAW, videot, arkistot · Schnellbild Macille",
+    "description": "Kaikki formaatit, jotka ilmainen kuvankatselin Schnellbild avaa Macilla, koko nimellä ja tiedostopäätteellä: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z ja muita.",
+    "keywords": "tiedostomuodot Mac, avaa HEIC Macilla, RAW-katselin Mac, avaa CR3, avaa NEF, MKV-soitin Mac, toista AVI Macilla, toista WebM Macilla, avaa PSD ilman Photoshopia, avaa EPS Macilla, JPEG XL -katselin, avaa AVIF, DDS-katselin, CBR CBZ -lukija Mac, Schnellbild",
+    "lead": "Schnellbild näyttää {count} formaattia ja {extensions} tiedostopäätettä. Kuvat kulkevat macOS:n ImageIO-kirjaston kautta, joten uudempi macOS lukee enemmän; mitä macOS ei lue, sen Schnellbild purkaa itse tai LibRaw’n avulla. Videot, joita macOS ei toista, kulkevat sisäänrakennetun VLC-moottorin kautta, ja arkistot avautuvat kuin kansiot.",
+    "jump": "Ryhmät",
+    "columns": [
+      "Formaatti",
+      "Lyhenne",
+      "Tiedostopäätteet",
+      "Laji",
+      "Huomiot"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Kuva",
+      "document": "Asiakirja",
+      "video": "Video",
+      "archive": "Arkisto"
+    },
+    "groups": {
+      "photo": "Valokuvat ja grafiikka",
+      "pro": "HDR, kuvankäsittely ja lääketiede",
+      "texture": "Tekstuurit",
+      "decoded": "Schnellbildin purkamat",
+      "document": "Asiakirjat ja piirrokset",
+      "raw": "Kameran RAW, macOS kehittää",
+      "libraw": "Kameran RAW, LibRaw kehittää",
+      "videoMac": "Videot macOS:llä, jos se toistaa ne, muuten VLC:llä",
+      "videoVlc": "Videot aina sisäänrakennetulla VLC-moottorilla",
+      "archive": "Arkistot, avautuvat kuin kansiot"
+    },
+    "notes": {
+      "animated": "animaatiot toistuvat",
+      "macos26": "macOS 26:sta alkaen",
+      "oriLibraw": "macOS 15:ssä LibRaw’n avulla",
+      "firstPage": "sen ensimmäinen sivu",
+      "pages": "sivu kerrallaan",
+      "aiPdf": "PDF:nä; ilman PDF-sisältöä tallennettuna sen upotettu esikatselukuva",
+      "embedded": "upotettu esikatselukuva",
+      "notStitched": "toistuu kuten tallennettu, ei koottuna panoraamaksi",
+      "thumbnails": "miniatyyrit Finderissa Schnellbildin kautta",
+      "mediaExtension": "miniatyyrit Finderissa Schnellbildin medialaajennuksen kautta (macOS 26)",
+      "tsContent": "video vain, kun sisältö on MPEG-siirtovirta (TypeScript-koodi pysyy tiedostona)",
+      "password": "myös salasanalla",
+      "rar": "kaikki RAR-versiot, myös kiinteät arkistot ja salasanat",
+      "sevenZip": "macOS:n arkistokirjasto lukee: macOS 15:ssä ei LZMA-pakkausta",
+      "parts": "näkyy kerran, ensimmäisen osan kautta"
+    },
+    "names": {
+      "split": "Tavuittain jaettu arkisto",
+      "zipParts": "ZIP osina",
+      "rarParts": "RAR osina"
+    },
+    "after": "Kesken olevat lataukset lasketaan siksi, mitä niistä tulee: elokuva.mp4.part on MP4, kuvat.rar.part RAR. Tiedostot, joiden nimi ei kerro mitään, lasketaan sisällön mukaan. Kaikki muut tiedostot näkyvät nimen ja koon kanssa ruudukon alla."
+  },
   "privacy": {
     "title": "Tietosuojaseloste",
     "description": "Schnellbild ei kerää henkilötietoja: ei tiliä, ei analytiikkaa, ei seurantaa, ei verkkoyhteyttä.",

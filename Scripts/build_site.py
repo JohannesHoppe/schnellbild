@@ -33,6 +33,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
 from site_alternatives import Alternatives, breadcrumb_list, merge_translation  # noqa: E402
+from site_formats import Formats, differences, readme_missing  # noqa: E402
 from make_site_images import FEATURE_SHOTS, HERO_SHOT, VIEW_SHOTS, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -340,6 +341,7 @@ def footer(code, t, globe=False):
   <div class="wrap">
     <span>© 2026 <a href="https://haushoppe-its.de/">HAUS HOPPE - ITS</a> (Johannes Hoppe)</span>
     <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
+      <a href="{formats.path(code)}">{esc(t['footerFormats'])}</a>
       <a href="{alternatives.path(code)}">{esc(t['footerAlternatives'])}</a>
       <a href="{privacy_path(code, t)}">{esc(t['footerPrivacy'])}</a>
       <a href="/eula/">{esc(t['footerEula'])}</a>
@@ -422,7 +424,7 @@ def home(code, t):
         f'<h3>{esc(title)}</h3><p>{esc(text)}</p></div>'
         for i, (title, text) in enumerate(t["why"]))
     def feature(name, f):
-        text = f"""<div class="text" data-reveal><h3>{esc(f['title'])}</h3>{f['text']}</div>"""
+        text = f"""<div class="text" data-reveal><h3>{esc(f['title'])}</h3>{formats.links(code, f['text'])}</div>"""
         if not (DOCS / "screenshots" / f"{name}-light.webp").exists():
             return f"""
     <div class="feature text-only">
@@ -634,7 +636,15 @@ alternatives = Alternatives({
     "esc": esc, "head": head, "topbar": topbar, "footer": footer, "shot": shot, "home_path": home_path,
     "folder": folder, "json_ld": json_ld, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE, "DMG": DMG,
     "missing": missing})
+formats = Formats({
+    "esc": esc, "head": head, "topbar": topbar, "footer": footer, "home_path": home_path, "folder": folder,
+    "json_ld": json_ld, "breadcrumb_list": breadcrumb_list, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE,
+    "DMG": DMG, "DOCS": DOCS, "missing": missing})
 alternative_pages = alternatives.pages()
+# The list of formats is what the app shows, and the README's tables name every one
+problems.extend(differences(formats.formats))
+problems.extend(f"README.md's format tables lack `.{ext}` (python3 Scripts/site_formats.py readme)"
+                for ext in readme_missing(formats.formats, (ROOT / "README.md").read_text(encoding="utf-8")))
 
 pages = {}
 for code in LANGUAGES:
@@ -644,6 +654,7 @@ for code in LANGUAGES:
         missing.append(f"{code}: docs/og/{code}.jpg (python3 Scripts/make_site_images.py og)")
 
 pages.update(alternative_pages)
+pages.update(formats.pages())
 pages[DOCS / "eula" / "index.html"] = eula(tr["en"])
 pages[DOCS / "404.html"] = not_found(tr["en"])
 pages[DOCS / "site.webmanifest"] = manifest(tr["en"])

@@ -454,6 +454,38 @@ dialog.lightbox .close:hover { background: #454545; }
   .matrix thead th:first-child { width: 40%; }
 }
 
+/* The formats page: one table, a section per group; on phones each format a block of
+   its own (name, then each value under its column's name), so nothing scrolls sideways */
+.formats-page { padding-top: 24px; padding-bottom: 64px; overflow-wrap: break-word; }
+.formats-page h1 { font-size: clamp(34px, 5.6vw, 54px); line-height: 1.06; letter-spacing: -0.03em; margin: 12px 0 18px; }
+.formats-page .lead { font-size: clamp(17px, 1.8vw, 19px); color: var(--muted); max-width: 820px; margin: 0 0 22px; }
+.formats-page nav { margin: 0 0 28px; }
+.formats-page .after { color: var(--muted); max-width: 820px; margin: 28px 0; }
+.formats-page .actions { justify-content: flex-start; }
+.formats { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 1.4; }
+.formats th, .formats td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.formats thead th { position: sticky; top: 60px; z-index: 2; background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--line-strong); }
+.formats tbody th[scope="row"] { font-weight: 600; color: var(--text); width: 32%; }
+.formats th small { display: block; color: var(--muted); font-size: 13px; font-weight: 400; margin-top: 2px; }
+.formats tr.group th { padding: 30px 8px 8px; font-size: 20px; font-weight: 650; color: var(--text); border-bottom: 1px solid var(--line-strong); scroll-margin-top: 110px; }
+.formats tbody:first-of-type tr.group th { padding-top: 14px; }
+.formats tr[id] { scroll-margin-top: 110px; }
+.formats tr[id]:target { background: var(--surface); }
+.formats td:nth-of-type(2) { white-space: nowrap; }
+.formats td:nth-of-type(2) code { display: inline-block; margin: 0 2px 4px 0; }
+.formats td:nth-of-type(4) { color: var(--muted); font-size: 14px; }
+@media (max-width: 700px) {
+  .formats, .formats tbody, .formats tr, .formats th, .formats td { display: block; width: auto; }
+  .formats thead { display: none; }
+  .formats tbody tr:not(.group) { padding: 10px 0 12px; border-bottom: 1px solid var(--line); }
+  .formats tbody th[scope="row"], .formats td { border: 0; padding: 2px 0; width: auto; }
+  .formats tr.group th { padding: 28px 0 8px; }
+  .formats td.empty { display: none; }
+  .formats td { display: grid; grid-template-columns: minmax(96px, 34%) minmax(0, 1fr); gap: 10px; font-size: 14px; }
+  .formats td::before { content: attr(data-label); color: var(--muted); font-size: 13px; }
+  .formats td:nth-of-type(2) { white-space: normal; }
+}
+
 /* Lists of alternatives: columns on the overview, pills on the home page and under a page */
 .alt-links { list-style: none; padding: 0; margin: 0; }
 .alt-links.columns { columns: 3 190px; column-gap: 24px; }

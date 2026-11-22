@@ -2,6 +2,7 @@
   "name": "Português (Brasil)",
   "privacySlug": "privacy",
   "alternativesSlug": "alternativas",
+  "formatsSlug": "formatos",
   "title": "Schnellbild: um visualizador de fotos e vídeos para Mac que não dá dor de cabeça",
   "seoTitle": "Schnellbild · visualizador de fotos e player MKV para Mac",
   "seoDescription": "Visualizador de fotos e player de vídeo grátis para Mac: MKV e AVI pelo VLC integrado, ZIP, RAR e quadrinhos CBZ como pastas. Alternativa ao XnView.",
@@ -87,7 +88,7 @@
   "features": [
     {
       "title": "Veja em tamanho grande, navegue pelas teclas",
-      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e <kbd>◀</kbd> / <kbd>▶</kbd> percorrem a pasta. Amplie com o trackpad ou com <kbd>+</kbd> / <kbd>−</kbd>, gire com <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, tela cheia com <kbd>F</kbd>. GIFs animados e SVG incluídos, PDF página por página.</p><p>Uma apresentação (<kbd>S</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>P</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
+      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e <kbd>◀</kbd> / <kbd>▶</kbd> percorrem a pasta. Amplie com o trackpad ou com <kbd>+</kbd> / <kbd>−</kbd>, gire com <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, tela cheia com <kbd>F</kbd>. Também {fmt:gif} com as animações, {fmt:svg} e {fmt:pdf} página por página (<a href=\"{formats}\">todos os formatos</a>).</p><p>Uma apresentação (<kbd>S</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>P</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
       "alt": "Uma foto na visualização completa"
     },
     {
@@ -97,12 +98,12 @@
     },
     {
       "title": "Vídeos, até MKV e AVI, que o macOS não reproduz",
-      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> pulam um décimo do vídeo, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> um centésimo</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ajustam o volume, para todos os vídeos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> para o próximo vídeo e <kbd>⌘</kbd> + <kbd>◀</kbd> de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>Faixas de áudio, velocidade (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) e uma só barra de controles para todo vídeo, que fica onde você a arrastar</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>O que o macOS reproduz sozinho toca pelo próprio macOS, inclusive em HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd} e mais. Todo o resto toca pelo mecanismo do VLC integrado: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">todos os formatos de vídeo</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> pulam um décimo do vídeo, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> um centésimo</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ajustam o volume, para todos os vídeos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> para o próximo vídeo e <kbd>⌘</kbd> + <kbd>◀</kbd> de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>Faixas de áudio, velocidade (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) e uma só barra de controles para todo vídeo, que fica onde você a arrastar</li><li>O Finder e a Visualização Rápida também ganham miniaturas de .mkv, .webm, .wmv, .flv e .vob</li></ul>",
       "alt": "Um vídeo sendo reproduzido no Schnellbild"
     },
     {
       "title": "Arquivos compactados e quadrinhos abrem como pastas",
-      "text": "<p>ZIP, RAR e 7z, incluindo quadrinhos (CBZ, CBR), também divididos em várias partes; ZIP e RAR também com senha. Nada é extraído para o disco, e os vídeos tocam direto do arquivo compactado.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} e {fmt:7z}, incluindo quadrinhos: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Também divididos em várias partes; ZIP e RAR também com senha. Nada é extraído para o disco, e os vídeos tocam direto do arquivo compactado.</p>",
       "alt": "Arquivos compactados exibidos como pastas com pré-visualizações"
     },
     {
@@ -179,6 +180,67 @@
   "footerImprint": "Aviso legal (Impressum)",
   "footerEula": "Contrato de licença",
   "footerAlternatives": "Alternativas",
+  "footerFormats": "Formatos",
+  "formats": {
+    "short": "Formatos",
+    "title": "Todos os formatos que o Schnellbild mostra",
+    "seoTitle": "Formatos compatíveis: imagens, RAW, vídeos, arquivos · Schnellbild para Mac",
+    "description": "Todos os formatos que o visualizador gratuito Schnellbild abre no Mac, com nome completo e extensão: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z e mais.",
+    "keywords": "formatos de arquivo Mac, abrir HEIC no Mac, visualizador RAW Mac, abrir CR3, abrir NEF, player MKV Mac, reproduzir AVI no Mac, reproduzir WebM no Mac, abrir PSD sem Photoshop, abrir EPS no Mac, visualizador JPEG XL, abrir AVIF, visualizador DDS, leitor CBR CBZ Mac, Schnellbild",
+    "lead": "O Schnellbild mostra {count} formatos com {extensions} extensões de arquivo. As imagens passam pelo ImageIO, a biblioteca do macOS, então um macOS mais novo lê mais; o que o macOS não lê, o Schnellbild decodifica sozinho ou com a LibRaw. Os vídeos que o macOS não reproduz passam pelo mecanismo do VLC integrado, e os arquivos compactados abrem como pastas.",
+    "jump": "Grupos",
+    "columns": [
+      "Formato",
+      "Sigla",
+      "Extensões",
+      "Tipo",
+      "Observações"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Imagem",
+      "document": "Documento",
+      "video": "Vídeo",
+      "archive": "Arquivo compactado"
+    },
+    "groups": {
+      "photo": "Fotos e gráficos",
+      "pro": "HDR, edição e medicina",
+      "texture": "Texturas",
+      "decoded": "Decodificados pelo Schnellbild",
+      "document": "Documentos e desenhos",
+      "raw": "RAW de câmera, revelados pelo macOS",
+      "libraw": "RAW de câmera, revelados pela LibRaw",
+      "videoMac": "Vídeos pelo macOS quando ele reproduz, senão pelo VLC",
+      "videoVlc": "Vídeos sempre pelo mecanismo do VLC integrado",
+      "archive": "Arquivos compactados, abertos como pastas"
+    },
+    "notes": {
+      "animated": "as animações tocam",
+      "macos26": "a partir do macOS 26",
+      "oriLibraw": "no macOS 15, pela LibRaw",
+      "firstPage": "a primeira página",
+      "pages": "página por página",
+      "aiPdf": "como PDF; salvo sem conteúdo PDF, a prévia embutida",
+      "embedded": "prévia embutida",
+      "notStitched": "toca como foi gravado, sem montar o panorama",
+      "thumbnails": "miniaturas no Finder pelo Schnellbild",
+      "mediaExtension": "miniaturas no Finder pela extensão de mídia do Schnellbild (macOS 26)",
+      "tsContent": "um vídeo só quando o conteúdo é um fluxo de transporte MPEG (código TypeScript continua sendo um arquivo)",
+      "password": "também com senha",
+      "rar": "todas as versões de RAR, também sólidos e com senha",
+      "sevenZip": "lido pela biblioteca de arquivos do macOS: no macOS 15, não com compressão LZMA",
+      "parts": "aparece uma vez, pela primeira parte"
+    },
+    "names": {
+      "split": "Arquivo dividido por bytes",
+      "zipParts": "ZIP em volumes",
+      "rarParts": "RAR em volumes"
+    },
+    "after": "Downloads ainda em andamento contam como o que vão ser: filme.mp4.part é um MP4, fotos.rar.part um RAR. Arquivos cujo nome não diz nada contam pelo conteúdo. Todos os outros arquivos aparecem com nome e tamanho abaixo da grade."
+  },
   "privacy": {
     "title": "Política de privacidade",
     "description": "O Schnellbild não coleta dados pessoais: sem conta, sem análises, sem rastreamento, sem acesso à rede.",

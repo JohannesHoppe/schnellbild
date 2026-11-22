@@ -2,6 +2,7 @@
   "name": "Norsk",
   "privacySlug": "privacy",
   "alternativesSlug": "alternativer",
+  "formatsSlug": "formater",
   "title": "Schnellbild: en bildefremviser og videospiller for macOS som rett og slett ikke suger",
   "seoTitle": "Schnellbild · gratis bildefremviser og MKV-spiller for Mac",
   "seoDescription": "Rask, gratis bildefremviser for Mac som også spiller av MKV, AVI og WebM: miniatyrer, lysbildefremvisning, ZIP og RAR som mapper. Alternativ til IrfanView.",
@@ -87,7 +88,7 @@
   "features": [
     {
       "title": "Se bildet stort, bla med tastene",
-      "text": "<p>Mellomrom åpner et bilde så stort som vinduet tillater, <kbd>◀</kbd> / <kbd>▶</kbd> blar gjennom mappen. Zoom med styreflaten eller <kbd>+</kbd> / <kbd>−</kbd>, roter med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, fullskjerm med <kbd>F</kbd>. Animerte GIF-er og SVG er med, PDF side for side.</p><p>En lysbildefremvisning (<kbd>S</kbd>) går gjennom mappen og alle undermappene, både bilder og videoer. Det lysbildefremvisningen spiller av, er spillelisten: <kbd>P</kbd> åpner den, så du kan endre rekkefølgen og sortere ut.</p>",
+      "text": "<p>Mellomrom åpner et bilde så stort som vinduet tillater, <kbd>◀</kbd> / <kbd>▶</kbd> blar gjennom mappen. Zoom med styreflaten eller <kbd>+</kbd> / <kbd>−</kbd>, roter med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, fullskjerm med <kbd>F</kbd>. Også {fmt:gif} med animasjoner, {fmt:svg} og {fmt:pdf} side for side (<a href=\"{formats}\">alle formater</a>).</p><p>En lysbildefremvisning (<kbd>S</kbd>) går gjennom mappen og alle undermappene, både bilder og videoer. Det lysbildefremvisningen spiller av, er spillelisten: <kbd>P</kbd> åpner den, så du kan endre rekkefølgen og sortere ut.</p>",
       "alt": "Et bilde i full visning"
     },
     {
@@ -97,12 +98,12 @@
     },
     {
       "title": "Videoer, også MKV og andre som macOS ikke kan spille av",
-      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hopper en tidel av videoen, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundredel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stiller volumet, for alle videoer</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> til neste video og <kbd>⌘</kbd> + <kbd>◀</kbd> tilbake: den første fortsetter der den slapp</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem på midt i, står linjen som går, der med en gang, og ASS-undertekster beholder plassering, farger og skrifter</li><li>Lydspor, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) og én kontrollinje for alle videoer, som blir der du drar den</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det macOS spiller av selv, spilles av gjennom macOS, også i HDR: {fmt:mp4}, {fmt:mov}, {fmt:avchd} med flere. Alt annet gjennom den innebygde VLC-motoren: {fmt:mkv}, {fmt:webm}, {fmt:avi}, {fmt:wmv}, {fmt:flv}, {fmt:mpeg}, {fmt:vob}, {fmt:rm}, {fmt:mxf} (<a href=\"{formats}#videoMac\">alle videoformater</a>).</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hopper en tidel av videoen, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundredel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stiller volumet, for alle videoer</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> til neste video og <kbd>⌘</kbd> + <kbd>◀</kbd> tilbake: den første fortsetter der den slapp</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem på midt i, står linjen som går, der med en gang, og ASS-undertekster beholder plassering, farger og skrifter</li><li>Lydspor, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) og én kontrollinje for alle videoer, som blir der du drar den</li><li>Finder og Hurtigvisning får miniatyrer også for .mkv, .webm, .wmv, .flv og .vob</li></ul>",
       "alt": "En video som spilles av i Schnellbild"
     },
     {
       "title": "Arkiver åpnes som mapper",
-      "text": "<p>ZIP, RAR og 7z, tegneserier (CBZ, CBR) inkludert, også i flere deler; ZIP og RAR også med passord. Ingenting pakkes ut på disken, og videoer spilles av rett fra arkivet.</p>",
+      "text": "<p>{fmt:zip}, {fmt:rar} og {fmt:7z}, også som tegneserier: {fmt:cbz}, {fmt:cbr}, {fmt:cb7}. Også i flere deler; ZIP og RAR også med passord. Ingenting pakkes ut på disken, og videoer spilles av rett fra arkivet.</p>",
       "alt": "Arkiver vist som mapper med forhåndsvisninger"
     },
     {
@@ -179,6 +180,67 @@
   "footerImprint": "Juridisk informasjon (Impressum)",
   "footerEula": "Lisensavtale",
   "footerAlternatives": "Alternativer",
+  "footerFormats": "Formater",
+  "formats": {
+    "short": "Formater",
+    "title": "Alle formater Schnellbild viser",
+    "seoTitle": "Støttede formater: bilder, RAW, video, arkiver · Schnellbild for Mac",
+    "description": "Alle formater den gratis bildeviseren Schnellbild åpner på Mac, med fullt navn og filendelse: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z med flere.",
+    "keywords": "filformater Mac, åpne HEIC på Mac, RAW-viser Mac, åpne CR3, åpne NEF, MKV-spiller Mac, spille av AVI på Mac, spille av WebM på Mac, åpne PSD uten Photoshop, åpne EPS på Mac, JPEG XL-viser, åpne AVIF, DDS-viser, CBR CBZ-leser Mac, Schnellbild",
+    "lead": "Schnellbild viser {count} formater med {extensions} filendelser. Bilder går gjennom ImageIO, biblioteket i macOS, så en nyere macOS leser flere; det macOS ikke leser, dekoder Schnellbild selv eller med LibRaw. Videoer macOS ikke spiller av, går gjennom den innebygde VLC-motoren, og arkiver åpnes som mapper.",
+    "jump": "Grupper",
+    "columns": [
+      "Format",
+      "Forkortelse",
+      "Filendelser",
+      "Type",
+      "Merknader"
+    ],
+    "macos": "macOS: {name}",
+    "nameStyle": "{name} ({abbr}, {ext})",
+    "nameStyleBare": "{name} ({ext})",
+    "kinds": {
+      "picture": "Bilde",
+      "document": "Dokument",
+      "video": "Video",
+      "archive": "Arkiv"
+    },
+    "groups": {
+      "photo": "Bilder og grafikk",
+      "pro": "HDR, bilderedigering og medisin",
+      "texture": "Teksturer",
+      "decoded": "Dekodet av Schnellbild",
+      "document": "Dokumenter og tegninger",
+      "raw": "Kamera-RAW, fremkalt av macOS",
+      "libraw": "Kamera-RAW, fremkalt av LibRaw",
+      "videoMac": "Videoer gjennom macOS når det spiller dem av, ellers VLC",
+      "videoVlc": "Videoer alltid gjennom den innebygde VLC-motoren",
+      "archive": "Arkiver, åpnet som mapper"
+    },
+    "notes": {
+      "animated": "animasjoner spilles av",
+      "macos26": "fra macOS 26",
+      "oriLibraw": "på macOS 15 gjennom LibRaw",
+      "firstPage": "første side",
+      "pages": "side for side",
+      "aiPdf": "som PDF; lagret uten PDF-innhold, den innebygde forhåndsvisningen",
+      "embedded": "innebygd forhåndsvisning",
+      "notStitched": "spilles av som tatt opp, ikke satt sammen til panorama",
+      "thumbnails": "miniatyrer i Finder gjennom Schnellbild",
+      "mediaExtension": "miniatyrer i Finder gjennom Schnellbilds medieutvidelse (macOS 26)",
+      "tsContent": "en video bare når innholdet er en MPEG-transportstrøm (TypeScript-kode forblir en fil)",
+      "password": "også med passord",
+      "rar": "alle RAR-versjoner, også solide arkiver og passord",
+      "sevenZip": "leses av arkivbiblioteket i macOS: på macOS 15 ikke med LZMA-komprimering",
+      "parts": "vises én gang, gjennom første del"
+    },
+    "names": {
+      "split": "Arkiv delt i byte",
+      "zipParts": "ZIP i deler",
+      "rarParts": "RAR i deler"
+    },
+    "after": "Nedlastinger som pågår, teller som det de blir: film.mp4.part er en MP4, bilder.rar.part en RAR. Filer der navnet ikke sier noe, teller etter innholdet. Alle andre filer står med navn og størrelse under rutenettet."
+  },
   "privacy": {
     "title": "Personvernerklæring",
     "description": "Schnellbild samler ikke inn personopplysninger: ingen konto, ingen analyse, ingen sporing, ingen nettverkstilgang.",
