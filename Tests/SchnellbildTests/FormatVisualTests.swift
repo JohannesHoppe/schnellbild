@@ -291,6 +291,31 @@ final class FormatVisualTests: XCTestCase {
         XCTAssertEqual(missing, [])
     }
 
+    /// Which way ImageIO reads an ASTC texture's rows, by its size (said, not
+    /// asserted): white above, black below, each read back.
+    func testASTCRowOrderBySize() throws {
+        var said: [String] = []
+        for (w, h) in [(16, 16), (64, 64), (128, 64), (64, 128), (256, 256), (384, 240), (240, 384), (384, 256), (512, 512), (1024, 1024)] {
+            let context = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                    bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
+            context.setFillColor(CGColor(srgbRed: 0, green: 0, blue: 0, alpha: 1))
+            context.fill(CGRect(x: 0, y: 0, width: w, height: h))
+            context.setFillColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1))
+            context.fill(CGRect(x: 0, y: h / 2, width: w, height: h / 2))   // the upper half
+            let texture = FormatFixtures.astc(picture: context.makeImage()!).data
+            guard let source = CGImageSourceCreateWithData(texture as CFData, nil),
+                  let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else { said.append("\(w)×\(h): not read"); continue }
+            let pixels = RGBAPixels(image)
+            let top = pixels.at(w / 2, 2).r, bottom = pixels.at(w / 2, h - 3).r
+            said.append("\(w)×\(h): top \(top), bottom \(bottom): " + (top > 128 && bottom < 128 ? "from the top" : top < 128 && bottom > 128 ? "FROM THE BOTTOM" : "?"))
+        }
+        print(said.map { "astc rows: " + $0 }.joined(separator: "\n"))
+        if let out = Self.snapshots {
+            try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
+            try (said.joined(separator: "\n") + "\n").write(to: out.appendingPathComponent("results-astc-rows.txt"), atomically: true, encoding: .utf8)
+        }
+    }
+
     // MARK: Videos
 
     /// A frame of the video as the full view shows it: AVKit's (when
@@ -303,17 +328,27 @@ final class FormatVisualTests: XCTestCase {
         var playable = false
         if !VideoDetailView.playsInVLC(url) { playable = (try? await asset.load(.isPlayable)) ?? false }
         if playable {
-            let generator = AVAssetImageGenerator(asset: asset)
-            generator.appliesPreferredTrackTransform = true
-            generator.requestedTimeToleranceBefore = .zero
-            generator.requestedTimeToleranceAfter = .zero
-            let image = try? await generator.image(at: CMTime(value: 85, timescale: 100)).image
-            // An untagged SD video as AVFoundation shows it (BT.601's matrix,
-            // BT.709's primaries and transfer: its picture comes tagged
-            // "CoreMedia709"; VLCFrameOutput tags SD with SMPTE C's primaries)
-            return (image, "AVKit", [kCVImageBufferYCbCrMatrixKey as String: kCVImageBufferYCbCrMatrix_ITU_R_601_4,
-                                     kCVImageBufferColorPrimariesKey as String: kCVImageBufferColorPrimaries_ITU_R_709_2,
-                                     kCVImageBufferTransferFunctionKey as String: kCVImageBufferTransferFunction_ITU_R_709_2])
+            // The pictures AVPlayer hands its layer: an AVPlayerItemVideoOutput
+            // in the decoder's own format, with the colour attachments the layer shows them by
+            let item = AVPlayerItem(asset: asset)
+            let output = AVPlayerItemVideoOutput(pixelBufferAttributes: nil)
+            item.add(output)
+            let player = AVPlayer(playerItem: item)
+            player.isMuted = true
+            player.play()
+            var picture: CVPixelBuffer?
+            let end = Date().addingTimeInterval(15)
+            while Date() < end, picture == nil {
+                try await Task.sleep(for: .milliseconds(40))
+                let time = output.itemTime(forHostTime: CACurrentMediaTime())
+                guard output.hasNewPixelBuffer(forItemTime: time),
+                      let buffer = output.copyPixelBuffer(forItemTime: time, itemTimeForDisplay: nil),
+                      let image = Self.render(buffer), let n = ReferencePicture.frameNumber(in: image), n >= 5 else { continue }
+                picture = buffer
+            }
+            player.pause()
+            let attachments = picture.flatMap { CVBufferCopyAttachments($0, .shouldPropagate) as? [String: Any] } ?? [:]
+            return (picture.flatMap(Self.render), "AVKit " + (picture.map(VLCFrameOutput.describe) ?? "no picture"), attachments)
         }
         let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: VLCSafety.head(of: url))
@@ -383,6 +418,9 @@ final class FormatVisualTests: XCTestCase {
         }
         CVPixelBufferUnlockBaseAddress(buffer, [])
         CVBufferSetAttachments(buffer, attachments as CFDictionary, .shouldPropagate)
+        // The matrix the clips were made with (ffmpeg's for SD, BT.601), whatever the
+        // player tagged: a player reading them with another shows wrong colours
+        CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, kCVImageBufferYCbCrMatrix_ITU_R_601_4, .shouldPropagate)
         return render(buffer) ?? picture
     }
 
