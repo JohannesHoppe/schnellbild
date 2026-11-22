@@ -103,7 +103,18 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         element("sortMenu").firstMatch.click()
         XCTAssertTrue(app.menuItems[ui("Date Taken")].waitForExistence(timeout: 5))
         shoot("sort")
+        // The place to sort by distance from: coordinates typed, the map
+        // and the town near them (Geiranger); cancelled, the sort stays
+        let distanceItem = app.menuItems[ui("Distance from Coordinates or Map Link…")]
+        XCTAssertTrue(distanceItem.waitForExistence(timeout: 5))
+        distanceItem.click()
+        let originField = app.textFields["distanceOriginField"]
+        XCTAssertTrue(originField.waitForExistence(timeout: 5))
+        originField.typeText("62.1009, 7.2059")
+        XCTAssertTrue(element("distanceOriginPlace").waitForExistence(timeout: 10))
+        shoot("distance", settle: 3)
         app.typeKey(.escape, modifierFlags: [])
+        eventually("the sheet closes") { !originField.exists }
 
         tile("Lofoten").click()
         waitForSelected("Lofoten")
@@ -232,7 +243,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         launch(open: tempDir.appendingPathComponent("Norway").path,
                extra: ["--globe-camera=61.0,6.9,6.8,62,0", "--globe-date=2026-06-16T13:00:00Z"])
         XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
         let deadline = Date().addingTimeInterval(20)

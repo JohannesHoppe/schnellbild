@@ -610,6 +610,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Luettelosta: kartasto, kuvat ja videot kartalla; kartastosta: takaisin ruudukkoon";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Kartasto: lähimpään kohteeseen kartalla siihen suuntaan; alas sijainnittomien kohteiden riville";
 "Atlas: zoom the map in / out" = "Kartasto: lähennä / loitonna karttaa";
+"Atlas: the first / last item in time" = "Kartasto: ajassa ensimmäinen / viimeinen kohde";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Kartasto: useassa kohteessa lähennä, kunnes ne erottuvat; yhdessä avaa se";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Kartasto: samassa paikassa otetuissa kohteissa seuraava (myös %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Vedä yli tai siirrä kahvaa: kartalla vain se aika; osoitus: kohde, joka otettiin lähimpänä sitä hetkeä";

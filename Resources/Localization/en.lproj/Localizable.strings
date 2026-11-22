@@ -610,6 +610,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: to the nearest item on the map that way; down into the strip of items without a location";
 "Atlas: zoom the map in / out" = "Atlas: zoom the map in / out";
+"Atlas: the first / last item in time" = "Atlas: the first / last item in time";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: on several items, zoom in until they part; on one, open it";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: on items taken at one place, the next one (%@ too)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Drag across or move a handle: only that time on the map; click: the item taken nearest then";

@@ -610,6 +610,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Depuis la liste : l'atlas, les photos et vidéos sur la carte ; depuis l'atlas : retour à la grille";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas : vers l'élément le plus proche sur la carte dans ce sens ; vers le bas, la bande des éléments sans lieu";
 "Atlas: zoom the map in / out" = "Atlas : zoom avant / arrière sur la carte";
+"Atlas: the first / last item in time" = "Atlas : premier / dernier élément dans le temps";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas : sur plusieurs éléments, zoomer jusqu'à les séparer ; sur un seul, l'ouvrir";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas : sur des éléments pris au même endroit, le suivant (aussi %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Glisser dessus ou déplacer une poignée : seulement cette période sur la carte ; clic : l'élément pris au plus près de ce moment";

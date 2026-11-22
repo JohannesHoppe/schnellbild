@@ -610,6 +610,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Ze seznamu: atlas, fotky a videa na mapě; z atlasu: zpět na mřížku";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: k nejbližší položce na mapě tím směrem; dolů do pruhu položek bez polohy";
 "Atlas: zoom the map in / out" = "Atlas: přiblížit / oddálit mapu";
+"Atlas: the first / last item in time" = "Atlas: první / poslední položka podle času";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: na více položkách přiblížit, až se oddělí; na jedné ji otevřít";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: na položkách z jednoho místa další z nich (také %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Táhnout přes ni nebo posunout úchyt: na mapě jen toto období; kliknutí: položka pořízená nejblíže tomuto času";

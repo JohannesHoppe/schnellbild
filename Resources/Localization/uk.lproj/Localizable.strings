@@ -610,6 +610,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Зі списку: атлас, фото й відео на мапі; з атласу: назад до сітки";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Атлас: до найближчого об'єкта на мапі в цьому напрямку; вниз, у смугу об'єктів без місця";
 "Atlas: zoom the map in / out" = "Атлас: наблизити / віддалити мапу";
+"Atlas: the first / last item in time" = "Атлас: перший / останній об’єкт за часом";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Атлас: на кількох об'єктах наближати, доки вони не розійдуться; на одному відкрити його";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Атлас: на об'єктах, знятих в одному місці, наступний (також %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Провести поверх або посунути ручку: на мапі лише цей період; клацання: об'єкт, знятий найближче до цього часу";

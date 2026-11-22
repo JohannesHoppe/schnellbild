@@ -164,6 +164,7 @@ struct ShortcutsHelpView: View {
                 Row(.action(.toggleList), action: "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid"),
                 Row(.words("arrows"), action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails), action: "Atlas: zoom the map in / out"),
+                Row(.pair(.gridFirst, .gridLast), action: "Atlas: the first / last item in time"),
                 Row(.words("double-click"), action: "Atlas: on several items, zoom in until they part; on one, open it"),
                 Row(.words("click"), text: String(localized: "Atlas: on items taken at one place, the next one (\(atlasArrows) too)")),
                 Row(.words("timeline"), action: "Drag across or move a handle: only that time on the map; click: the item taken nearest then"),

@@ -610,6 +610,7 @@
 "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Från listan: atlasen, bilderna och videorna på kartan; från atlasen: tillbaka till rutnätet";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: till närmaste objekt på kartan åt det hållet; ned till raden med objekt utan plats";
 "Atlas: zoom the map in / out" = "Atlas: zooma in / ut på kartan";
+"Atlas: the first / last item in time" = "Atlas: första / sista objektet i tiden";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flera objekt zooma in tills de delas; på ett öppna det";
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: på objekt från samma plats nästa (även %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Dra över eller flytta ett handtag: bara den tiden på kartan; klick: objektet som togs närmast den tiden";
