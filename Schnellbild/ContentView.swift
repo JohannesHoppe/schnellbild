@@ -656,6 +656,7 @@ struct PaneView: View {
             .layoutPriority(1)
             .help(statusText)
             .accessibilityIdentifier("statusText")
+            .modifier(ProbeTip(text: "probe tip"))
             if model.isSearching {
                 Text("Searching subfolders…").foregroundStyle(.secondary).lineLimit(1)
             }
@@ -691,6 +692,7 @@ struct PaneView: View {
             .fixedSize()
             .help(shortcuts.tip(String(localized: "Grid, list or Atlas (the map)"), .toggleList))
             .accessibilityIdentifier("viewModePicker")
+            .modifier(ProbeTip(text: "probe tip"))
             if let key = shortcuts.keys(.toggleList).first { KeyCap(key) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
@@ -701,6 +703,7 @@ struct PaneView: View {
             .foregroundStyle(model.showMiniKeyboard ? Color.accentColor : Color.secondary)
             .help(shortcuts.tip(model.showMiniKeyboard ? String(localized: "Hide the mini keyboard") : String(localized: "Mini keyboard: the keys of what's on screen, clickable"), .miniKeyboard))
             .accessibilityIdentifier("keyboardButton")
+            .modifier(ProbeTip(text: "probe tip"))
         }
     }
 
@@ -1722,5 +1725,32 @@ private struct BottomBar<Bar: View>: ViewModifier {
         } else {
             content.safeAreaInset(edge: .bottom, spacing: 0) { bar() }
         }
+    }
+}
+
+/// Probe: a tooltip through AppKit (`NSView.toolTip`), over or behind the control.
+struct ProbeTip: ViewModifier {
+    let text: String
+    static let mode = TestSwitches.value("--probe-tip=")
+    func body(content: Content) -> some View {
+        switch Self.mode {
+        case "overlay": content.overlay(AppKitTip(text: text, passThrough: true))
+        case "background": content.background(AppKitTip(text: text, passThrough: false))
+        default: content
+        }
+    }
+}
+
+struct AppKitTip: NSViewRepresentable {
+    let text: String
+    let passThrough: Bool
+    final class TipView: NSView {
+        var passThrough = true
+        override func hitTest(_ point: NSPoint) -> NSView? { passThrough ? nil : super.hitTest(point) }
+    }
+    func makeNSView(context: Context) -> TipView { TipView() }
+    func updateNSView(_ view: TipView, context: Context) {
+        view.passThrough = passThrough
+        view.toolTip = text
     }
 }

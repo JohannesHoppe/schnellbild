@@ -45,21 +45,21 @@ final class TooltipUITests: SchnellbildUITestCase {
     func testProbeTooltips() throws {
         for name in ["a.jpg", "b.jpg", "c.jpg"] { try FileManager.default.removeItem(at: tempDir.appendingPathComponent(name)) }
         for name in ["norway-01-bryggen.jpg", "norway-05-flam.jpg", "norway-08-geiranger.jpg"] { try put(name, at: name) }
-        launch(open: tempDir.path)
-        XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
-        probeStatusBar("grid-")
-        probe(element("searchMode").firstMatch, "searchMode")
-        probe(toolbarButton("backButton"), "back")
-        app.typeKey("l", modifierFlags: [])
-        XCTAssertTrue(element("list").waitForExistence(timeout: 10))
-        probeStatusBar("list-")
-        app.typeKey("l", modifierFlags: [])
-        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
-        probeStatusBar("atlas-")
-        probe(app.buttons["Tilt the view"].firstMatch, "tilt")
-        app.terminate()
-        launch(open: tempDir.path, extra: ["--probe-bars-below"])
-        XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
-        probeStatusBar("below-grid-")
+        let empty = try folder("empty")
+        for (prefix, extra) in [("base-", [String]()), ("overlay-", ["--probe-tip=overlay"]), ("background-", ["--probe-tip=background"]),
+                                ("notilehelp-", ["--probe-no-tile-help"])] {
+            launch(open: tempDir.path, extra: extra)
+            XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
+            probeStatusBar(prefix)
+            if prefix == "background-" {
+                // the controls still take clicks
+                element("keyboardButton").firstMatch.click()
+                print("PROBE background click: mini keyboard \(element("miniKeyboard").waitForExistence(timeout: 3))")
+            }
+            app.terminate()
+        }
+        launch(open: empty.path)
+        RunLoop.current.run(until: Date().addingTimeInterval(3))
+        probeStatusBar("empty-")
     }
 }
