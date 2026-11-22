@@ -227,10 +227,13 @@ enum RawDecoder {
     }
 
     /// The preview the file carries, at most about `maxPixel` on its
-    /// longest side, upright; nil without one, or with one less than half
-    /// as large as asked (an old camera's 80 × 60 thumbnail: developing the
-    /// raw data at half size gives a sharper tile).
-    static func preview(_ data: Data, maxPixel: Int) async -> CGImage? {
+    /// longest side, upright; nil without one, or with one that wouldn't
+    /// make a good tile, where developing the raw data at half size gives a
+    /// better one: less than half as large as asked (an old camera's 80 × 60
+    /// thumbnail), grey (Kodak's P712 carries a grey JPEG), or a bitmap
+    /// outside a DNG (a Sinarback's comes out green; a DNG's bitmap preview
+    /// is the picture rendered, as the DNG specification has it).
+    static func preview(_ data: Data, maxPixel: Int, allowBitmap: Bool) async -> CGImage? {
         await onQueue { _ -> CGImage? in
             guard let info = facts(data) else { return nil }
             var picture = SBRawPicture()
@@ -243,10 +246,10 @@ enum RawDecoder {
                 let bytes = Data(bytes: picture.data, count: picture.size)
                 image = CGImageSourceCreateWithData(bytes as CFData, nil).flatMap { CGImageSourceCreateImageAtIndex($0, 0, nil) }
             } else {
-                image = bitmap(picture)
+                image = allowBitmap ? bitmap(picture) : nil
             }
             // The preview lies as the sensor does: turned by the file's flip
-            guard let image, max(image.width, image.height) * 2 >= maxPixel,
+            guard let image, max(image.width, image.height) * 2 >= maxPixel, (image.colorSpace?.numberOfComponents ?? 0) >= 3,
                   let wrapped = PictureDecoders.source(of: image, properties: properties(info, orientation: orientation(flip: info.flip))) else { return nil }
             return MediaInfo.scaledDown(wrapped.source, at: 0, maxPixel: maxPixel, now: true)
         }
@@ -256,7 +259,7 @@ enum RawDecoder {
     /// read) the raw data developed at half size.
     static func thumbnail(of url: URL, maxPixel: Int) async -> CGImage? {
         guard let data = try? await MediaData.read(url), !Task.isCancelled else { return nil }
-        if let preview = await preview(data, maxPixel: maxPixel) { return preview }
+        if let preview = await preview(data, maxPixel: maxPixel, allowBitmap: BrowserModel.shownExtension(of: url) == "dng") { return preview }
         guard !Task.isCancelled, let developed = await developed(data, named: url, half: true) else { return nil }
         return MediaInfo.scaledDown(developed.source, at: 0, maxPixel: maxPixel, now: true)
     }

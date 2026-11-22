@@ -360,7 +360,7 @@ final class PictureDecoderTests: XCTestCase {
         let full = try XCTUnwrap(MediaInfo.scaledDown(developed.source, at: 0, maxPixel: 4096, now: true))
         XCTAssertEqual(full.width, reference.width * 2)
         assertMatches(full, reference, mean: 8, max: 255, "dng developed")
-        let previewed = await RawDecoder.preview(data, maxPixel: 256)
+        let previewed = await RawDecoder.preview(data, maxPixel: 256, allowBitmap: true)
         let preview = try XCTUnwrap(previewed)
         assertMatches(preview, reference, mean: 0.5, max: 2, "dng preview")
         let halved = await RawDecoder.developed(data, named: url, half: true)
@@ -390,7 +390,7 @@ final class PictureDecoderTests: XCTestCase {
                 XCTAssertGreaterThan(image.width, 0)
                 developed += 1
             }
-            _ = await RawDecoder.preview(data, maxPixel: 64)
+            _ = await RawDecoder.preview(data, maxPixel: 64, allowBitmap: true)
         }
         print("decoders: LibRaw developed \(developed) of 600 damaged DNGs")
         for cut in stride(from: 0, to: samples[0].count, by: 97) {
@@ -473,7 +473,7 @@ final class PictureDecoderTests: XCTestCase {
                   + "tile \(tile.width) × \(tile.height), tile against full view: mean \(String(format: "%.1f", tileAgainstFull.mean))")
             XCTAssertGreaterThan(brightness(small(libraw, like: libraw)), 20, "\(name): LibRaw's picture is black")
             if byLibRaw {
-                XCTAssertLessThan(tileAgainstFull.mean, 40, "\(name): tile and full view differ")
+                XCTAssertLessThan(tileAgainstFull.mean, 15, "\(name): tile and full view differ")
                 pictures.append(("LibRaw half size", libraw))
             } else {
                 // ImageIO and LibRaw develop the same raw data (their tone
