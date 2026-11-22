@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Büyük görüntüleyin, tuşlarla gezinin",
-      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, <kbd>◀</kbd> / <kbd>▶</kbd> klasörde gezinir. İzleme dörtgeniyle veya <kbd>+</kbd> / <kbd>−</kbd> ile yakınlaştırın, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler ve SVG de dahil, PDF sayfa sayfa.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>p</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
+      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, <kbd>◀</kbd> / <kbd>▶</kbd> klasörde gezinir. İzleme dörtgeniyle veya <kbd>+</kbd> / <kbd>−</kbd> ile yakınlaştırın, <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> ile döndürün, <kbd>F</kbd> ile tam ekran. Hareketli GIF’ler ve SVG de dahil, PDF sayfa sayfa.</p><p>Slayt gösterisi (<kbd>S</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>P</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
       "alt": "Büyük görünümde bir fotoğraf"
     },
     {
       "title": "Fotoğraflarınız haritada ve küre üzerinde",
-      "text": "<p><kbd>L</kbd> ızgaradan listeye, oradan Atlas’a geçer. Atlas, bir klasörün ve alt klasörlerinin fotoğraflarını ve videolarını çekildikleri yerde gösterir. Çok uzaktan bakınca harita, yıldızlı gökyüzünün önünde bir küredir; isterseniz gece ve gündüzüyle, gece tarafında şehirlerin ışıklarıyla. Yaklaştıkça düz haritaya dönüşür.</p><ul><li>Zaman çizelgesi geziyi zamana göre dizer: bir bölümün üzerinden sürükleyin, harita yalnızca o kısmı göstersin</li><li><kbd>T</kbd> geziyi oynatır: harita yerden yere kayar, fotoğraflar büyük görünür, videolar birkaç saniye oynar</li><li>Harita uygulamanın içindedir: hiçbir şey internete çıkmaz, hiçbir konum Mac’inizden ayrılmaz</li></ul>",
+      "text": "<p><kbd>L</kbd> ızgaradan listeye, oradan Atlas’a geçer. Atlas, bir klasörün ve alt klasörlerinin fotoğraflarını ve videolarını çekildikleri yerde gösterir. Çok uzaktan bakınca harita, yıldızlı gökyüzünün önünde bir küredir; isterseniz gece ve gündüzüyle, gece tarafında şehirlerin ışıklarıyla. Yaklaştıkça düz haritaya dönüşür.</p><ul><li>Zaman çizelgesi geziyi zamana göre dizer: bir bölümün üzerinden sürükleyin, harita yalnızca o kısmı göstersin</li><li>Küre ufka doğru eğilir, istersen kabartma abartılı gösterilir: fiyortlar ve dağlar öne çıkar</li><li><kbd>T</kbd> geziyi oynatır: harita yerden yere kayar, fotoğraflar büyük görünür, videolar birkaç saniye oynar</li><li>Harita uygulamanın içindedir: hiçbir şey internete çıkmaz, hiçbir konum Mac’inizden ayrılmaz</li></ul>",
       "alt": "Bir gezinin fotoğrafları küre üzerinde, Atlas görünümünde"
     },
     {
       "title": "Videolar, macOS’in oynatamadığı MKV ve AVI de",
-      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> videonun onda biri kadar, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> yüzde biri kadar atlar</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ses düzeyini ayarlar, tüm videolar için</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> ile sonraki videoya, <kbd>⌘</kbd> + <kbd>◀</kbd> ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> videonun onda biri kadar, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> yüzde biri kadar atlar</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ses düzeyini ayarlar, tüm videolar için</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> ile sonraki videoya, <kbd>⌘</kbd> + <kbd>◀</kbd> ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Ses parçaları, hız (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) ve her video için tek bir kontrol çubuğu; onu nereye sürüklersen orada kalır</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
       "alt": "Schnellbild’de oynayan bir video"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Her tuş elinizin altında",
-      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara, liste veya Atlas (<kbd>L</kbd>), ada, türe, tarihe, boyuta veya bir yere uzaklığa göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara, liste veya Atlas (<kbd>L</kbd>), ada, türe, tarihe, boyuta veya bir yere uzaklığa göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>). VoiceOver her kutucuğu okur, “Hareketi Azalt” açıkken hiçbir şey kaymaz.</p>",
       "alt": "Tuş listesi (F1)"
     },
     {

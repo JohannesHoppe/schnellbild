@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Katso isona, selaa näppäimillä",
-      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, <kbd>◀</kbd> / <kbd>▶</kbd> selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä <kbd>+</kbd> / <kbd>−</kbd>, käännä <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
+      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, <kbd>◀</kbd> / <kbd>▶</kbd> selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä <kbd>+</kbd> / <kbd>−</kbd>, käännä <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, koko näyttö näppäimellä <kbd>F</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>S</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>P</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
       "alt": "Kuva koko näkymässä"
     },
     {
       "title": "Kuvasi kartalla ja maapallolla",
-      "text": "<p><kbd>L</kbd> vaihtaa ruudukosta luetteloon ja siitä kartastoon. Kartasto näyttää kansion ja sen alikansioiden kuvat ja videot siellä, missä ne on otettu. Kaukaa katsottuna kartta on maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi.</p><ul><li>Aikajana järjestää matkan ajan mukaan: vedä jakson yli, niin kartta näyttää vain sen osan</li><li><kbd>T</kbd> toistaa matkan: kartta liukuu paikasta toiseen, kuvat näkyvät suurina, videot pyörivät muutaman sekunnin</li><li>Kartta on sovelluksessa: mitään ei haeta verkosta, eikä mikään sijainti lähde Macistasi</li></ul>",
+      "text": "<p><kbd>L</kbd> vaihtaa ruudukosta luetteloon ja siitä kartastoon. Kartasto näyttää kansion ja sen alikansioiden kuvat ja videot siellä, missä ne on otettu. Kaukaa katsottuna kartta on maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi.</p><ul><li>Aikajana järjestää matkan ajan mukaan: vedä jakson yli, niin kartta näyttää vain sen osan</li><li>Karttapallo kallistuu kohti horisonttia, halutessasi korostetulla korkokuvalla, niin vuonot ja vuoret erottuvat</li><li><kbd>T</kbd> toistaa matkan: kartta liukuu paikasta toiseen, kuvat näkyvät suurina, videot pyörivät muutaman sekunnin</li><li>Kartta on sovelluksessa: mitään ei haeta verkosta, eikä mikään sijainti lähde Macistasi</li></ul>",
       "alt": "Matkan kuvat maapallolla atlasnäkymässä"
     },
     {
       "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
-      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hyppäävät kymmenesosan videosta, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> sadasosan</li><li><kbd>▲</kbd> / <kbd>▼</kbd> säätävät äänenvoimakkuutta, kaikille videoille</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> seuraavaan videoon ja <kbd>⌘</kbd> + <kbd>◀</kbd> takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
+      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hyppäävät kymmenesosan videosta, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> sadasosan</li><li><kbd>▲</kbd> / <kbd>▼</kbd> säätävät äänenvoimakkuutta, kaikille videoille</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> seuraavaan videoon ja <kbd>⌘</kbd> + <kbd>◀</kbd> takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Ääniraidat, nopeus (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) ja sama ohjauspalkki jokaiselle videolle, ja se pysyy siellä, minne sen vedät</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Kaikki näppäimet käden ulottuvilla",
-      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko, luettelo tai kartasto (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän, koon tai etäisyyden mukaan valitusta paikasta, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko, luettelo tai kartasto (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän, koon tai etäisyyden mukaan valitusta paikasta, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>). VoiceOver lukee jokaisen ruudun, ja Vähennä liikettä -asetuksella mikään ei liu’u.</p>",
       "alt": "Näppäinten luettelo (F1)"
     },
     {

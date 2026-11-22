@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Se bildet stort, bla med tastene",
-      "text": "<p>Mellomrom åpner et bilde så stort som vinduet tillater, <kbd>◀</kbd> / <kbd>▶</kbd> blar gjennom mappen. Zoom med styreflaten eller <kbd>+</kbd> / <kbd>−</kbd>, roter med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, fullskjerm med <kbd>f</kbd>. Animerte GIF-er og SVG er med, PDF side for side.</p><p>En lysbildefremvisning (<kbd>s</kbd>) går gjennom mappen og alle undermappene, både bilder og videoer. Det lysbildefremvisningen spiller av, er spillelisten: <kbd>p</kbd> åpner den, så du kan endre rekkefølgen og sortere ut.</p>",
+      "text": "<p>Mellomrom åpner et bilde så stort som vinduet tillater, <kbd>◀</kbd> / <kbd>▶</kbd> blar gjennom mappen. Zoom med styreflaten eller <kbd>+</kbd> / <kbd>−</kbd>, roter med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, fullskjerm med <kbd>F</kbd>. Animerte GIF-er og SVG er med, PDF side for side.</p><p>En lysbildefremvisning (<kbd>S</kbd>) går gjennom mappen og alle undermappene, både bilder og videoer. Det lysbildefremvisningen spiller av, er spillelisten: <kbd>P</kbd> åpner den, så du kan endre rekkefølgen og sortere ut.</p>",
       "alt": "Et bilde i full visning"
     },
     {
       "title": "Bildene dine på kartet og globusen",
-      "text": "<p><kbd>L</kbd> bytter fra rutenettet til listen og videre til atlaset. Det viser bilder og videoer fra en mappe og undermappene der de ble tatt. Langt ute er kartet en globus foran stjernehimmelen, om du vil med dag og natt og byenes lys på nattsiden; zoomer du inn, flates den ut til kartet.</p><ul><li>Tidslinjen ordner turen etter tid: dra over en del, så viser kartet bare den</li><li><kbd>T</kbd> spiller av turen: kartet glir fra sted til sted, bildene vises stort, videoene spiller noen sekunder</li><li>Kartet ligger i appen: ingenting går på nett, ingen posisjon forlater Macen din</li></ul>",
+      "text": "<p><kbd>L</kbd> bytter fra rutenettet til listen og videre til atlaset. Det viser bilder og videoer fra en mappe og undermappene der de ble tatt. Langt ute er kartet en globus foran stjernehimmelen, om du vil med dag og natt og byenes lys på nattsiden; zoomer du inn, flates den ut til kartet.</p><ul><li>Tidslinjen ordner turen etter tid: dra over en del, så viser kartet bare den</li><li>Globusen vippes mot horisonten, med forsterket relieff om du vil, så fjorder og fjell trer fram</li><li><kbd>T</kbd> spiller av turen: kartet glir fra sted til sted, bildene vises stort, videoene spiller noen sekunder</li><li>Kartet ligger i appen: ingenting går på nett, ingen posisjon forlater Macen din</li></ul>",
       "alt": "Bildene fra en tur på globusen, i atlasvisningen"
     },
     {
       "title": "Videoer, også MKV og andre som macOS ikke kan spille av",
-      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hopper en tidel av videoen, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundredel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stiller volumet, for alle videoer</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> til neste video og <kbd>⌘</kbd> + <kbd>◀</kbd> tilbake: den første fortsetter der den slapp</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem på midt i, står linjen som går, der med en gang, og ASS-undertekster beholder plassering, farger og skrifter</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hopper en tidel av videoen, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundredel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stiller volumet, for alle videoer</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> til neste video og <kbd>⌘</kbd> + <kbd>◀</kbd> tilbake: den første fortsetter der den slapp</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem på midt i, står linjen som går, der med en gang, og ASS-undertekster beholder plassering, farger og skrifter</li><li>Lydspor, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) og én kontrollinje for alle videoer, som blir der du drar den</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video som spilles av i Schnellbild"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Alle tastene for hånden",
-      "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Velg dine egne taster, eller tastene som i Phiewer. Rutenett, liste eller atlas (<kbd>L</kbd>), sortering etter navn, type, dato, størrelse eller avstand fra et sted, flere vinduer og en sjefstast (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Velg dine egne taster, eller tastene som i Phiewer. Rutenett, liste eller atlas (<kbd>L</kbd>), sortering etter navn, type, dato, størrelse eller avstand fra et sted, flere vinduer og en sjefstast (<kbd>X</kbd>). VoiceOver leser opp hver rute, og med «Reduser bevegelse» glir ingenting.</p>",
       "alt": "Listen over taster (F1)"
     },
     {

@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Se bilden stort, bläddra med tangenterna",
-      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, <kbd>◀</kbd> / <kbd>▶</kbd> bläddrar genom mappen. Zooma med styrplattan eller <kbd>+</kbd> / <kbd>−</kbd>, rotera med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, helskärm med <kbd>f</kbd>. Animerade GIF:ar och SVG ingår, PDF sida för sida.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>p</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
+      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, <kbd>◀</kbd> / <kbd>▶</kbd> bläddrar genom mappen. Zooma med styrplattan eller <kbd>+</kbd> / <kbd>−</kbd>, rotera med <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, helskärm med <kbd>F</kbd>. Animerade GIF:ar och SVG ingår, PDF sida för sida.</p><p>Ett bildspel (<kbd>S</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>P</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
       "alt": "Ett foto i helvyn"
     },
     {
       "title": "Dina foton på kartan och jordgloben",
-      "text": "<p><kbd>L</kbd> växlar från rutnätet till listan och vidare till atlasen. Den visar foton och videor i en mapp och dess undermappar där de togs. Långt utzoomad är kartan en jordglob framför stjärnhimlen, om du vill med dag och natt och städernas ljus på nattsidan; zoomar du in planas den ut till kartan.</p><ul><li>Tidslinjen ordnar resan efter tid: dra över en del, så visar kartan bara den</li><li><kbd>T</kbd> spelar upp resan: kartan glider från plats till plats, foton visas stort, videor spelas några sekunder</li><li>Kartan finns i appen: inget går ut på nätet, ingen plats lämnar din Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> växlar från rutnätet till listan och vidare till atlasen. Den visar foton och videor i en mapp och dess undermappar där de togs. Långt utzoomad är kartan en jordglob framför stjärnhimlen, om du vill med dag och natt och städernas ljus på nattsidan; zoomar du in planas den ut till kartan.</p><ul><li>Tidslinjen ordnar resan efter tid: dra över en del, så visar kartan bara den</li><li>Jordgloben lutas mot horisonten, med förstärkt relief om du vill, så att fjordar och berg framträder</li><li><kbd>T</kbd> spelar upp resan: kartan glider från plats till plats, foton visas stort, videor spelas några sekunder</li><li>Kartan finns i appen: inget går ut på nätet, ingen plats lämnar din Mac</li></ul>",
       "alt": "Foton från en resa på jordgloben, i atlasvyn"
     },
     {
       "title": "Videor, även MKV och andra som macOS inte kan spela",
-      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Finder och Överblick får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
+      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> hoppar en tiondel av videon, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> en hundradel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> ställer in volymen, för alla videor</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> till nästa video och <kbd>⌘</kbd> + <kbd>◀</kbd> tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Ljudspår, hastighet (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) och samma kontrollfält för varje video, som stannar där du drar det</li><li>Finder och Överblick får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
       "alt": "En video som spelas i Schnellbild"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Alla tangenter nära till hands",
-      "text": "<p><kbd>F1</kbd> listar alla tangenter, även för utskrift; <kbd>K</kbd> visar ett litet tangentbord att klicka på. Välj egna tangenter, eller tangenterna som i Phiewer. Rutnät, lista eller atlas (<kbd>L</kbd>), sortera efter namn, typ, datum, storlek eller avstånd från en plats, flera fönster och en chefsknapp (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> listar alla tangenter, även för utskrift; <kbd>K</kbd> visar ett litet tangentbord att klicka på. Välj egna tangenter, eller tangenterna som i Phiewer. Rutnät, lista eller atlas (<kbd>L</kbd>), sortera efter namn, typ, datum, storlek eller avstånd från en plats, flera fönster och en chefsknapp (<kbd>X</kbd>). VoiceOver läser upp varje ruta, och med ”Minska rörelse” glider ingenting.</p>",
       "alt": "Listan över tangenter (F1)"
     },
     {

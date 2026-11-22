@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Prohlížet ve velkém, listovat klávesami",
-      "text": "<p>Mezerník otevře obrázek tak velký, jak okno dovolí, <kbd>◀</kbd> / <kbd>▶</kbd> listují složkou. Zvětšujte trackpadem nebo <kbd>+</kbd> / <kbd>−</kbd>, otáčejte <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, celá obrazovka klávesou <kbd>f</kbd>. Animované GIFy a SVG také, PDF stránku po stránce.</p><p>Prezentace (<kbd>s</kbd>) projde složku i všechny její podsložky, fotky i videa. Co prezentace přehrává, to je playlist: <kbd>p</kbd> ho otevře, abyste změnili pořadí a vyřadili, co tam být nemá.</p>",
+      "text": "<p>Mezerník otevře obrázek tak velký, jak okno dovolí, <kbd>◀</kbd> / <kbd>▶</kbd> listují složkou. Zvětšujte trackpadem nebo <kbd>+</kbd> / <kbd>−</kbd>, otáčejte <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, celá obrazovka klávesou <kbd>F</kbd>. Animované GIFy a SVG také, PDF stránku po stránce.</p><p>Prezentace (<kbd>S</kbd>) projde složku i všechny její podsložky, fotky i videa. Co prezentace přehrává, to je playlist: <kbd>P</kbd> ho otevře, abyste změnili pořadí a vyřadili, co tam být nemá.</p>",
       "alt": "Fotka v plném zobrazení"
     },
     {
       "title": "Vaše fotky na mapě a na glóbu",
-      "text": "<p><kbd>L</kbd> přepíná z mřížky na seznam a dál na atlas. Ten ukáže fotky a videa ze složky a jejích podsložek tam, kde vznikly. Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu.</p><ul><li>Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část</li><li><kbd>T</kbd> přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund</li><li>Mapa je přímo v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> přepíná z mřížky na seznam a dál na atlas. Ten ukáže fotky a videa ze složky a jejích podsložek tam, kde vznikly. Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu.</p><ul><li>Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část</li><li>Glóbus se nakloní k obzoru, na přání s převýšeným reliéfem, takže fjordy a hory vyniknou</li><li><kbd>T</kbd> přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund</li><li>Mapa je přímo v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac</li></ul>",
       "alt": "Fotky z cesty na glóbu, v zobrazení atlasu"
     },
     {
       "title": "Videa, i MKV a další, která macOS neumí přehrát",
-      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> přeskakují o desetinu videa, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o setinu</li><li><kbd>▲</kbd> / <kbd>▼</kbd> nastavují hlasitost, pro všechna videa</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> na další video a <kbd>⌘</kbd> + <kbd>◀</kbd> zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
+      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> přeskakují o desetinu videa, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> o setinu</li><li><kbd>▲</kbd> / <kbd>▼</kbd> nastavují hlasitost, pro všechna videa</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> na další video a <kbd>⌘</kbd> + <kbd>◀</kbd> zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Zvukové stopy, rychlost (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) a jeden ovládací panel pro každé video, který zůstane tam, kam ho přetáhnete</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Všechny klávesy po ruce",
-      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka, seznam nebo atlas (<kbd>L</kbd>), řazení podle názvu, druhu, data, velikosti nebo vzdálenosti od místa, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka, seznam nebo atlas (<kbd>L</kbd>), řazení podle názvu, druhu, data, velikosti nebo vzdálenosti od místa, více oken a šéfovo tlačítko (<kbd>X</kbd>). VoiceOver přečte každou dlaždici a s volbou „Omezit pohyb“ nic neklouže.</p>",
       "alt": "Seznam kláves (F1)"
     },
     {

@@ -87,17 +87,17 @@
   "features": [
     {
       "title": "Groß ansehen, mit den Tasten blättern",
-      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, <kbd>◀</kbd> / <kbd>▶</kbd> blättern durch den Ordner. Zoomen mit dem Trackpad oder <kbd>+</kbd> / <kbd>−</kbd>, drehen mit <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, Vollbild mit <kbd>f</kbd>. Animierte GIFs und SVG inklusive, PDFs Seite für Seite.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>p</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
+      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, <kbd>◀</kbd> / <kbd>▶</kbd> blättern durch den Ordner. Zoomen mit dem Trackpad oder <kbd>+</kbd> / <kbd>−</kbd>, drehen mit <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd>, Vollbild mit <kbd>F</kbd>. Animierte GIFs und SVG inklusive, PDFs Seite für Seite.</p><p>Eine Diashow (<kbd>S</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>P</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
       "alt": "Ein Foto in der Vollansicht"
     },
     {
       "title": "Deine Fotos auf der Karte und dem Globus",
-      "text": "<p><kbd>L</kbd> wechselt vom Raster zur Liste und weiter zum Atlas. Er zeigt die Fotos und Videos eines Ordners und seiner Unterordner dort, wo sie aufgenommen wurden. Weit herausgezoomt ist die Karte ein Globus vor dem Sternenhimmel, auf Wunsch mit Tag und Nacht und den Lichtern der Städte auf der Nachtseite; beim Hineinzoomen wird er zur flachen Karte.</p><ul><li>Die Zeitleiste ordnet die Reise nach der Zeit: Zieh über einen Abschnitt, und die Karte zeigt nur diesen Teil</li><li><kbd>T</kbd> spielt die Reise ab: Die Karte gleitet von Ort zu Ort, die Fotos erscheinen groß, die Videos laufen ein paar Sekunden</li><li>Die Karte steckt in der App: Nichts geht online, kein Ort verlässt deinen Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> wechselt vom Raster zur Liste und weiter zum Atlas. Er zeigt die Fotos und Videos eines Ordners und seiner Unterordner dort, wo sie aufgenommen wurden. Weit herausgezoomt ist die Karte ein Globus vor dem Sternenhimmel, auf Wunsch mit Tag und Nacht und den Lichtern der Städte auf der Nachtseite; beim Hineinzoomen wird er zur flachen Karte.</p><ul><li>Die Zeitleiste ordnet die Reise nach der Zeit: Zieh über einen Abschnitt, und die Karte zeigt nur diesen Teil</li><li>Der Globus neigt sich zum Horizont, auf Wunsch mit überhöhtem Relief, sodass Fjorde und Berge hervortreten</li><li><kbd>T</kbd> spielt die Reise ab: Die Karte gleitet von Ort zu Ort, die Fotos erscheinen groß, die Videos laufen ein paar Sekunden</li><li>Die Karte steckt in der App: Nichts geht online, kein Ort verlässt deinen Mac</li></ul>",
       "alt": "Die Fotos einer Reise auf dem Globus, in der Atlas-Ansicht"
     },
     {
       "title": "Videos, auch die, die macOS nicht abspielt",
-      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen ein Zehntel des Videos, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> ein Hundertstel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stellen die Lautstärke ein, für alle Videos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> zum nächsten Video und <kbd>⌘</kbd> + <kbd>◀</kbd> zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, RealMedia, MXF.</p><ul><li><kbd>◀</kbd> / <kbd>▶</kbd> springen ein Zehntel des Videos, <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> ein Hundertstel</li><li><kbd>▲</kbd> / <kbd>▼</kbd> stellen die Lautstärke ein, für alle Videos</li><li><kbd>⌘</kbd> + <kbd>▶</kbd> zum nächsten Video und <kbd>⌘</kbd> + <kbd>◀</kbd> zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Tonspuren, Geschwindigkeit (<kbd>&lt;</kbd> / <kbd>&gt;</kbd>) und eine Steuerleiste für jedes Video, die bleibt, wohin du sie ziehst</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
       "alt": "Ein Video in Schnellbild"
     },
     {
@@ -127,7 +127,7 @@
     },
     {
       "title": "Alle Tasten griffbereit",
-      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster, Liste oder Atlas (<kbd>L</kbd>), sortieren nach Name, Art, Datum, Größe oder Entfernung von einem Ort, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster, Liste oder Atlas (<kbd>L</kbd>), sortieren nach Name, Art, Datum, Größe oder Entfernung von einem Ort, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>). VoiceOver liest jede Kachel vor, und mit „Bewegung reduzieren“ gleitet nichts.</p>",
       "alt": "Die Liste der Tasten (F1)"
     },
     {
