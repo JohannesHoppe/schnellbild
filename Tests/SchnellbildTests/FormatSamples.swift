@@ -104,7 +104,6 @@ extension FormatFixtures {
         let apng = [kCGImagePropertyPNGDictionary: [kCGImagePropertyAPNGDelayTime: 0.1]]
         try add("png (control)", "control.png", written(UTType.png.identifier, picture: reference))
         try add("apng", "animated.apng", written(UTType.png.identifier, frames: 2, properties: apng, picture: reference))
-        try add("avifs", "sequence.avifs", written("public.avif", frames: 2, picture: reference), reference, .lossy)
         try add("jpf (JPEG 2000)", "picture.jpf", written("public.jpeg-2000", picture: reference), reference, .lossy)
         try add("jpx (JPEG 2000)", "picture.jpx", written("public.jpeg-2000", picture: reference), reference, .lossy)
         try add("j2c (code stream)", "picture.j2c", jpeg2000CodeStream(picture: reference), reference, .lossy)
@@ -150,7 +149,7 @@ extension FormatFixtures {
         samples.append(Sample(name: "svgz", url: dir.appendingPathComponent("drawing.svgz"), reference: reference, tolerance: .drawn))
 
         let size = CGSize(width: ReferencePicture.width, height: ReferencePicture.height)
-        try add("ai (PDF content)", "vector.ai", pdf(size: size) { ReferencePicture.draw(in: $0) }, reference, .drawn)
+        try add("ai (PDF content)", "vector.ai", pdf(size: size) { ReferencePicture.draw(in: $0, vector: true) }, reference, .drawn)
         try add("ai (XMP thumbnail)", "thumbnail.ai", illustratorWithoutPDF(picture: reference), reference, .jpeg)
         let placeholder = pdf(size: size, text: placeholderText) { context in
             context.setFillColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1))

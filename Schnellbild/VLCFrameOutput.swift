@@ -285,17 +285,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// When the media was handed over (`use`).
     private var usedAt = Date.distantPast
 
+    /// The video track's visible size (`LibVLCVideo.visibleTrack`: the
+    /// container's, else the stream's as VLC states it).
     static func videoTrack(of media: VLCMedia) -> Track? {
-        guard let tracks = media.tracksInformation as? [[String: Any]] else { return nil }
-        for track in tracks where track[VLCMediaTracksInformationType] as? String == VLCMediaTracksInformationTypeVideo {
-            let number = { (key: String) in (track[key] as? NSNumber)?.intValue ?? 0 }
-            let width = number(VLCMediaTracksInformationVideoWidth), height = number(VLCMediaTracksInformationVideoHeight)
-            guard width > 0, height > 0 else { continue }
-            let num = number(VLCMediaTracksInformationSourceAspectRatio)
-            let den = number(VLCMediaTracksInformationSourceAspectRatioDenominator)
-            return Track(width: width, height: height, sampleAspect: num > 0 && den > 0 ? Double(num) / Double(den) : 1)
-        }
-        return nil
+        LibVLCVideo.visibleTrack(of: media).map { Track(width: $0.width, height: $0.height, sampleAspect: $0.sampleAspect) }
     }
 
     /// The size the pictures are shown at: the track's visible size when it

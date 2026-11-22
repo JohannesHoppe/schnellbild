@@ -258,6 +258,18 @@ final class FormatVisualTests: XCTestCase {
             missing.append("avci")
         }
         for name in missing { lines.append("\(name): no sample on this macOS") }
+        // Why ASTC and KTX are written by hand: ImageIO's own writers, read
+        // back by ImageIO (said, not asserted: a fixed writer changes nothing here)
+        for (name, type) in [("ImageIO's ASTC writer", "org.khronos.astc"), ("ImageIO's KTX writer", "org.khronos.ktx")] {
+            let reference = ReferencePicture.image()
+            guard let data = FormatFixtures.written(type, picture: reference),
+                  let source = CGImageSourceCreateWithData(data as CFData, nil),
+                  let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else { lines.append("\(name): nothing written or read"); continue }
+            let metrics = Self.compare(image, with: reference)
+            let flipped = Self.compare(image, with: ReferencePicture.scaled(reference, width: reference.width, height: reference.height, flipped: true))
+            lines.append("\(name), read back: \(metrics.text); against the reference upside down: \(flipped.text)")
+            print("visual: \(lines.last!)")
+        }
         try writeSnapshots(group: "pictures")
         XCTAssertEqual(missing, [], "samples this macOS can't write")
     }
@@ -282,7 +294,8 @@ final class FormatVisualTests: XCTestCase {
     /// AVFoundation plays it and it isn't one of VLC's formats), else
     /// VLC's picture as `VLCFrameOutput` hands it to the layer, converted
     /// by Core Image as the compositor converts it (its attachments).
-    private func fullVideoFrame(_ url: URL) async throws -> (CGImage?, String) {
+    /// With the picture: the colour attachments it was shown with.
+    private func fullVideoFrame(_ url: URL) async throws -> (CGImage?, String, [String: Any]) {
         let asset = AVURLAsset(url: url, options: VideoDetailView.assetOptions(for: url))
         var playable = false
         if !VideoDetailView.playsInVLC(url) { playable = (try? await asset.load(.isPlayable)) ?? false }
@@ -292,7 +305,11 @@ final class FormatVisualTests: XCTestCase {
             generator.requestedTimeToleranceBefore = .zero
             generator.requestedTimeToleranceAfter = .zero
             let image = try? await generator.image(at: CMTime(value: 85, timescale: 100)).image
-            return (image, "AVKit")
+            // An untagged SD video as AVFoundation reads it (BT.601's matrix,
+            // SMPTE C's primaries, BT.709's transfer), as VLCFrameOutput tags it too
+            return (image, "AVKit", [kCVImageBufferYCbCrMatrixKey as String: kCVImageBufferYCbCrMatrix_ITU_R_601_4,
+                                     kCVImageBufferColorPrimariesKey as String: kCVImageBufferColorPrimaries_SMPTE_C,
+                                     kCVImageBufferTransferFunctionKey as String: kCVImageBufferTransferFunction_ITU_R_709_2])
         }
         let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: VLCSafety.head(of: url))
@@ -315,10 +332,55 @@ final class FormatVisualTests: XCTestCase {
         }
         let held = UncheckedPlayer(player: player)
         await Task.detached { held.player.stop() }.value
-        return (picture.flatMap(Self.render), "VLC " + (picture.map(VLCFrameOutput.describe) ?? "no picture"))
+        let attachments = picture.flatMap { CVBufferCopyAttachments($0, .shouldPropagate) as? [String: Any] } ?? [:]
+        return (picture.flatMap(Self.render), "VLC " + (picture.map(VLCFrameOutput.describe) ?? "no picture"), attachments)
     }
 
     private struct UncheckedPlayer: @unchecked Sendable { let player: VLCMediaPlayer }
+
+    /// A picture as the screen shows a video of it: made YCbCr (BT.601,
+    /// limited range, its colour halved as 4:2:0 halves it) with
+    /// `attachments`, then shown as `render` shows a decoded picture.
+    static func asShown(_ picture: CGImage, attachments: [String: Any]) -> CGImage {
+        let p = RGBAPixels(picture)
+        let w = p.width & ~1, h = p.height & ~1
+        var made: CVPixelBuffer?
+        CVPixelBufferCreate(nil, w, h, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+                            [kCVPixelBufferIOSurfacePropertiesKey: [:]] as CFDictionary, &made)
+        guard let buffer = made else { return picture }
+        CVPixelBufferLockBaseAddress(buffer, [])
+        let luma = CVPixelBufferGetBaseAddressOfPlane(buffer, 0)!.assumingMemoryBound(to: UInt8.self)
+        let chroma = CVPixelBufferGetBaseAddressOfPlane(buffer, 1)!.assumingMemoryBound(to: UInt8.self)
+        let lumaRow = CVPixelBufferGetBytesPerRowOfPlane(buffer, 0), chromaRow = CVPixelBufferGetBytesPerRowOfPlane(buffer, 1)
+        func rgb(_ x: Int, _ y: Int) -> (Double, Double, Double) {
+            let c = p.at(x, y)
+            return (Double(c.r), Double(c.g), Double(c.b))
+        }
+        func clamp(_ v: Double) -> UInt8 { UInt8(max(0, min(255, v.rounded()))) }
+        for y in 0..<h {
+            for x in 0..<w {
+                let (r, g, b) = rgb(x, y)
+                let value: Double = 16 + 0.256788 * r + 0.504129 * g + 0.097906 * b
+                luma[y * lumaRow + x] = clamp(value)
+            }
+        }
+        for y in stride(from: 0, to: h, by: 2) {
+            for x in stride(from: 0, to: w, by: 2) {
+                var r = 0.0, g = 0.0, b = 0.0
+                for (dx, dy) in [(0, 0), (1, 0), (0, 1), (1, 1)] {
+                    let c = rgb(x + dx, y + dy)
+                    r += c.0 / 4; g += c.1 / 4; b += c.2 / 4
+                }
+                let cb: Double = 128 - 0.148223 * r - 0.290993 * g + 0.439216 * b
+                let cr: Double = 128 + 0.439216 * r - 0.367788 * g - 0.071427 * b
+                chroma[y / 2 * chromaRow + x] = clamp(cb)
+                chroma[y / 2 * chromaRow + x + 1] = clamp(cr)
+            }
+        }
+        CVPixelBufferUnlockBaseAddress(buffer, [])
+        CVBufferSetAttachments(buffer, attachments as CFDictionary, .shouldPropagate)
+        return render(buffer) ?? picture
+    }
 
     /// A picture buffer as the screen shows it: Core Image reads its
     /// matrix, range and colours from its attachments.
@@ -336,12 +398,18 @@ final class FormatVisualTests: XCTestCase {
             let url = try XCTUnwrap(Bundle.module.url(forResource: "visual", withExtension: ext, subdirectory: "Videos"), "visual.\(ext)")
             XCTAssertEqual(BrowserModel.mediaKind(of: url), .video, ext)
             let thumbnail = await thumbnail(url)
-            let (full, player) = try await fullVideoFrame(url)
+            let (full, player, attachments) = try await fullVideoFrame(url)
             let thumbFrame = thumbnail.flatMap(ReferencePicture.frameNumber(in:))
             let fullFrame = full.flatMap(ReferencePicture.frameNumber(in:))
             XCTAssertNotNil(thumbFrame, "\(ext): the tile's frame number can't be read")
             XCTAssertNotNil(fullFrame, "\(ext): the full view's frame number can't be read")
-            record(ext, reference: ReferencePicture.image(frame: fullFrame ?? 0), thumbnail: thumbnail, full: full,
+            // The full view: the frame as the screen shows a video of it decoded
+            // exactly, with the colours it is tagged with (an untagged SD video's
+            // primaries are SMPTE C's, which an sRGB screen shows a little
+            // shifted, as QuickTime Player does); the tile: VLC's or QuickLook's
+            // RGB, the frame as it is
+            record(ext, reference: Self.asShown(ReferencePicture.image(frame: fullFrame ?? 0), attachments: attachments),
+                   thumbnail: thumbnail, full: full,
                    thumbnailReference: ReferencePicture.image(frame: thumbFrame ?? 0), tolerance: .video,
                    extra: " \(player), tile frame \(thumbFrame.map(String.init) ?? "?"), full frame \(fullFrame.map(String.init) ?? "?")")
         }

@@ -92,6 +92,12 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
     private var player: VLCMediaPlayer?
     private var pixels: UnsafeMutableRawPointer?
     private var size = (width: 0, height: 0)
+    /// The media grabbed from, for its visible size.
+    private var media: VLCMedia?
+    /// The size was the decoder's buffer's (the visible one not known yet):
+    /// VLC scaled the visible part into it, and the picture is brought to
+    /// the visible shape once VLC states it.
+    private var sizeFromBuffer = false
 
     private var finished = false
 
@@ -154,6 +160,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         guard let native = LibVLCVideo.nativePlayer(of: player) else { return finish(with: .failed("no native player")) }
         lock.lock()
         self.player = player
+        self.media = media
         lock.unlock()
         let opaque = Unmanaged.passUnretained(self).toOpaque()
         api.setCallbacks(native, { opaque, planes in
@@ -196,13 +203,31 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         }
     }
 
-    /// RGBA at the wanted width, the height by the decoded picture's sides.
+    /// RGBA at the wanted width, the height by the picture's visible shape:
+    /// VLC's size here is the decoder's buffer, often padded (240 rows decode
+    /// into 256), and VLC scales the visible part to the size set here; so
+    /// the track's visible size (its pixels made square) decides, the
+    /// buffer's only while it isn't known.
     private func setUp(chroma: UnsafeMutablePointer<CChar>, width: UnsafeMutablePointer<UInt32>,
                        height: UnsafeMutablePointer<UInt32>, pitches: UnsafeMutablePointer<UInt32>,
                        lines: UnsafeMutablePointer<UInt32>) -> UInt32 {
         guard width.pointee > 0, height.pointee > 0 else { return 0 }
+        lock.lock()
+        let media = self.media
+        lock.unlock()
+        var shape = (width: Double(width.pointee), height: Double(height.pointee))
+        let track = media.flatMap(LibVLCVideo.visibleTrack(of:))
+        if var track {
+            // VLC hands over an upright picture of a video stored turned
+            if (track.width > track.height) != (shape.width > shape.height), track.width != track.height {
+                swap(&track.width, &track.height)
+                track.sampleAspect = 1 / track.sampleAspect
+            }
+            let aspect = track.sampleAspect.isFinite && track.sampleAspect > 0 ? min(max(track.sampleAspect, 0.25), 4) : 1
+            shape = (Double(track.width) * aspect, Double(track.height))
+        }
         let w = min(wantedWidth, 4096)
-        let h = max(2, min(4096, Int((Double(height.pointee) * Double(w) / Double(width.pointee)).rounded())))
+        let h = max(2, min(4096, Int((shape.height * Double(w) / shape.width).rounded())))
         for (i, c) in "RGBA".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
         width.pointee = UInt32(w)
         height.pointee = UInt32(h)
@@ -213,6 +238,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         pixels?.deallocate()
         pixels = UnsafeMutableRawPointer.allocate(byteCount: w * 4 * h, alignment: 16)
         size = (w, h)
+        sizeFromBuffer = track == nil
         _ = Unmanaged.passUnretained(self).retain()
         return 1
     }
@@ -227,9 +253,28 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
     /// The first picture shown is the frame.
     private func pictureDone() {
         lock.lock()
-        let image = finished ? nil : makeImage()
+        var image = finished ? nil : makeImage()
+        let fromBuffer = sizeFromBuffer, media = self.media
         lock.unlock()
+        // Made at the buffer's shape: brought to the visible one VLC states by now
+        if fromBuffer, let picture = image, let media, let resolution = LibVLCVideo.resolution(of: media),
+           let buffer = resolution.buffer, buffer != resolution.visible {
+            image = Self.reshaped(picture, visible: resolution.visible)
+        }
         if let image { finish(with: .frame(image)) }
+    }
+
+    /// The picture at the wanted width with the visible size's shape.
+    private static func reshaped(_ picture: CGImage, visible: (width: Int, height: Int)) -> CGImage? {
+        let w = picture.width
+        let h = max(2, Int((Double(visible.height) * Double(w) / Double(visible.width)).rounded()))
+        guard h != picture.height,
+              let context = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
+                                      space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                      bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else { return picture }
+        context.interpolationQuality = .high
+        context.draw(picture, in: CGRect(x: 0, y: 0, width: w, height: h))
+        return context.makeImage() ?? picture
     }
 
     /// (`lock` held)

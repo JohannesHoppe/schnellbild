@@ -140,7 +140,7 @@ draw_visual() {
                -color_trc iec61966-2-1 -color_range tv)
   SVT_LOG=1 "$FFMPEG" -loglevel error -y -framerate 10 -i "$frames/frame-%02d.png" "${bt709[@]}" -c:v libsvtav1 -crf 20 -g 10 \
     -fflags +bitexact -flags:v +bitexact -f avif "$OUT/visual.avifs"
-  "$FFMPEG" -loglevel error -y -i "$frames/frame-00.png" "${bt709[@]}" -frames:v 1 -c:v libx264 -crf 12 \
+  "$FFMPEG" -loglevel error -y -i "$frames/frame-00.png" "${bt709[@]}" -frames:v 1 -c:v libx264 -profile:v main -crf 12 \
     -bsf:v filter_units=remove_types=6 -fflags +bitexact -flags:v +bitexact -f h264 "$frames/still.h264"
   python3 -I Scripts/make_avci.py "$frames/still.h264" "$OUT/visual.avci" 384 240
   rm -rf "$frames"

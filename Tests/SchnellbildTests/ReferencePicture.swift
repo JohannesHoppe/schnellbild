@@ -30,6 +30,18 @@ enum ReferencePicture {
         case rect(x: Int, y: Int, w: Int, h: Int, RGB)
         case ellipse(cx: Double, cy: Double, r: Double, RGB)
         case polygon([(Double, Double)], RGB)
+        /// From `from` at the left to `to` at the right: in pixels column by
+        /// column (column x at x / (w - 1) of the way), as a vector a
+        /// gradient through the columns' middles, so both agree.
+        case ramp(x: Int, y: Int, w: Int, h: Int, from: RGB, to: RGB)
+    }
+
+    /// Column `x` of a ramp `w` wide: how far along, 0 … 255.
+    static func rampStep(_ x: Int, of w: Int) -> Int { (x * 255 + (w - 1) / 2) / (w - 1) }
+
+    static func rampColour(_ step: Int, from: RGB, to: RGB) -> RGB {
+        func mix(_ a: UInt8, _ b: UInt8) -> UInt8 { UInt8(Int(a) + (Int(b) - Int(a)) * step / 255) }
+        return RGB(r: mix(from.r, to.r), g: mix(from.g, to.g), b: mix(from.b, to.b))
     }
 
     /// What is drawn, from the top left, in order.
@@ -38,11 +50,8 @@ enum ReferencePicture {
         let bars: [RGB] = [RGB(r: 255, g: 255, b: 255), RGB(r: 255, g: 255, b: 0), RGB(r: 0, g: 255, b: 255), RGB(r: 0, g: 255, b: 0),
                            RGB(r: 255, g: 0, b: 255), RGB(r: 255, g: 0, b: 0), RGB(r: 0, g: 0, b: 255), RGB(r: 0, g: 0, b: 0)]
         for (i, colour) in bars.enumerated() { shapes.append(.rect(x: i * 48, y: 0, w: 48, h: 48, colour)) }
-        for x in 0..<width {
-            let v = UInt8((x * 255 + (width - 1) / 2) / (width - 1))
-            shapes.append(.rect(x: x, y: 48, w: 1, h: 32, RGB(r: v, g: v, b: v)))
-            shapes.append(.rect(x: x, y: 80, w: 1, h: 24, RGB(r: 255 - v, g: 0, b: v)))
-        }
+        shapes.append(.ramp(x: 0, y: 48, w: width, h: 32, from: RGB(r: 0, g: 0, b: 0), to: RGB(r: 255, g: 255, b: 255)))
+        shapes.append(.ramp(x: 0, y: 80, w: width, h: 24, from: RGB(r: 255, g: 0, b: 0), to: RGB(r: 0, g: 0, b: 255)))
         shapes.append(.rect(x: 0, y: 104, w: width, h: stripTop - 104, RGB(r: 128, g: 128, b: 128)))
         let white = RGB(r: 255, g: 255, b: 255), black = RGB(r: 0, g: 0, b: 0)
         // F
@@ -84,9 +93,9 @@ enum ReferencePicture {
         return context.makeImage()!
     }
 
-    /// Drawn into a context of `width` × `height` (pixels or a PDF page's
-    /// points) whose origin is its bottom left.
-    static func draw(in context: CGContext, frame: Int? = nil) {
+    /// Drawn into a context of `width` × `height` (pixels or, `vector`, a
+    /// PDF page's points) whose origin is its bottom left.
+    static func draw(in context: CGContext, frame: Int? = nil, vector: Bool = false) {
         context.saveGState()
         defer { context.restoreGState() }
         // Drawn from the top left
@@ -105,16 +114,36 @@ enum ReferencePicture {
                 context.addLines(between: points.map { CGPoint(x: $0.0, y: $0.1) })
                 context.closePath()
                 context.fillPath()
+            case .ramp(let x, let y, let w, let h, let from, let to):
+                if vector {
+                    let gradient = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                              colors: [cgColor(from), cgColor(to)] as CFArray, locations: [0, 1])!
+                    context.saveGState()
+                    context.clip(to: CGRect(x: x, y: y, width: w, height: h))
+                    context.drawLinearGradient(gradient, start: CGPoint(x: Double(x) + 0.5, y: 0), end: CGPoint(x: Double(x + w) - 0.5, y: 0),
+                                               options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+                    context.restoreGState()
+                } else {
+                    for column in 0..<w {
+                        context.setFillColor(cgColor(rampColour(rampStep(column, of: w), from: from, to: to)))
+                        context.fill(CGRect(x: x + column, y: y, width: 1, height: h))
+                    }
+                }
             }
         }
     }
 
-    /// The picture resampled to `width` × `height` (formats of square sides).
-    static func scaled(_ image: CGImage, width: Int, height: Int) -> CGImage {
+    /// The picture resampled to `width` × `height` (formats of square
+    /// sides), `flipped` upside down.
+    static func scaled(_ image: CGImage, width: Int, height: Int, flipped: Bool = false) -> CGImage {
         let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
                                 space: CGColorSpace(name: CGColorSpace.sRGB)!,
                                 bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
         context.interpolationQuality = .high
+        if flipped {
+            context.translateBy(x: 0, y: CGFloat(height))
+            context.scaleBy(x: 1, y: -1)
+        }
         context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         return context.makeImage()!
     }
@@ -126,7 +155,7 @@ enum ReferencePicture {
     /// The picture as SVG, shape for shape.
     static func svg() -> String {
         func hex(_ c: RGB) -> String { String(format: "#%02x%02x%02x", c.r, c.g, c.b) }
-        var body = ""
+        var body = "", ramps = 0
         for shape in shapes() {
             switch shape {
             case .rect(let x, let y, let w, let h, let c):
@@ -136,6 +165,14 @@ enum ReferencePicture {
             case .polygon(let points, let c):
                 let list = points.map { "\($0.0),\($0.1)" }.joined(separator: " ")
                 body += "<polygon points=\"\(list)\" fill=\"\(hex(c))\"/>\n"
+            case .ramp(let x, let y, let w, let h, let from, let to):
+                ramps += 1
+                body += """
+                <linearGradient id="ramp\(ramps)" gradientUnits="userSpaceOnUse" x1="\(Double(x) + 0.5)" y1="0" x2="\(Double(x + w) - 0.5)" y2="0">\
+                <stop offset="0" stop-color="\(hex(from))"/><stop offset="1" stop-color="\(hex(to))"/></linearGradient>
+                <rect x="\(x)" y="\(y)" width="\(w)" height="\(h)" fill="url(#ramp\(ramps))"/>
+
+                """
             }
         }
         return """

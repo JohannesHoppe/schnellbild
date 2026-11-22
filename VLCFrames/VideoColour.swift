@@ -158,6 +158,45 @@ extension LibVLCVideo {
         return nil
     }
 
+    /// The video stream's visible size and its buffer's, as VLC's stream
+    /// information states them once the decoder has said ("Video
+    /// resolution", "Buffer dimensions": the decoder pads its buffer, 240
+    /// rows into 256, 1080 into 1088). nil while VLC hasn't said.
+    public static func resolution(of media: VLCMedia) -> (visible: (width: Int, height: Int), buffer: (width: Int, height: Int)?)? {
+        guard let getInfo, let item = inputItem(of: media) else { return nil }
+        func size(_ category: String, _ key: String) -> (width: Int, height: Int)? {
+            guard let text = getInfo(item, category, key) else { return nil }
+            defer { free(text) }
+            let parts = String(cString: text).split(separator: "x").compactMap { Int($0) }
+            guard parts.count == 2, parts[0] > 0, parts[1] > 0 else { return nil }
+            return (parts[0], parts[1])
+        }
+        for stream in 0..<32 {
+            let category = "Stream \(stream)"
+            guard let visible = size(category, "Video resolution") else { continue }
+            return (visible, size(category, "Buffer dimensions"))
+        }
+        return nil
+    }
+
+    /// The video track's visible size and the shape of its pixels: from the
+    /// media's tracks (what the container states), else from VLC's stream
+    /// information (an elementary stream such as MPEG-1 video states its
+    /// size only in the stream), square pixels then. nil: not known yet.
+    public static func visibleTrack(of media: VLCMedia) -> (width: Int, height: Int, sampleAspect: Double)? {
+        if let tracks = media.tracksInformation as? [[String: Any]] {
+            for track in tracks where track[VLCMediaTracksInformationType] as? String == VLCMediaTracksInformationTypeVideo {
+                let number = { (key: String) in (track[key] as? NSNumber)?.intValue ?? 0 }
+                let width = number(VLCMediaTracksInformationVideoWidth), height = number(VLCMediaTracksInformationVideoHeight)
+                guard width > 0, height > 0 else { continue }
+                let num = number(VLCMediaTracksInformationSourceAspectRatio)
+                let den = number(VLCMediaTracksInformationSourceAspectRatioDenominator)
+                return (width, height, num > 0 && den > 0 ? Double(num) / Double(den) : 1)
+            }
+        }
+        return resolution(of: media).map { ($0.visible.width, $0.visible.height, 1) }
+    }
+
     private typealias GetURI = @convention(c) (UnsafeMutableRawPointer) -> UnsafeMutablePointer<CChar>?
     private static let getURI: GetURI? = dlsym(dlopen(nil, RTLD_NOW), "input_item_GetURI")
         .map { unsafeBitCast($0, to: GetURI.self) }
