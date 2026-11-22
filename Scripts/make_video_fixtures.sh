@@ -139,7 +139,8 @@ draw_visual() {
   # (setparams), as the PNGs' own sRGB would otherwise be written. The MP4s
   # are keyframes only: QuickLook on CI's virtual Macs (macOS 15 and 26)
   # drew the frame it took from a group of 12 with the bars' right half
-  # green, a Mac with a GPU the same file right
+  # green, a Mac with a GPU the same file right; with keyframes only the SD
+  # clip's comes right there, the HD clip's still not (FormatVisualTests)
   local hd709=(-vf "scale=1152:720:flags=neighbor:out_color_matrix=bt709:out_range=tv,format=yuv420p,setparams=range=tv:color_primaries=bt709:color_trc=bt709:colorspace=bt709")
   local sd601=(-vf "scale=out_color_matrix=bt601:out_range=tv,format=yuv420p,setparams=range=tv:color_primaries=smpte170m:color_trc=smpte170m:colorspace=smpte170m")
   visual bt709.mkv "${hd709[@]}" -c:v libx264 -crf 18
