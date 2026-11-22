@@ -113,7 +113,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         let originField = app.textFields["distanceOriginField"]
         XCTAssertTrue(originField.waitForExistence(timeout: 5))
         originField.typeText("62.1009, 7.2059")
-        XCTAssertTrue(element("distanceOriginPlace").waitForExistence(timeout: 10))
+        // One element with the point and, once read, the town near it
+        let parsed = element("distanceOriginParsed").firstMatch
+        eventually("the point is read", timeout: 10) { self.text(of: parsed).contains("62.1") }
+        let point = text(of: parsed)
+        let deadline = Date().addingTimeInterval(10)
+        while text(of: parsed) == point, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
         shoot("distance", settle: 3)
         app.typeKey(.escape, modifierFlags: [])
         eventually("the sheet closes") { !originField.exists }
