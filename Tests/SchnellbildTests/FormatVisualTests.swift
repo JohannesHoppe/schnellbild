@@ -19,9 +19,11 @@ import VLCFrames
 /// largest at the probes (`FormatFixtures.probePoints`), within the
 /// format's tolerance; a turned or cut picture fails by its sides first.
 /// A video's picture carries its frame number, read back to compare it with
-/// that very frame. With FORMAT_SNAPSHOT_DIR set, every picture goes there
-/// as a PNG, with a contact sheet per group (reference | tile | full view)
-/// and the numbers in `results-<group>.txt`.
+/// that very frame. A video's tile must show the colours its full view
+/// shows (`colourDifference`), also VLC's frame as the thumbnail extension
+/// hands it to QuickLook. With FORMAT_SNAPSHOT_DIR set, every picture goes
+/// there as a PNG, with a contact sheet per group (reference | tile | full
+/// view, and VLC's frame for videos) and the numbers in `results-<group>.txt`.
 @MainActor
 final class FormatVisualTests: XCTestCase {
     private let dir = FileManager.default.temporaryDirectory.appendingPathComponent("visual-" + UUID().uuidString)
@@ -101,6 +103,8 @@ final class FormatVisualTests: XCTestCase {
         let reference: CGImage
         let thumbnail: CGImage?
         let full: CGImage?
+        /// A video's frame from `VLCFrameGrab`, as the thumbnail extension draws it.
+        var grab: CGImage? = nil
         let note: String
         let passed: Bool
     }
@@ -110,8 +114,9 @@ final class FormatVisualTests: XCTestCase {
 
     private func record(_ name: String, reference: CGImage, thumbnail: CGImage?, full: CGImage?,
                         thumbnailReference: CGImage? = nil, tolerance: FormatFixtures.Tolerance, extra: String = "",
+                        grab: CGImage? = nil, passed alsoPassed: Bool = true,
                         file: StaticString = #filePath, line: UInt = #line) {
-        var note = extra, passed = true
+        var note = extra, passed = alsoPassed
         let parts: [(String, CGImage?, CGImage, FormatFixtures.Tolerance)] = [
             ("tile", thumbnail, thumbnailReference ?? reference, tolerance.scaled), ("full", full, reference, tolerance),
         ]
@@ -130,7 +135,7 @@ final class FormatVisualTests: XCTestCase {
         }
         lines.append("\(name):\(note)")
         print("visual: \(name):\(note)")
-        rows.append(Row(name: name, reference: reference, thumbnail: thumbnail, full: full, note: note, passed: passed))
+        rows.append(Row(name: name, reference: reference, thumbnail: thumbnail, full: full, grab: grab, note: note, passed: passed))
     }
 
     /// The PNGs of every row, the contact sheet and the numbers, into FORMAT_SNAPSHOT_DIR.
@@ -139,7 +144,7 @@ final class FormatVisualTests: XCTestCase {
         try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
         for row in rows {
             let base = group + "-" + row.name.lowercased().map { $0.isLetter || $0.isNumber ? String($0) : "-" }.joined()
-            for (part, image) in [("reference", row.reference), ("thumbnail", row.thumbnail), ("full", row.full)] {
+            for (part, image) in [("reference", row.reference), ("thumbnail", row.thumbnail), ("full", row.full), ("grab", row.grab)] {
                 if let image { try Self.writePNG(image, to: out.appendingPathComponent("\(base)-\(part).png")) }
             }
         }
@@ -155,10 +160,12 @@ final class FormatVisualTests: XCTestCase {
         guard CGImageDestinationFinalize(destination) else { throw CocoaError(.fileWriteUnknown) }
     }
 
-    /// Reference | tile | full view per row, the format's name and verdict on the left.
+    /// Reference | tile | full view (| VLC's frame, when a row has one) per
+    /// row, the format's name and verdict on the left.
     static func contactSheet(_ rows: [Row], title: String) -> CGImage {
         let cellW = 384, cellH = 240, labelW = 260, gap = 8, header = 40
-        let width = labelW + 3 * (cellW + gap) + gap
+        let columns = rows.contains { $0.grab != nil } ? 4 : 3
+        let width = labelW + columns * (cellW + gap) + gap
         let height = header + rows.count * (cellH + gap) + gap
         let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
                                 space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
@@ -172,7 +179,8 @@ final class FormatVisualTests: XCTestCase {
             CTLineDraw(line, context)
         }
         let white = CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1)
-        text("\(title): reference | tile | full view", x: gap, top: 10, size: 20, colour: white, bold: true)
+        text("\(title): reference | tile | full view" + (columns == 4 ? " | VLC's frame (thumbnail extension)" : ""),
+             x: gap, top: 10, size: 20, colour: white, bold: true)
         for (i, row) in rows.enumerated() {
             let top = header + i * (cellH + gap)
             text(row.name, x: gap, top: top + 4, size: 18, colour: white, bold: true)
@@ -184,7 +192,7 @@ final class FormatVisualTests: XCTestCase {
                     text(chunk, x: gap, top: top + 56 + n * 54 + m * 14, size: 11, colour: CGColor(srgbRed: 0.8, green: 0.8, blue: 0.8, alpha: 1))
                 }
             }
-            for (column, image) in [row.reference, row.thumbnail, row.full].enumerated() {
+            for (column, image) in [row.reference, row.thumbnail, row.full, row.grab].prefix(columns).enumerated() {
                 let x = labelW + gap + column * (cellW + gap)
                 let cell = CGRect(x: x, y: height - top - cellH, width: cellW, height: cellH)
                 context.setFillColor(CGColor(srgbRed: 0.3, green: 0.3, blue: 0.32, alpha: 1))
@@ -349,10 +357,11 @@ final class FormatVisualTests: XCTestCase {
 
     private struct UncheckedPlayer: @unchecked Sendable { let player: VLCMediaPlayer }
 
-    /// A picture as the screen shows a video of it: made YCbCr (BT.601,
-    /// limited range, its colour halved as 4:2:0 halves it) with
-    /// `attachments`, then shown as `render` shows a decoded picture.
-    static func asShown(_ picture: CGImage, attachments: [String: Any]) -> CGImage {
+    /// A picture as the screen shows a video of it: made YCbCr (BT.601's
+    /// matrix, BT.709's with `hd709`; limited range, its colour halved as
+    /// 4:2:0 halves it) with `attachments`, then shown as `render` shows a
+    /// decoded picture.
+    static func asShown(_ picture: CGImage, attachments: [String: Any], hd709: Bool = false) -> CGImage {
         let p = RGBAPixels(picture)
         let w = p.width & ~1, h = p.height & ~1
         var made: CVPixelBuffer?
@@ -368,11 +377,14 @@ final class FormatVisualTests: XCTestCase {
             return (Double(c.r), Double(c.g), Double(c.b))
         }
         func clamp(_ v: Double) -> UInt8 { UInt8(max(0, min(255, v.rounded()))) }
+        // Y' = kr R' + kg G' + kb B', Cb and Cr from B' - Y' and R' - Y', in
+        // 16 ... 235 and 16 ... 240
+        let kr = hd709 ? 0.2126 : 0.299, kb = hd709 ? 0.0722 : 0.114, kg = 1 - kr - kb
+        func brightness(_ r: Double, _ g: Double, _ b: Double) -> Double { kr * r + kg * g + kb * b }
         for y in 0..<h {
             for x in 0..<w {
                 let (r, g, b) = rgb(x, y)
-                let value: Double = 16 + 0.256788 * r + 0.504129 * g + 0.097906 * b
-                luma[y * lumaRow + x] = clamp(value)
+                luma[y * lumaRow + x] = clamp(16 + 219 / 255 * brightness(r, g, b))
             }
         }
         for y in stride(from: 0, to: h, by: 2) {
@@ -382,17 +394,20 @@ final class FormatVisualTests: XCTestCase {
                     let c = rgb(x + dx, y + dy)
                     r += c.0 / 4; g += c.1 / 4; b += c.2 / 4
                 }
-                let cb: Double = 128 - 0.148223 * r - 0.290993 * g + 0.439216 * b
-                let cr: Double = 128 + 0.439216 * r - 0.367788 * g - 0.071427 * b
+                let value = brightness(r, g, b)
+                let cb: Double = 128 + 224 / 255 * (b - value) / (2 * (1 - kb))
+                let cr: Double = 128 + 224 / 255 * (r - value) / (2 * (1 - kr))
                 chroma[y / 2 * chromaRow + x] = clamp(cb)
                 chroma[y / 2 * chromaRow + x + 1] = clamp(cr)
             }
         }
         CVPixelBufferUnlockBaseAddress(buffer, [])
         CVBufferSetAttachments(buffer, attachments as CFDictionary, .shouldPropagate)
-        // The matrix the clips were made with (ffmpeg's for SD, BT.601), whatever the
-        // player tagged: a player reading them with another shows wrong colours
-        CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, kCVImageBufferYCbCrMatrix_ITU_R_601_4, .shouldPropagate)
+        // The matrix the clips were made with (ffmpeg's default, BT.601; BT.709
+        // where stated), whatever the player tagged: a player reading them
+        // with another shows wrong colours
+        CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey,
+                              hd709 ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4, .shouldPropagate)
         return render(buffer) ?? picture
     }
 
@@ -404,28 +419,87 @@ final class FormatVisualTests: XCTestCase {
             .createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)
     }
 
-    /// The video formats added lately, each a clip of the reference
-    /// picture's frames: the tile and the full view each show a frame
-    /// whose number they carry, compared with that frame.
+    /// The colours of two pictures of the reference picture (any sizes)
+    /// compared: the mean difference per channel over cells of 8 × 8 of the
+    /// reference's pixels above the frame's strip (the same in every frame),
+    /// so what scaling does to edges averages out and a shift of the colours
+    /// doesn't.
+    static func colourDifference(_ a: CGImage, _ b: CGImage) -> [Double] {
+        let cols = ReferencePicture.width / 8, rows = ReferencePicture.height / 8, above = ReferencePicture.stripTop / 8
+        let p = RGBAPixels(a, width: cols, height: rows), q = RGBAPixels(b, width: cols, height: rows)
+        var sums = [0.0, 0, 0]
+        for y in 0..<above {
+            for x in 0..<cols {
+                let u = p.at(x, y), v = q.at(x, y)
+                for c in 0..<3 { sums[c] += Double(abs(Int(u.channel(c)) - Int(v.channel(c)))) }
+            }
+        }
+        return sums.map { $0 / Double(above * cols) }
+    }
+
+    /// What a picture of the reference picture shows in a few even areas:
+    /// grey 96 of the ramp, the grey field (128), the cyan and red bars.
+    static func colourSamples(_ image: CGImage) -> String {
+        let pixels = RGBAPixels(image)
+        func sample(_ name: String, _ px: Int, _ py: Int) -> String {
+            let x = Int((Double(px) + 0.5) / Double(ReferencePicture.width) * Double(image.width))
+            let y = Int((Double(py) + 0.5) / Double(ReferencePicture.height) * Double(image.height))
+            var sums = [0, 0, 0]
+            for dy in -1...1 { for dx in -1...1 { for c in 0..<3 { sums[c] += Int(pixels.at(x + dx, y + dy).channel(c)) } } }
+            return "\(name) " + sums.map { String($0 / 9) }.joined(separator: ",")
+        }
+        // Column 144 of the grey ramp is step 96
+        return [sample("grey96", 144, 64), sample("grey128", 232, 130), sample("cyan", 120, 24), sample("red", 264, 24)]
+            .joined(separator: " ")
+    }
+
+    /// The videos of the visual check, each a clip of the reference
+    /// picture's frames: the tile and the full view each show a frame whose
+    /// number they carry, compared with that frame as the screen shows a
+    /// video of it; the tile, and VLC's frame as the thumbnail extension
+    /// draws it, also with the full view's colours (`colourDifference`). The
+    /// formats added lately state no colours (SD: BT.601's matrix as ffmpeg
+    /// writes it); `bt709.*` (HD) and `bt601.*` (SD) state theirs, in
+    /// Matroska (VLC) and MP4 (AVFoundation).
     func testVideoFormatsLookRight() async throws {
-        for ext in ["asf", "divx", "m2t", "m1v", "ogm", "insv", "360", "f4v", "rm", "rmvb", "mxf"] {
-            let url = try XCTUnwrap(Bundle.module.url(forResource: "visual", withExtension: ext, subdirectory: "Videos"), "visual.\(ext)")
-            XCTAssertEqual(BrowserModel.mediaKind(of: url), .video, ext)
+        let clips = ["asf", "divx", "m2t", "m1v", "ogm", "insv", "360", "f4v", "rm", "rmvb", "mxf",
+                     "bt709.mkv", "bt709.mp4", "bt601.mkv", "bt601.mp4"]
+        for clip in clips {
+            let url = try XCTUnwrap(Bundle.module.url(forResource: "visual", withExtension: clip, subdirectory: "Videos"), "visual.\(clip)")
+            XCTAssertEqual(BrowserModel.mediaKind(of: url), .video, clip)
+            let hd709 = clip.hasPrefix("bt709")
             let thumbnail = await thumbnail(url)
+            let grab = await VLCFrameGrab.frame(of: url, width: 256)
             let (full, player, attachments) = try await fullVideoFrame(url)
             let thumbFrame = thumbnail.flatMap(ReferencePicture.frameNumber(in:))
             let fullFrame = full.flatMap(ReferencePicture.frameNumber(in:))
-            XCTAssertNotNil(thumbFrame, "\(ext): the tile's frame number can't be read")
-            XCTAssertNotNil(fullFrame, "\(ext): the full view's frame number can't be read")
-            // The full view: the frame as the screen shows a video of it decoded
-            // exactly, with the colours it is tagged with (an untagged SD video's
-            // primaries are SMPTE C's, which an sRGB screen shows a little
-            // shifted, as QuickTime Player does); the tile: VLC's or QuickLook's
-            // RGB, the frame as it is
-            record(ext, reference: Self.asShown(ReferencePicture.image(frame: fullFrame ?? 0), attachments: attachments),
-                   thumbnail: thumbnail, full: full,
-                   thumbnailReference: ReferencePicture.image(frame: thumbFrame ?? 0), tolerance: .video,
-                   extra: " \(player), tile frame \(thumbFrame.map(String.init) ?? "?"), full frame \(fullFrame.map(String.init) ?? "?")")
+            XCTAssertNotNil(thumbFrame, "\(clip): the tile's frame number can't be read")
+            XCTAssertNotNil(fullFrame, "\(clip): the full view's frame number can't be read")
+            XCTAssertNotNil(grab, "\(clip): VLC gave no frame")
+            // Each frame as the screen shows a video of it decoded exactly,
+            // with the colours the full view's pictures are tagged with (an
+            // untagged SD video's primaries are SMPTE C's, which an sRGB
+            // screen shows a little shifted, as QuickTime Player does): the
+            // tile shows the colours of the full view
+            func shown(_ frame: Int?) -> CGImage {
+                Self.asShown(ReferencePicture.image(frame: frame ?? 0), attachments: attachments, hd709: hd709)
+            }
+            var extra = " \(player), tile frame \(thumbFrame.map(String.init) ?? "?"), full frame \(fullFrame.map(String.init) ?? "?")"
+            var coloursMatch = true
+            if let full {
+                extra += " | full \(Self.colourSamples(full))"
+                for (part, image) in [("tile", thumbnail), ("VLC frame", grab)] {
+                    guard let image else { continue }
+                    let difference = Self.colourDifference(image, full)
+                    let ok = difference.allSatisfy { $0 <= 3 }
+                    coloursMatch = coloursMatch && ok
+                    extra += " | \(part) \(Self.colourSamples(image)), colours against the full view's: mean "
+                        + difference.map { String(format: "%.1f", $0) }.joined(separator: "/") + (ok ? " ok" : " DIFFER (mean ≤ 3)")
+                    XCTAssertTrue(ok, "\(clip): the \(part)'s colours differ from the full view's: \(difference)")
+                }
+            }
+            record(clip, reference: shown(fullFrame), thumbnail: thumbnail, full: full,
+                   thumbnailReference: shown(thumbFrame), tolerance: .video, extra: extra, grab: grab, passed: coloursMatch)
         }
         try writeSnapshots(group: "videos")
     }
