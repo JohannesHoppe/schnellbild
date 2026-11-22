@@ -484,12 +484,12 @@ final class PictureDecoderTests: XCTestCase {
                 let imageIOBrightness = brightness(small(imageIO, like: imageIO))
                 print("decoders: \(name): LibRaw against ImageIO: mean \(String(format: "%.1f", against.mean)), largest \(against.max); "
                       + "ImageIO's brightness \(String(format: "%.1f", imageIOBrightness))")
-                // ImageIO's own picture is ImageIO's matter (a black one is
-                // reported in the log), LibRaw's must match a picture it shows
-                if imageIOBrightness > 20 {
+                // ImageIO's own picture is ImageIO's matter (a black or blown out
+                // one is reported in the log), LibRaw's must match a picture it shows
+                if (20...200).contains(imageIOBrightness) {
                     XCTAssertLessThan(against.mean, 40, "\(name): LibRaw and ImageIO differ")
                 } else {
-                    print("decoders: \(name): ImageIO shows it black on this macOS (\(ProcessInfo.processInfo.operatingSystemVersionString))")
+                    print("decoders: \(name): ImageIO shows it \(imageIOBrightness < 20 ? "black" : "blown out") on this macOS (\(ProcessInfo.processInfo.operatingSystemVersionString))")
                 }
                 pictures.append(("LibRaw half size", libraw))
             }
