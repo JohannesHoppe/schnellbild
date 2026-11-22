@@ -194,7 +194,36 @@ extension LibVLCVideo {
                 return (width, height, num > 0 && den > 0 ? Double(num) / Double(den) : 1)
             }
         }
-        return resolution(of: media).map { ($0.visible.width, $0.visible.height, 1) }
+        if let stated = resolution(of: media) { return (stated.visible.width, stated.visible.height, 1) }
+        // An MPEG-1 or MPEG-2 elementary stream (".m1v", ".m2v"): VLC states
+        // its size only once its decoder has run, after its output opened
+        return media.url.flatMap(mpegSequenceSize(of:))
+    }
+
+    /// The size and pixel shape in an MPEG-1 / MPEG-2 video sequence header
+    /// (ISO/IEC 11172-2 2.4.2.3, 13818-2 6.2.2.1: 00 00 01 B3, 12 bits
+    /// width, 12 bits height, 4 bits aspect ratio) in the file's first 4 KB.
+    /// Square pixels unless MPEG-2 (an extension start code, 00 00 01 B5,
+    /// follows) states a display aspect of 4:3, 16:9 or 2.21:1.
+    static func mpegSequenceSize(of url: URL) -> (width: Int, height: Int, sampleAspect: Double)? {
+        guard url.isFileURL, let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        guard let head = try? handle.read(upToCount: 4096) else { return nil }
+        let bytes = [UInt8](head)
+        guard bytes.count >= 8 else { return nil }
+        for at in 0..<(bytes.count - 7) where bytes[at] == 0 && bytes[at + 1] == 0 && bytes[at + 2] == 1 && bytes[at + 3] == 0xB3 {
+            let width = Int(bytes[at + 4]) << 4 | Int(bytes[at + 5]) >> 4
+            let height = (Int(bytes[at + 5]) & 0x0F) << 8 | Int(bytes[at + 6])
+            guard width > 0, height > 0 else { return nil }
+            let code = Int(bytes[at + 7]) >> 4
+            let rest = bytes[(at + 8)...]
+            let mpeg2 = rest.indices.contains { i in
+                i + 3 < bytes.count && bytes[i] == 0 && bytes[i + 1] == 0 && bytes[i + 2] == 1 && bytes[i + 3] == 0xB5
+            }
+            let display: Double? = mpeg2 ? [2: 4.0 / 3, 3: 16.0 / 9, 4: 2.21][code] : nil
+            return (width, height, display.map { $0 * Double(height) / Double(width) } ?? 1)
+        }
+        return nil
     }
 
     private typealias GetURI = @convention(c) (UnsafeMutableRawPointer) -> UnsafeMutablePointer<CChar>?

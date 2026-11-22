@@ -282,20 +282,33 @@ enum EmbeddedPreview {
     /// white over black, and where it reads them from the bottom the
     /// picture is turned upright here.
     enum ASTCRows {
-        static let imageIOReadsFromTheBottom: Bool = {
-            // 4 × 8 pixels, blocks of 4 × 4: void-extent blocks (one colour each, UNORM16)
-            var bytes: [UInt8] = [0x13, 0xAB, 0xA1, 0x5C, 4, 4, 1, 4, 0, 0, 8, 0, 0, 1, 0, 0]
-            for grey: UInt8 in [0xFF, 0x00] {
-                bytes += [0xFC, 0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF] + [UInt8](repeating: grey, count: 6) + [0xFF, 0xFF]
+        static var imageIOReadsFromTheBottom: Bool { probe.fromTheBottom }
+
+        /// What the probe found (also for `FormatVisualTests`' notes): a
+        /// texture of 16 × 16 pixels, blocks of 4 × 4, void-extent blocks
+        /// (one colour each), the upper two rows of blocks white, the lower
+        /// two black, read by ImageIO.
+        static let probe: (fromTheBottom: Bool, said: String) = {
+            var bytes: [UInt8] = [0x13, 0xAB, 0xA1, 0x5C, 4, 4, 1, 16, 0, 0, 16, 0, 0, 1, 0, 0]
+            for grey: UInt8 in [0xFF, 0xFF, 0x00, 0x00] {
+                for _ in 0..<4 {
+                    bytes += [0xFC, 0xFD, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF] + [UInt8](repeating: grey, count: 6) + [0xFF, 0xFF]
+                }
             }
-            guard let source = CGImageSourceCreateWithData(Data(bytes) as CFData, nil),
-                  let image = CGImageSourceCreateImageAtIndex(source, 0, nil),
-                  let context = CGContext(data: nil, width: 4, height: 8, bitsPerComponent: 8, bytesPerRow: 16,
-                                          space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue) else { return false }
-            context.draw(image, in: CGRect(x: 0, y: 0, width: 4, height: 8))
-            guard let pixels = context.data?.assumingMemoryBound(to: UInt8.self) else { return false }
-            // The context's memory runs from the top: the first block white there when read from the top
-            return pixels[0] < 128 && pixels[16 * 7] > 128
+            guard let source = CGImageSourceCreateWithData(Data(bytes) as CFData, nil) else { return (false, "no image source") }
+            guard let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else { return (false, "not decoded") }
+            var pixels = [UInt8](repeating: 0, count: 16 * 16 * 4)
+            let drawn = pixels.withUnsafeMutableBytes { buffer -> Bool in
+                guard let context = CGContext(data: buffer.baseAddress, width: 16, height: 16, bitsPerComponent: 8, bytesPerRow: 64,
+                                              space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
+                context.draw(image, in: CGRect(x: 0, y: 0, width: 16, height: 16))
+                return true
+            }
+            guard drawn else { return (false, "not drawn") }
+            // The context's memory runs from the top: white there when read from the top
+            let top = pixels[64 * 2], bottom = pixels[64 * 13]
+            return (top < 128 && bottom > 128, "\(image.width)×\(image.height), top \(top), bottom \(bottom)")
         }()
 
         /// The texture decoded and turned upright, as PNG; nil when ImageIO

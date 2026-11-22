@@ -258,6 +258,9 @@ final class FormatVisualTests: XCTestCase {
             missing.append("avci")
         }
         for name in missing { lines.append("\(name): no sample on this macOS") }
+        let probe = EmbeddedPreview.ASTCRows.probe
+        lines.append("ASTC rows probe: \(probe.said), read from the bottom: \(probe.fromTheBottom)")
+        print("visual: \(lines.last!)")
         // Why ASTC and KTX are written by hand: ImageIO's own writers, read
         // back by ImageIO (said, not asserted: a fixed writer changes nothing here)
         for (name, type) in [("ImageIO's ASTC writer", "org.khronos.astc"), ("ImageIO's KTX writer", "org.khronos.ktx")] {
@@ -305,10 +308,11 @@ final class FormatVisualTests: XCTestCase {
             generator.requestedTimeToleranceBefore = .zero
             generator.requestedTimeToleranceAfter = .zero
             let image = try? await generator.image(at: CMTime(value: 85, timescale: 100)).image
-            // An untagged SD video as AVFoundation reads it (BT.601's matrix,
-            // SMPTE C's primaries, BT.709's transfer), as VLCFrameOutput tags it too
+            // An untagged SD video as AVFoundation shows it (BT.601's matrix,
+            // BT.709's primaries and transfer: its picture comes tagged
+            // "CoreMedia709"; VLCFrameOutput tags SD with SMPTE C's primaries)
             return (image, "AVKit", [kCVImageBufferYCbCrMatrixKey as String: kCVImageBufferYCbCrMatrix_ITU_R_601_4,
-                                     kCVImageBufferColorPrimariesKey as String: kCVImageBufferColorPrimaries_SMPTE_C,
+                                     kCVImageBufferColorPrimariesKey as String: kCVImageBufferColorPrimaries_ITU_R_709_2,
                                      kCVImageBufferTransferFunctionKey as String: kCVImageBufferTransferFunction_ITU_R_709_2])
         }
         let media = VLCMedia(url: url)

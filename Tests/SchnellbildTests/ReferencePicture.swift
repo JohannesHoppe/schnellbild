@@ -155,7 +155,7 @@ enum ReferencePicture {
     /// The picture as SVG, shape for shape.
     static func svg() -> String {
         func hex(_ c: RGB) -> String { String(format: "#%02x%02x%02x", c.r, c.g, c.b) }
-        var body = "", ramps = 0
+        var body = ""
         for shape in shapes() {
             switch shape {
             case .rect(let x, let y, let w, let h, let c):
@@ -166,13 +166,15 @@ enum ReferencePicture {
                 let list = points.map { "\($0.0),\($0.1)" }.joined(separator: " ")
                 body += "<polygon points=\"\(list)\" fill=\"\(hex(c))\"/>\n"
             case .ramp(let x, let y, let w, let h, let from, let to):
-                ramps += 1
-                body += """
-                <linearGradient id="ramp\(ramps)" gradientUnits="userSpaceOnUse" x1="\(Double(x) + 0.5)" y1="0" x2="\(Double(x + w) - 0.5)" y2="0">\
-                <stop offset="0" stop-color="\(hex(from))"/><stop offset="1" stop-color="\(hex(to))"/></linearGradient>
-                <rect x="\(x)" y="\(y)" width="\(w)" height="\(h)" fill="url(#ramp\(ramps))"/>
-
-                """
+                // Column by column, each two wide under the next, so no seam
+                // shows between them at any scale. Not an SVG gradient:
+                // AppKit's SVG drawing shifts a gradient's colours (grey 96
+                // came out 115, red 255,0,0 as 251,37,8; FormatVisualTests,
+                // run 45000447087), solid fills it draws exactly
+                for column in 0..<w {
+                    let c = rampColour(rampStep(column, of: w), from: from, to: to)
+                    body += "<rect x=\"\(x + column)\" y=\"\(y)\" width=\"\(column == w - 1 ? 1 : 2)\" height=\"\(h)\" fill=\"\(hex(c))\"/>\n"
+                }
             }
         }
         return """
