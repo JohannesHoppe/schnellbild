@@ -105,8 +105,10 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("sort")
         // The place to sort by distance from: coordinates typed, the map
         // and the town near them (Geiranger); cancelled, the sort stays
-        let distanceItem = app.menuItems[ui("Distance from Coordinates or Map Link…")]
-        XCTAssertTrue(distanceItem.waitForExistence(timeout: 5))
+        // (the toolbar's menu exists twice in the tree: the one open is hittable)
+        let distanceItems = app.menuItems.matching(NSPredicate(format: "title == %@", ui("Distance from Coordinates or Map Link…")))
+        XCTAssertTrue(distanceItems.firstMatch.waitForExistence(timeout: 5))
+        let distanceItem = distanceItems.allElementsBoundByIndex.first { $0.isHittable } ?? distanceItems.firstMatch
         distanceItem.click()
         let originField = app.textFields["distanceOriginField"]
         XCTAssertTrue(originField.waitForExistence(timeout: 5))
