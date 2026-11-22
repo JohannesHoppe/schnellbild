@@ -53,7 +53,8 @@ public struct XCUIKeyboardKey: RawRepresentable, ExpressibleByStringLiteral {
 public struct XCUIElementType: Equatable {
     public var rawValue: UInt = 0
     public static let any = XCUIElementType(), menuItem = XCUIElementType(), textField = XCUIElementType(), dialog = XCUIElementType(),
-                      sheet = XCUIElementType(), window = XCUIElementType(), button = XCUIElementType(), staticText = XCUIElementType(), menu = XCUIElementType()
+                      sheet = XCUIElementType(), window = XCUIElementType(), button = XCUIElementType(), staticText = XCUIElementType(), menu = XCUIElementType(),
+                      helpTag = XCUIElementType()
 }
 public final class XCUIElementQuery {
     public subscript(_ id: String) -> XCUIElement { XCUIElement() }
@@ -84,6 +85,7 @@ public final class XCUICoordinate {
     public func click() {}
     public func rightClick() {}
 }
+public final class XCUIElementSnapshot { public var dictionaryRepresentation: [String: Any] { [:] } }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public final class XCUIScreen {
     public static let main = XCUIScreen()
@@ -110,6 +112,7 @@ public class XCUIElement {
     public var value: Any? { nil }
     public var firstMatch: XCUIElement { self }
     public var debugDescription: String { "" }
+    public func snapshot() throws -> XCUIElementSnapshot { XCUIElementSnapshot() }
     public func click() {}
     public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
     public func doubleClick() {}
