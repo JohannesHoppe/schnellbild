@@ -273,16 +273,30 @@ struct ShortcutsSettingsView: View {
         if shortcuts.hasChanges { pendingPreset = preset } else { shortcuts.choose(preset) }
     }
 
-    /// The next key typed (in the Settings window, ahead of everything
-    /// else, Esc and ⌫ included) is the new key.
+    /// The next key typed in the Settings window (ahead of everything else
+    /// there, Esc and ⌫ included) is the new key; keys typed in the app's
+    /// other windows go on to them. The Settings window is the one the
+    /// click that starts the recording came in.
     private func startRecording(_ new: Recording) {
         stopRecording()
         refusal = nil
         recording = new
+        weak var settings = NSApp.currentEvent?.window ?? NSApp.keyWindow
         monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            MainActor.assumeIsolated { record(event) }
-            return nil
+            let taken = MainActor.assumeIsolated { () -> Bool in
+                guard Self.records(event, in: settings) else { return false }
+                record(event)
+                return true
+            }
+            return taken ? nil : event
         }
+    }
+
+    /// Whether a key typed is one to record: typed in the Settings window.
+    @MainActor
+    static func records(_ event: NSEvent, in settings: NSWindow?) -> Bool {
+        guard let settings, settings.windowNumber > 0 else { return false }
+        return event.windowNumber == settings.windowNumber
     }
 
     private func stopRecording() {

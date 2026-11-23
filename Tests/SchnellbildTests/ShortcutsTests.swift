@@ -1,4 +1,5 @@
 import XCTest
+import AppKit
 import SwiftUI
 @testable import Schnellbild
 
@@ -389,5 +390,29 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertNil(s.menuShortcut(.search), "a key without ⌘ isn't in the menu")
         s.assign(chord("~@f"), to: .search)
         XCTAssertEqual(s.menuShortcut(.search), KeyboardShortcut("f", modifiers: [.command, .option]))
+    }
+
+    /// Settings → Keyboard records the next key typed in the Settings
+    /// window; a key typed in a browser window meanwhile is that window's.
+    func testRecordingTakesOnlyKeysTypedInSettings() throws {
+        func window() -> NSWindow {
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 100), styleMask: [.titled],
+                                  backing: .buffered, defer: false)
+            window.isReleasedWhenClosed = false
+            return window
+        }
+        let settings = window(), browser = window()
+        defer { settings.close(); browser.close() }
+        XCTAssertGreaterThan(settings.windowNumber, 0)
+        XCTAssertNotEqual(settings.windowNumber, browser.windowNumber)
+        func key(in window: NSWindow?) throws -> NSEvent {
+            try XCTUnwrap(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                                           windowNumber: window?.windowNumber ?? 0, context: nil, characters: "x",
+                                           charactersIgnoringModifiers: "x", isARepeat: false, keyCode: 7))
+        }
+        XCTAssertTrue(ShortcutsSettingsView.records(try key(in: settings), in: settings))
+        XCTAssertFalse(ShortcutsSettingsView.records(try key(in: browser), in: settings), "the browser window's key")
+        XCTAssertFalse(ShortcutsSettingsView.records(try key(in: nil), in: settings), "a key of no window")
+        XCTAssertFalse(ShortcutsSettingsView.records(try key(in: settings), in: nil), "the Settings window gone")
     }
 }
