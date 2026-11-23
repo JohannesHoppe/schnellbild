@@ -260,6 +260,29 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.terminate()
     }
 
+    /// Settings → General with the app's own appearance chosen in its Mode
+    /// menu: "Light" in the light run, "Dark" in the dark one
+    /// (`settings-theme-light` / `-dark`). The website shows the two in turn,
+    /// so the window is seen switching between light and dark.
+    func testSettingsThemeScreenshot() throws {
+        let mode = suffix.hasPrefix("-dark") ? "Dark" : "Light"
+        launch(open: tempDir.path)
+        XCTAssertTrue(tile("Lofoten").waitForExistence(timeout: 15))
+        app.typeKey(",", modifierFlags: .command)
+        let picker = element("settings.appearance").firstMatch
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        picker.click()
+        let item = app.menuItems[ui(mode)].firstMatch
+        XCTAssertTrue(item.waitForExistence(timeout: 5), "\(ui(mode)) in the Mode menu")
+        item.click()
+        eventually("\(mode) chosen") { !item.exists }
+        // The pointer away from the window, so nothing shows hovered
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+            .withOffset(CGVector(dx: -40, dy: -40)).hover()
+        shoot("settings-theme", front: true)
+        app.terminate()
+    }
+
     /// The globe for the website's hero: the world trip (`WORLD_DIR`, real
     /// photographs from Scripts/build_world_photos.py) in the Atlas view,
     /// seen from low orbit over the Mediterranean as the Sun rises behind
