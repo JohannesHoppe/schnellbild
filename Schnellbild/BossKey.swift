@@ -14,6 +14,7 @@ enum BossKey {
     private static var counter = Counter()
     private static var activationGuard: NSObjectProtocol?
     private static var fullScreenWindows: [NSWindow] = []
+    private static var hidden = HiddenWindows()
     private static var exitWatch: NSObjectProtocol?
 
     /// Posted when the app goes quiet or comes back: players set their volume.
@@ -118,10 +119,7 @@ enum BossKey {
         engaged = false
         if let activationGuard { NotificationCenter.default.removeObserver(activationGuard) }
         activationGuard = nil
-        for window in NSApp.windows {
-            window.alphaValue = 1
-            window.ignoresMouseEvents = false
-        }
+        hidden.restore()
         if let exitWatch { NotificationCenter.default.removeObserver(exitWatch) }
         exitWatch = nil
         NotificationCenter.default.post(name: changed, object: nil)
@@ -134,9 +132,41 @@ enum BossKey {
     }
 
     private static func hideWindows() {
-        for window in NSApp.windows {
-            window.alphaValue = 0
-            window.ignoresMouseEvents = true
+        hidden.hide(NSApp.windows)
+    }
+
+    /// The windows hiding made invisible and click-through, each with the
+    /// alpha and mouse handling it had: the release gives exactly those
+    /// back, so a window with an alpha or mouse handling of its own, or one
+    /// that appeared while engaged and was never hidden, keeps its own.
+    @MainActor
+    struct HiddenWindows {
+        private var windows: [(window: Weak, alpha: CGFloat, ignoresMouse: Bool)] = []
+
+        final class Weak {
+            weak var window: NSWindow?
+            init(_ window: NSWindow) { self.window = window }
+        }
+
+        /// Hides these windows; one hidden already keeps what it had before.
+        mutating func hide(_ list: [NSWindow]) {
+            for window in list {
+                if !windows.contains(where: { $0.window.window === window }) {
+                    windows.append((Weak(window), window.alphaValue, window.ignoresMouseEvents))
+                }
+                window.alphaValue = 0
+                window.ignoresMouseEvents = true
+            }
+        }
+
+        /// Gives every window hidden what it had (those still open), once.
+        mutating func restore() {
+            for entry in windows {
+                guard let window = entry.window.window else { continue }
+                window.alphaValue = entry.alpha
+                window.ignoresMouseEvents = entry.ignoresMouse
+            }
+            windows = []
         }
     }
 

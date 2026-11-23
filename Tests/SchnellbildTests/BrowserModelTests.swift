@@ -3556,6 +3556,41 @@ final class EnhanceTests: XCTestCase {
 /// The boss key comes back only on X typed three times in a row, each
 /// within a second of the one before.
 final class BossKeyTests: XCTestCase {
+    /// The release puts back exactly what hiding changed: the windows it
+    /// hid get their own alpha and mouse handling again (also when they
+    /// were hidden once more on the way, as when the app is brought
+    /// forward), a window it never hid keeps its own.
+    @MainActor
+    func testTheReleaseRestoresOnlyWhatHidingChanged() {
+        func window() -> NSWindow {
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 100), styleMask: [.titled],
+                                  backing: .buffered, defer: true)
+            window.isReleasedWhenClosed = false
+            return window
+        }
+        let plain = window(), own = window(), later = window()
+        own.alphaValue = 0.6
+        own.ignoresMouseEvents = true
+        var hidden = BossKey.HiddenWindows()
+        hidden.hide([plain, own])
+        for w in [plain, own] {
+            XCTAssertEqual(w.alphaValue, 0)
+            XCTAssertTrue(w.ignoresMouseEvents)
+        }
+        hidden.hide([plain, own])
+        later.alphaValue = 0.8
+        later.ignoresMouseEvents = true
+        hidden.restore()
+        XCTAssertEqual(plain.alphaValue, 1)
+        XCTAssertFalse(plain.ignoresMouseEvents)
+        XCTAssertEqual(own.alphaValue, 0.6, accuracy: 0.001, "its own alpha, not 1")
+        XCTAssertTrue(own.ignoresMouseEvents, "it let clicks through before")
+        XCTAssertEqual(later.alphaValue, 0.8, accuracy: 0.001, "never hidden: left alone")
+        XCTAssertTrue(later.ignoresMouseEvents)
+        hidden.restore()
+        XCTAssertEqual(own.alphaValue, 0.6, accuracy: 0.001, "restored once")
+    }
+
     func testThreeXInARowBringTheAppBack() {
         var c = BossKey.Counter()
         let t = Date()
