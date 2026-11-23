@@ -149,8 +149,9 @@ enum PictureMetadata {
         if let t = number(kCGImagePropertyExifExposureTime), t > 0 {
             rows.append(InfoRow(label: String(localized: "Shutter Speed"), value: shutter(t)))
         }
-        if let iso = number(kCGImagePropertyExifISOSpeedRatings) ?? number(kCGImagePropertyExifRecommendedExposureIndex), iso > 0 {
-            rows.append(InfoRow(label: "ISO", value: Int(iso).formatted()))
+        if let iso = number(kCGImagePropertyExifISOSpeedRatings) ?? number(kCGImagePropertyExifRecommendedExposureIndex),
+           iso.isFinite, iso > 0, iso < 1e7 {
+            rows.append(InfoRow(label: "ISO", value: Int(iso.rounded()).formatted()))
         }
         if let focal = number(kCGImagePropertyExifFocalLength), focal > 0 {
             let millimetres = describeMillimetres(focal)

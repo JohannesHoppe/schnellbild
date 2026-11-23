@@ -1,6 +1,7 @@
 import XCTest
 import AppKit
 import ImageIO
+import CRaw
 @testable import Schnellbild
 
 /// The formats the app decodes itself (QOI, PCX, DCX) and the RAW formats
@@ -332,5 +333,48 @@ final class PictureDecoderTests: XCTestCase {
         let task = Task { await RawDecoder.developed(big, named: URL(fileURLWithPath: "/x/a.bay"), half: false) }
         task.cancel()
         _ = await task.value
+    }
+
+    /// LibRaw's numbers as a crafted file can have them (∞, NaN, far beyond
+    /// Int's range): left out of the properties, never a trap; the GPS
+    /// position only within the Earth's degrees.
+    func testLibRawsNumbersOutOfRangeAreLeftOut() throws {
+        for value: Float in [.infinity, -.infinity, .nan, 1e30, -1e30, 9.3e18] {
+            var facts = SBRawFacts()
+            facts.iso = value
+            facts.shutter = value
+            facts.aperture = value
+            facts.focal_length = value
+            facts.has_gps = 1
+            facts.latitude = Double(value)
+            facts.longitude = Double(value)
+            let properties = RawDecoder.properties(facts, orientation: 1)
+            let exif = properties[kCGImagePropertyExifDictionary] as? [CFString: Any] ?? [:]
+            XCTAssertNil(exif[kCGImagePropertyExifISOSpeedRatings], "\(value)")
+            XCTAssertNil(exif[kCGImagePropertyExifExposureTime], "\(value)")
+            XCTAssertNil(exif[kCGImagePropertyExifFNumber], "\(value)")
+            XCTAssertNil(exif[kCGImagePropertyExifFocalLength], "\(value)")
+            XCTAssertNil(properties[kCGImagePropertyGPSDictionary], "\(value)")
+            _ = PictureMetadata.capture(properties)
+        }
+        var facts = SBRawFacts()
+        facts.iso = 400
+        facts.shutter = 0.004
+        facts.has_gps = 1
+        facts.latitude = 60.39
+        facts.longitude = -5.32
+        let properties = RawDecoder.properties(facts, orientation: 1)
+        let exif = try XCTUnwrap(properties[kCGImagePropertyExifDictionary] as? [CFString: Any])
+        XCTAssertEqual(exif[kCGImagePropertyExifISOSpeedRatings] as? [Int], [400])
+        XCTAssertEqual(try XCTUnwrap(exif[kCGImagePropertyExifExposureTime] as? Double), 0.004, accuracy: 1e-6)
+        let gps = try XCTUnwrap(properties[kCGImagePropertyGPSDictionary] as? [CFString: Any])
+        XCTAssertEqual(gps[kCGImagePropertyGPSLongitudeRef] as? String, "W")
+        // The Inspector's ISO row from a picture's own EXIF, as large
+        for iso in [1e30, Double.infinity, 9.3e18] {
+            let rows = PictureMetadata.capture([kCGImagePropertyExifDictionary: [kCGImagePropertyExifISOSpeedRatings: [iso]]])
+            XCTAssertFalse(rows.contains { $0.label == "ISO" }, "\(iso)")
+        }
+        let rows = PictureMetadata.capture([kCGImagePropertyExifDictionary: [kCGImagePropertyExifISOSpeedRatings: [200]]])
+        XCTAssertTrue(rows.contains { $0.label == "ISO" })
     }
 }

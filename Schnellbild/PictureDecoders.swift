@@ -394,10 +394,11 @@ enum RawDecoder {
         let make = text(facts.make), model = text(facts.model)
         if !make.isEmpty { tiff[kCGImagePropertyTIFFMake] = make }
         if !model.isEmpty { tiff[kCGImagePropertyTIFFModel] = model }
-        if facts.iso > 0 { exif[kCGImagePropertyExifISOSpeedRatings] = [Int(facts.iso)] }
-        if facts.shutter > 0 { exif[kCGImagePropertyExifExposureTime] = Double(facts.shutter) }
-        if facts.aperture > 0 { exif[kCGImagePropertyExifFNumber] = Double(facts.aperture) }
-        if facts.focal_length > 0 { exif[kCGImagePropertyExifFocalLength] = Double(facts.focal_length) }
+        // Read from the file as it is: only finite numbers in a camera's range
+        if let iso = positive(facts.iso, below: 1e7) { exif[kCGImagePropertyExifISOSpeedRatings] = [Int(iso.rounded())] }
+        if let shutter = positive(facts.shutter, below: 1e6) { exif[kCGImagePropertyExifExposureTime] = shutter }
+        if let aperture = positive(facts.aperture, below: 1e4) { exif[kCGImagePropertyExifFNumber] = aperture }
+        if let focal = positive(facts.focal_length, below: 1e5) { exif[kCGImagePropertyExifFocalLength] = focal }
         if facts.timestamp > 0 {
             // LibRaw read the camera's clock as the Mac's local time
             let formatter = DateFormatter()
@@ -410,13 +411,20 @@ enum RawDecoder {
         var properties: [CFString: Any] = [kCGImagePropertyOrientation: orientation]
         if !tiff.isEmpty { properties[kCGImagePropertyTIFFDictionary] = tiff }
         if !exif.isEmpty { properties[kCGImagePropertyExifDictionary] = exif }
-        if facts.has_gps != 0 {
+        if facts.has_gps != 0, facts.latitude.isFinite, facts.longitude.isFinite, abs(facts.latitude) <= 90, abs(facts.longitude) <= 180 {
             properties[kCGImagePropertyGPSDictionary] = [
                 kCGImagePropertyGPSLatitude: abs(facts.latitude), kCGImagePropertyGPSLatitudeRef: facts.latitude < 0 ? "S" : "N",
                 kCGImagePropertyGPSLongitude: abs(facts.longitude), kCGImagePropertyGPSLongitudeRef: facts.longitude < 0 ? "W" : "E",
             ] as [CFString: Any]
         }
         return properties
+    }
+
+    /// A number LibRaw read, when it is finite, above 0 and below `limit`
+    /// (∞, NaN and 1e30 from a crafted file are none).
+    static func positive(_ value: Float, below limit: Double) -> Double? {
+        let number = Double(value)
+        return number.isFinite && number > 0 && number < limit ? number : nil
     }
 
     /// A C string field as text.
