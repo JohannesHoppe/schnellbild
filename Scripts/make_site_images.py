@@ -76,7 +76,7 @@ GLOBE_SHOT = "atlas-globe-near"
 VIEW_SHOTS = ["grid", "list", "atlas", "atlas-globe-near"]
 # The website's feature pictures, in the order of the features (site/i18n); a feature
 # whose picture has no master in docs/screenshots yet is shown as text alone
-FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
+FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings-theme"]
 # The App Store's pictures (light), in their order there (by name)
 STORE_SHOTS = ["archive-inside", "atlas", "dualpane", "full", "grid", "inspector", "video"]
 OG_SIZE = (1200, 630)

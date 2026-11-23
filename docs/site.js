@@ -182,10 +182,38 @@ const motion = (() => {
   return { use, play, still };
 })();
 
+// Settings in light and in dark, in turn (build_site.py theme_loop, site.css
+// .themeloop): the two pictures load once the place comes near and start, in step
+// with the theme shown, when both are there; off screen they stand still. With
+// "reduce motion" the picture of the page's theme stands alone.
+(() => {
+  const loops = [...document.querySelectorAll(".themeloop")];
+  if (!loops.length || !("IntersectionObserver" in window) || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const root = document.documentElement;
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
+  const dark = () => (root.dataset.theme || (systemDark.matches ? "dark" : "light")) === "dark";
+  const watch = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const loop = entry.target;
+      loop.classList.toggle("paused", !entry.isIntersecting);
+      if (!entry.isIntersecting || loop.classList.contains("load")) continue;
+      loop.classList.add("load");
+      const twins = [...loop.querySelectorAll("img.twin")];
+      twins.forEach((img) => { img.loading = "eager"; });
+      Promise.all(twins.map((img) => img.decode())).then(() => {
+        // The dark picture's turn starts halfway through the loop
+        loop.style.setProperty("--loop-start", dark() ? "-3s" : "0s");
+        loop.classList.add("run");
+      }).catch(() => loop.classList.remove("load"));
+    }
+  }, { rootMargin: "200px 0px" });
+  loops.forEach((loop) => watch.observe(loop));
+})();
+
 // Screenshots open large in a dialog: ← → step through all of them, a click or Esc closes.
 // The video's still opens with the video playing over it, as on the page.
 (() => {
-  const shots = [...document.querySelectorAll(".shot img, .views img, .media img")];
+  const shots = [...document.querySelectorAll(".shot img, .views img, .media img:not(.twin)")];
   if (!shots.length || !("HTMLDialogElement" in window)) return;
   const labels = document.body.dataset;
   const dialog = document.createElement("dialog");

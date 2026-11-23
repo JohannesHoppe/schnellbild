@@ -195,6 +195,25 @@ def motion(name):
 
 
 
+THEME_LOOP = "settings-theme"
+
+
+def theme_loop(name, code, alt):
+    """Settings with Light chosen and with Dark chosen, shown in turn (site.css
+    .themeloop): the window seen switching between light and dark. The picture of
+    the page's theme stands as any screenshot does (the lightbox opens it); over it
+    the light and the dark one, loaded and cross-faded only once site.js starts
+    them (not with "reduce motion", not without script)."""
+    tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
+    def twin(mode):
+        master = DOCS / "screenshots" / f"{name}-{mode}{tag}.webp"
+        width, height = png_size(master)
+        return (f'<picture class="{mode}"><source type="image/webp" srcset="{srcset(master)}" sizes="{FEATURE_SIZES}">'
+                f'<img class="twin" src="/screenshots/{master.name}" width="{width}" height="{height}" alt="" '
+                f'loading="lazy" decoding="async"></picture>')
+    return f'<span class="themeloop">{shot(name, code, alt)}{twin("light")}{twin("dark")}</span>'
+
+
 DEMO = DOCS / "demo"
 # The Atlas feature shows the demo's short cut (Scripts/make_demo_video.py), the
 # same for every language and theme: 960 px wide on phones, 1280 elsewhere.
@@ -440,7 +459,8 @@ def home(code, t):
     <div class="feature text-only">
       {text}
     </div>"""
-        picture = demo(t["demoLabel"]) if name == DEMO_FEATURE else shot(name, code, f['alt'])
+        picture = (demo(t["demoLabel"]) if name == DEMO_FEATURE
+                   else theme_loop(name, code, f['alt']) if name == THEME_LOOP else shot(name, code, f['alt']))
         return f"""
     <div class="feature">
       {text}

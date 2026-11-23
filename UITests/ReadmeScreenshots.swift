@@ -276,9 +276,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(item.waitForExistence(timeout: 5), "\(ui(mode)) in the Mode menu")
         item.click()
         eventually("\(mode) chosen") { !item.exists }
-        // The pointer away from the window, so nothing shows hovered
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
-            .withOffset(CGVector(dx: -40, dy: -40)).hover()
+        // The pointer off the menu, on a line of text without a tooltip (the
+        // main window's controls behind Settings would show theirs)
+        let rest = app.staticTexts[ui("Videos play to their end.")].firstMatch
+        XCTAssertTrue(rest.waitForExistence(timeout: 5))
+        rest.hover()
         shoot("settings-theme", front: true)
         app.terminate()
     }
