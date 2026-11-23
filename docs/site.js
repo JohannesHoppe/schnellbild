@@ -202,7 +202,7 @@ const motion = (() => {
       twins.forEach((img) => { img.loading = "eager"; });
       Promise.all(twins.map((img) => img.decode())).then(() => {
         // The dark picture's turn starts halfway through the loop
-        loop.style.setProperty("--loop-start", dark() ? "-3s" : "0s");
+        loop.style.setProperty("--loop-start", dark() ? "-4.5s" : "0s");
         loop.classList.add("run");
       }).catch(() => loop.classList.remove("load"));
     }

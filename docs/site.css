@@ -408,8 +408,8 @@ h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 .playing video.motion { position: absolute; display: block; max-width: none; max-height: none; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
 .playing video.motion.on { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .playing video.motion { display: none; } }
-/* Settings in light and in dark, in turn (build_site.py theme_loop): 2 s each, a
-   soft change of 1 s between them: the picture going out blurs slightly as it fades
+/* Settings in light and in dark, in turn (build_site.py theme_loop): 4 s each, a
+   soft change of half a second between them: the picture going out blurs slightly as it fades
    and the one coming sharpening in. Its first picture is the page theme's, as any
    screenshot; site.js loads the two over it (.load) and starts them once both are
    there (.run, in step with the theme shown: --loop-start), pausing them off
@@ -420,21 +420,21 @@ h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 .themeloop.load > picture.light, .themeloop.load > picture.dark { display: block; position: absolute; inset: 0; opacity: 0; pointer-events: none; }
 .themeloop img.twin { width: 100%; height: 100%; max-height: none; }
 .themeloop.run > picture:first-child img { opacity: 0; }
-.themeloop.run > picture.light { animation: loop-light 6s linear var(--loop-start, 0s) infinite; }
-.themeloop.run > picture.dark { animation: loop-dark 6s linear var(--loop-start, 0s) infinite; }
+.themeloop.run > picture.light { animation: loop-light 9s linear var(--loop-start, 0s) infinite; }
+.themeloop.run > picture.dark { animation: loop-dark 9s linear var(--loop-start, 0s) infinite; }
 .themeloop.run.paused > picture.light, .themeloop.run.paused > picture.dark { animation-play-state: paused; }
 .themeloop:has(img.zoomable:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .themeloop img.zoomable:focus-visible { outline: none; }
 /* The picture coming in rises faster than the one going falls, so the window
    never looks thin in between */
 @keyframes loop-light {
-  0%, 33.333% { opacity: 1; filter: blur(0); animation-timing-function: ease-in; }
-  50%, 83.333% { opacity: 0; filter: blur(3px); animation-timing-function: ease-out; }
+  0%, 44.444% { opacity: 1; filter: blur(0); animation-timing-function: ease-in; }
+  50%, 94.444% { opacity: 0; filter: blur(3px); animation-timing-function: ease-out; }
   100% { opacity: 1; filter: blur(0); }
 }
 @keyframes loop-dark {
-  0%, 33.333% { opacity: 0; filter: blur(3px); animation-timing-function: ease-out; }
-  50%, 83.333% { opacity: 1; filter: blur(0); animation-timing-function: ease-in; }
+  0%, 44.444% { opacity: 0; filter: blur(3px); animation-timing-function: ease-out; }
+  50%, 94.444% { opacity: 1; filter: blur(0); animation-timing-function: ease-in; }
   100% { opacity: 0; filter: blur(3px); }
 }
 @media (prefers-reduced-motion: reduce) {
