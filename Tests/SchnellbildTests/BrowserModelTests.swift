@@ -3694,6 +3694,24 @@ final class BookmarkTests: XCTestCase {
         XCTAssertFalse(bookmarks.contains(a))
         XCTAssertTrue(Bookmarks(defaults: defaults).contains(renamed), "saved")
     }
+
+    /// Each folder is bookmarked once (the menus tell bookmarks by their
+    /// folder): saved twice, or two that follow a move to one folder, are one.
+    func testBookmarksStayOnePerFolder() throws {
+        let tree = try TempTree(self)
+        let a = try tree.folder("A")
+        let gone = tree.root.appendingPathComponent("B")
+        let defaults = makeTestDefaults()
+        defaults.set([gone.path, a.path, gone.path + "/", a.path], forKey: Bookmarks.key)
+        let bookmarks = Bookmarks(defaults: defaults)
+        XCTAssertEqual(bookmarks.folders.map(\.lastPathComponent), ["B", "A"])
+        bookmarks.follow([.moved(a, to: gone)])
+        XCTAssertEqual(bookmarks.folders.map(\.lastPathComponent), ["B"])
+        XCTAssertEqual(Bookmarks(defaults: defaults).folders.count, 1, "saved")
+        bookmarks.toggle(a)
+        bookmarks.toggle(URL(fileURLWithPath: a.path + "/"))
+        XCTAssertEqual(bookmarks.folders.map(\.lastPathComponent), ["B"], "the same folder: toggled off again")
+    }
 }
 
 

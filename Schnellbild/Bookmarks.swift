@@ -15,7 +15,14 @@ final class Bookmarks: ObservableObject {
 
     init(defaults: UserDefaults) {
         self.defaults = defaults
-        folders = (defaults.stringArray(forKey: Self.key) ?? []).map { URL(fileURLWithPath: $0, isDirectory: true) }
+        folders = Self.unique((defaults.stringArray(forKey: Self.key) ?? []).map { URL(fileURLWithPath: $0, isDirectory: true) })
+    }
+
+    /// Each folder once (the first, by canonical path): the menus tell
+    /// bookmarks apart by their folder.
+    static func unique(_ folders: [URL]) -> [URL] {
+        var seen = Set<String>()
+        return folders.filter { seen.insert(BrowserModel.canonicalPath($0)).inserted }
     }
 
     func contains(_ folder: URL) -> Bool {
@@ -34,10 +41,11 @@ final class Bookmarks: ObservableObject {
         save()
     }
 
-    /// A folder renamed or moved by the app: its bookmark follows.
+    /// A folder renamed or moved by the app: its bookmark follows (two that
+    /// land on one folder are one).
     func follow(_ changes: [FileChange]) {
         let lookup = FileChanges(changes)
-        let followed = folders.map { lookup.url($0) ?? $0 }
+        let followed = Self.unique(folders.map { lookup.url($0) ?? $0 })
         guard followed != folders else { return }
         folders = followed
         save()
