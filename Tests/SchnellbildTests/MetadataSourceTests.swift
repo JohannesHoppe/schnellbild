@@ -100,6 +100,41 @@ final class MetadataSourceTests: XCTestCase {
                        try utc("2025-07-01T09:30:01Z").timeIntervalSince1970, accuracy: 0.01, "GPS9's own time per sample")
     }
 
+    /// GPS9 at 10 Hz whose first three samples have no lock: the video's
+    /// start is the locked sample's own time less its place in the video
+    /// (the payload's start and the sample's share of the payload).
+    func testTheGoProStartFromALockedSampleLaterInItsPayload() throws {
+        func klv(_ key: String, _ type: Character, _ size: UInt8, _ count: UInt16, _ data: [UInt8]) -> [UInt8] {
+            var out = Array(key.utf8) + [type.asciiValue ?? 0, size] + withUnsafeBytes(of: count.bigEndian, Array.init) + data
+            while out.count % 4 != 0 { out.append(0) }
+            return out
+        }
+        func be(_ values: [Int32]) -> [UInt8] { values.flatMap { withUnsafeBytes(of: $0.bigEndian, Array.init) } }
+        func be16(_ values: [UInt16]) -> [UInt8] { values.flatMap { withUnsafeBytes(of: $0.bigEndian, Array.init) } }
+        // 2025-07-01 09:30:00 UTC: day 9313 since 2000, 34 200 s into it
+        var samples: [UInt8] = []
+        for i in 0..<10 {
+            samples += be([488_738_000, 22_950_000, 35_000, 0, 0, 9_313, 34_200_000 + Int32(i) * 100])
+            samples += be16([120, i < 3 ? 0 : 3])
+        }
+        let payload = klv("SCAL", "l", 4, 9, be([10_000_000, 10_000_000, 1_000, 1_000, 100, 1, 1_000, 100, 1]))
+            + klv("TYPE", "c", 1, 9, Array("lllllllSS".utf8))
+            + klv("GPS9", "?", 32, 10, samples)
+        let fixes = GPMF.fixes(in: payload)
+        XCTAssertEqual(fixes.count, 10)
+        XCTAssertEqual(fixes.map(\.isLocked), [false, false, false] + Array(repeating: true, count: 7))
+        let start = try utc("2025-07-01T09:30:00Z").timeIntervalSince1970
+        // One payload, five seconds into the video
+        let one = try XCTUnwrap(CaptureReader.telemetry(MemoryBytes(payload), [0..<UInt64(payload.count)], starts: [5]))
+        XCTAssertEqual(try XCTUnwrap(one.time).timeIntervalSince1970, start - 5, accuracy: 0.01)
+        // The same payload twice, two seconds each: the sample's share of its payload's two seconds
+        let doubled = payload + payload
+        let two = try XCTUnwrap(CaptureReader.telemetry(MemoryBytes(doubled), [0..<UInt64(payload.count),
+                                                                                UInt64(payload.count)..<UInt64(doubled.count)],
+                                                        starts: [5, 7]))
+        XCTAssertEqual(try XCTUnwrap(two.time).timeIntervalSince1970, start + 0.3 - 0.6 - 5, accuracy: 0.01)
+    }
+
     func testGPMFTypeAndScale() throws {
         XCTAssertEqual(GPMF.expandType(Array("l[3]S".utf8)), Array("lllS".utf8))
         XCTAssertNil(GPMF.expandType(Array("l[".utf8)))

@@ -526,8 +526,9 @@ enum CaptureReader {
         return result
     }
 
-    /// GoPro's first good fix (else its first locked one), the video's start by GPS time (the first fix's
-    /// time less its payload's place in the video), and a track of one
+    /// GoPro's first good fix (else its first locked one), the video's start by GPS time (the first
+    /// locked fix's time less its place in the video: its payload's start, and its share of the
+    /// payload's length by its place among the payload's samples), and a track of one
     /// fix per payload read, at most `trackSamples` payloads spread over the
     /// video. Nil when the telemetry has no GPS.
     static func telemetry(_ file: ByteSource, _ samples: [Range<UInt64>], starts: [Double] = []) -> (fix: GPMF.Fix?, time: Date?, track: [GeoTrack.Point])? {
@@ -545,9 +546,13 @@ enum CaptureReader {
             let found = fixes(index).filter(\.isLocked)
             if locked == nil { locked = found.first }
             if first == nil { first = found.first(where: \.isGood) }
-            // The video began this long before the payload
-            if time == nil, let fixTime = found.lazy.compactMap(\.time).first {
-                time = fixTime.addingTimeInterval(-(index < starts.count ? starts[index] : 0))
+            // The video began this long before the sample: its payload's
+            // start, and the sample's share of the payload (GPS9 times each
+            // sample, and a locked one may come after unlocked ones)
+            if time == nil, let timed = found.first(where: { $0.time != nil }), let fixTime = timed.time {
+                let start = index < starts.count ? starts[index] : 0
+                let within = Double(timed.sample) / Double(max(1, timed.samples)) * payloadLength(index, starts: starts)
+                time = fixTime.addingTimeInterval(-(start + within))
             }
             if first != nil, time != nil { break }
         }
@@ -561,6 +566,18 @@ enum CaptureReader {
         }
         if first == nil, time == nil, track.isEmpty { return nil }
         return (first, time, GeoTrack.thinned(track))
+    }
+
+    /// How long a telemetry payload lasts in the video: up to the next
+    /// payload's start (the last one: from the one before it), else the
+    /// second GoPro writes each payload for.
+    static func payloadLength(_ index: Int, starts: [Double]) -> Double {
+        func gap(_ a: Int, _ b: Int) -> Double? {
+            guard a >= 0, b < starts.count, a < b else { return nil }
+            let length = starts[b] - starts[a]
+            return length.isFinite && length > 0 && length < 3_600 ? length : nil
+        }
+        return gap(index, index + 1) ?? gap(index - 1, index) ?? 1
     }
 }
 

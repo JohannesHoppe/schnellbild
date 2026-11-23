@@ -21,6 +21,10 @@ enum GPMF {
         var fix: Int?
         /// Dilution of precision (GPSP / 100, or GPS9's own).
         var dilution: Double?
+        /// Its place among its stream's samples in the payload, and their
+        /// number: the samples are spread evenly over the payload's time.
+        var sample = 0
+        var samples = 1
 
         /// A 2D or 3D lock where the camera says.
         var isLocked: Bool { fix.map { $0 >= 2 } ?? true }
@@ -118,7 +122,8 @@ enum GPMF {
                     guard usable, let point = GeoPoint(latitude: values[0], longitude: values[1]),
                           !(values[0] == 0 && values[1] == 0) else { continue }
                     var fix = Fix(point: point, altitude: values[2].isFinite ? values[2] : nil,
-                                  time: sample == 0 ? utc : nil, fix: fixState, dilution: dilution)
+                                  time: sample == 0 ? utc : nil, fix: fixState, dilution: dilution,
+                                  sample: sample, samples: item.repeatCount)
                     if item.key == "GPS9", values.count >= 9 {
                         let days = values[5], seconds = values[6]
                         if days.isFinite, seconds.isFinite, days > 0, days < 100_000, seconds >= 0, seconds < 86_401 {
