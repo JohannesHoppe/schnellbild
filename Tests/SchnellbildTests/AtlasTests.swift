@@ -755,6 +755,26 @@ final class AtlasTests: XCTestCase {
         XCTAssertNil(AtlasTimeline.span(sorted: [undated]))
     }
 
+    /// One dated photo among items without a time: the span has no length,
+    /// and the timeline's bar and thumbnail are that photo's alone.
+    func testAZeroSpanCountsOnlyTheDatedItems() throws {
+        let undated = (0..<3).map {
+            AtlasItem.make(url: URL(fileURLWithPath: "/trip/undated-\($0).jpg"), isVideo: false, facts: CaptureFacts(), modified: nil)
+        }
+        let photo = item("norway-01-bryggen.jpg", "2026-06-14 10:12:05", (60.3975, 5.3245))
+        let sorted = undated + [photo]
+        let span = try XCTUnwrap(AtlasTimeline.span(sorted: sorted))
+        XCTAssertEqual(span.lowerBound, span.upperBound)
+        XCTAssertEqual(AtlasTimeline.histogram(sorted: sorted, span: span, bins: 5), [0, 0, 1, 0, 0])
+        XCTAssertEqual(AtlasTimeline.firstOfSlots(sorted: sorted, span: span, slots: 5).mapValues(\.name), [2: "norway-01-bryggen.jpg"])
+        XCTAssertEqual(AtlasTimeline.histogram(Array(sorted.reversed()), span: span, bins: 5), [0, 0, 1, 0, 0])
+        XCTAssertEqual(AtlasTimeline.histogram(sorted: undated, span: span, bins: 5), [0, 0, 0, 0, 0])
+        XCTAssertEqual(AtlasTimeline.firstOfSlots(sorted: undated, span: span, slots: 5).count, 0)
+        // With a length, the unsorted count leaves them out too
+        let wide = try XCTUnwrap(AtlasTimeline.span(of: trip))
+        XCTAssertEqual(AtlasTimeline.histogram(trip + undated, span: wide, bins: 4), AtlasTimeline.histogram(trip, span: wide, bins: 4))
+    }
+
     /// The day by the item's clock as a number agrees with the calendar's
     /// day, for stated offsets and for the Mac's own zone (with its summer time).
     func testTheDayNumberIsTheCalendarDay() {

@@ -278,8 +278,10 @@ enum AtlasTimeline {
         guard bins > 0, !items.isEmpty else { return Array(repeating: 0, count: max(0, bins)) }
         let length = span.upperBound.timeIntervalSince(span.lowerBound)
         guard length > 0 else {
+            // One moment: the items at it (those without a time come first, outside it)
             var counts = Array(repeating: 0, count: bins)
-            counts[bins / 2] = items.count
+            let start = firstIndex(atOrAfter: span.lowerBound, in: items)
+            counts[bins / 2] = items[start...].prefix { $0.isDated && $0.date <= span.upperBound }.count
             return counts
         }
         var counts: [Int] = []
@@ -298,7 +300,11 @@ enum AtlasTimeline {
     static func firstOfSlots(sorted items: [AtlasItem], span: ClosedRange<Date>, slots: Int) -> [Int: AtlasItem] {
         guard slots > 0, !items.isEmpty else { return [:] }
         let length = span.upperBound.timeIntervalSince(span.lowerBound)
-        guard length > 0 else { return [slots / 2: items[0]] }
+        guard length > 0 else {
+            let start = firstIndex(atOrAfter: span.lowerBound, in: items)
+            guard start < items.count, items[start].isDated, span.contains(items[start].date) else { return [:] }
+            return [slots / 2: items[start]]
+        }
         var firsts: [Int: AtlasItem] = [:]
         for slot in 0..<slots {
             let i = firstIndex(atOrAfter: span.lowerBound.addingTimeInterval(length * Double(slot) / Double(slots)), in: items)
@@ -311,7 +317,7 @@ enum AtlasTimeline {
     static func histogram(_ items: [AtlasItem], span: ClosedRange<Date>, bins: Int) -> [Int] {
         guard bins > 0 else { return [] }
         var counts = Array(repeating: 0, count: bins)
-        for item in items { counts[bin(of: item.date, span: span, bins: bins)] += 1 }
+        for item in items where item.isDated { counts[bin(of: item.date, span: span, bins: bins)] += 1 }
         return counts
     }
 
