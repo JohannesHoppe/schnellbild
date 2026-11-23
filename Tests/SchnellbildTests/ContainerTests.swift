@@ -172,6 +172,60 @@ final class ContainerTests: XCTestCase {
         }
     }
 
+    /// A transport stream of 188-byte packets: PAT, PMT (one H.264 stream on
+    /// PID 0x101), then a PES start per entry of `frames` (its time, 90 kHz)
+    /// followed by that many packets more of the same frame.
+    private func transportStream(_ frames: [(pts: Int64, more: Int)]) -> Data {
+        func packet(pid: Int, start: Bool, _ payload: [UInt8]) -> [UInt8] {
+            let head: [UInt8] = [0x47, (start ? 0x40 : 0) | UInt8(pid >> 8), UInt8(pid & 0xFF), 0x10]
+            return head + payload + Array(repeating: 0xFF, count: 184 - payload.count)
+        }
+        let pat: [UInt8] = [0x00, 0x00, 0xB0, 13, 0x00, 0x01, 0xC1, 0x00, 0x00, 0x00, 0x01, 0xE1, 0x00, 0, 0, 0, 0]
+        let pmt: [UInt8] = [0x00, 0x02, 0xB0, 18, 0x00, 0x01, 0xC1, 0x00, 0x00, 0xE1, 0x01, 0xF0, 0x00,
+                            0x1B, 0xE1, 0x01, 0xF0, 0x00, 0, 0, 0, 0]
+        var out = packet(pid: 0, start: true, pat) + packet(pid: 0x100, start: true, pmt)
+        let filler = packet(pid: 0x101, start: false, [0, 0, 0])
+        for frame in frames {
+            let p = frame.pts
+            let time: [UInt8] = [0x21 | UInt8((p >> 29) & 0x0E), UInt8((p >> 22) & 0xFF), UInt8(((p >> 14) & 0xFE) | 1),
+                                 UInt8((p >> 7) & 0xFF), UInt8(((p << 1) & 0xFE) | 1)]
+            let pes: [UInt8] = [0, 0, 1, 0xE0, 0, 0, 0x80, 0x80, 5] + time + [0, 0, 1, 0x65, 0x88]
+            out += packet(pid: 0x101, start: true, pes)
+            for _ in 0..<frame.more { out += filler }
+        }
+        return Data(out)
+    }
+
+    /// A chunk in which no frame starts (a frame larger than a chunk) is
+    /// no frame "after" the time: the search for a later time goes on to
+    /// the right, and a time within that frame finds the chunk it starts in.
+    func testTheChunkForATimeAcrossAChunkWithoutAFrameStart() throws {
+        let perChunk = 10_923
+        // Frames of one packet up to the end of chunk 1 (after PAT and PMT),
+        // then one spanning all of chunk 2, then frames of one packet again
+        let before = 2 * perChunk - 3
+        var frames = (0..<before).map { (pts: Int64($0) * 3600, more: 0) }
+        frames.append((pts: Int64(before) * 3600, more: perChunk + 10))
+        let after = 2 * perChunk - 20
+        frames += (1...after).map { (pts: Int64(before + $0) * 3600, more: 0) }
+        let index = try TransportIndex(MemoryBytes(transportStream(frames)))
+        XCTAssertEqual(index.packetSize, 188)
+        XCTAssertEqual(index.chunkCount, 5)
+        XCTAssertEqual(try index.frames(inChunk: 2), [], "no frame starts in it")
+        let large = Int64(before) * 3600
+        XCTAssertEqual(index.chunk(at: large - 3600), 1)
+        XCTAssertEqual(index.chunk(at: large), 1, "the large frame starts in chunk 1")
+        XCTAssertEqual(index.chunk(at: large + 1800), 1)
+        let last = Int64(before + after) * 3600
+        XCTAssertEqual(index.chunk(at: last), index.chunkCount - 1)
+        XCTAssertEqual(index.chunk(at: .max), index.chunkCount - 1)
+        XCTAssertEqual(index.chunk(at: 0), 0)
+        for time in stride(from: large + 3600, through: last, by: 3600 * 997) {
+            let chunk = index.chunk(at: time)
+            XCTAssertTrue(try index.frames(inChunk: chunk).contains { $0.time == time }, "\(time) in chunk \(chunk)")
+        }
+    }
+
     /// A track whose frames are compressed in the file (here header
     /// stripping) is marked: the decoder couldn't take its frames as they lie.
     func testAnEncodedTrackIsMarked() throws {

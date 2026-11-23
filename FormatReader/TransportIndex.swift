@@ -43,7 +43,7 @@ final class TransportIndex: @unchecked Sendable {
     private let source: ByteReading
     private let lock = NSLock()
     private var framesByChunk: [Int: [Frame]] = [:]
-    private var chunkTimes: [Int: Int64] = [:]
+    private var chunkTimes: [Int: Int64?] = [:]
 
     init(_ source: ByteReading) throws {
         self.source = source
@@ -125,32 +125,45 @@ final class TransportIndex: @unchecked Sendable {
 
     /// The chunk to look in for the frame shown at `time`: the last whose
     /// first frame starts at or before it (a binary search, each step
-    /// reading only until a frame starts).
+    /// reading only until a frame starts). A chunk in which no frame starts
+    /// (a frame larger than a chunk, a stretch of other streams) belongs to
+    /// the chunk before it with a frame: the search goes by that chunk's time.
     func chunk(at time: Int64) -> Int {
         var low = 0, high = chunkCount - 1, found = 0
         while low <= high {
             let middle = (low + high) / 2
-            if let t = firstTime(inChunk: middle), t <= time { found = middle; low = middle + 1 } else { high = middle - 1 }
+            var probe = middle
+            while probe >= low, firstTime(inChunk: probe) == nil { probe -= 1 }
+            if probe < low {
+                // None from `low` to the middle: decided by the chunks after it
+                low = middle + 1
+            } else if let t = firstTime(inChunk: probe), t <= time {
+                found = probe
+                low = middle + 1
+            } else {
+                high = probe - 1
+            }
         }
         return found
     }
 
-    /// The first frame's time in a chunk, nil if none starts in it.
+    /// The first frame's time in a chunk, nil if none starts in it (both kept).
     private func firstTime(inChunk chunk: Int) -> Int64? {
         if let known = lock.withLock({ chunkTimes[chunk] }) { return known }
         let start = Int64(chunk) * chunkBytes, stop = min(length, start + chunkBytes)
         var position = start
+        var time: Int64?
         while position < stop {
             guard let data = try? [UInt8](source.read(at: position, count: Int(min(stop - position, 64 << 10)))),
                   data.count >= packetSize else { return nil }
             if let first = pesStarts(in: data, base: position).first {
-                let time = relative(first.pts)
-                lock.withLock { chunkTimes[chunk] = time }
-                return time
+                time = relative(first.pts)
+                break
             }
             position += Int64(data.count / packetSize * packetSize)
         }
-        return nil
+        lock.withLock { chunkTimes[chunk] = .some(time) }
+        return time
     }
 
     /// A frame's data as written (Annex B: NAL units after start codes).
