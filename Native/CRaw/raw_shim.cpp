@@ -1,10 +1,12 @@
 // A small C face for LibRaw (libraw/libraw.h): one LibRaw instance per
-// call, the file's bytes in memory, the limits set before anything is read,
-// every exception caught here. LibRaw is built thread-safe (no
-// LIBRAW_NOTHREADS), so calls run on several threads at once.
+// call, owned by a unique_ptr so it is freed on every path (an exception
+// caught here included), the file's bytes in memory, the limits set before
+// anything is read, every exception caught here. LibRaw is built
+// thread-safe (no LIBRAW_NOTHREADS), so calls run on several threads at once.
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <memory>
 #include <new>
 #include "libraw/libraw/libraw.h"
 #include "include/CRaw.h"
@@ -69,7 +71,7 @@ int handOver(libraw_processed_image_t *image, SBRawPicture *out, int64_t max_pix
 
 extern "C" int sb_raw_facts(const void *bytes, size_t size, SBRawLimits limits, SBRawFacts *facts) {
     try {
-        LibRaw *raw = new (std::nothrow) LibRaw(0);
+        std::unique_ptr<LibRaw> raw(new (std::nothrow) LibRaw(0));
         if (!raw) return LIBRAW_UNSUFFICIENT_MEMORY;
         int status = open(*raw, bytes, size, limits);
         if (status == LIBRAW_SUCCESS) {
@@ -101,7 +103,6 @@ extern "C" int sb_raw_facts(const void *bytes, size_t size, SBRawLimits limits, 
                 }
             }
         }
-        delete raw;
         return status;
     } catch (...) {
         return LIBRAW_UNSPECIFIED_ERROR;
@@ -110,7 +111,7 @@ extern "C" int sb_raw_facts(const void *bytes, size_t size, SBRawLimits limits, 
 
 extern "C" int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limits, int max_side, SBRawPicture *out) {
     try {
-        LibRaw *raw = new (std::nothrow) LibRaw(0);
+        std::unique_ptr<LibRaw> raw(new (std::nothrow) LibRaw(0));
         if (!raw) return LIBRAW_UNSUFFICIENT_MEMORY;
         int status = open(*raw, bytes, size, limits);
         if (status == LIBRAW_SUCCESS) {
@@ -145,7 +146,6 @@ extern "C" int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limi
                 }
             }
         }
-        delete raw;
         return status;
     } catch (...) {
         return LIBRAW_UNSPECIFIED_ERROR;
@@ -154,7 +154,7 @@ extern "C" int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limi
 
 extern "C" int sb_raw_develop(const void *bytes, size_t size, SBRawLimits limits, int half, const int *cancel, SBRawPicture *out) {
     try {
-        LibRaw *raw = new (std::nothrow) LibRaw(0);
+        std::unique_ptr<LibRaw> raw(new (std::nothrow) LibRaw(0));
         if (!raw) return LIBRAW_UNSUFFICIENT_MEMORY;
         raw->set_progress_handler(progress, const_cast<int *>(cancel));
         int status = open(*raw, bytes, size, limits);
@@ -180,7 +180,6 @@ extern "C" int sb_raw_develop(const void *bytes, size_t size, SBRawLimits limits
                 status = image ? handOver(image, out, limits.max_pixels) : (error ? error : LIBRAW_UNSPECIFIED_ERROR);
             }
         }
-        delete raw;
         return status;
     } catch (...) {
         return LIBRAW_UNSPECIFIED_ERROR;

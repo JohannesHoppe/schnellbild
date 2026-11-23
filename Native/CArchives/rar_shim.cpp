@@ -14,6 +14,7 @@
 #include <wchar.h>
 #include <string.h>
 #include <string>
+#include <memory>
 #include <new>
 #include "unrar/rar.hpp"
 #include "include/CArchives.h"
@@ -103,7 +104,7 @@ static int CALLBACK callback(UINT message, LPARAM user, LPARAM p1, LPARAM p2) {
 }
 
 extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_only, int *result, int *password_asked) {
-    SBRar *rar = new (std::nothrow) SBRar();
+    std::unique_ptr<SBRar> rar(new (std::nothrow) SBRar());
     if (!rar) { *result = ERAR_NO_MEMORY; return nullptr; }
     if (password) { rar->password = fromUTF8(password); rar->hasPassword = true; }
     std::wstring widePath = fromUTF8(path);
@@ -115,7 +116,7 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
     // of many such headers overflows the stack); the caller skips them
     data.OpenMode = list_only ? RAR_OM_LIST_INCSPLIT : RAR_OM_EXTRACT;
     data.Callback = callback;
-    data.UserData = (LPARAM)rar;
+    data.UserData = (LPARAM)rar.get();
     {
         ErrHandler.Clean();
         rar->handle = RAROpenArchiveEx(&data);
@@ -124,26 +125,25 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
     *password_asked = rar->passwordAsked;
     if (!rar->handle || data.OpenResult != ERAR_SUCCESS) {
         if (rar->handle) RARCloseArchive(rar->handle);
-        delete rar;
         return nullptr;
     }
     rar->headersEncrypted = (data.Flags & ROADF_ENCHEADERS) != 0;
     rar->solid = (data.Flags & ROADF_SOLID) != 0;
     rar->volume = (data.Flags & ROADF_VOLUME) != 0;
-    return rar;
+    return rar.release();
 }
 
 extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
-    RARHeaderDataEx *header = new (std::nothrow) RARHeaderDataEx();
+    std::unique_ptr<RARHeaderDataEx> header(new (std::nothrow) RARHeaderDataEx());
     if (!header) return ERAR_NO_MEMORY;
-    memset(header, 0, sizeof(*header));
+    memset(header.get(), 0, sizeof(*header));
     header->RedirName = entry->redirect;
     header->RedirNameSize = sizeof(entry->redirect) / sizeof(wchar_t);
     entry->redirect[0] = 0;
     int r;
     {
         ErrHandler.Clean();
-        r = RARReadHeaderEx(rar->handle, header);
+        r = RARReadHeaderEx(rar->handle, header.get());
     }
     // The last file's code, handed back with this header (see the top)
     bool passwordError = r == ERAR_BAD_PASSWORD || r == ERAR_MISSING_PASSWORD;
@@ -177,7 +177,6 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         rar->expectedSize = entry->size;
         rar->encrypted = entry->is_encrypted;
     }
-    delete header;
     return r;
 }
 
