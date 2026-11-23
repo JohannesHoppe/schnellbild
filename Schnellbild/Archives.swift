@@ -1298,17 +1298,42 @@ final class ArchiveStore: @unchecked Sendable {
 
 // MARK: - Media from disk or from an archive
 
+/// Everything here that waits on the disk (the look whether a path runs
+/// through an archive, a file's bytes, opening an image source) runs on
+/// `Blocking`'s threads: a share that stalls under a grid of tiles would
+/// otherwise hold every one of Swift's threads, and the rest of the app's
+/// async work with them.
 enum MediaData {
     /// A file's bytes, from disk or from inside an archive.
     static func read(_ url: URL) async throws -> Data {
-        if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
+        if ArchivePath.isInside(url), await ArchivePath.readsFromArchive(url) {
             return try await ArchiveStore.shared.data(of: url)
         }
-        // The same limit as inside archives: a multi-gigabyte "picture.svg"
-        // isn't read into memory
-        let size = (try? url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize ?? 0
-        if Int64(size) > ArchiveStore.largestRead { throw ArchiveError.tooLarge }
-        return try Data(contentsOf: url)
+        let reader = fileReader
+        return try await Blocking.run(.userInitiated) { try reader(url) }
+    }
+
+    /// How a file's bytes are read from disk (tests stand in a disk that stalls).
+    nonisolated(unsafe) static var fileReader: @Sendable (URL) throws -> Data = readFile
+
+    /// A regular file's bytes, at most `ArchiveStore.largestRead` of them
+    /// (the same limit as inside archives: a multi-gigabyte "picture.svg"
+    /// isn't read into memory). Opened without waiting and checked on the
+    /// opened file: a FIFO (a read would wait for a writer), a device or a
+    /// folder named like a picture is refused.
+    static func readFile(_ url: URL) throws -> Data {
+        let descriptor = Darwin.open(url.path, O_RDONLY | O_NONBLOCK | O_CLOEXEC)
+        guard descriptor >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+        let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+        var info = stat()
+        guard fstat(descriptor, &info) == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+        guard info.st_mode & S_IFMT == S_IFREG else { throw POSIXError(.EFTYPE) }
+        let limit = Int(ArchiveStore.largestRead)
+        guard info.st_size <= limit else { throw ArchiveError.tooLarge }
+        // At most one byte more than allowed: a file grown meanwhile is refused
+        let data = try handle.read(upToCount: limit + 1) ?? Data()
+        guard data.count <= limit else { throw ArchiveError.tooLarge }
+        return data
     }
 
     /// An image source for a picture, from disk or from inside an archive.
@@ -1324,11 +1349,22 @@ enum MediaData {
         if PictureDecoders.decodes(url) { return await PictureDecoders.picture(url) }
         // PostScript, ZIP documents, Netpbm bitmaps: the picture they carry
         if EmbeddedPreview.showsPreview(url) { return await EmbeddedPreview.picture(url) }
-        if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
+        if ArchivePath.isInside(url), await ArchivePath.readsFromArchive(url) {
             guard let data = try? await ArchiveStore.shared.data(of: url),
                   let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
             return (source, data.count)
         }
-        return CGImageSourceCreateWithURL(url as CFURL, nil).map { ($0, 0) }
+        // ImageIO opens the file here (only a regular file: a FIFO would wait for a writer)
+        let opened = await Blocking.run(.userInitiated) { () -> OnDisk? in
+            guard RelatedFiles.canRead(url) else { return nil }
+            return CGImageSourceCreateWithURL(url as CFURL, nil).map(OnDisk.init)
+        }
+        return opened.map { ($0.source, 0) }
+    }
+
+    /// An image source read from disk, handed back from `Blocking`'s thread
+    /// (ImageIO's sources may be used from any thread).
+    private struct OnDisk: @unchecked Sendable {
+        let source: CGImageSource
     }
 }

@@ -248,12 +248,19 @@ final class ThumbnailCache {
     /// too; else ImageIO scaled down.
     static func decodedThumbnail(of url: URL, maxPixel: Int) async -> CGImage? {
         if PictureDecoders.format(of: url) == .raw { return await RawDecoder.thumbnail(of: url, maxPixel: maxPixel) }
-        let source = await MediaData.imageSource(url)
-        let cg = Task.isCancelled ? nil : source.flatMap { MediaInfo.scaledDown($0, at: 0, maxPixel: maxPixel, now: false) }
+        let source = await MediaData.imageSource(url).map(SourceBox.init)
+        // ImageIO reads the file as it scales it down: off Swift's threads, like the read
+        let cg = Task.isCancelled ? nil : await Blocking.run(.userInitiated) {
+            ImageBox(image: source.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: maxPixel, now: false) })
+        }.image
         // ImageIO's RAW without a picture, or with a black or blown out one
         if !Task.isCancelled, let tile = await RawDecoder.thumbnailReplacement(of: cg, for: url, maxPixel: maxPixel) { return tile }
         return cg
     }
+
+    /// ImageIO's source and picture handed to and from `Blocking`'s thread.
+    private struct SourceBox: @unchecked Sendable { let source: CGImageSource }
+    private struct ImageBox: @unchecked Sendable { let image: CGImage? }
 
     /// Archive dates as read lately: every picture of an archive asks, and
     /// the date is read off the main thread (a stalled share would block it).

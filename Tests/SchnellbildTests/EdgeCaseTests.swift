@@ -359,3 +359,90 @@ final class DropZoneTests: XCTestCase {
         XCTAssertNil(DropZoneDelegate.zone(atX: 700, width: 800, mouseDown: false))
     }
 }
+
+// MARK: - Pictures read from disk
+
+/// Pictures the app reads itself (`MediaData`) wait on the disk off Swift's
+/// threads: many tiles of a share that stalls leave the rest of the app's
+/// async work running, and a FIFO named like a picture is refused without
+/// waiting for a writer.
+final class MediaDataTests: XCTestCase {
+    func testFIFOsNamedLikePicturesNeitherWaitNorStarveOtherWork() throws {
+        let tree = try TempTree(self)
+        let fifos = try ["a.svg", "b.qoi", "c.bay", "d.eps", "e.png"].map { name -> URL in
+            let url = tree.root.appendingPathComponent(name)
+            XCTAssertEqual(mkfifo(url.path, 0o600), 0)
+            return url
+        }
+        let reads = ProcessInfo.processInfo.activeProcessorCount * 2 + 4
+        let done = DispatchGroup()
+        for i in 0..<reads {
+            let url = fifos[i % fifos.count]
+            done.enter()
+            Task.detached {
+                switch i % 3 {
+                case 0: _ = try? await MediaData.read(url)
+                case 1: _ = await MediaData.picture(url)
+                default: _ = await RawDecoder.thumbnail(of: url, maxPixel: 64)
+                }
+                done.leave()
+            }
+        }
+        let other = DispatchSemaphore(value: 0)
+        Task.detached { other.signal() }
+        let ran = other.wait(timeout: .now() + 10)
+        // Every read still waiting for a writer is let go (an end of file), so none outlives the test
+        let deadline = Date() + 60
+        while done.wait(timeout: .now() + 0.05) == .timedOut, Date() < deadline {
+            for fifo in fifos {
+                let writer = open(fifo.path, O_WRONLY | O_NONBLOCK)
+                if writer >= 0 { close(writer) }
+            }
+        }
+        XCTAssertEqual(ran, .success, "other async work waited behind the reads")
+        XCTAssertEqual(done.wait(timeout: .now()), .success)
+    }
+
+    /// A disk that stalls (each read waits until let go) under more reads
+    /// than Swift has threads: they all wait at once, and other async work
+    /// runs meanwhile.
+    func testReadsThatStallLeaveSwiftsThreadsFree() throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("a.svg", bytes: 10)
+        final class Waiting: @unchecked Sendable {
+            private let lock = NSLock()
+            private var count = 0
+            func enter() { lock.withLock { count += 1 } }
+            var now: Int { lock.withLock { count } }
+        }
+        let waiting = Waiting()
+        let release = DispatchSemaphore(value: 0)
+        let saved = MediaData.fileReader
+        MediaData.fileReader = { url in
+            waiting.enter()
+            release.wait()
+            return try MediaData.readFile(url)
+        }
+        defer { MediaData.fileReader = saved }
+        let reads = ProcessInfo.processInfo.activeProcessorCount * 2 + 4
+        let done = DispatchGroup()
+        let read = Waiting()
+        for _ in 0..<reads {
+            done.enter()
+            Task.detached {
+                if let data = try? await MediaData.read(file), data.count == 10 { read.enter() }
+                done.leave()
+            }
+        }
+        let deadline = Date() + 10
+        while waiting.now < reads, Date() < deadline { usleep(10_000) }
+        XCTAssertEqual(waiting.now, reads, "every read waits at once")
+        let other = DispatchSemaphore(value: 0)
+        Task.detached { other.signal() }
+        let ran = other.wait(timeout: .now() + 10)
+        for _ in 0..<reads { release.signal() }
+        XCTAssertEqual(ran, .success, "other async work waited behind the reads")
+        XCTAssertEqual(done.wait(timeout: .now() + 30), .success)
+        XCTAssertEqual(read.now, reads)
+    }
+}
