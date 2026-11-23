@@ -150,16 +150,17 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
                                                  height: Int32(clamping: track.height), extensions: extensions,
                                                  formatDescriptionOut: &format) == noErr, let format else { return nil }
             let number = track.number
+            // Times in CoreMedia ticks (`MatroskaIndex.timescale`), exact for any TimestampScale
             let source = VideoTrackSource(
                 id: CMPersistentTrackID(clamping: number), format: format, timescale: timescale,
-                frameDuration: track.frameDuration(timestampScale: index.timestampScale),
-                duration: index.durationUnits, partCount: index.clusters.count,
+                frameDuration: index.frameTicks(of: track),
+                duration: index.ticks(index.durationUnits), partCount: index.clusters.count,
                 frames: { cluster in
                     (try? index.frames(inCluster: cluster, track: number))?.map {
-                        IndexedFrame(offset: $0.offset, length: $0.length, time: $0.time, decodeTime: nil, keyframe: $0.keyframe)
+                        IndexedFrame(offset: $0.offset, length: $0.length, time: index.ticks($0.time), decodeTime: nil, keyframe: $0.keyframe)
                     }
                 },
-                part: { index.cluster(at: $0) },
+                part: { index.cluster(at: index.units(ofTicks: $0)) },
                 sampleData: nil)
             // A track without a frame near the start isn't offered
             return index.hasFrames(track: number) ? source : nil

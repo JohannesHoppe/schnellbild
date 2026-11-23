@@ -308,6 +308,47 @@ final class ContainerTests: XCTestCase {
         XCTAssertEqual(try index.frames(inCluster: 0, track: 1).first?.time, Int64(Int16.min))
     }
 
+    /// A TimestampScale that doesn't divide 10⁹ ns: CoreMedia's ticks are
+    /// still the file's times exactly (1 000 003 ns a unit: 10⁹ ticks a
+    /// second, 1 000 003 a unit; 300 000 ns: 10 000 a second, 3 a unit),
+    /// the frame duration too, and a time in ticks finds its cluster.
+    func testATimestampScaleThatDoesntDivideASecondIsExact() throws {
+        let cases: [(scale: UInt64, bytes: [UInt8], timescale: Int32, ticks: Int64)] = [
+            (1_000_003, [0x0F, 0x42, 0x43], 1_000_000_000, 1_000_003),
+            (300_000, [0x04, 0x93, 0xE0], 10_000, 3),
+            (1_000_000, [0x0F, 0x42, 0x40], 1_000, 1),
+        ]
+        // 40 ms a frame (DefaultDuration, ns)
+        let frame: [UInt8] = [0x02, 0x62, 0x5A, 0x00]
+        for c in cases {
+            let data = matroska(info: element([0x2A, 0xD7, 0xB1], c.bytes) + element([0x44, 0x89], float(1000)),
+                                defaultDuration: frame, clusterTime: [10], relative: 5)
+            let index = try MatroskaIndex(MemoryBytes(data))
+            XCTAssertEqual(index.timestampScale, c.scale)
+            XCTAssertEqual(index.timescale, c.timescale, "\(c.scale)")
+            XCTAssertEqual(index.ticksPerUnit, c.ticks, "\(c.scale)")
+            // A unit in ticks is the scale's nanoseconds
+            XCTAssertEqual(Int64(index.timescale) * Int64(c.scale), 1_000_000_000 * index.ticksPerUnit)
+            let time = try XCTUnwrap(index.frames(inCluster: 0, track: 1).first).time
+            XCTAssertEqual(time, 15)
+            XCTAssertEqual(Double(index.ticks(time)) / Double(index.timescale), 15 * Double(c.scale) / 1e9, accuracy: 1e-12)
+            XCTAssertEqual(Double(index.ticks(index.durationUnits)) / Double(index.timescale), 1000 * Double(c.scale) / 1e9,
+                           accuracy: 1e-12)
+            let track = try XCTUnwrap(index.tracks.first)
+            XCTAssertEqual(Double(index.frameTicks(of: track)) / Double(index.timescale), 0.04, accuracy: 1e-12)
+            XCTAssertEqual(index.units(ofTicks: index.ticks(time)), time)
+            XCTAssertEqual(index.units(ofTicks: index.ticks(time) + index.ticksPerUnit - 1), time, "rounded down")
+            XCTAssertEqual(index.units(ofTicks: -1), -1)
+            XCTAssertEqual(index.cluster(at: index.units(ofTicks: index.ticks(time))), 0)
+        }
+        // Held in range: the product saturates
+        let huge = try MatroskaIndex(MemoryBytes(matroska(info: element([0x2A, 0xD7, 0xB1], [0x0F, 0x42, 0x43]),
+                                                          defaultDuration: frame, clusterTime: [10], relative: 5)))
+        XCTAssertEqual(huge.ticks(.max), MatroskaIndex.largestTime)
+        XCTAssertEqual(huge.ticks(.min), -MatroskaIndex.largestTime)
+        XCTAssertEqual(huge.ticks(MatroskaIndex.largestTime), MatroskaIndex.largestTime)
+    }
+
     // MARK: Many clusters
 
     /// A Matroska file with two H.264 tracks and `clusters` clusters of one

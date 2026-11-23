@@ -66,8 +66,43 @@ final class MatroskaIndex: @unchecked Sendable {
     var durationUnits: Int64 { duration.isFinite ? Int64(min(max(duration, 0), Double(Self.largestTime))) : 0 }
     /// The duration in seconds, always a finite number.
     var durationSeconds: Double { Double(durationUnits) * Double(timestampScale) / 1e9 }
-    /// Timestamp units per second, as CoreMedia's time scale (at least 1).
-    var timescale: Int32 { max(1, Int32(clamping: 1_000_000_000 / timestampScale)) }
+    /// CoreMedia's time scale for the file's times, with `ticksPerUnit`:
+    /// a timestamp unit of `timestampScale` ns is exactly `ticksPerUnit`
+    /// ticks of 1 / `timescale` s (10⁹ ns and the scale, each divided by
+    /// their greatest common divisor), so a scale that doesn't divide 10⁹
+    /// (1 000 003 ns) loses nothing. 1 000 at the default of 1 ms, a tick a unit.
+    var timescale: Int32 { Int32(1_000_000_000 / commonDivisor) }
+    /// CoreMedia ticks per timestamp unit (at least 1).
+    var ticksPerUnit: Int64 { Int64(clamping: max(1, timestampScale) / commonDivisor) }
+
+    private var commonDivisor: UInt64 {
+        var a: UInt64 = 1_000_000_000, b = max(1, timestampScale)
+        while b != 0 { (a, b) = (b, a % b) }
+        return a
+    }
+
+    /// A time in timestamp units as CoreMedia ticks, held within
+    /// ±`largestTime` (a product beyond it saturates).
+    func ticks(_ units: Int64) -> Int64 {
+        let (product, overflow) = units.multipliedReportingOverflow(by: ticksPerUnit)
+        if overflow { return units < 0 ? -Self.largestTime : Self.largestTime }
+        return min(max(product, -Self.largestTime), Self.largestTime)
+    }
+
+    /// CoreMedia ticks as timestamp units (rounded down).
+    func units(ofTicks ticks: Int64) -> Int64 {
+        let per = ticksPerUnit
+        let (quotient, remainder) = ticks.quotientAndRemainder(dividingBy: per)
+        return remainder < 0 ? quotient - 1 : quotient
+    }
+
+    /// The time from one frame of a track to the next in CoreMedia ticks,
+    /// within 1 ... `largestTime`: its DefaultDuration (nanoseconds) where
+    /// given, else one timestamp unit.
+    func frameTicks(of track: Track) -> Int64 {
+        guard track.defaultDuration > 0 else { return max(1, ticks(1)) }
+        return max(1, min(Int64(clamping: track.defaultDuration / commonDivisor), Self.largestTime))
+    }
 
     private let source: ByteReading
     private let lock = NSLock()
