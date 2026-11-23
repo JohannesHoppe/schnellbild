@@ -422,7 +422,7 @@ h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 .themeloop.run > picture:first-child img { opacity: 0; }
 .themeloop.run > picture.light { animation: loop-light 6s linear var(--loop-start, 0s) infinite; }
 .themeloop.run > picture.dark { animation: loop-dark 6s linear var(--loop-start, 0s) infinite; }
-.themeloop.paused > picture { animation-play-state: paused; }
+.themeloop.run.paused > picture.light, .themeloop.run.paused > picture.dark { animation-play-state: paused; }
 .themeloop:has(img.zoomable:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
 .themeloop img.zoomable:focus-visible { outline: none; }
 /* The picture coming in rises faster than the one going falls, so the window
