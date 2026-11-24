@@ -127,6 +127,34 @@ final class MediaTests: XCTestCase {
         XCTAssertNotNil(OpenedPicture(url: url, source: source, inMemory: 0).source)
     }
 
+    /// Only an animation's frames play: a GIF, an animated PNG, a HEIC
+    /// sequence, each frame for the time it states; a TIFF's pages and an
+    /// icon's sizes stay one picture.
+    func testOnlyAnimationsPlay() throws {
+        func source(_ data: Data?) throws -> CGImageSource {
+            try XCTUnwrap(CGImageSourceCreateWithData(try XCTUnwrap(data) as CFData, nil))
+        }
+        let apng = [kCGImagePropertyPNGDictionary: [kCGImagePropertyAPNGDelayTime: 0.3]]
+        let heics = [kCGImagePropertyHEICSDictionary: [kCGImagePropertyHEICSDelayTime: 0.5]]
+        // (ImageIO writes a 4 × 2 GIF of two like frames as one)
+        let gif = try source(FormatFixtures.written("com.compuserve.gif", frames: 2, picture: FormatFixtures.cgImage(width: 32, height: 20)))
+        XCTAssertEqual(CGImageSourceGetCount(gif), 2)
+        XCTAssertNotNil(AnimationFrames.of(gif, side: 16), "a GIF, also without times")
+        let png = try XCTUnwrap(AnimationFrames.of(try source(FormatFixtures.written("public.png", frames: 2, properties: apng)), side: 16))
+        XCTAssertEqual(png.delays[0], 0.3, accuracy: 0.001)
+        if let data = FormatFixtures.written("public.heics", frames: 2, properties: heics) {
+            let sequence = try XCTUnwrap(AnimationFrames.of(try source(data), side: 16), "a HEIC sequence")
+            XCTAssertEqual(sequence.delays, [0.5, 0.5], "its own times, not the 0.1 s for none")
+        }
+        let tiff = try source(FormatFixtures.written("public.tiff", frames: 2))
+        XCTAssertEqual(CGImageSourceGetCount(tiff), 2)
+        XCTAssertNil(AnimationFrames.of(tiff, side: 16), "a TIFF's pages")
+        if let data = FormatFixtures.written("com.microsoft.ico", frames: 2, square: true) {
+            XCTAssertNil(AnimationFrames.of(try source(data), side: 16), "an icon's sizes")
+        }
+        XCTAssertNil(AnimationFrames.of(try source(FormatFixtures.written("public.png")), side: 16), "one picture")
+    }
+
     func testARedrawAtTheEndSeeksIntoTheLastFrame() {
         for duration in [3.04, 3.1, 3.0, 3.0999] {
             var seen: Set<Double> = []

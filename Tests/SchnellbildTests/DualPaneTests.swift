@@ -49,6 +49,22 @@ final class DualPaneTests: XCTestCase {
         XCTAssertTrue(ModifierClicks.tile(at: CGPoint(x: 500, y: 300), in: id).overTiles, "free space in the grid")
     }
 
+    /// Grid to list: the item's row is placed before its tile goes; the tile
+    /// going leaves the row's frame, so a ⌘-click on the row marks it.
+    func testATileGoingLeavesTheRowOfTheSameItem() {
+        let window = window(FileActionsSpy())
+        let pane = ObjectIdentifier(window.left)
+        let tile = ModifierClicks.Key(pane: pane, path: "test.item", instance: UUID())
+        let row = ModifierClicks.Key(pane: pane, path: "test.item", instance: UUID())
+        defer { ModifierClicks.remove(tile); ModifierClicks.remove(row) }
+        var clicked: [String] = []
+        ModifierClicks.place(tile, frame: CGRect(x: 0, y: 0, width: 100, height: 100), in: window, action: { _ in clicked.append("tile") })
+        ModifierClicks.place(row, frame: CGRect(x: 0, y: 200, width: 400, height: 20), in: window, action: { _ in clicked.append("row") })
+        ModifierClicks.remove(tile)
+        ModifierClicks.tile(at: CGPoint(x: 50, y: 210), in: ObjectIdentifier(window)).action?([.command])
+        XCTAssertEqual(clicked, ["row"])
+    }
+
     /// The help's menu item waits while the other pane has a sheet up (a
     /// window shows one at a time): the help would never show and keep the
     /// active pane's keys.
@@ -191,6 +207,25 @@ final class DualPaneTests: XCTestCase {
         XCTAssertTrue(WindowModel.claim(first, defaults: makeTestDefaults()) === first, "free for the next window")
         await waitUntil { first.left.isAt(tree.root) && !first.left.names.contains("a.jpg") }
         XCTAssertEqual(first.left.names, ["..", "b.jpg"])
+    }
+
+    /// The window closed during a slideshow that put it into full screen:
+    /// the show ends there, without taking another window out of full screen.
+    func testClosingTheWindowEndsTheSlideshowWithoutLeavingFullScreen() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        let w = window(FileActionsSpy())
+        var fullScreen: [Bool] = []
+        w.left.setFullScreen = { on in fullScreen.append(on); return true }
+        w.left.slideshowInterval = .seconds(60)
+        await openAndWait(w.left, tree.root)
+        w.left.startSlideshow()
+        await waitUntil { w.left.slideshow?.loading == false && w.left.shownMediaEntry?.name == "a.jpg" }
+        XCTAssertEqual(fullScreen, [true])
+        w.windowClosed()
+        XCTAssertNil(w.left.slideshow, "the slideshow ended with its window")
+        XCTAssertEqual(fullScreen, [true], "no window taken out of full screen")
+        XCTAssertNil(w.left.hostWindow, "a closed window's pane has no window to act on")
     }
 
     /// A slideshow whose items the other pane trashed, all of them, ends.

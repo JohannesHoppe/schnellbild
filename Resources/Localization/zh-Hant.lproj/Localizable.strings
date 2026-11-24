@@ -591,7 +591,6 @@
 "Atlas: on items taken at one place, the next one (%@ too)" = "地圖集：在同一地點的項目上選下一項（%@ 亦可）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "橫向拖移或移動控點：地圖上只顯示該時間段；按一下：顯示最接近該時間拍攝的項目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅程：依時間順序逐個地點，全螢幕顯示，路線繪製在地圖上";
-"arrows" = "方向鍵";
 "double-click" = "按兩下";
 "click" = "按一下";
 "timeline" = "時間軸";

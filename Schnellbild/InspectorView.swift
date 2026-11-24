@@ -60,7 +60,8 @@ struct InspectorView: View {
         .background(.regularMaterial)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("inspector")
-        .task(id: entry.url) { await load() }
+        // (again for the file rewritten in place: its date as listed)
+        .task(id: FileKey(url: entry.url, modified: entry.previewDate)) { await load() }
         // (again for another player: a growing download's video opened again)
         .task(id: PlayerKey(url: entry.url, player: model.activePlayer.map(ObjectIdentifier.init))) { await loadFromPlayer() }
         .task(id: entry.url) { await watchDownload() }
@@ -390,6 +391,11 @@ struct InspectorView: View {
         guard !Task.isCancelled else { return }
         (report, facts, created) = found
         reportRead = true
+    }
+
+    private struct FileKey: Hashable {
+        let url: URL
+        let modified: Date?
     }
 
     private struct PlayerKey: Hashable {

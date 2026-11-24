@@ -1466,19 +1466,26 @@ final class BrowserModel: ObservableObject {
 
     /// The window this pane is in (set by it, `WindowModel.watch`).
     weak var owner: WindowModel?
-    /// The AppKit window showing this pane.
-    var hostWindow: NSWindow? { owner?.nsWindow ?? Self.appWindow }
+    /// The AppKit window showing this pane; none once its window closed
+    /// (never another window, which full screen would then act on).
+    var hostWindow: NSWindow? {
+        if let owner, owner.closed { return nil }
+        return owner?.nsWindow ?? Self.appWindow
+    }
 
     /// The browser window keys and menus act on: the key window's (the key
     /// window can be the Adjustments popover's: then the main one).
     static var appWindow: NSWindow? { WindowModel.current?.nsWindow ?? NSApp.mainWindow ?? NSApp.keyWindow }
 
     /// The window showing this pane closed: nothing goes on playing in it,
-    /// and it stops listening (a model kept for the next window). The tour
-    /// ends there without leaving full screen (`hostWindow` would be another
-    /// window by then), and the Atlas stops reading.
+    /// and it stops listening (a model kept for the next window). The
+    /// slideshow and the tour end there without leaving full screen (the
+    /// window is gone), and the Atlas stops reading.
     func leaveWindow() {
-        if slideshow != nil { stopSlideshow() }
+        if slideshow != nil {
+            slideshowEnteredFullScreen = false
+            stopSlideshow()
+        }
         if mode == .detail { closeDetail() }
         if isSearching { stopSearch() }
         atlasIfMade?.leaveWindow()
@@ -3846,8 +3853,12 @@ final class BrowserModel: ObservableObject {
         var option = false
         let id = UUID()
         let at = Date()
-        /// The same key, whenever pressed (letters in any case).
+        /// The same key, whenever pressed (letters in any case): as a
+        /// `KeyChord` reads it ("+" typed with ⇧ on a US keyboard is the
+        /// "+" key, "=" is "+"), or exactly (a key by its place, ⇧⌘.).
         func matches(_ key: KeyInput, command: Bool, shift: Bool, option: Bool = false) -> Bool {
+            if KeyChord(self.key, command: self.command, shift: self.shift, option: self.option)
+                == KeyChord(key, command: command, shift: shift, option: option) { return true }
             guard self.command == command, self.shift == shift, self.option == option else { return false }
             if case .char(let a) = self.key, case .char(let b) = key { return a.lowercased() == b.lowercased() }
             return self.key == key

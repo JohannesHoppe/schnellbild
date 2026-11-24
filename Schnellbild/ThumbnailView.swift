@@ -16,14 +16,16 @@ final class ThumbnailCache {
     /// push tile thumbnails out.
     static let previews = ThumbnailCache(megabytes: 256)
 
-    /// One image per file, with the tile size it was made for and the
-    /// file's modification date then (a file changed since gets a new one).
+    /// One image per file, with the tile size it was made for in pixels
+    /// (its side in points times the display's scale: a tile made on a 1×
+    /// display is made again on a Retina one) and the file's modification
+    /// date then (a file changed since gets a new one).
     private final class Entry {
         let image: NSImage
-        let side: CGFloat
+        let pixels: CGFloat
         let modified: Date?
-        init(image: NSImage, side: CGFloat, modified: Date?) {
-            self.image = image; self.side = side; self.modified = modified
+        init(image: NSImage, pixels: CGFloat, modified: Date?) {
+            self.image = image; self.pixels = pixels; self.modified = modified
         }
     }
     private let cache = NSCache<NSURL, Entry>()
@@ -38,8 +40,8 @@ final class ThumbnailCache {
         return max(pixels, Int(image.size.width * image.size.height)) * 4
     }
 
-    func keep(_ image: NSImage, side: CGFloat, modified: Date?, for url: URL) {
-        cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL, cost: Self.cost(of: image))
+    func keep(_ image: NSImage, side: CGFloat, scale: CGFloat = NSScreen.mainBackingScale, modified: Date?, for url: URL) {
+        cache.setObject(Entry(image: image, pixels: side * scale, modified: modified), forKey: url as NSURL, cost: Self.cost(of: image))
     }
 
     /// Marks an image that is only the file's icon, not a picture of it.
@@ -49,9 +51,9 @@ final class ThumbnailCache {
     /// back into view) shows at once. `modified` nil takes any date; the
     /// tile's own load checks it afterwards. Not for archive entries (their
     /// date is the archive's, read off the main thread).
-    func cached(for url: URL, side: CGFloat, modified: Date?) -> NSImage? {
+    func cached(for url: URL, side: CGFloat, scale: CGFloat = NSScreen.mainBackingScale, modified: Date?) -> NSImage? {
         // (the memory first: asked on every redraw of a tile, mostly for nothing)
-        guard let entry = cache.object(forKey: url as NSURL), entry.side >= side,
+        guard let entry = cache.object(forKey: url as NSURL), entry.pixels >= side * scale,
               modified == nil || entry.modified == modified, !ArchivePath.isInside(url) else { return nil }
         return entry.image
     }
@@ -63,31 +65,32 @@ final class ThumbnailCache {
 
     /// The system thumbnail for a file (embedded previews, including
     /// RAW/PSD/PDF/video), from memory when the cached one is at least
-    /// `side` big — so a smaller tile size reuses it, and a larger one gets
-    /// a sharper one. `modified` is the file's date as listed: a file
-    /// changed in another app since gets a fresh thumbnail.
-    func thumbnail(for url: URL, side: CGFloat, modified: Date? = nil) async -> NSImage? {
+    /// `side` big at `scale` (the display's pixels per point) — so a smaller
+    /// tile size reuses it, and a larger one or a sharper display gets a
+    /// sharper one. `modified` is the file's date as listed: a file changed
+    /// in another app since gets a fresh thumbnail.
+    func thumbnail(for url: URL, side: CGFloat, scale: CGFloat = NSScreen.mainBackingScale, modified: Date? = nil) async -> NSImage? {
         // Inside an archive: the archive file's date (an entry may have none,
         // and a replaced archive can hold other pictures under the same names)
         let archive = ArchivePath.isInside(url) ? ArchivePath.split(url)?.archive : nil
         let modified = await archive.asyncMap(archiveDate(of:)) ?? modified
-        if let cached = cache.object(forKey: url as NSURL), cached.side >= side,
+        if let cached = cache.object(forKey: url as NSURL), cached.pixels >= side * scale,
            modified == nil || cached.modified == modified { return cached.image }
         if archive != nil {
-            guard let image = await Self.archiveThumbnail(for: url, side: side), !Task.isCancelled else { return nil }
-            keep(image, side: side, modified: modified, for: url)
+            guard let image = await Self.archiveThumbnail(for: url, side: side, scale: scale), !Task.isCancelled else { return nil }
+            keep(image, side: side, scale: scale, modified: modified, for: url)
             return image
         }
         let request = QLThumbnailGenerator.Request(
             fileAt: url,
             size: CGSize(width: side, height: side),
-            scale: NSScreen.mainBackingScale,
+            scale: scale,
             representationTypes: .all
         )
         if BrowserModel.mediaKind(of: url) == .video {
-            guard let image = await Self.videoThumbnail(for: url, request: request, width: side * NSScreen.mainBackingScale),
+            guard let image = await Self.videoThumbnail(for: url, request: request, width: side * scale),
                   !Task.isCancelled else { return nil }
-            keep(image, side: side, modified: modified, for: url)
+            keep(image, side: side, scale: scale, modified: modified, for: url)
             return image
         }
         // PostScript, Illustrator, ZIP documents, Netpbm bitmaps: what the app
@@ -98,8 +101,8 @@ final class ThumbnailCache {
         let ext = DownloadName.finalExtension(of: url)
         if EmbeddedPreview.extensions.contains(ext) || EmbeddedPreview.showsPreview(url) || ext == "astc"
             || PictureDecoders.decodes(url) {
-            guard let image = await Self.pictureThumbnail(of: url, side: side), !Task.isCancelled else { return nil }
-            keep(image, side: side, modified: modified, for: url)
+            guard let image = await Self.pictureThumbnail(of: url, side: side, scale: scale), !Task.isCancelled else { return nil }
+            keep(image, side: side, scale: scale, modified: modified, for: url)
             return image
         }
         let rep = await Self.quickLook(request)
@@ -110,16 +113,16 @@ final class ThumbnailCache {
         // ImageIO reads it by its content, as far as its bytes reach; an
         // SVG or PDF QuickLook gave no picture of is drawn here
         if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .image, !Task.isCancelled,
-           let picture = await Self.pictureThumbnail(of: url, side: side) {
+           let picture = await Self.pictureThumbnail(of: url, side: side, scale: scale) {
             image = picture
         } else if rep?.type == .thumbnail, RawDecoder.isImageIORaw(url), !Task.isCancelled,
                   let shown = image?.cgImage(forProposedRect: nil, context: nil, hints: nil),
-                  let tile = await RawDecoder.thumbnailReplacement(of: shown, for: url, maxPixel: Int(side * NSScreen.mainBackingScale)) {
+                  let tile = await RawDecoder.thumbnailReplacement(of: shown, for: url, maxPixel: Int(side * scale)) {
             // QuickLook's picture of a RAW black or blown out (a Blackmagic DNG): LibRaw's
             image = NSImage(pixels: tile)
         }
         guard let image, !Task.isCancelled else { return nil }
-        keep(image, side: side, modified: modified, for: url)
+        keep(image, side: side, scale: scale, modified: modified, for: url)
         return image
     }
 
@@ -231,8 +234,8 @@ final class ThumbnailCache {
     /// picture (`MediaData.imageSource`, `EmbeddedPreview`). An SVG AppKit
     /// can't draw either (broken XML, a web font without a picture size)
     /// keeps QuickLook's icon.
-    static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
-        let maxPixel = Int(side * NSScreen.mainBackingScale)
+    static func pictureThumbnail(of url: URL, side: CGFloat, scale: CGFloat = NSScreen.mainBackingScale) async -> NSImage? {
+        let maxPixel = Int(side * scale)
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
             if VectorPicture.isVector(url) {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
@@ -285,13 +288,13 @@ private extension Optional {
 extension ThumbnailCache {
     /// Inside an archive QuickLook can't look: pictures are unpacked and
     /// scaled down here; videos get a film icon (they'd be unpacked whole).
-    static func archiveThumbnail(for url: URL, side: CGFloat) async -> NSImage? {
+    static func archiveThumbnail(for url: URL, side: CGFloat, scale: CGFloat) async -> NSImage? {
         guard BrowserModel.mediaKind(of: url) == .image else {
             let icon = NSImage(systemSymbolName: "film", accessibilityDescription: fileIcon)
             icon?.accessibilityDescription = fileIcon
             return icon
         }
-        let maxPixel = Int(side * NSScreen.mainBackingScale)
+        let maxPixel = Int(side * scale)
         // Cancelled with its tile (scrolled away): the archive read leaves the line
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
             if VectorPicture.isVector(url) {
@@ -320,6 +323,8 @@ struct ThumbnailView: View {
 
     @State private var image: NSImage?
     @State private var failed = false
+    /// The pixels per point of the display the tile is on.
+    @Environment(\.displayScale) private var scale
 
     init(url: URL, side: CGFloat, isSelected: Bool, isMarked: Bool = false, isVideo: Bool = false, modified: Date? = nil,
          unfinished: String? = nil) {
@@ -354,7 +359,7 @@ struct ThumbnailView: View {
                                     + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
                                        ?? (failed ? ", no preview" : "")),
                                 spoken: TileChrome.spokenState(marked: isMarked, failed: failed))
-            .task(id: TileKey(url: url, side: side, modified: modified)) { await load() }
+            .task(id: TileKey(url: url, side: side, scale: scale, modified: modified)) { await load() }
     }
 
     @ViewBuilder
@@ -374,19 +379,23 @@ struct ThumbnailView: View {
         }
     }
 
+    /// The picture, or that there is none: each answer replaces the other
+    /// (a file still being written fails, then shows; one rewritten with
+    /// bytes that can't be read no longer shows its old picture).
     private func load() async {
-        if let img = await ThumbnailCache.shared.thumbnail(for: url, side: side, modified: modified) {
-            if !Task.isCancelled { image = img }
-        } else if !Task.isCancelled {
-            failed = true
-        }
+        let loaded = await ThumbnailCache.shared.thumbnail(for: url, side: side, scale: scale, modified: modified)
+        guard !Task.isCancelled else { return }
+        image = loaded
+        failed = loaded == nil
     }
 }
 
-/// Reloads a tile when its file, its size or the file's date changes.
+/// Reloads a tile when its file, its size, its display's scale or the
+/// file's date changes.
 private struct TileKey: Hashable {
     let url: URL
     let side: CGFloat
+    let scale: CGFloat
     let modified: Date?
 }
 

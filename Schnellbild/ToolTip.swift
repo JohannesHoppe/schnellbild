@@ -8,13 +8,11 @@ extension View {
     /// and 26) the status bar's and the search bar's controls showed none
     /// over the grid, the list and an empty folder, while the toolbar's did;
     /// why is unknown. AppKit's showed on every one of them
-    /// (`TooltipUITests`). Empty: none.
-    @ViewBuilder func toolTip(_ text: String) -> some View {
-        if text.isEmpty {
-            self
-        } else {
-            help(text).overlay(ToolTipArea(text: text).accessibilityHidden(true))
-        }
+    /// (`TooltipUITests`). Empty: none. Applied alike with or without a
+    /// text, so a tooltip coming or going (a tile's distance once its place
+    /// is read) keeps the control's identity and state.
+    func toolTip(_ text: String) -> some View {
+        help(text).overlay(ToolTipArea(text: text).accessibilityHidden(true))
     }
 }
 
@@ -32,6 +30,7 @@ struct ToolTipArea: NSViewRepresentable {
     func makeNSView(context: Context) -> Area { Area() }
 
     func updateNSView(_ view: Area, context: Context) {
-        if view.toolTip != text { view.toolTip = text }
+        let tip = text.isEmpty ? nil : text
+        if view.toolTip != tip { view.toolTip = tip }
     }
 }

@@ -598,7 +598,8 @@ final class LicenseNSTextView: NSTextView {
     /// false for every other key.
     func handleKey(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection([.command, .shift, .option, .control])
-        let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
+        // The letter on the key as the menus read it, also on a Cyrillic or Greek layout
+        let key = LatinKeys.letter(of: event)
         func find(_ action: NSTextFinder.Action) -> Bool {
             let item = NSMenuItem()
             item.tag = action.rawValue

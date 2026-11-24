@@ -204,6 +204,8 @@ struct FolderTile: View {
 
     @EnvironmentObject var model: BrowserModel
     @Environment(\.colorSchemeContrast) private var contrast
+    /// The pixels per point of the display the tile is on.
+    @Environment(\.displayScale) private var scale
     @State private var previewImages: [NSImage]
 
     init(folder: URL?, side: CGFloat, isSelected: Bool, isMarked: Bool = false, systemImage: String = "folder.fill",
@@ -241,8 +243,11 @@ struct FolderTile: View {
                                 + (unfinished != nil ? ", unfinished" : ""),
                             spoken: TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
-        // it previews may have gone.
-        .task(id: FolderKey(folder: folder, changes: folder.map(model.changes(of:)) ?? 0)) { await loadPreviews() }
+        // it previews may have gone; and at a larger size or on a sharper
+        // display, sharper previews.
+        .task(id: FolderKey(folder: folder, changes: folder.map(model.changes(of:)) ?? 0, side: side, scale: scale)) {
+            await loadPreviews()
+        }
     }
 
     /// A list row's preview: the thumbnails take more of it, or they would
@@ -290,7 +295,7 @@ struct FolderTile: View {
     }
 
     private func showPreviews(of files: [URL]) async {
-        let thumbSide = side * 0.4
+        let thumbSide = side * 0.4, scale = scale
         // Requested together: on a network volume one after another would
         // take three round-trips.
         let loaded = await withTaskGroup(of: (Int, NSImage?).self) { group in
@@ -300,7 +305,7 @@ struct FolderTile: View {
                     // else one, on a dispatch thread): a picture replaced
                     // under the same name gets a new preview
                     let modified = ArchivePath.isInside(file) ? nil : await Blocking.modificationDate(of: file)
-                    return (i, await ThumbnailCache.previews.thumbnail(for: file, side: thumbSide, modified: modified))
+                    return (i, await ThumbnailCache.previews.thumbnail(for: file, side: thumbSide, scale: scale, modified: modified))
                 }
             }
             var byIndex: [Int: NSImage] = [:]
@@ -315,6 +320,8 @@ struct FolderTile: View {
 private struct FolderKey: Hashable {
     let folder: URL?
     let changes: Int
+    let side: CGFloat
+    let scale: CGFloat
 }
 
 /// Which files each folder tile previews, remembered per folder: scrolling
@@ -671,7 +678,14 @@ struct EntryInteractions: ViewModifier {
     @EnvironmentObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
 
-    private var key: ModifierClicks.Key { ModifierClicks.Key(pane: ObjectIdentifier(model), path: entry.canonicalPath) }
+    /// This tile's or row's own: a grid tile and the list row of the same
+    /// item are on screen together while the view switches (SwiftUI places
+    /// the new rows before the old tiles go), and one going must not take
+    /// the other's frame or hover with it.
+    @State private var instance = UUID()
+    private var key: ModifierClicks.Key {
+        ModifierClicks.Key(pane: ObjectIdentifier(model), path: entry.canonicalPath, instance: instance)
+    }
 
     private func hover() {
         let entry = entry, model = model
@@ -907,10 +921,12 @@ struct Clicks: ViewModifier {
 /// (`cover`); a click on a bar or the header is left to it.
 @MainActor
 enum ModifierClicks {
-    /// A tile or row on screen: its pane and its item (canonical path).
+    /// A tile or row on screen: its pane, its item (canonical path) and the
+    /// view showing it (a tile and a row of the same item are two).
     struct Key: Hashable {
         let pane: ObjectIdentifier
         let path: String
+        var instance: UUID? = nil
     }
 
     private static var hovered: (key: Key, action: (NSEvent.ModifierFlags) -> Void)?
@@ -936,7 +952,7 @@ enum ModifierClicks {
         if hovered?.key == key { hovered = nil }
     }
     /// Told on every move of the tile (scrolling): the action is made only
-    /// for a tile not placed yet (the same key is the same item in the same pane).
+    /// for a tile not placed yet (the same key is the same item in the same view).
     static func place(_ key: Key, frame: CGRect, in window: WindowModel,
                       action: @autoclosure () -> (NSEvent.ModifierFlags) -> Void) {
         if frames[key] != nil { frames[key]?.frame = frame; return }

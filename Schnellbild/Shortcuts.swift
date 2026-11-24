@@ -640,6 +640,15 @@ final class Shortcuts: ObservableObject {
     /// The keys differ from Schnellbild's own (a preset or the user).
     func differsFromStandard(_ action: ShortcutAction) -> Bool { keys(action) != action.standardKeys }
 
+    /// The key a recording gives `action` for a key typed: as typed, or by
+    /// its place (`physical`, ⇧⌘. typed as "⌘>" on a US layout) when that is
+    /// already an action's key where this one works and the key as typed
+    /// isn't: the same key the key monitor would carry out.
+    func recorded(_ typed: KeyChord, physical: KeyChord?, for action: ShortcutAction) -> KeyChord {
+        guard let physical, physical != typed, conflicts(typed, for: action).isEmpty, !keys(action).contains(typed) else { return typed }
+        return keys(action).contains(physical) || !conflicts(physical, for: action).isEmpty ? physical : typed
+    }
+
     /// The other actions the key already belongs to where this action's
     /// keys work too.
     func conflicts(_ chord: KeyChord, for action: ShortcutAction) -> [ShortcutAction] {
@@ -684,13 +693,23 @@ final class Shortcuts: ObservableObject {
             return action.standardKeys.contains(chord) && !takenByList && !chord.isOnKey ? .standard : .custom(action)
         }
         if here.contains(where: { $0.standardKeys.contains(chord) }) { return .blocked }
-        // A letter with ⇧ that no action has: the key bindings (and the boss
-        // key) take it as the letter, so it is resolved as the letter, and a
-        // letter given to another action or taken from one stays so with ⇧
-        if chord.shift, case .char(let c) = chord.key, c.isLetter {
+        // A key with ⇧ that no action has, which the key bindings (and the
+        // boss key) take as the key without it: resolved as that key, so a
+        // key given to another action or taken from one stays so with ⇧
+        if chord.shift, Self.shiftIgnored(chord.key) {
             return resolve(KeyChord(chord.key, command: chord.command, option: chord.option, control: chord.control), in: context)
         }
         return .free
+    }
+
+    /// Keys the key bindings take alike with and without ⇧: the letters, and
+    /// the named keys but the arrows (⇧ marks, steps finer) and F6 (⇧F6 renames).
+    static func shiftIgnored(_ key: BrowserModel.KeyInput) -> Bool {
+        switch key {
+        case .char(let c): return c.isLetter
+        case .left, .right, .up, .down, .f6: return false
+        default: return true
+        }
     }
 
     // MARK: Changing

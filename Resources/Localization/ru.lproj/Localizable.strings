@@ -591,7 +591,6 @@
 "Atlas: on items taken at one place, the next one (%@ too)" = "Атлас: на объектах, снятых в одном месте, следующий (также %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Провести поверх или сдвинуть ручку: на карте только этот период; щелчок: объект, снятый ближе всего к этому времени";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Путешествие: места по порядку времени, на весь экран, маршрут нарисован на карте";
-"arrows" = "стрелки";
 "double-click" = "двойной щелчок";
 "click" = "щелчок";
 "timeline" = "шкала времени";

@@ -591,7 +591,6 @@
 "Atlas: on items taken at one place, the next one (%@ too)" = "Kartasto: samassa paikassa otetuissa kohteissa seuraava (myös %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Vedä yli tai siirrä kahvaa: kartalla vain se aika; osoitus: kohde, joka otettiin lähimpänä sitä hetkeä";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Matka: paikat aikajärjestyksessä, koko näytöllä, reitti piirrettynä karttaan";
-"arrows" = "nuolet";
 "double-click" = "kaksoisosoitus";
 "click" = "osoitus";
 "timeline" = "aikajana";

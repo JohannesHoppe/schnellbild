@@ -17,6 +17,28 @@ final class ShortcutsUITests: SchnellbildUITestCase {
         XCTAssertTrue(element("shortcuts.list").waitForExistence(timeout: 10), "the actions and their keys")
     }
 
+    /// Keys typed into Settings' search field are the field's: ⌘⌫ deletes
+    /// what was typed and ⌘↑ moves the cursor, while the browser window
+    /// behind it, a picture selected, neither asks to trash it nor goes up
+    /// a folder (its menu items act only while a browser window has the keys).
+    func testKeysTypedInSettingsStayThere() {
+        launchOnTempDir()
+        openKeyboardSettings()
+        let field = element("shortcuts.search").firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.click()
+        field.typeText("rename")
+        eventually("typed") { (field.value as? String ?? "").contains("rename") }
+        field.typeKey(.delete, modifierFlags: .command)
+        eventually("⌘⌫ deleted the text") { !(field.value as? String ?? "").contains("rename") }
+        field.typeKey(.upArrow, modifierFlags: .command)
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertFalse(app.buttons["Move to Trash"].firstMatch.exists, "no Trash prompt for the selected picture")
+        app.typeKey("w", modifierFlags: .command)
+        eventually("Settings closed") { !self.element("shortcuts.list").exists }
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5), "the window stayed in its folder")
+    }
+
     func testAKeySetInSettingsIsUsed() {
         launchOnTempDir()
         openKeyboardSettings()
