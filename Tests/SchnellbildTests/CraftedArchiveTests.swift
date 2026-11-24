@@ -544,6 +544,121 @@ final class CraftedArchiveTests: XCTestCase {
         huge.close()
     }
 
+    /// An entry that fails part way through its 4th chunk of 4096 bytes on
+    /// the first pass (a read error on a share), and reads whole after.
+    private final class FailsOnce: ArchiveReader, @unchecked Sendable {
+        private let lock = NSLock()
+        private var walks = 0
+        func walk(password: String?, listOnly: Bool, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
+            let first = lock.withLock { walks += 1; return walks == 1 }
+            let item = ArchiveItem(path: "movie.mkv", isDirectory: false, size: 10 * 4096, modified: nil, encrypted: false)
+            guard case .read(let sink, let done) = visit(item) else { return true }
+            let piece = [UInt8](repeating: 7, count: 1000)
+            var sent = 0
+            while sent < 10 * 4096 {
+                if first, sent >= 3 * 4096 + 1000 { done(.unreadable("read error")); return false }
+                let count = min(piece.count, 10 * 4096 - sent)
+                guard piece.prefix(count).withUnsafeBytes({ sink($0) }) else { done(nil); return true }
+                sent += count
+            }
+            done(nil)
+            return true
+        }
+    }
+
+    /// A pass that fails part way through a chunk doesn't keep the part as
+    /// the chunk: the next pass unpacks it whole (or its error is told).
+    func testAPassThatFailsKeepsNoPartOfAChunk() throws {
+        let stream = ArchiveEntryStream(size: 10 * 4096, reader: FailsOnce(), path: "movie.mkv", password: nil, chunkSize: 4096)
+        XCTAssertEqual(try stream.read(at: 0, count: 4096).count, 4096)
+        XCTAssertEqual(try stream.read(at: 3 * 4096, count: 4096).count, 4096, "the chunk the first pass failed in, whole")
+        stream.close()
+    }
+
+    /// Entries before the one read, in a solid archive, pass through a sink
+    /// that asks `stop` as their bytes come (skipping them unpacks them
+    /// anyway): a stream closed meanwhile stops inside such an entry.
+    func testSkippingInASolidArchiveStopsOnTheWay() throws {
+        final class TwoEntries: ArchiveReader, @unchecked Sendable {
+            var skipped: [String] = []
+            var chunksOfFirst = 0
+            func walk(password: String?, listOnly: Bool, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
+                for path in ["big.mkv", "small.mkv"] {
+                    switch visit(ArchiveItem(path: path, isDirectory: false, size: 1 << 30, modified: nil, encrypted: false)) {
+                    case .stop: return true
+                    case .skip: skipped.append(path)
+                    case .read(let sink, let done):
+                        var bytes = [UInt8](repeating: 1, count: 1 << 16)
+                        for _ in 0..<(1 << 14) {
+                            if path == "big.mkv" { chunksOfFirst += 1 }
+                            guard bytes.withUnsafeMutableBytes({ sink(UnsafeRawBufferPointer($0)) }) else { done(nil); return true }
+                        }
+                        done(nil)
+                    }
+                }
+                return true
+            }
+        }
+        let solid = TwoEntries()
+        var asked = 0
+        let outcome = try solid.readEntry("small.mkv", password: nil, solid: true, stop: { asked += 1; return asked > 3 }) { _ in true }
+        XCTAssertEqual(outcome, .notFound, "stopped before it")
+        XCTAssertLessThan(solid.chunksOfFirst, 10, "stopped inside the entry before it")
+        XCTAssertEqual(solid.skipped, [])
+        let plain = TwoEntries()
+        _ = try plain.readEntry("small.mkv", password: nil) { _ in false }
+        XCTAssertEqual(plain.skipped, ["big.mkv"], "not solid: skipped (a seek)")
+    }
+
+    /// An entry named with thousands of folder levels (a ZIP's name may be
+    /// 64 KB): the folders it implies are held to the index's bytes of
+    /// paths, built at once; the archive counts as read in part.
+    func testDeepEntryNamesStayWithinTheIndexsBytes() {
+        let saved = ArchiveStore.indexPathBytes
+        ArchiveStore.indexPathBytes = 1 << 20
+        defer { ArchiveStore.indexPathBytes = saved }
+        let deep = Array(repeating: "a", count: 32_000).joined(separator: "/")
+        let items = (0..<30).map { ArchiveItem(path: "\($0)/\(deep)/x.jpg", isDirectory: false, size: 1, modified: nil, encrypted: false) }
+        let started = Date()
+        let index = ArchiveStore.Index(items: items, complete: true, password: nil, bytesKey: "deep")
+        XCTAssertLessThan(Date().timeIntervalSince(started), 10)
+        XCTAssertFalse(index.complete)
+        XCTAssertLessThanOrEqual(index.byPath.keys.reduce(0) { $0 + $1.utf8.count }, (1 << 20) + 70_000)
+        let shallow = ArchiveStore.Index(items: [ArchiveItem(path: "a/b/c.jpg", isDirectory: false, size: 1, modified: nil, encrypted: false)],
+                                         complete: true, password: nil, bytesKey: "shallow")
+        XCTAssertTrue(shallow.complete)
+        XCTAssertEqual(Set(shallow.byPath.keys), ["a", "a/b", "a/b/c.jpg"])
+        XCTAssertEqual(shallow.children["a"]?.map(\.path), ["a/b"])
+    }
+
+    /// Old-style RAR volumes go on after ".r99" with ".s00" (as UnRAR names
+    /// them): all of them belong to the set.
+    func testOldStyleRarVolumesPastR99() throws {
+        let tree = try TempTree(self)
+        let first = try tree.file("x.rar")
+        for i in 0..<100 { _ = try tree.file(String(format: "x.r%02d", i)) }
+        for i in 0..<3 { _ = try tree.file(String(format: "x.s%02d", i)) }
+        let files = ArchiveName.allFiles(of: first).map(\.lastPathComponent)
+        XCTAssertEqual(files.count, 1 + 100 + 3)
+        XCTAssertEqual(files.last, "x.s02")
+        XCTAssertEqual(ArchiveName.firstVolumeNames(of: "x.s01"), ["x.rar"])
+        XCTAssertEqual(ArchiveName.firstVolumeNames(of: "x.r42"), ["x.rar"])
+        XCTAssertEqual(ArchiveName.firstVolumeNames(of: "x.z01"), ["x.zip"])
+    }
+
+    /// Inside an archive known by its content only (no archive's name), a
+    /// folder named like an archive is a folder of it, not an archive.
+    func testAFolderNamedLikeAnArchiveInsideAnArchiveKnownByItsContent() throws {
+        let tree = try TempTree(self)
+        let backup = try tree.file("backup")
+        try Data([0x50, 0x4B, 0x03, 0x04] + [UInt8](repeating: 0, count: 60)).write(to: backup)
+        XCTAssertEqual(ContentSniffer.shared.content(of: backup)?.archiveFormat, .zip)
+        let inside = backup.appendingPathComponent("Trip.zip/a.jpg")
+        let split = try XCTUnwrap(ArchivePath.split(inside))
+        XCTAssertEqual(split.archive.path, BrowserModel.canonicalPath(backup))
+        XCTAssertEqual(split.inner, "Trip.zip/a.jpg")
+    }
+
     /// A sink that ends the walk ends it there: the reader doesn't go on to
     /// the next entry (which for 7z means unpacking the rest of this one).
     func testASinkEndsTheWalk() async throws {

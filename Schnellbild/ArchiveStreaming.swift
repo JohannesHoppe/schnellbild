@@ -16,6 +16,8 @@ final class ArchiveEntryStream: @unchecked Sendable {
     private let reader: ArchiveReader
     private let path: String
     private let password: String?
+    /// Reaching the entry unpacks those before it (`readEntry`'s `solid`).
+    private let solid: Bool
 
     static let defaultChunkSize = 1 << 20
     let chunkSize: Int
@@ -51,8 +53,9 @@ final class ArchiveEntryStream: @unchecked Sendable {
     private var endedAt: Int?
     private var closed = false
 
-    init(size: Int64, reader: ArchiveReader, path: String, password: String?,
+    init(size: Int64, reader: ArchiveReader, path: String, password: String?, solid: Bool = false,
          chunkSize: Int = defaultChunkSize, unreadLimit: Int = 48, readLimit: Int = 96) {
+        self.solid = solid
         self.chunkSize = chunkSize
         self.unreadLimit = max(unreadLimit, 2)
         self.readLimit = max(readLimit, 1)
@@ -208,7 +211,7 @@ final class ArchiveEntryStream: @unchecked Sendable {
             return run == myRun && !closed
         }
         do {
-            outcome = try reader.readEntry(path, password: password, stop: { !current() }) { bytes in
+            outcome = try reader.readEntry(path, password: password, solid: solid, stop: { !current() }) { bytes in
                 var rest = bytes[...]
                 while !rest.isEmpty {
                     let take = min(chunkSize - buffer.count, rest.count)
@@ -222,7 +225,10 @@ final class ArchiveEntryStream: @unchecked Sendable {
                 }
                 return true
             }
-            if !buffer.isEmpty { _ = store(buffer, index) }
+            // The last, shorter chunk only of an entry read to its end: a
+            // pass that failed part way leaves the chunk to a later pass
+            // (which stores only chunks not there yet) and reports its error
+            if outcome == nil, !buffer.isEmpty { _ = store(buffer, index) }
         } catch let error as ArchiveError {
             outcome = error
         } catch {
@@ -255,13 +261,13 @@ extension ArchiveStore {
         var size = item.size
         if size < 0 {
             let stop = WalkStop()
-            let password = index.password, path = item.path
+            let password = index.password, path = item.path, solid = index.solid
             size = try await withTaskCancellationHandler {
-                try await Blocking.run { try Self.unpackedSize(reader, path: path, password: password, stop: { stop.isSet }) }
+                try await Blocking.run { try Self.unpackedSize(reader, path: path, password: password, solid: solid, stop: { stop.isSet }) }
             } onCancel: { stop.set() }
             try Task.checkCancellation()
         }
-        return ArchiveEntryStream(size: size, reader: reader, path: item.path, password: index.password,
+        return ArchiveEntryStream(size: size, reader: reader, path: item.path, password: index.password, solid: index.solid,
                                   chunkSize: chunkSize, unreadLimit: unreadLimit, readLimit: readLimit)
     }
 }
@@ -269,10 +275,10 @@ extension ArchiveStore {
 extension ArchiveStore {
     /// How many bytes an entry unpacks to; `stop` ends the count early
     /// (`CancellationError`).
-    nonisolated static func unpackedSize(_ reader: ArchiveReader, path: String, password: String?,
+    nonisolated static func unpackedSize(_ reader: ArchiveReader, path: String, password: String?, solid: Bool = false,
                                          stop: @escaping () -> Bool = { false }) throws -> Int64 {
         var count: Int64 = 0
-        let outcome = try reader.readEntry(path, password: password, stop: stop) { bytes in
+        let outcome = try reader.readEntry(path, password: password, solid: solid, stop: stop) { bytes in
             count += Int64(bytes.count)
             return !stop()
         }

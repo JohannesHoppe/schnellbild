@@ -66,10 +66,28 @@ enum ArchiveName {
             let base = (stem as NSString).deletingPathExtension
             return ["\(base).part1.rar", "\(base).part01.rar", "\(base).part001.rar"]
         }
-        if ext.count == 3, ext.hasPrefix("r"), Int(ext.dropFirst()) != nil { return ["\(stem).rar"] }
+        if oldStyleRarPart(ext) != nil { return ["\(stem).rar"] }
         if ext.count == 3, ext.hasPrefix("z"), Int(ext.dropFirst()) != nil { return ["\(stem).zip"] }
         if ext.count == 3, let n = Int(ext), n > 1 { return ["\(stem).001"] }
         return []
+    }
+
+    /// The letters of old-style RAR volumes: UnRAR counts "x.r00" to "x.r99",
+    /// then "x.s00" on (`NextVolumeName`); "z" is ZIP's ("x.z01").
+    private static let oldStyleLetters = Array("rstuvwxy")
+
+    /// An old-style RAR volume's number by its extension ("r00" 0, "r99"
+    /// 99, "s00" 100), lower case; nil for any other extension.
+    static func oldStyleRarPart(_ ext: String) -> Int? {
+        guard ext.count == 3, let letter = oldStyleLetters.firstIndex(of: ext.first!),
+              ext.dropFirst().allSatisfy(\.isASCII), let number = Int(ext.dropFirst()) else { return nil }
+        return letter * 100 + number
+    }
+
+    /// The extension of old-style RAR volume `part` (0 "r00", 100 "s00").
+    static func oldStyleRarExtension(_ part: Int) -> String? {
+        guard part >= 0, part < oldStyleLetters.count * 100 else { return nil }
+        return String(format: "%@%02d", String(oldStyleLetters[part / 100]), part % 100)
     }
 
     /// The files libarchive reads one after the other: "x.7z.001", ".002" …;
@@ -122,7 +140,7 @@ enum ArchiveName {
         } else {
             let stem = (name as NSString).deletingPathExtension
             for i in 0... {
-                guard let part = folder[String(format: "%@.r%02d", stem, i)] else { break }
+                guard let ext = oldStyleRarExtension(i), let part = folder["\(stem).\(ext)"] else { break }
                 files.append(part)
             }
         }
@@ -184,6 +202,12 @@ enum ArchivePath {
         for i in 1..<components.count where ArchiveName.format(of: components[i]) != nil {
             let path = NSString.path(withComponents: Array(components[...i]))
             if isNotedFolder(path) { continue }
+            // A file further up whose content showed an archive holds this
+            // name inside it ("backup/Trip.zip/" is a folder of "backup")
+            if let sniffed = ContentSniffer.shared.archive(containing: url),
+               BrowserModel.canonicalPath(URL(fileURLWithPath: path)).hasPrefix(sniffed.archive + "/") {
+                return (URL(fileURLWithPath: sniffed.archive, isDirectory: false), sniffed.inner)
+            }
             let archive = URL(fileURLWithPath: path, isDirectory: false)
             return (archive, components[(i + 1)...].joined(separator: "/"))
         }
@@ -314,14 +338,19 @@ extension ArchiveReader {
     /// Reads the first file entry at `path` through `sink` and ends the walk
     /// there. Returns nil when it was read whole (or the sink ended it),
     /// else why not: `.notFound` when the walk never got to it (also when
-    /// `stop` ended the walk first).
-    func readEntry(_ path: String, password: String?, stop: @escaping () -> Bool = { false },
+    /// `stop` ended the walk first). `solid`: skipping an entry unpacks it
+    /// (solid RAR, 7z), so the entries before are passed through a sink
+    /// that drops their bytes and asks `stop` as they come: a stream left
+    /// stops on the way, not after a large entry before it.
+    func readEntry(_ path: String, password: String?, solid: Bool = false, stop: @escaping () -> Bool = { false },
                    sink: @escaping (UnsafeRawBufferPointer) -> Bool) throws -> ArchiveError? {
         var outcome: ArchiveError? = .notFound
         var done = false
         _ = try walk(password: password, listOnly: false) { item in
             if done || stop() { return .stop }
-            guard item.path == path, !item.isDirectory else { return .skip }
+            guard item.path == path, !item.isDirectory else {
+                return solid && !item.isDirectory ? .read(sink: { _ in !stop() }, done: { _ in }) : .skip
+            }
             return .read(sink: sink, done: { outcome = $0; done = true })
         }
         return outcome
@@ -331,15 +360,18 @@ extension ArchiveReader {
 /// RAR (all versions, solid, volumes, passwords) through UnRAR.
 struct RarReader: ArchiveReader {
     let url: URL
+    /// What the archive's header says, as the last walk opened it.
+    let flags = Flags()
 
     /// Solid (reaching a file means unpacking every file before it), and
     /// part of a set of volumes.
-    static func flags(_ url: URL, password: String?) -> (solid: Bool, volume: Bool) {
-        var result: Int32 = 0
-        var asked: Int32 = 0
-        guard let rar = sb_rar_open(url.path, password, 1, &result, &asked) else { return (false, false) }
-        defer { sb_rar_close(rar) }
-        return (sb_rar_solid(rar) != 0, sb_rar_volume(rar) != 0)
+    final class Flags: @unchecked Sendable {   // state behind `lock`
+        private let lock = NSLock()
+        private var value = (solid: false, volume: false)
+        var current: (solid: Bool, volume: Bool) {
+            get { lock.lock(); defer { lock.unlock() }; return value }
+            set { lock.lock(); value = newValue; lock.unlock() }
+        }
     }
 
     func walk(password: String?, listOnly: Bool, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
@@ -349,6 +381,7 @@ struct RarReader: ArchiveReader {
             throw Self.error(result, passwordAsked: asked != 0)
         }
         defer { sb_rar_close(rar) }
+        flags.current = (sb_rar_solid(rar) != 0, sb_rar_volume(rar) != 0)
         var entry = SBRarEntry()
         var seen = 0
         while true {
@@ -375,7 +408,7 @@ struct RarReader: ArchiveReader {
             // A link or junction (nothing to show, no data to check a
             // password on); a copy has no data of its own to read
             if entry.redirect_type != 0 && (source == nil || !listOnly) { _ = sb_rar_skip(rar); continue }
-            let name = withUnsafeBytes(of: &entry.name) { String(cString: $0.bindMemory(to: CChar.self).baseAddress!) }
+            let name = String(cString: sb_rar_name(rar))
             // UnRAR's placeholder for a size not stored (a file packed from a stream)
             let size = entry.size == 0x7fff_ffff_7fff_ffff ? -1 : Int64(clamping: entry.size)
             let item = ArchiveItem(path: Self.clean(name), isDirectory: entry.is_directory != 0, size: size,
@@ -753,17 +786,26 @@ final class ArchiveStore: @unchecked Sendable {
             self.bytesKey = bytesKey
             var byPath: [String: ArchiveItem] = [:]
             var whole = complete
+            // The bytes of the paths held: a deep path implies a folder for
+            // every level, each its own path (32 000 levels of "a/" in one
+            // 64 KB name would be 1 GB of them)
+            var pathBytes = 0
+            func parent(_ path: String) -> String {
+                path.lastIndex(of: "/").map { String(path[..<$0]) } ?? ""
+            }
             // Every entry, "__MACOSX/" too: what is listed is `HiddenFiles`'s to say
-            for item in items where !item.path.isEmpty {
-                // Deep paths imply a folder for every level: held to the
-                // same limit as the entries, the rest is left out
-                if byPath.count >= ArchiveStore.indexLimit { whole = false; break }
+            entries: for item in items where !item.path.isEmpty {
+                // Held to the same limits as the entries, the rest is left out
+                if byPath.count >= ArchiveStore.indexLimit || pathBytes > ArchiveStore.indexPathBytes { whole = false; break }
+                if byPath[item.path] == nil { pathBytes += item.path.utf8.count }
                 if byPath[item.path] == nil || item.isDirectory { byPath[item.path] = item }
                 // The folders above it, which archives often don't list
-                var parent = (item.path as NSString).deletingLastPathComponent
-                while !parent.isEmpty, byPath[parent] == nil {
-                    byPath[parent] = ArchiveItem(path: parent, isDirectory: true, size: 0, modified: item.modified, encrypted: false)
-                    parent = (parent as NSString).deletingLastPathComponent
+                var folder = parent(item.path)
+                while !folder.isEmpty, byPath[folder] == nil {
+                    pathBytes += folder.utf8.count
+                    if pathBytes > ArchiveStore.indexPathBytes { whole = false; break entries }
+                    byPath[folder] = ArchiveItem(path: folder, isDirectory: true, size: 0, modified: item.modified, encrypted: false)
+                    folder = parent(folder)
                 }
             }
             self.complete = whole
@@ -786,6 +828,9 @@ final class ArchiveStore: @unchecked Sendable {
         var failed: (version: FileVersion?, passwords: [String])?
         var pending: [String: [(id: UUID, continuation: CheckedContinuation<Data, Error>)]] = [:]
         var passRunning = false
+        /// Its index holds a password forgotten while it was being read:
+        /// read again (and asked for) when next asked for.
+        var forgotten = false
         var lastUse = 0
         init(path: String) { queue = DispatchQueue(label: "archive \(path)", qos: .userInitiated) }
     }
@@ -811,16 +856,24 @@ final class ArchiveStore: @unchecked Sendable {
     /// Archives kept with their index; the ones not used longest (and idle) go.
     private static let keptArchives = 200
 
-    /// Forgets the saved passwords, and the archives a password opened
-    /// (those not being read right now): they ask again when opened next.
+    /// Forgets the saved passwords, and the archives a password opened:
+    /// they ask again when opened next. One being read keeps its index for
+    /// the reads under way and reads it again when next asked for; an
+    /// index being built meanwhile neither keeps nor saves its password
+    /// (`forgets`).
     func forgetPasswords() {
         passwords.forgetAll()
-        lock.lock(); defer { lock.unlock() }
-        for (key, archive) in archives where archive.index?.password != nil
-            && archive.pending.isEmpty && !archive.passRunning {
-            archives[key] = nil
+        lock.lock()
+        forgets += 1
+        for (key, archive) in archives where archive.index?.password != nil {
+            if archive.pending.isEmpty && !archive.passRunning { archives[key] = nil } else { archive.forgotten = true }
         }
+        lock.unlock()
     }
+
+    /// How often the passwords were forgotten: an index built across a
+    /// forget doesn't remember the password it found.
+    private var forgets = 0
 
     /// Its index read again when next asked for (not while being read): its
     /// folder was opened to the app, so the volumes beside it can be read now.
@@ -865,11 +918,10 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     /// The format a file's signature says, if it says one.
+    /// Only a regular file is read (`RegularFile`: a FIFO is refused, not
+    /// waited on); waits on the disk.
     static func sniffedFormat(_ url: URL) -> ArchiveFormat? {
-        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
-        defer { try? handle.close() }
-        guard let head = try? handle.read(upToCount: 6) else { return nil }
-        return format(in: head)
+        RegularFile.head(of: url, count: 6).flatMap(format(in:))
     }
 
     /// The format the first bytes of a file show.
@@ -889,8 +941,12 @@ final class ArchiveStore: @unchecked Sendable {
     /// the archive. Throws `.needsPassword` when no password opens it.
     func index(of url: URL, trying password: String? = nil) async throws -> Index {
         let archive = archive(url)
-        // Known: at once, not behind an unpacking pass on the archive's queue
-        if password == nil, let known = current(archive, url: url, version: FileVersion(url)) { return known }
+        // Known: at once, not behind an unpacking pass on the archive's
+        // queue; the look at the file and its folder off Swift's threads
+        // (a share that stalls would hold them)
+        if password == nil, let known = await Blocking.run(.userInitiated, { self.current(archive, url: url, version: FileVersion(url)) }) {
+            return known
+        }
         return try await withCheckedThrowingContinuation { continuation in
             archive.queue.async {
                 continuation.resume(with: Result { try self.indexOnQueue(archive, url: url, trying: password) })
@@ -899,9 +955,15 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     private func indexOnQueue(_ archive: Archive, url: URL, trying typed: String?) throws -> Index {
+        lock.lock()
+        let forgetsBefore = forgets
+        lock.unlock()
         let version = FileVersion(url)
         if typed == nil, let known = current(archive, url: url, version: version) { return known }
         let folderDate = Self.folderDate(of: url)
+        // Only a regular file: the readers would wait for ever for the
+        // writer of a FIFO named like an archive
+        _ = try RegularFile.open(url)
         guard let format = Self.format(of: url), let reader = Self.reader(for: url, format: format) else {
             throw ArchiveError.unreadable(String(localized: "unknown format"))
         }
@@ -920,10 +982,13 @@ final class ArchiveStore: @unchecked Sendable {
             var capped = false
             let complete: Bool
             do {
-                // Never more than `indexLimit` entries: a header flood would
-                // fill memory; the archive then counts as read in part
+                // Never more than `indexLimit` entries or `indexPathBytes` of
+                // their paths: a header flood would fill memory; the archive
+                // then counts as read in part
+                var pathBytes = 0
                 complete = try reader.walk(password: candidate, listOnly: true) { item in
-                    guard items.count < Self.indexLimit else { capped = true; return .stop }
+                    pathBytes += item.path.utf8.count
+                    guard items.count < Self.indexLimit, pathBytes <= Self.indexPathBytes else { capped = true; return .stop }
                     items.append(item)
                     return .skip
                 } && !capped
@@ -944,7 +1009,8 @@ final class ArchiveStore: @unchecked Sendable {
             // solid archive the first (reaching a later one unpacks all
             // before it), else the smallest. RAR4 has no check value, a wrong
             // password shows only by the checksum at the end of a file.
-            let flags = format == .rar ? RarReader.flags(url, password: candidate) : (solid: false, volume: false)
+            // As the walk just now opened the archive
+            let flags = (reader as? RarReader)?.flags.current ?? (solid: false, volume: false)
             let solid = format == .sevenZip || flags.solid
             let filled = protected.filter { $0.size > 0 }
             if let probe = filled.first(where: \.passwordChecked)
@@ -959,7 +1025,12 @@ final class ArchiveStore: @unchecked Sendable {
                 }
                 password = working
             }
-            if let password { passwords.remember(password) }
+            // The passwords forgotten meanwhile: this one isn't saved, and
+            // the index is read (and the password asked for) again next time
+            lock.lock()
+            let forgotten = forgets != forgetsBefore && password != nil
+            lock.unlock()
+            if let password, !forgotten { passwords.remember(password) }
             let index = Index(items: items, complete: complete, password: password,
                               bytesKey: "\(BrowserModel.canonicalPath(url))|\(version?.size ?? 0)|\(version?.modified?.timeIntervalSince1970 ?? 0)")
             index.solid = solid
@@ -971,6 +1042,7 @@ final class ArchiveStore: @unchecked Sendable {
             archive.version = version
             archive.folderDate = folderDate
             archive.failed = nil
+            archive.forgotten = forgotten
             lock.unlock()
             return index
         }
@@ -985,7 +1057,7 @@ final class ArchiveStore: @unchecked Sendable {
     /// the first volume.
     private func current(_ archive: Archive, url: URL, version: FileVersion?) -> Index? {
         lock.lock()
-        let index = archive.index, matches = archive.version == version, folderDate = archive.folderDate
+        let index = archive.index, matches = archive.version == version && !archive.forgotten, folderDate = archive.folderDate
         lock.unlock()
         guard let index, matches else { return nil }
         if index.watchesFolder, Self.folderDate(of: url) != folderDate { return nil }
@@ -1170,6 +1242,10 @@ final class ArchiveStore: @unchecked Sendable {
     /// paths imply); the rest of a larger one is left out, as of an archive
     /// read in part. Lowered by tests.
     nonisolated(unsafe) static var indexLimit = 1_000_000
+    /// The most bytes of paths an archive's index holds, the folders the
+    /// paths imply included: a million entries of 250 bytes each. Lowered
+    /// by tests.
+    nonisolated(unsafe) static var indexPathBytes = 256 << 20
 
     private static func bytesKey(_ index: Index, _ path: String) -> NSString {
         "\(index.bytesKey)/\(path)" as NSString
@@ -1319,19 +1395,14 @@ enum MediaData {
     /// A regular file's bytes, at most `ArchiveStore.largestRead` of them
     /// (the same limit as inside archives: a multi-gigabyte "picture.svg"
     /// isn't read into memory). Opened without waiting and checked on the
-    /// opened file: a FIFO (a read would wait for a writer), a device or a
-    /// folder named like a picture is refused.
+    /// opened file (`RegularFile`): a FIFO (a read would wait for a writer),
+    /// a device or a folder named like a picture is refused.
     static func readFile(_ url: URL) throws -> Data {
-        let descriptor = Darwin.open(url.path, O_RDONLY | O_NONBLOCK | O_CLOEXEC)
-        guard descriptor >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
-        let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
-        var info = stat()
-        guard fstat(descriptor, &info) == 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
-        guard info.st_mode & S_IFMT == S_IFREG else { throw POSIXError(.EFTYPE) }
+        let file = try RegularFile.open(url)
         let limit = Int(ArchiveStore.largestRead)
-        guard info.st_size <= limit else { throw ArchiveError.tooLarge }
+        guard file.size <= limit else { throw ArchiveError.tooLarge }
         // At most one byte more than allowed: a file grown meanwhile is refused
-        let data = try handle.read(upToCount: limit + 1) ?? Data()
+        let data = try file.handle.read(upToCount: limit + 1) ?? Data()
         guard data.count <= limit else { throw ArchiveError.tooLarge }
         return data
     }
@@ -1354,9 +1425,12 @@ enum MediaData {
                   let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
             return (source, data.count)
         }
-        // ImageIO opens the file here (only a regular file: a FIFO would wait for a writer)
+        // ImageIO opens the file here (only a regular file: a FIFO would wait
+        // for a writer); one of its RAW formats LibRaw developed in ImageIO's
+        // place is that development (`RawDecoder.replacement`)
         let opened = await Blocking.run(.userInitiated) { () -> OnDisk? in
             guard RelatedFiles.canRead(url) else { return nil }
+            if let developed = RawDecoder.kept(url) { return OnDisk(source: developed) }
             return CGImageSourceCreateWithURL(url as CFURL, nil).map(OnDisk.init)
         }
         return opened.map { ($0.source, 0) }
