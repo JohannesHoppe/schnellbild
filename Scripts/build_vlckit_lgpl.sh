@@ -20,10 +20,19 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 source "$ROOT/Scripts/fetch_verified.sh"
-WORK="${1:?usage: build_vlckit_lgpl.sh <work dir>}"
 
+# What is built, named once: vlckit-lgpl.yml takes the release's tag, title
+# and notes from `build_vlckit_lgpl.sh --versions`, vlckit_contrib.py the
+# licences file's title from the arguments below
 TAG="3.7.5"
-COMMIT="a213fd113c5c014556b40765966e77d439f0ddf9"   # the tag; it builds VLC 3.0.24 (6de05adc)
+COMMIT="a213fd113c5c014556b40765966e77d439f0ddf9"   # the tag
+VLC_VERSION="3.0.24"                                # the VLC the tag builds
+VLC_COMMIT="6de05adc"
+if [ "${1:-}" = --versions ]; then
+    printf 'vlckit=%s\nvlckit_commit=%s\nvlc=%s\nvlc_commit=%s\n' "$TAG" "$COMMIT" "$VLC_VERSION" "$VLC_COMMIT"
+    exit 0
+fi
+WORK="${1:?usage: build_vlckit_lgpl.sh <work dir> | --versions}"
 # Modules are deleted by their library names (VLC's modules/*/Makefile.am,
 # lib<name>_plugin); buildMobileVLCKit.sh deletes every file whose name
 # contains an entry, so each entry is a whole library name.
@@ -106,7 +115,7 @@ cd "$WORK"
 export GIT_CEILING_DIRECTORIES="$WORK"
 VLC="$WORK/vlckit/libvlc/vlc"
 VLCKIT_ARCHIVE="VLCKit-$TAG-source.tar.gz"
-VLC_ARCHIVE="vlc-3.0.24-vlckit-$TAG-source.tar.gz"
+VLC_ARCHIVE="vlc-$VLC_VERSION-vlckit-$TAG-source.tar.gz"
 if [ ! -d vlckit ]; then
     if from_release "$VLCKIT_ARCHIVE" "$VLCKIT_SOURCE_SHA256"; then
         mkdir vlckit
@@ -254,7 +263,7 @@ nm -arch arm64 --defined-only "$BINARY" > "$WORK/check/VLCKit.nm"
     -not -path './tarballs/*' | LC_ALL=C sort) > "$WORK/check/contrib-sources.txt"
 contrib=0
 python3 -I "$ROOT/Scripts/vlckit_contrib.py" "$VLC" "$BINARY" "$DIST/VLCKit-third-party-licenses.txt" \
-    --report "$WORK/check/contrib-report.txt" || contrib=$?
+    --report "$WORK/check/contrib-report.txt" --versions "$TAG" "$VLC_VERSION" || contrib=$?
 python3 -I "$ROOT/Scripts/vlckit_licenses.py" "$BINARY" --no-gpl --local-only
 [ "$contrib" -eq 0 ] || exit "$contrib"
 
@@ -274,7 +283,7 @@ fi
 diff -u --label a/buildMobileVLCKit.sh --label b/buildMobileVLCKit.sh \
     "$WORK/buildMobileVLCKit.sh.orig" "$WORK/vlckit/buildMobileVLCKit.sh" > "$DIST/VLCKit-$TAG-build-changes.patch" || [ $? -eq 1 ]
 if [ -d "$VLC/.git" ]; then
-    git -C "$VLC" archive --format=tar.gz --prefix="vlc-3.0.24-vlckit-$TAG/" HEAD > "$DIST/$VLC_ARCHIVE"
+    git -C "$VLC" archive --format=tar.gz --prefix="vlc-$VLC_VERSION-vlckit-$TAG/" HEAD > "$DIST/$VLC_ARCHIVE"
 else
     cp "$WORK/src/$VLC_ARCHIVE" "$DIST/"
 fi

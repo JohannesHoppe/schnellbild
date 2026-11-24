@@ -83,20 +83,20 @@ def strings(value, where=""):
         yield where, value
 
 
-def merge_translation(own, english, missing, prefix):
-    """A language's words over English's: a key missing in own falls back to English. Every
-    missing key, key English doesn't have and list of another length goes into missing,
-    each line starting with prefix."""
+def merge_translation(own, english, missing, problems, prefix):
+    """A language's words over English's: a key missing in own falls back to English and goes
+    into missing; a key English doesn't have and a list of another length go into problems.
+    Each line starts with prefix."""
     def merge(mine, master, where):
         if isinstance(master, dict):
             for extra in set(mine or {}) - set(master):
-                missing.append(f"{prefix}{'.'.join(where + [extra])} is not in English")
+                problems.append(f"{prefix}{'.'.join(where + [extra])} is not in English")
             return {k: merge(mine.get(k) if isinstance(mine, dict) else None, v, where + [k]) for k, v in master.items()}
         if mine is None:
             missing.append(f"{prefix}{'.'.join(where)}")
             return master
         if isinstance(master, list) and len(mine) != len(master):
-            missing.append(f"{prefix}{'.'.join(where)} has {len(mine)} entries, English {len(master)}")
+            problems.append(f"{prefix}{'.'.join(where)} has {len(mine)} entries, English {len(master)}")
         return mine
     return merge(own, english, [])
 
@@ -145,26 +145,26 @@ class Alternatives:
         for code, words in self.words.items():
             for where, text in strings(words):
                 if re.search("[–—]", text):
-                    ctx["missing"].append(f"alternatives {code}: {where} has an em or en dash (see Working conventions)")
+                    ctx["problems"].append(f"alternatives {code}: {where} has an em or en dash (see Working conventions)")
         for key in self.keys:
             if key not in self.ours:
-                ctx["missing"].append(f"schnellbild.json: no row {key}")
+                ctx["problems"].append(f"schnellbild.json: no row {key}")
         for slug, p in self.products.items():
             for key in self.keys if p["page"] != "map" else []:
                 if key not in p["matrix"]:
-                    ctx["missing"].append(f"products/{slug}.json: no row {key}")
+                    ctx["problems"].append(f"products/{slug}.json: no row {key}")
             if slug not in english["products"]:
-                ctx["missing"].append(f"alternatives en: no product {slug}")
+                ctx["problems"].append(f"alternatives en: no product {slug}")
             elif p["page"] == "matrix":
                 for key in self.shown(slug):
                     if p["matrix"][key]["value"] == "partial" and key not in english["products"][slug].get("notes", {}):
-                        ctx["missing"].append(f"alternatives en: products.{slug}.notes.{key}")
+                        ctx["problems"].append(f"alternatives en: products.{slug}.notes.{key}")
             elif p["page"] == "map":
                 for key, cell in p["map_matrix"].items():
                     if key not in english["mapRows"]:
-                        ctx["missing"].append(f"alternatives en: mapRows.{key}")
+                        ctx["problems"].append(f"alternatives en: mapRows.{key}")
                     if cell["value"] == "partial" and key not in english["products"][slug].get("notes", {}):
-                        ctx["missing"].append(f"alternatives en: products.{slug}.notes.{key}")
+                        ctx["problems"].append(f"alternatives en: products.{slug}.notes.{key}")
 
     def load(self, code, english):
         path = DATA / "i18n" / f"{code}.json"
@@ -174,7 +174,7 @@ class Alternatives:
         if not path.exists():
             missing.append(f"alternatives {code}: no {path.name}")
             return english
-        return merge_translation(load_json(path), english, missing, f"alternatives {code}: ")
+        return merge_translation(load_json(path), english, missing, self.c["problems"], f"alternatives {code}: ")
 
     # Paths
 
@@ -183,8 +183,12 @@ class Alternatives:
         return base + (slug + "/" if slug else "")
 
     def link(self, code, slug):
-        """The address of a page, for {alt:<slug>} in the site's texts."""
-        return self.path(code, slug if slug in self.products else None)
+        """The address of a page, for {alt:<slug>} in the site's texts; a slug without a page is
+        a problem (the overview's address stands in)."""
+        if slug not in self.products:
+            self.c["problems"].append(f"{code}: no alternatives page {slug} (site/alternatives/products)")
+            return self.path(code)
+        return self.path(code, slug)
 
     # Data
 
@@ -194,11 +198,12 @@ class Alternatives:
         return [k for k in self.keys if cells[k]["how"] != "unverified"]
 
     def shot(self, name, code, first=False):
-        """The home page's screenshot of that name, with the home page's words for it."""
+        """The home page's screenshot of that name, with the home page's words for it, drawn in the
+        hero's right column (ALT_HERO_SIZES)."""
         t = self.c["tr"][code]
         feature = SHOT_FEATURE.get(name, name)
         alt = t["features"][FEATURE_SHOTS.index(feature)]["alt"] if feature in FEATURE_SHOTS else t["shotAlt"]
-        return self.c["shot"](name, code, alt, first=first)
+        return self.c["shot"](name, code, alt, first=first, sizes=self.c["ALT_HERO_SIZES"])
 
     def kind(self, slug):
         p = self.products[slug]
@@ -307,7 +312,7 @@ class Alternatives:
         ui, esc = self.words[code]["ui"], self.c["esc"]
         return f"""<section class="cta alt-cta">
   <div class="wrap" data-reveal>
-    <img class="icon" src="/icon.png" alt="" width="96" height="96">
+    {self.c["icon"]("icon", 96, attributes=' class="icon" loading="lazy"')}
     <h2>{esc(ui['ctaTitle'])}</h2>
     <p class="intro">{esc(ui['ctaText'])}</p>
     {self.actions(code)}

@@ -25,12 +25,11 @@ func render(scale s: CGFloat, to path: String) {
     ctx.translateBy(x: 0, y: H)
     ctx.scaleBy(x: 1, y: -1)
 
-    // Soft gradient from white to a light blue
-    let bg = CGGradient(colorsSpace: cs, colors: [rgb(252, 253, 255), rgb(236, 242, 255)] as CFArray,
-                        locations: [0, 1])!
-    ctx.drawLinearGradient(bg, start: .zero, end: CGPoint(x: 0, y: H), options: [])
+    // One flat, very light blue (no gradients in anything designed)
+    ctx.setFillColor(rgb(244, 247, 255))
+    ctx.fill(CGRect(x: 0, y: 0, width: W, height: H))
 
-    // Arrow between the icons, in the blue → purple of the app icon
+    // Arrow between the icons, in the app icon's colour
     let x0 = appX + 78, x1 = targetX - 78, y = iconY, head: CGFloat = 22, half: CGFloat = 14
     // One outline (round tail, shaft, head), so no seam where the parts meet
     let arrow = CGMutablePath()
@@ -42,13 +41,9 @@ func render(scale s: CGFloat, to path: String) {
     arrow.addLine(to: CGPoint(x: x1 - head, y: y + half))
     arrow.addLine(to: CGPoint(x: x1 - head, y: y + 3))
     arrow.closeSubpath()
-    ctx.saveGState()
     ctx.addPath(arrow)
-    ctx.clip()
-    let fill = CGGradient(colorsSpace: cs, colors: [rgb(46, 139, 255), rgb(138, 79, 255)] as CFArray,
-                          locations: [0, 1])!
-    ctx.drawLinearGradient(fill, start: CGPoint(x: x0, y: y), end: CGPoint(x: x1, y: y), options: [])
-    ctx.restoreGState()
+    ctx.setFillColor(rgb(92, 109, 255))
+    ctx.fillPath()
 
     // Hint, centered below the icon labels
     let text = NSAttributedString(string: hint, attributes: [

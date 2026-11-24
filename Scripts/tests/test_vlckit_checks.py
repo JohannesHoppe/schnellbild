@@ -188,6 +188,43 @@ class Contrib(unittest.TestCase):
         self.assertIn("libavutil.a(crc.o) ffmpeg/libavutil/crc.c", report)
         self.assertIn("libfreetype.a(src_base_ftinit.c.o) freetype2/src/base/ftinit.c", report)
 
+    def test_two_sources_of_one_name_built_at_two_depths_are_both_checked(self):
+        # An archive names both objects foo.o: the GPL one in libavcodec
+        # mustn't be taken for the deeper LGPL one
+        ffmpeg = os.path.join(self.build, "ffmpeg")
+        self.write(os.path.join(ffmpeg, "libavcodec", "foo.c"), GPL2_HEADER + "void ff_foo(void) {}\n")
+        self.write(os.path.join(ffmpeg, "libavcodec", "aarch64", "foo.S"), LGPL_HEADER + "function ff_foo_neon, export=1\n")
+        self.write(os.path.join(ffmpeg, "libavcodec", "foo.o"), "")
+        self.write(os.path.join(ffmpeg, "libavcodec", "aarch64", "foo.o"), "")
+        self.write(os.path.join(self.lib, "libavcodec.a"), "")
+        self.nm["libavcodec.a"] = "\n/l/libavcodec.a(foo.o):\n0 T _ff_foo\n\n/l/libavcodec.a(foo.o):\n0 T _ff_foo_neon\n"
+        problems, _, report = self.run_check({"_ff_foo", "_ff_foo_neon"}, names=("libavcodec.a",))
+        self.assertTrue(any("ffmpeg/libavcodec/foo.c states the GPL" in p for p in problems), problems)
+        self.assertIn("libavcodec.a(foo.o) ffmpeg/libavcodec/aarch64/foo.S", report)
+
+    def test_a_built_gpl_source_of_the_same_name_not_linked_passes(self):
+        # Both crc.o built, only the C one's object in the binary
+        ffmpeg = os.path.join(self.build, "ffmpeg")
+        self.write(os.path.join(ffmpeg, "libavutil", "crc.o"), "")
+        self.write(os.path.join(ffmpeg, "libavutil", "aarch64", "crc.o"), "")
+        self.nm["libavutil.a"] = "\n/l/libavutil.a(crc.o):\n0 T _av_crc\n"
+        problems, _, report = self.run_check({"_av_crc", "_FT_Init_FreeType"})
+        self.assertEqual(problems, [])
+        self.assertIn("libavutil.a(crc.o) ffmpeg/libavutil/crc.c", report)
+
+    def test_a_source_whose_object_was_built_elsewhere_isnt_taken(self):
+        # tests/checkasm/ac3dsp.c names the library's function too, but only
+        # libavcodec/ac3dsp.o was built
+        ffmpeg = os.path.join(self.build, "ffmpeg")
+        self.write(os.path.join(ffmpeg, "libavcodec", "ac3dsp.c"), LGPL_HEADER + "void ff_ac3dsp_init(void) {}\n")
+        self.write(os.path.join(ffmpeg, "tests", "checkasm", "ac3dsp.c"), GPL2_HEADER + "ff_ac3dsp_init();\n")
+        self.write(os.path.join(ffmpeg, "libavcodec", "ac3dsp.o"), "")
+        self.write(os.path.join(self.lib, "libavcodec.a"), "")
+        self.nm["libavcodec.a"] = "\n/l/libavcodec.a(ac3dsp.o):\n0 T _ff_ac3dsp_init\n"
+        problems, _, report = self.run_check({"_ff_ac3dsp_init"}, names=("libavcodec.a",))
+        self.assertEqual(problems, [])
+        self.assertIn("libavcodec.a(ac3dsp.o) ffmpeg/libavcodec/ac3dsp.c", report)
+
     def test_no_object_found_at_all_fails(self):
         problems, _, _ = self.run_check({"_something_else"})
         self.assertEqual(problems, ["no object of any library found in the binary: the symbols weren't read"])
@@ -207,11 +244,12 @@ class Contrib(unittest.TestCase):
     def test_the_licences_have_a_section_per_library_with_its_texts(self):
         out = os.path.join(self.temp.name, "licences.txt")
         packages = {"ffmpeg": ["libavutil.a"], "freetype2": ["libfreetype.a"]}
-        missing = contrib.write_licences(out, self.vlc, self.build, packages, ["libavutil.a", "libfreetype.a"])
+        missing = contrib.write_licences(out, self.vlc, self.build, packages, ["libavutil.a", "libfreetype.a"],
+                                         ("3.7.5", "3.0.24"))
         self.assertEqual(missing, [])
         with open(out) as f:
             text = f.read()
-        self.assertTrue(text.startswith("Third-party libraries in VLCKit"))
+        self.assertTrue(text.startswith("Third-party libraries in VLCKit 3.7.5 (libVLC 3.0.24), built by"))
         self.assertIn("  libfreetype.a (freetype2)\n", text)
         rule = "=" * 80
         self.assertIn(f"{rule}\nffmpeg\n{rule}\n--- COPYING.LGPLv2.1\nGNU LESSER", text)
@@ -226,7 +264,7 @@ class Contrib(unittest.TestCase):
         out = os.path.join(self.temp.name, "licences.txt")
         missing = contrib.write_licences(out, self.vlc, self.build,
                                          {"ffmpeg": ["libavutil.a"], "freetype2": ["libfreetype.a"]},
-                                         ["libavutil.a", "libfreetype.a"])
+                                         ["libavutil.a", "libfreetype.a"], ("3.7.5", "3.0.24"))
         self.assertEqual(missing, ["ffmpeg", "freetype2"])
 
 

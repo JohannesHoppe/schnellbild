@@ -8,6 +8,9 @@ functions in NEON) and libavutil/aarch64/crc.S (CRC-32 with the CRC
 instructions). The CRC code is switched off in FFmpeg's configure
 (--disable-arm-crc) and its object left out; the AC-3 DSP objects and
 their init call are left out, so FFmpeg's C versions do that work.
+The three FFmpeg files the build commands change (the two AArch64
+Makefiles and libavcodec/ac3dsp.c) get the notice of the change at their
+top, like the files this patch changes itself.
 Applied with patch -p1 (Scripts/build_vlckit_lgpl.sh); Scripts/vlckit_contrib.py
 and Scripts/vlckit_licenses.py fail the build while any of it is linked.
 
@@ -24,7 +27,7 @@ and Scripts/vlckit_licenses.py fail the build while any of it is linked.
 
  # MIPS stuff
  ifeq ($(ARCH),mipsel)
-@@ -271,6 +275,15 @@
+@@ -271,6 +275,21 @@
  	$(APPLY) $(SRC)/ffmpeg/libav_gsm.patch
  endif
  	$(APPLY) $(SRC)/ffmpeg/patch-as-patch-can.patch
@@ -37,6 +40,12 @@ and Scripts/vlckit_licenses.py fail the build while any of it is linked.
 +	sed -i.orig -e 's/ff_ac3dsp_init_aarch64(c);//' $(UNPACK_DIR)/libavcodec/ac3dsp.c
 +	! grep -q -e 'aarch64/ac3dsp' -e 'aarch64/crc\.o' $(UNPACK_DIR)/libavcodec/aarch64/Makefile $(UNPACK_DIR)/libavutil/aarch64/Makefile
 +	! grep -q 'ff_ac3dsp_init_aarch64(c)' $(UNPACK_DIR)/libavcodec/ac3dsp.c
++	# The three FFmpeg files changed above carry the notice of the change
++	# at their top (LGPL 2.1, section 2(b))
++	for f in libavcodec/aarch64/Makefile libavutil/aarch64/Makefile; do \
++		{ echo '# Changed for Schnellbild on 2026-11-24: Scripts/vlc-patches/0006-contrib-ffmpeg-without-its-aarch64-files-under-the-gpl.patch'; cat $(UNPACK_DIR)/$$f; } > $(UNPACK_DIR)/$$f.new && mv $(UNPACK_DIR)/$$f.new $(UNPACK_DIR)/$$f || exit 1; \
++	done
++	{ echo '/* Changed for Schnellbild on 2026-11-24: Scripts/vlc-patches/0006-contrib-ffmpeg-without-its-aarch64-files-under-the-gpl.patch */'; cat $(UNPACK_DIR)/libavcodec/ac3dsp.c; } > $(UNPACK_DIR)/libavcodec/ac3dsp.c.new && mv $(UNPACK_DIR)/libavcodec/ac3dsp.c.new $(UNPACK_DIR)/libavcodec/ac3dsp.c
  	$(MOVE)
 
  .ffmpeg: ffmpeg

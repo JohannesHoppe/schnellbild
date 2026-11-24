@@ -99,6 +99,37 @@ func bearer() throws -> String {
 
 typealias JSON = [String: Any]
 
+/// Sends a request (with `body`: uploads it), again after a pause when App Store Connect
+/// is busy (429) or fails on its side (5xx), or the connection fails: four tries in all,
+/// so one hiccup doesn't end a run halfway (a locale's screenshots deleted, the new ones
+/// not all there yet). A POST is sent again only after 429: one that failed later may
+/// have made its item already.
+func send(_ request: URLRequest, body: Data? = nil) async throws -> (Data, Int) {
+    let method = request.httpMethod ?? "GET"
+    let repeatable = method != "POST"
+    for attempt in 1... {
+        var pause = Double(5 * attempt)
+        do {
+            let (data, response): (Data, URLResponse)
+            if let body {
+                (data, response) = try await URLSession.shared.upload(for: request, from: body)
+            } else {
+                (data, response) = try await URLSession.shared.data(for: request)
+            }
+            let http = response as? HTTPURLResponse
+            let status = http?.statusCode ?? 0
+            let busy = status == 429 || (repeatable && (500..<600).contains(status))
+            if !busy || attempt == 4 { return (data, status) }
+            pause = Double(http?.value(forHTTPHeaderField: "Retry-After") ?? "") ?? pause
+            say("  \(method) \(request.url?.path ?? "") → \(status), again in \(Int(pause)) s")
+        } catch let error as URLError where repeatable && attempt < 4 {
+            say("  \(method) \(request.url?.path ?? ""): \(error.localizedDescription), again in \(Int(pause)) s")
+        }
+        try await Task.sleep(nanoseconds: UInt64(min(pause, 60) * 1_000_000_000))
+    }
+    fatalError("unreachable")
+}
+
 @discardableResult
 func api(_ method: String, _ path: String, _ body: JSON? = nil, missingOK: Bool = false) async throws -> JSON {
     let url = path.hasPrefix("https://") ? URL(string: path)! : URL(string: "https://api.appstoreconnect.apple.com" + path)!
@@ -109,8 +140,7 @@ func api(_ method: String, _ path: String, _ body: JSON? = nil, missingOK: Bool 
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
     }
-    let (data, response) = try await URLSession.shared.data(for: request)
-    let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+    let (data, status) = try await send(request)
     let object = (try? JSONSerialization.jsonObject(with: data) as? JSON) ?? [:]
     if missingOK && status == 404 { return [:] }
     guard (200..<300).contains(status) else {
@@ -419,6 +449,9 @@ func screenshots(for localizationID: String, from folder: URL, locale: String) a
     if current.map({ attributes($0)["sourceFileChecksum"] as? String ?? "" }) == checksums {
         say("  \(locale): \(files.count) screenshots, unchanged"); return
     }
+    // A set holds at most ten screenshots, so the old ones go before the new ones come
+    // (each request tried again on a hiccup, send); a run that fails between leaves the
+    // set short until the next run, and nothing is submitted
     for shot in current { try await api("DELETE", "/v1/appScreenshots/\(id(shot))") }
     for (index, file) in files.enumerated() {
         try await upload("appScreenshots", file: file, data: local[index], checksum: checksums[index],
@@ -443,8 +476,8 @@ func upload(_ type: String, file: URL, data: Data, checksum: String, attributes 
         for header in operation["requestHeaders"] as? [JSON] ?? [] {
             if let name = header["name"] as? String, let value = header["value"] as? String { request.setValue(value, forHTTPHeaderField: name) }
         }
-        let (_, response) = try await URLSession.shared.upload(for: request, from: data.subdata(in: offset..<(offset + length)))
-        guard let status = (response as? HTTPURLResponse)?.statusCode, (200..<300).contains(status) else { fail("upload of \(file.lastPathComponent) failed") }
+        let (_, status) = try await send(request, body: data.subdata(in: offset..<(offset + length)))
+        guard (200..<300).contains(status) else { fail("upload of \(file.lastPathComponent) failed (\(status))") }
     }
     try await api("PATCH", "/v1/\(type)/\(id(reservation))", ["data": ["type": type, "id": id(reservation),
         "attributes": ["uploaded": true, "sourceFileChecksum": checksum]]])

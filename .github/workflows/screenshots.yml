@@ -44,7 +44,7 @@ jobs:
           language="${LANGUAGE_INPUT:-en}"
           if [ "$language" = all ]; then
             picked=$all
-          elif printf '%s\n' $all | grep -qx -- "$language"; then
+          elif printf '%s\n' $all | grep -qxF -- "$language"; then
             picked=$language
           else
             echo "unknown language $language (one of: $(echo $all) or all)"; exit 1
@@ -56,20 +56,19 @@ jobs:
   # The app as it ships (build_app.sh + sign_app.sh, ad hoc), once for every
   # language: the screenshots show the app in the App Sandbox exactly as
   # users get it. An Xcode build for testing gets Xcode's own exceptions on
-  # top of its entitlements (read-only access to the whole disk).
+  # top of its entitlements (read-only access to the whole disk). The UI
+  # tests are built here too, once: the language only enters when they run.
   app:
     runs-on: macos-15
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Select Xcode
         run: Scripts/select_xcode.sh
 
-      - name: Cache VLCKit
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env', 'Scripts/fetch_raw_samples.sh', 'Scripts/raw_samples.env') }}
+      - name: Cache Vendor
+        uses: ./.github/actions/vendor-cache
 
       - name: Build the app
         run: |
@@ -83,6 +82,25 @@ jobs:
           path: build/Schnellbild.app.zip
           if-no-files-found: error
 
+      - name: Install xcodegen
+        run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
+
+      # The products with their .xctestrun, which names them relative to its
+      # own folder: the screenshot jobs run them with test-without-building
+      - name: Build the UI tests
+        run: |
+          xcodegen generate
+          xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
+            -destination 'platform=macOS' -derivedDataPath build/DerivedData
+          ls build/DerivedData/Build/Products/*.xctestrun
+          ditto -c -k --keepParent build/DerivedData/Build/Products build/Products.zip
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: Schnellbild-uitests
+          path: build/Products.zip
+          if-no-files-found: error
+
   screenshots:
     needs: [languages, app]
     runs-on: macos-15
@@ -94,37 +112,24 @@ jobs:
       matrix:
         language: ${{ fromJSON(needs.languages.outputs.list) }}
     name: screenshots (${{ matrix.language }})
+    # A few minutes a language; a hang ends here, not at GitHub's six hours
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Select Xcode
         run: Scripts/select_xcode.sh
 
-      - name: Install xcodegen
-        run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
-
-      - name: Cache VLCKit
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env', 'Scripts/fetch_raw_samples.sh', 'Scripts/raw_samples.env') }}
-
-      - name: Fetch VLCKit
-        run: ./Scripts/fetch_vlckit.sh
-
-      - name: Build for testing
-        run: |
-          xcodegen generate
-          xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
-            -destination 'platform=macOS' -derivedDataPath build/DerivedData
-
-      - name: Get the app (built by the app job)
+      - name: Get the app and the UI tests (built by the app job)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh run download ${{ github.run_id }} --repo ${{ github.repository }} --name Schnellbild-app --dir build/shipped
           ditto -x -k build/shipped/Schnellbild.app.zip build/shipped
           ./Scripts/check_entitlements.sh build/shipped/Schnellbild.app
+          gh run download ${{ github.run_id }} --repo ${{ github.repository }} --name Schnellbild-uitests --dir build
+          ditto -x -k build/Products.zip build
+          ls build/Products/*.xctestrun
 
       - name: Draw the sample media
         run: swift Scripts/make_sample_media.swift /Users/Shared/Photos
@@ -153,46 +158,44 @@ jobs:
         run: swiftc -O Scripts/shoot_window.swift -o build/shoot_window
 
       - name: Hide the Dock
-        # The runner's screen is small; the Dock would cover the window's bottom.
-        run: |
-          defaults write com.apple.dock autohide -bool true
-          defaults write com.apple.dock autohide-delay -float 1000
-          killall Dock
-          sleep 2
+        run: ./Scripts/hide_dock.sh
 
       - name: Take the screenshots
+        timeout-minutes: 45
         env:
           LANGUAGE_INPUT: ${{ matrix.language }}
           TEST_INPUT: ${{ inputs.test }}
         run: |
           mkdir -p shots
           # The test asks for each picture on the pasteboard ("shoot:<name>")
-          # and waits for "done:<name>".
-          (
-            # One failed capture must not end the helper (the step runs with -e)
-            set +e
-            while :; do
-              request=$(pbpaste 2>/dev/null || true)
-              case "$request" in
-                shoot:*|shoot-front:*)
-                  # shoot-front: the frontmost window (Settings), else the main one
-                  which=; [ "${request%%:*}" = shoot-front ] && which=front
-                  name=${request#*:}
-                  echo "== $name"
-                  tmp=$(mktemp -d)
-                  read -r id rect < <(build/shoot_window window $which)
-                  screencapture -x -l "$id" "$tmp/shadow.png"
-                  screencapture -x -o -l "$id" "$tmp/flat.png"
-                  screencapture -x -R "$rect" "$tmp/screen.png"
-                  build/shoot_window compose "shots/$name.png" "$tmp" || true
-                  rm -rf "$tmp"
-                  printf 'done:%s' "$name" | pbcopy
-                  ;;
-              esac
-              sleep 0.2
-            done
-          ) &
-          helper=$!
+          # and waits for "done:<name>"; a picture that couldn't be taken is
+          # answered "failed:<name>", which fails the test, and fails this
+          # step too
+          source Scripts/pasteboard_requests.sh
+          handle() {
+            case "$1" in
+              shoot:*|shoot-front:*)
+                # shoot-front: the frontmost window (Settings), else the main one
+                local which= name=${1#*:} tmp id rect
+                [ "${1%%:*}" = shoot-front ] && which=front
+                echo "== $name"
+                tmp=$(mktemp -d)
+                if read -r id rect < <(build/shoot_window window $which) \
+                   && screencapture -x -l "$id" "$tmp/shadow.png" \
+                   && screencapture -x -o -l "$id" "$tmp/flat.png" \
+                   && screencapture -x -R "$rect" "$tmp/screen.png" \
+                   && build/shoot_window compose "shots/$name.png" "$tmp"; then
+                  answer "done:$name"
+                else
+                  echo "!! $name couldn't be taken"
+                  echo "$name" >> shots-failed.txt
+                  answer "failed:$name"
+                fi
+                rm -rf "$tmp"
+                ;;
+            esac
+          }
+          serve_requests handle
           set_dark() {
             osascript -e "tell application \"System Events\" to tell appearance preferences to set dark mode to $1"
           }
@@ -200,17 +203,20 @@ jobs:
           language="$LANGUAGE_INPUT"
           modes="light dark"; tag=""
           [ "$language" = en ] || tag="-$language"
+          xctestrun=$(ls build/Products/*.xctestrun | head -n 1)
           for mode in $modes; do
             set_dark "$([ "$mode" = dark ] && echo true || echo false)"
             # Same window size and place in both runs: forget the saved frame
             defaults delete art.haushoppe.schnellbild 2>/dev/null || true
             TEST_RUNNER_SCHNELLBILD_APP="$PWD/build/shipped/Schnellbild.app" TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode$tag" TEST_RUNNER_LANGUAGE="$language" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos TEST_RUNNER_WORLD_DIR=/Users/Shared/World \
-              xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
-                -destination 'platform=macOS' -derivedDataPath build/DerivedData \
+              xcodebuild test-without-building -xctestrun "$xctestrun" -destination 'platform=macOS' \
                 -only-testing:"SchnellbildUITests/${TEST_INPUT:-ReadmeScreenshots}" || status=1
           done
-          kill "$helper" 2>/dev/null || true
+          stop_serving
           ls -la shots
+          if [ -s shots-failed.txt ]; then
+            echo "Pictures that couldn't be taken:"; cat shots-failed.txt; status=1
+          fi
           exit $status
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

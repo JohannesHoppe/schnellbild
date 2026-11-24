@@ -95,6 +95,23 @@ def app_extensions(root=ROOT):
     return kinds
 
 
+# The page's ids besides the formats' own: the groups' headings and the table
+PAGE_IDS = set(GROUPS) | {"formats-table"}
+
+
+def id_clashes(formats):
+    """Format ids that name another element of the page (a group's heading, the
+    table) or two formats, as lines: a link to #<id> would land elsewhere."""
+    problems, seen = [], set()
+    for f in formats:
+        if f["id"] in PAGE_IDS:
+            problems.append(f"formats.json: the id {f['id']} is also the page's id of a group or the table")
+        if f["id"] in seen:
+            problems.append(f"formats.json: the id {f['id']} is there twice")
+        seen.add(f["id"])
+    return problems
+
+
 def differences(formats, root=ROOT):
     """What the list and the app disagree on, as lines."""
     app = app_extensions(root)
@@ -150,25 +167,26 @@ class Formats:
         self.ctx = ctx
         self.formats, self.macos = load()
         self.by_id = {f["id"]: f for f in self.formats}
-        missing = ctx["missing"]
+        problems = ctx["problems"]
+        problems.extend(id_clashes(self.formats))
         for f in self.formats:
             if f["group"] not in GROUPS or f["kind"] not in KINDS:
-                missing.append(f"formats.json: {f['id']} has an unknown group or kind")
+                problems.append(f"formats.json: {f['id']} has an unknown group or kind")
         for code in ctx["LANGUAGES"]:
             w = ctx["tr"][code]["formats"]
             for f in self.formats:
                 if not (f.get("name") or w["names"].get(f["id"])):
-                    missing.append(f"formats {code}: no name for {f['id']}")
+                    problems.append(f"formats {code}: no name for {f['id']}")
                 for note in f.get("notes", []):
                     if note not in w["notes"]:
-                        missing.append(f"formats {code}: notes.{note}")
+                        problems.append(f"formats {code}: notes.{note}")
             for where, text in self.texts(w):
                 if re.search("[–—]", text):
-                    missing.append(f"formats {code}: {where} has an em or en dash (see Working conventions)")
+                    problems.append(f"formats {code}: {where} has an em or en dash (see Working conventions)")
         for uti, names in self.macos.items():
             for code, name in names.items():
                 if re.search("[–—]", name):
-                    missing.append(f"formats-macos.json: {uti} in {code} has an em or en dash")
+                    problems.append(f"formats-macos.json: {uti} in {code} has an em or en dash")
 
     @staticmethod
     def texts(words, where="formats"):
@@ -203,7 +221,7 @@ class Formats:
         def link(match):
             f = self.by_id.get(match.group(1))
             if not f:
-                self.ctx["missing"].append(f"{code}: no format {match.group(1)} (site/formats.json)")
+                self.ctx["problems"].append(f"{code}: no format {match.group(1)} (site/formats.json)")
                 return match.group(0)
             return f'<a href="{self.path(code)}#{f["id"]}">{self.label(code, f)}</a>'
         return re.sub(r"\{fmt:([A-Za-z0-9]+)\}", link, text).replace("{formats}", self.path(code))
@@ -302,7 +320,7 @@ class Formats:
             for f in self.formats:
                 for ext in f["ext"]:
                     if f"<code>.{ext}</code>" not in html:
-                        ctx["missing"].append(f"formats {code}: the page doesn't show .{ext}")
+                        ctx["problems"].append(f"formats {code}: the page doesn't show .{ext}")
             pages[ctx["DOCS"] / ctx["folder"](code) / ctx["tr"][code]["formatsSlug"] / "index.html"] = html
         return pages
 

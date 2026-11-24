@@ -29,7 +29,8 @@ uploads (one artifact per language, unpacked into a folder each):
                                    control bar's times (bartime-*, which only
                                    Scripts/make_video_animation.py reads, from the artifact)
 
-Their variants, so a phone loads a small file and a large screen the full width:
+The variants of those the website shows (HERO_SHOT, GLOBE_SHOT, VIEW_SHOTS,
+FEATURE_SHOTS), so a phone loads a small file and a large screen the full width:
 
     python3 Scripts/make_site_images.py shots
 
@@ -133,9 +134,17 @@ def jpeg_size(path):
     raise ValueError(f"{path}: no JPEG frame header")
 
 
+def motif(name):
+    """The motif of a screenshot named <motif>-<light|dark>[-<lang>]."""
+    return re.fullmatch(r"(.+?)-(light|dark)(?:-(.+))?", name).group(1)
+
+
 def masters():
-    """The screenshot masters: every WebP in docs/screenshots."""
-    return sorted(SHOTS.glob("*.webp"))
+    """The screenshot masters the website shows (HERO_SHOT, GLOBE_SHOT, VIEW_SHOTS,
+    FEATURE_SHOTS), which get sized variants; the README's and the App Store's
+    others take the master itself."""
+    site = {HERO_SHOT, GLOBE_SHOT, *VIEW_SHOTS, *FEATURE_SHOTS}
+    return sorted(p for p in SHOTS.glob("*.webp") if motif(p.stem) in site)
 
 
 def shot_hash(master):
@@ -212,6 +221,7 @@ def icons():
         sips("-z", 256, 256, ICON, "--out", tmp / "256.png")
         webp(tmp / "256.png", DOCS / "icon.webp")
         (ROOT / "Resources" / "icon-256.png").write_bytes((tmp / "256.png").read_bytes())
+        (DOCS / "icon.png").write_bytes((tmp / "256.png").read_bytes())
         for size in (16, 32):
             (DOCS / f"favicon-{size}.png").write_bytes((tmp / f"{size}.png").read_bytes())
         for size in (192, 512):
@@ -311,7 +321,7 @@ def check():
         if path.stat().st_size > OG_LIMIT:
             problems.append(f"{path.relative_to(ROOT)} has {path.stat().st_size} bytes, more than {OG_LIMIT}")
     for name, size in [("apple-touch-icon.png", 180), ("favicon-16.png", 16), ("favicon-32.png", 32),
-                       ("icon-64.png", 64), ("icon-192.png", 192), ("icon-512.png", 512)]:
+                       ("icon-64.png", 64), ("icon.png", 256), ("icon-192.png", 192), ("icon-512.png", 512)]:
         path = DOCS / name
         if not path.exists() or png_size(path) != (size, size):
             problems.append(f"docs/{name} is missing or not {size} px")

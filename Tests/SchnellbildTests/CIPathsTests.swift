@@ -160,7 +160,7 @@ final class CIPathsTests: XCTestCase {
                 XCTAssertTrue(runs(path, filter), "a change to \(path), which CI runs, doesn't start CI")
             }
         }
-        for path in [".github/workflows/ci.yml", "Package.swift", "project.yml", "Resources/Info.plist",
+        for path in [".github/workflows/ci.yml", ".github/actions/vendor-cache/action.yml", "Package.swift", "project.yml", "Resources/Info.plist",
                      "Schnellbild/BrowserModel.swift", "LICENSE", "Tests/SchnellbildTests/CIPathsTests.swift"] {
             XCTAssertTrue(runs(path, filter), "a change to \(path) doesn't start CI")
         }

@@ -48,15 +48,14 @@ import itertools
 import math
 import operator
 import os
+import re
 import struct
 import sys
 import zlib
-import urllib.error
-import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # python3 -I leaves Scripts/ off the path
 sys.dont_write_bytecode = True
-from _build_common import RELEASES, read_env, sha256_file  # noqa: E402
+from _build_common import RELEASES, download, read_env, sha256_file  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, "build", "globe-cache")
@@ -67,36 +66,29 @@ STRIDE, BLOCK = 5, 3              # every fifth sample, 3 × 3 of them per cell 
 BANDS = 8
 
 
-def download(url, path):
-    if not os.path.exists(path):
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        print(f"==> {url}")
-        with urllib.request.urlopen(url, timeout=600) as response, open(path + ".part", "wb") as f:
-            while True:
-                chunk = response.read(1 << 20)
-                if not chunk:
-                    break
-                f.write(chunk)
-        os.replace(path + ".part", path)
-    return path
-
-
 UPSTREAM = "--upstream" in sys.argv
 
 
 def obtain(cfg, name, want, url):
     """build/globe-cache/<name>: kept while its SHA-256 is <want>, else from the archive
-    (SOURCE_RELEASE_TAG), else from <url>. Without a pin (<want> empty) only from <url>."""
+    (SOURCE_RELEASE_TAG), else from <url>. Without a pin (<want> empty) only from <url>.
+    Downloads resume and are tried again (download in _build_common); one from the
+    archive must have the pinned SHA-256, one from <url> is checked by the caller."""
     path = os.path.join(CACHE, name)
     if os.path.exists(path) and want and sha256_file(path) != want:
         os.remove(path)
-    if not os.path.exists(path) and want and not UPSTREAM:
+    if os.path.exists(path):
+        return path
+    if want and not UPSTREAM:
         archived = f"{RELEASES}/{cfg['SOURCE_RELEASE_TAG']}/{name}"
-        try:
-            download(archived, path)
-        except (urllib.error.URLError, OSError) as e:
-            print(f"   archive: {e}")
-    return download(url, path)
+        if download(archived, path, want, "globe_data.env", timeout=600):
+            return path
+        print("   the archive can't be reached: from the source")
+        if os.path.exists(path + ".part"):
+            os.remove(path + ".part")
+    if not download(url, path, timeout=600):
+        sys.exit(f"!! {url} can't be downloaded")
+    return path
 
 
 def pinned(path, want, name):
@@ -108,8 +100,15 @@ def pinned(path, want, name):
 
 
 def band_pins(cfg):
-    pins = [p for p in cfg.get("ETOPO_BANDS_SHA256", "").split(",") if p]
-    return pins if len(pins) == BANDS else [""] * BANDS
+    """The SHA-256 of each band: all BANDS of them, or none at all (empty:
+    the bands are read from NOAA and their SHA-256 printed to pin). A list
+    of another length stops the build: no band would be checked."""
+    pins = [p.strip() for p in cfg.get("ETOPO_BANDS_SHA256", "").split(",") if p.strip()]
+    if not pins:
+        return [""] * BANDS
+    if len(pins) != BANDS or not all(re.fullmatch(r"[0-9a-f]{64}", p) for p in pins):
+        sys.exit(f"!! globe_data.env: ETOPO_BANDS_SHA256 needs {BANDS} SHA-256, comma-separated (it has {len(pins)})")
+    return pins
 
 
 def dap_floats(data, start):
@@ -729,7 +728,8 @@ def satellite_tiles(path, quality):
     if (width, height, samples) != (21600, 10800, 3):
         sys.exit(f"!! {path}: {width}×{height}×{samples}, expected 21600 × 10800 RGB")
     files = {}
-    half = []                      # 10800 × 5400, sums of 2 × 2 (0 ... 1020)
+    half = []                      # 10800 × 5400, sums of 2 × 2 (0 ... 1020), unsigned 16 bit
+                                   # (0.35 GB; lists of Python ints would take about 2.5 GB)
     band = []                      # the full rows of the current band of tiles
     for y in range(0, height, 2):
         a, b = row(y), row(y + 1)
@@ -746,7 +746,7 @@ def satellite_tiles(path, quality):
         bl = list(map(operator.add, s2[2::6], s2[5::6]))
         line = [0] * (3 * len(r))
         line[0::3], line[1::3], line[2::3] = r, g, bl
-        half.append(line)
+        half.append(array.array("H", line))
     print(f"   satellite {width}×{height}: 128 tiles at full size")
     detail_rows = [bytes((v + 2) // 4 for v in line) for line in half]
     for ty in range(4):
@@ -1082,7 +1082,7 @@ def main():
     if failed:
         sys.exit(1)
 
-    with open(os.path.join(OUT, cfg["NOTICE_FILE"]), "w") as f:
+    with open(os.path.join(OUT, cfg["NOTICE_FILE"]), "w", encoding="utf-8") as f:
         f.write(NOTICE.format(tag=cfg["RELEASE_TAG"], heightmap=cfg["HEIGHTMAP_FILE"], sky=cfg["SKYMAP_FILE"], lights=cfg["CITYLIGHTS_FILE"],
                               satellite=cfg["SATELLITE_FILE"], clouds=cfg["CLOUDS_FILE"]))
     for key in ("HEIGHTMAP_FILE", "SKYMAP_FILE", "CITYLIGHTS_FILE", "CLOUDS_FILE", "SATELLITE_FILE"):

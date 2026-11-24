@@ -53,14 +53,14 @@ fetch_pinned() {
     mv "$dest/$file.part" "$dest/$file"
 }
 
-# Removes everything in <dest> but the files named: those of another build
-# don't go into the app.
+# Removes everything in <dest> but the files named, hidden ones and
+# symbolic links included: those of another build don't go into the app.
 #   prune_except <dest> <pinned in> <name> …
 prune_except() {
     local dest="$1" pinned="$2" old name keep
     shift 2
-    for old in "$dest"/*; do
-        [ -e "$old" ] || continue
+    for old in "$dest"/* "$dest"/.[!.]* "$dest"/..?*; do
+        [ -e "$old" ] || [ -L "$old" ] || continue
         name="$(basename "$old")"
         for keep in "$@" ""; do
             [ "$name" = "$keep" ] && break

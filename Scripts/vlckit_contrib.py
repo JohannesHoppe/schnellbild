@@ -3,6 +3,7 @@
 and writes their licence texts.
 
     vlckit_contrib.py <VLC tree> <VLCKit binary> <licences file> [--report <file>]
+                      --versions <VLCKit tag> <VLC version>
 
 VideoLAN's build links every static library in the contrib prefix
 (contrib/*-apple-darwin*/lib/*.a) into VLCKit. For each of them:
@@ -219,11 +220,16 @@ class SourceIndex:
 
     def sources(self, member, symbols):
         """The source files the object `member`, defining `symbols`, was
-        compiled from, among those of its name: the ones whose folders an
-        object file of that name repeats furthest (libavcodec/ac3dsp.c for
-        …/libavcodec/ac3dsp.o, not tests/checkasm/ac3dsp.c), then those
-        outside tests and tools (NOT_LIBRARY), then those that name one of
-        its symbols."""
+        compiled from, among those of its name. First the ones an object
+        file of that name was built from: for each such object the sources
+        whose folders it repeats furthest (libavcodec/ac3dsp.c for
+        …/libavcodec/ac3dsp.o, not tests/checkasm/ac3dsp.c), or the one
+        Meson named it after; without any object file all of them. An
+        archive keeps only the object's name, so two built sources of one
+        name (libavutil/crc.c and libavutil/aarch64/crc.S) both stay. Of
+        those the ones outside tests and tools (NOT_LIBRARY), then those
+        that name one of its symbols; all that remain are returned, and
+        each is checked."""
         names = [s[1:] if s.startswith("_") else s for s in symbols][:50]
         objects = self.objects.get(member, [])
         for stem in member_stems(member):
@@ -232,19 +238,28 @@ class SourceIndex:
                 continue
             flattened = member[:-2] if member.endswith(".o") else member
 
+            def folders(path):
+                return os.path.dirname(os.path.relpath(path, self.folder)).split(os.sep)
+
+            # Meson names an object by its source's path, "/" as "_"
+            built = [c for c in candidates if os.path.relpath(c, self.folder).replace(os.sep, "_") == flattened]
+            if not built and objects:
+                found = set()
+                for obj in objects:
+                    depths = {c: trailing_match(folders(c), obj) for c in candidates}
+                    deepest = max(depths.values())
+                    found.update(c for c in candidates if depths[c] == deepest)
+                built = [c for c in candidates if c in found]
+            if not built:
+                built = candidates
+
             def score(path):
-                relative = os.path.relpath(path, self.folder)
-                parts = os.path.dirname(relative).split(os.sep)
-                depth = max((trailing_match(parts, o) for o in objects), default=0)
-                # Meson names an object by its source's path, "/" as "_"
-                if relative.replace(os.sep, "_") == flattened:
-                    depth = max(depth, len(parts) + 1)
-                library = not any(p.lower() in NOT_LIBRARY or p.lower().startswith("test") for p in parts)
+                library = not any(p.lower() in NOT_LIBRARY or p.lower().startswith("test") for p in folders(path))
                 naming = any(n in self.text(path) for n in names)
-                return (depth, library, naming)
-            scores = {c: score(c) for c in candidates}
+                return (library, naming)
+            scores = {c: score(c) for c in built}
             best = max(scores.values())
-            return [c for c in candidates if scores[c] == best]
+            return [c for c in built if scores[c] == best]
         return []
 
 
@@ -303,7 +318,9 @@ def check(vlc, binary_symbols, libraries, build, nm_archive=None):
         if not os.path.isdir(folder):
             problems.append(f"{name}: its source {folder} isn't there")
             continue
-        index = indexes.setdefault(package, SourceIndex(folder))
+        if package not in indexes:
+            indexes[package] = SourceIndex(folder)
+        index = indexes[package]
         linked = 0
         for member, symbols in archive_members(nm_archive(library)):
             # The compiler's helpers every C++ object defines (weak) say
@@ -329,14 +346,16 @@ def check(vlc, binary_symbols, libraries, build, nm_archive=None):
     return problems, packages, report
 
 
-def write_licences(path, vlc, build, packages, libraries):
+def write_licences(path, vlc, build, packages, libraries, versions):
     """The licences file: what is linked, then a section per package (a line
     of 80 "=", its name, a line of 80 "="; Schnellbild's About window splits
-    it there). Returns the packages without a licence file."""
+    it there). `versions`: VLCKit's tag and VLC's version. Returns the
+    packages without a licence file."""
     missing = []
     rule = "=" * 80
+    vlckit, libvlc = versions
     with open(path, "w", encoding="utf-8") as out:
-        out.write("Third-party libraries in VLCKit 3.7.5 (libVLC 3.0.24), built by Scripts/build_vlckit_lgpl.sh\n"
+        out.write(f"Third-party libraries in VLCKit {vlckit} (libVLC {libvlc}), built by Scripts/build_vlckit_lgpl.sh\n"
                   "from VideoLAN's contrib build with --disable-gpl. Each keeps its own licence; their texts follow.\n\n"
                   "Static libraries linked into VLCKit (and the library each comes from):\n")
         for library in sorted(libraries, key=str.lower):
@@ -373,7 +392,12 @@ def main():
         i = args.index("--report")
         report_path = args[i + 1]
         del args[i:i + 2]
-    if len(args) != 3:
+    versions = None
+    if "--versions" in args:
+        i = args.index("--versions")
+        versions = tuple(args[i + 1:i + 3])
+        del args[i:i + 3]
+    if len(args) != 3 or versions is None or len(versions) != 2:
         sys.exit(__doc__)
     vlc, binary, licences_path = args
     configs = glob.glob(os.path.join(vlc, "contrib", "*", "config.mak"))
@@ -391,7 +415,7 @@ def main():
         sys.exit("!! the binary has no local symbols: can't tell which objects are linked")
     problems, packages, report = check(vlc, defined, libraries, build)
     linked_names = [os.path.basename(l) for l in libraries if os.path.basename(l) in LIBRARIES]
-    missing = write_licences(licences_path, vlc, build, packages, linked_names)
+    missing = write_licences(licences_path, vlc, build, packages, linked_names, versions)
     problems += [f"{package}: no licence file in its source" for package in missing]
     if report_path:
         with open(report_path, "w") as f:

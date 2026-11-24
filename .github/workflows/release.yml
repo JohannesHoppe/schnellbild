@@ -5,8 +5,12 @@
 # notarization without waiting; the DMG is kept as artifact "macos-signed".
 # mac-release.yml attaches it to the release as soon as Apple accepts it —
 # after minutes or days. A tag build fails without the secrets: a release is
-# always signed and notarized. Started by hand on a branch without them, the
-# DMG is ad-hoc signed and kept as artifact "macos" (no release).
+# always signed and notarized. Started by hand on main, the signed DMG is
+# submitted the same way and mac-release.yml keeps the stapled one as artifact
+# "macos-dmg" (no release); GitHub refuses a run on any other branch before
+# its first step (the environment's branch rule). Only in a copy of the
+# repository without the secrets is the DMG ad-hoc signed and kept as
+# artifact "macos".
 name: Release
 
 on:
@@ -50,11 +54,8 @@ jobs:
       - name: Select Xcode
         run: Scripts/select_xcode.sh
 
-      - name: Cache VLCKit
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env', 'Scripts/fetch_raw_samples.sh', 'Scripts/raw_samples.env') }}
+      - name: Cache Vendor
+        uses: ./.github/actions/vendor-cache
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
