@@ -290,12 +290,11 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("hidden", timeout: 10) { !self.app.windows.firstMatch.exists }
         // Out of full screen first (not hidden in it, leaving its black space),
         // and hidden, not ended
+        // (the app's log after F: X asks the window out of full screen, which starts leaving it)
         let afterF = logged().components(separatedBy: "full screen: set true").last ?? ""
         XCTAssertTrue(afterF.contains("boss key engaged"), "app log:\n\(logged())")
         let leaving = afterF.components(separatedBy: "full screen: set false").dropFirst().joined()
-        XCTAssertTrue(leaving.contains("full screen: ended, wanted nil, is false")
-                      || leaving.contains("full screen: ended, wanted Optional(false), is false"),
-                      "X leaves full screen; app log:\n\(logged())")
+        XCTAssertTrue(leaving.contains("full screen: will exit"), "X leaves full screen; app log:\n\(logged())")
         XCTAssertEqual(app.state, .runningBackground, "hidden, still running")
     }
 
