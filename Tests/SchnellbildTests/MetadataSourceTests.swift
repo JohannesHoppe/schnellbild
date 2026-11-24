@@ -620,6 +620,60 @@ final class MetadataSourceTests: XCTestCase {
         XCTAssertEqual(MP4Boxes.read(file)?.xmp, packet, "the same through the file")
     }
 
+    /// A fragmented movie (1,000 fragments) with an XMP box after its last:
+    /// its `mfra` lets the walk jump from the first fragment to the last,
+    /// so it reads a few boxes, not every fragment's; without an `mfra`, or
+    /// with one that leads nowhere, every box is walked. The XMP is found
+    /// either way.
+    func testAFragmentedMovieIsWalkedFromItsFirstFragmentToItsLast() throws {
+        func box(_ type: String, _ payload: [UInt8]) -> [UInt8] {
+            let size = UInt32(8 + payload.count)
+            return withUnsafeBytes(of: size.bigEndian, Array.init) + type.unicodeScalars.map { UInt8(truncatingIfNeeded: $0.value) } + payload
+        }
+        func be32(_ value: UInt32) -> [UInt8] { withUnsafeBytes(of: value.bigEndian, Array.init) }
+        func be64(_ value: UInt64) -> [UInt8] { withUnsafeBytes(of: value.bigEndian, Array.init) }
+        /// Counts the reads.
+        final class Counting: ByteSource {
+            let bytes: MemoryBytes
+            var reads = 0
+            init(_ bytes: [UInt8]) { self.bytes = MemoryBytes(bytes) }
+            var size: UInt64 { bytes.size }
+            func read(at offset: UInt64, count: Int) -> [UInt8]? { reads += 1; return bytes.read(at: offset, count: count) }
+        }
+        let packet = Array("<x:xmpmeta xmlns:x=\"adobe:ns:meta/\"/>".utf8)
+        var file = box("ftyp", Array("iso6".utf8) + [0, 0, 0, 0]) + box("moov", box("mvex", []))
+        var offsets: [UInt64] = []
+        for n in 0..<1_000 {
+            offsets.append(UInt64(file.count))
+            file += box("moof", box("mfhd", [0, 0, 0, 0] + be32(UInt32(n + 1)))) + box("mdat", [UInt8](repeating: 0, count: 64))
+        }
+        file += box("uuid", MP4Boxes.xmpUUID + packet)
+        // One tfra (version 1, one byte each for traf, trun and sample numbers)
+        // listing every fragment, the mfro with the mfra's size
+        var entries: [UInt8] = []
+        for (n, offset) in offsets.enumerated() { entries += be64(UInt64(n) * 1_000) + be64(offset) + [1, 1, 1] }
+        let tfra = box("tfra", [1, 0, 0, 0] + be32(1) + be32(0) + be32(UInt32(offsets.count)) + entries)
+        let mfro = [0, 0, 0, 16] + Array("mfro".utf8) + [0, 0, 0, 0]
+        let mfraSize = UInt32(8 + tfra.count + 16)
+        let fragmented = file + be32(mfraSize) + Array("mfra".utf8) + tfra + mfro + be32(mfraSize)
+
+        let jumped = Counting(fragmented)
+        XCTAssertEqual(MP4Boxes.read(jumped)?.xmp, packet, "the XMP after the last fragment")
+        XCTAssertLessThan(jumped.reads, 20, "from the first fragment to the last")
+
+        let walked = Counting(file)
+        XCTAssertEqual(MP4Boxes.read(walked)?.xmp, packet, "without an mfra")
+        XCTAssertGreaterThan(walked.reads, 2_000, "every box")
+
+        // An mfra whose last fragment isn't a moof: walked box by box
+        var wrong = fragmented
+        let last = Int(offsets.last!) + 4
+        wrong.replaceSubrange(last..<last + 4, with: Array("free".utf8))
+        let misled = Counting(wrong)
+        XCTAssertEqual(MP4Boxes.read(misled)?.xmp, packet)
+        XCTAssertGreaterThan(misled.reads, 2_000)
+    }
+
     /// A GoPro clip without a GPS time: its movie header holds the camera's
     /// own clock (no zone), read as such, not as UTC.
     func testAGoProsMovieHeaderIsItsClock() async throws {

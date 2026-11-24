@@ -222,13 +222,45 @@ enum MP4Boxes {
         return Double(duration) / Double(scale)
     }
 
-    /// Reads a movie's facts; nil when the file isn't made of boxes.
+    /// Where the last movie fragment (`moof`) of a fragmented movie starts,
+    /// by its fragment random access box (`mfra`, found through the `mfro`
+    /// that ends the file): the largest `moof` offset of its `tfra` boxes
+    /// (each lists its fragments in order). nil without one, or when it
+    /// doesn't lead to a `moof` between `after` and the `mfra`.
+    static func lastFragment(_ source: ByteSource, after: UInt64) -> UInt64? {
+        guard source.size >= 16, let tail = source.read(at: source.size - 16, count: 16),
+              tail.u32(0) == 16, tail.fourCC(4) == "mfro", let mfraSize = tail.u32(12).map(UInt64.init),
+              mfraSize >= 8 + 16, mfraSize <= source.size, mfraSize <= UInt64(largestIndex) else { return nil }
+        let start = source.size - mfraSize
+        guard let mfra = source.read(at: start, count: Int(mfraSize)), mfra.u32(0).map(UInt64.init) == mfraSize,
+              mfra.fourCC(4) == "mfra" else { return nil }
+        var last: UInt64?
+        for tfra in boxes(in: mfra, 8..<mfra.count) where tfra.type == "tfra" {
+            let at = tfra.payload.lowerBound
+            guard tfra.payload.count >= 16, let version = mfra.u8(at), let sizes = mfra.u8(at + 11),
+                  let entries = mfra.u32(at + 12), entries > 0 else { continue }
+            let wide = version == 1
+            let entrySize = (wide ? 16 : 8) + Int((sizes >> 4) & 3) + Int((sizes >> 2) & 3) + Int(sizes & 3) + 3
+            let entry = at + 16 + (Int(entries) - 1) * entrySize
+            guard entry + entrySize <= tfra.payload.upperBound,
+                  let offset = wide ? mfra.u64(entry + 8) : mfra.u32(entry + 4).map(UInt64.init) else { continue }
+            last = max(last ?? 0, offset)
+        }
+        guard let last, last > after, last < start, let head = source.read(at: last, count: 8), head.fourCC(4) == "moof" else { return nil }
+        return last
+    }
+
+    /// Reads a movie's facts; nil when the file isn't made of boxes. Every
+    /// top-level box is looked at (an XMP `uuid` box can come after the
+    /// movie's data), except the fragments of a fragmented movie between
+    /// its first and its last, which its `mfra` lets the walk jump over.
     static func read(_ source: ByteSource) -> Movie? {
         var at: UInt64 = 0
         var movieIndex: Range<UInt64>?
         var xmpBox: Range<UInt64>?
         var count = 0
         var sawFileType = false
+        var fragmentsSkipped = false
         while at < source.size, count < largestBoxCount {
             count += 1
             guard let head = source.read(at: at, count: min(32, Int(source.size - at))), head.count >= 8,
@@ -249,6 +281,10 @@ enum MP4Boxes {
             if type == "uuid", size - header >= 16, head.count >= Int(header) + 16,
                Array(head[Int(header)..<Int(header) + 16]) == xmpUUID {
                 xmpBox = at + header + 16..<at + size
+            }
+            if type == "moof", !fragmentsSkipped {
+                fragmentsSkipped = true
+                if let last = lastFragment(source, after: at) { at = last; continue }
             }
             at += size
         }
