@@ -352,6 +352,27 @@ final class DualPaneTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: trip.appendingPathComponent("a.jpg").path))
     }
 
+    /// A folder never goes into a folder inside it (F5 of "Photos" to the
+    /// other pane showing "Photos/Backup" would copy it into its own copy,
+    /// level after level). The folder shown is their parent, so only that
+    /// rule refuses it.
+    func testAFolderNeverGoesIntoItsOwnSubfolder() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Photos/a.jpg")
+        let backup = try tree.folder("Photos/Backup")
+        let photos = tree.root.appendingPathComponent("Photos")
+        let spy = FileActionsSpy()
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: spy.actions)
+        await openAndWait(m, tree.root)
+        for how in [BrowserModel.Transfer.asFinder, .copy, .move] {
+            XCTAssertFalse(m.move([photos], into: backup, how: how), "\(how)")
+        }
+        await waitUntil { m.transfersRunning == 0 }
+        XCTAssertTrue(spy.moved.isEmpty)
+        XCTAssertTrue(spy.copied.isEmpty)
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: backup.path), [])
+    }
+
     /// A folder the other pane shows, renamed here: the other pane follows.
     func testTheOtherPaneFollowsARename() async throws {
         let tree = try TempTree(self)
