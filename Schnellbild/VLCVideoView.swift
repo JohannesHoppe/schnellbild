@@ -236,6 +236,13 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.play()
     }
 
+    /// What every media the player opens gets. No on-screen messages (VLC
+    /// would draw them into the picture). VLCKit turns on "play-and-pause":
+    /// VLC would pause as soon as it has read the file to its end, before
+    /// the last pictures are shown, and never report the end (the slideshow
+    /// waits for it).
+    static let mediaOptions = [":no-osd", ":no-play-and-pause"]
+
     private func makeMedia(subtitles: Int? = nil) -> VLCMedia {
         let media: VLCMedia
         let name: URL
@@ -245,12 +252,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         case .stream(let url, let makeStream): media = VLCMedia(stream: makeStream()); name = url
         }
         VLCSafety.restrict(media, for: name, head: head)
-        // No on-screen messages (VLC would draw them into the picture)
-        media.addOption(":no-osd")
-        // VLCKit turns on "play-and-pause": VLC would pause as soon as it has
-        // read the file to its end, before the last pictures are shown, and
-        // never report the end (the slideshow waits for it)
-        media.addOption(":no-play-and-pause")
+        for option in Self.mediaOptions { media.addOption(option) }
         // Subtitles to show: decoded by FFmpeg, not VideoToolbox. VLC draws
         // subtitles into the decoded picture before it converts it for the
         // video callbacks, and can't draw into VideoToolbox's pictures

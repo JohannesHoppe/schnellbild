@@ -310,14 +310,16 @@ final class VisualUITests: SchnellbildUITestCase {
     func testAVKitVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: false) }
     func testVLCVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: true) }
 
-    /// VLC shows no messages over the video (its on-screen messages off,
-    /// `:no-osd`, and the file's title, `--no-video-title-show`), also
-    /// after what VLC's own interface announces there: a pause, the
-    /// volume, the speed, a jump, auto enhance. The grey video is even, so
-    /// the top corners of the picture, where VLC puts its messages, stay
-    /// even too (the app's own badge sits in the middle between them).
-    /// Paused first: the video lasts 3 s and would end before the corners
-    /// are measured.
+    /// Nothing is drawn over a VLC video's top corners, where VLC puts its
+    /// messages (the file's title is off, `--no-video-title-show`), after
+    /// what a player's interface announces: a pause, the volume, the speed,
+    /// a jump, auto enhance. The app drives VLC through libVLC, without
+    /// VLC's own interface, so VLC announces none of these itself; that its
+    /// messages stay out of the pictures (`:no-osd`) is
+    /// `VLCMessagesTests`'s, with a snapshot, which VLC does announce. The
+    /// grey video is even, so the corners stay even too (the app's own
+    /// badge sits in the middle between them). Paused first: the video
+    /// lasts 3 s and would end before the corners are measured.
     func testVLCShowsNoMessagesOverTheVideo() throws {
         let video = try openVideo("grey.mp4", vlc: true)
         app.typeKey(.space, modifierFlags: [])
