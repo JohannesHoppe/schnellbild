@@ -614,6 +614,46 @@ final class AtlasTests: XCTestCase {
         if let selection = m.selection { XCTAssertTrue(m.entries.indices.contains(selection)) }
     }
 
+    /// A copy into a subfolder (FSEvents leaves the app's own out) and a
+    /// change on another Mac's share that only Reload finds: the subfolders
+    /// are walked again and what came joins the list.
+    func testWhatCameIntoASubfolderJoins() async throws {
+        let spy = FileActionsSpy()
+        let (_, m, tree) = try await atlasOfTheTree(spy: spy)
+        let outside = try TempTree(self)
+        let photo = try outside.file("norway-15-copied.jpg")
+        m.move([photo], into: tree.root.appendingPathComponent("Day 2"), how: .copy)
+        await waitUntil({ !m.deepWalking && m.entries.contains { $0.name == "norway-15-copied.jpg" } }, timeout: 10)
+        XCTAssertEqual(m.entries.count, 15)
+        XCTAssertTrue(m.showsDeep)
+
+        try tree.file("Day 5/norway-16-elsewhere.jpg")
+        m.reload()
+        await waitUntil({ !m.deepWalking && m.entries.contains { $0.name == "norway-16-elsewhere.jpg" } }, timeout: 10)
+        XCTAssertEqual(m.entries.count, 16)
+    }
+
+    /// Changes outside the app below the folder, over and over while the
+    /// walk runs: it walks once more when through, and its list is whole.
+    func testChangesBelowWhileItWalksWalkOnceMoreAfter() async throws {
+        let (_, m, tree) = try await atlasOfTheTree()
+        let day3 = BrowserModel.canonicalPath(tree.root.appendingPathComponent("Day 3"))
+        try tree.file("Day 3/norway-17-later.jpg")
+        for _ in 0..<20 {
+            m.changedOutside([day3], rootChanged: false)
+            await Task.yield()
+        }
+        await waitUntil({ !m.deepWalking && m.entries.contains { $0.name == "norway-17-later.jpg" } }, timeout: 10)
+        try await Task.sleep(for: .seconds(BrowserModel.rewalkPause + 0.5))
+        await waitUntil({ !m.deepWalking }, timeout: 10)
+        XCTAssertEqual(m.entries.count, 15)
+        // Inside a hidden folder: no walk at all
+        let hidden = BrowserModel.canonicalPath(tree.root.appendingPathComponent(".hidden"))
+        m.changedOutside([hidden], rootChanged: false)
+        try await Task.sleep(for: .milliseconds(300))
+        XCTAssertFalse(m.deepWalking)
+    }
+
     func testASearchInTheAtlasTakesOverAndGivesBack() async throws {
         let (_, m, _) = try await atlasOfTheTree()
         m.searchText = "geiranger"

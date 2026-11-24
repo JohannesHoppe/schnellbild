@@ -848,24 +848,113 @@ struct FileChanges {
     }
 }
 
-/// How many changes a search has recorded, readable from its walk: each
-/// batch carries the count from when it began, so only later changes are
-/// replayed on it.
+/// How many changes a pane's `ChangeLog` has recorded, readable off the
+/// main thread: what a walk or a listing read is stamped with the count
+/// from when it was read, so only later changes are replayed on it.
 typealias ChangeClock = Locked<Int>
 
 extension Locked where Value == Int {
     convenience init() { self.init(0) }
     /// The count of changes recorded so far (`ChangeClock`).
     var now: Int { value }
+
+    /// Items a walk read since the count was `start`, stamped for
+    /// `ChangeLog.replay` (off the main thread). With no change recorded
+    /// since, all at `start`. Else those still on disk are at their place
+    /// as of the count now, and those gone were read before a change (a
+    /// directory listing hands out names it read earlier, and a folder
+    /// renamed while it is walked is listed further under its old path):
+    /// every change since `start` carries them along.
+    func stamped(_ entries: [GridEntry], since start: Int) -> [(stamp: Int, entries: [GridEntry])] {
+        let now = value
+        guard now != start, !entries.isEmpty else { return [(start, entries)] }
+        var here: [GridEntry] = [], gone: [GridEntry] = []
+        var info = stat()
+        for entry in entries {
+            if lstat(entry.url.path, &info) == 0 { here.append(entry) } else { gone.append(entry) }
+        }
+        return [(now, here), (start, gone)].filter { !$0.entries.isEmpty }
+    }
 }
 
-/// Matches found by a search's walk, read after `stamp` changes were recorded.
+/// The changes the app made on disk as one pane applied them (its own,
+/// the other panes', what went outside the app as `merge` found it), in
+/// order and counted. Whatever reads the pane's lists or the disk away from
+/// the main thread (a relist, the Atlas's walk and its merges, a search's
+/// walk and its arrivals, a slideshow's walk) notes the count when it
+/// starts and, back on the main thread, either replays the changes after
+/// it on what it read (`replay`) or reads again (`now` moved on). The
+/// newest `keptLimit` changes are kept.
+@MainActor
+final class ChangeLog {
+    let clock = ChangeClock()
+    /// (nil: something added, `noteAdded`)
+    private var changes: [FileChange?] = []
+    /// The count before `changes[0]`.
+    private var dropped = 0
+    static let keptLimit = 50_000
+
+    var now: Int { clock.now }
+
+    func record(_ batch: [FileChange]) {
+        guard !batch.isEmpty else { return }
+        append(batch)
+    }
+
+    /// Something was added to the lists that a reading begun before it
+    /// can't have seen (a new folder): counted, so `relist` reads again.
+    func noteAdded() { append([nil]) }
+
+    private func append(_ batch: [FileChange?]) {
+        changes += batch
+        if changes.count > Self.keptLimit {
+            let excess = changes.count - Self.keptLimit
+            changes.removeFirst(excess)
+            dropped += excess
+        }
+        clock.set(dropped + changes.count)
+    }
+
+    /// The changes recorded after the count was `stamp`; nil when they
+    /// aren't all kept any more.
+    func since(_ stamp: Int) -> [FileChange]? {
+        guard stamp >= dropped else { return nil }
+        return changes.dropFirst(min(stamp - dropped, changes.count)).compactMap { $0 }
+    }
+
+    /// `entries` read when the count was `stamp`, with the changes since
+    /// carried out on them: renamed and moved ones under their new path,
+    /// gone ones left out. When the changes since aren't all kept, those
+    /// that may have changed are left out too: the read ones that are gone
+    /// now are better missing than shown where nothing is.
+    func replay(_ entries: [GridEntry], since stamp: Int) -> [GridEntry] {
+        guard let later = since(stamp) else { return [] }
+        guard !later.isEmpty, !entries.isEmpty else { return entries }
+        let lookup = FileChanges(later)
+        return entries.compactMap { entry in
+            guard entry.kind != .parent else { return entry }
+            guard let url = lookup.url(of: entry) else { return nil }
+            return url == entry.url ? entry : entry.moved(to: url)
+        }
+    }
+
+    /// `entries` read in parts stamped off the main thread (`stamped`), each replayed.
+    func replay(_ parts: [(stamp: Int, entries: [GridEntry])]) -> [GridEntry] {
+        parts.flatMap { replay($0.entries, since: $0.stamp) }
+    }
+}
+
+/// Matches found by a search's walk, read after `stamp` changes were
+/// recorded (`ChangeLog`).
 struct SearchBatch: Sendable {
     var stamp: Int
     var entries: [GridEntry]
     /// What the walk learnt about the folders it found, for their tiles
     /// (they needn't walk the same folders again over the network).
     var facts = FolderFacts.Learnt()
+    /// The count when the walk began: what it learnt about a folder that a
+    /// change has touched since isn't kept (`learn`).
+    var walkStart = 0
 }
 
 /// Tells a walk on its own thread to stop (the search went away).
@@ -890,10 +979,19 @@ struct FolderFacts {
         let url: URL
         var top: [URL] = []
         var below: [URL] = []
-        var hasMedia: Bool { !top.isEmpty || !below.isEmpty }
+        /// An archive met inside: it holds media for the tile, whose
+        /// previews then come from the archive's pictures.
+        var archive = false
+        var hasMedia: Bool { !top.isEmpty || !below.isEmpty || archive }
     }
     private var folders: [String: Folder] = [:]
     private(set) var learnt = Learnt()
+    /// The searched folder (standardized): the folders found lie below it.
+    private let root: String
+
+    init(root: URL) {
+        self.root = root.standardizedFileURL.path
+    }
 
     /// A folder found by the search (not an archive).
     mutating func found(folder url: URL) {
@@ -901,14 +999,23 @@ struct FolderFacts {
     }
 
     /// A picture or video met anywhere in the walk.
-    mutating func met(media url: URL) {
+    mutating func met(media url: URL) { met(url, archive: false) }
+
+    /// An archive file met anywhere in the walk: its folders hold media, as
+    /// a folder tile counts them (`isPreviewSource`).
+    mutating func met(archive url: URL) { met(url, archive: true) }
+
+    private mutating func met(_ url: URL, archive: Bool) {
         guard !folders.isEmpty else { return }
         let parent = url.deletingLastPathComponent().standardizedFileURL.path
         var path = parent
-        while true {
+        // (up to the searched folder: the folders found all lie below it)
+        while path != root, BrowserModel.isSameOrInside(path, root) {
             if var folder = folders[path] {
                 let had = folder.hasMedia
-                if path == parent {
+                if archive {
+                    folder.archive = true
+                } else if path == parent {
                     if folder.top.count < BrowserModel.previewCount { folder.top.append(url) }
                 } else if folder.below.count < BrowserModel.previewCount {
                     folder.below.append(url)
@@ -916,7 +1023,6 @@ struct FolderFacts {
                 folders[path] = folder
                 if !had { learnt.withMedia.append(folder.url) }
             }
-            guard path != "/", !path.isEmpty else { break }
             path = (path as NSString).deletingLastPathComponent
         }
     }
@@ -932,6 +1038,8 @@ struct FolderFacts {
         var result = take()
         for folder in folders.values {
             if folder.hasMedia {
+                // (media only in archives: the tile looks into the first one itself)
+                guard !folder.top.isEmpty || !folder.below.isEmpty else { continue }
                 result.previews[folder.url] = folder.top.isEmpty ? folder.below : folder.top
             } else {
                 result.withoutMedia.append(folder.url)
@@ -1007,14 +1115,15 @@ final class SearchRun {
     /// The searched folder (canonical): what moves out of it is no result.
     /// It follows a rename or move of itself or a folder above it.
     private(set) var root: String?
-    let clock = ChangeClock()
     private(set) var results: [GridEntry]
     /// Canonical paths in `results`, so nothing shows up twice.
     private var seen: Set<String>
-    /// Changes made while the walk runs, in order. The walk may still report
-    /// paths it read before such a change; they are replayed on arrival.
-    private var changes: [FileChange] = []
     var task: Task<Void, Never>?
+    /// The walks of folders below the searched one that changed while it is
+    /// shown (`searchArrivals`), by canonical path: one walk per folder at a
+    /// time, a folder that changes again meanwhile is walked once more after it.
+    var arrivals: [String: Task<Void, Never>] = [:]
+    var arrivalsAgain: Set<String> = []
     /// The walk is done (or was stopped).
     var finished = false
     /// Stopped to save work (too many running in the history) before the
@@ -1031,25 +1140,20 @@ final class SearchRun {
         seen = Set(results.map { $0.canonicalPath })
     }
 
-    /// Adds a batch from the walk; what was new. Only the changes recorded
-    /// after the batch began are replayed on it (a path reused since is the
-    /// new item's).
-    func add(_ batch: SearchBatch) -> [GridEntry] {
-        let later = changes.dropFirst(min(batch.stamp, changes.count))
+    /// Adds entries the walk found, with the changes made since they were
+    /// read already carried out on them (`ChangeLog.replay`); what was new.
+    func add(_ found: [GridEntry]) -> [GridEntry] {
         var fresh: [GridEntry] = []
-        for found in batch.entries {
-            guard let entry = later.reduce(Optional(found), { entry, change in
-                entry.flatMap { change.apply(to: $0) }
-            }), stays(entry.url) else { continue }
+        for entry in found where stays(entry) {
             if seen.insert(entry.canonicalPath).inserted { fresh.append(entry) }
         }
         results += fresh
         return fresh
     }
 
-    private func stays(_ url: URL) -> Bool {
+    private func stays(_ entry: GridEntry) -> Bool {
         guard let root else { return true }
-        return BrowserModel.isSameOrInside(BrowserModel.canonicalPath(url), root)
+        return BrowserModel.isSameOrInside(entry.canonicalPath, root)
     }
 
     func apply(_ change: FileChange) { apply([change]) }
@@ -1059,21 +1163,20 @@ final class SearchRun {
         let lookup = FileChanges(batch)
         if let root, let moved = lookup.path(root) { self.root = moved }
         results = results.compactMap { entry in
-            guard let url = lookup.url(entry.url) else { return nil }
+            guard let url = lookup.url(of: entry) else { return nil }
             if url == entry.url { return entry }
+            let moved = entry.moved(to: url)
             // Moved out of the searched folder: no longer a result here
-            guard stays(url) else { return nil }
-            return entry.moved(to: url)
+            return stays(moved) ? moved : nil
         }
         seen = Set(results.map { $0.canonicalPath })
-        if !finished {
-            changes.append(contentsOf: batch)
-            clock.set(changes.count)
-        }
     }
 
     func stop(incomplete: Bool) {
         task?.cancel()
+        for walk in arrivals.values { walk.cancel() }
+        arrivals = [:]
+        arrivalsAgain = []
         if !finished { if incomplete { stoppedEarly = true } else { stoppedByUser = true } }
         finished = true
     }
@@ -1087,17 +1190,19 @@ final class SearchRun {
 @MainActor
 final class SlideshowArrivals {
     static let interval: Duration = .milliseconds(100)
-    private let take: ([(part: Int, items: [GridEntry])]) -> Void
-    private var gathered: [(part: Int, items: [GridEntry])] = []
+    /// Each batch with the count of changes it was read at (`ChangeLog`).
+    typealias Batch = (part: Int, items: [GridEntry], stamp: Int)
+    private let take: ([Batch]) -> Void
+    private var gathered: [Batch] = []
     private var lastHanded: ContinuousClock.Instant?
     private var scheduled: Task<Void, Never>?
 
-    init(_ take: @escaping ([(part: Int, items: [GridEntry])]) -> Void) {
+    init(_ take: @escaping ([Batch]) -> Void) {
         self.take = take
     }
 
-    func add(_ items: [GridEntry], part: Int) {
-        gathered.append((part, items))
+    func add(_ items: [GridEntry], part: Int, stamp: Int = 0) {
+        gathered.append((part, items, stamp))
         if lastHanded.map({ ContinuousClock.now - $0 >= Self.interval }) ?? true {
             flush()
         } else if scheduled == nil {
@@ -1179,6 +1284,23 @@ final class BrowserModel: ObservableObject {
     /// The selection follows its item (a re-sort, a change on disk): whether
     /// the user chose it stays as it was.
     private var keepingChoice = false
+    /// Where the selection goes when its item left the list (`old`, the
+    /// list before; `lookup`, the changes, if any): the first item after it
+    /// that is still listed, as in the Finder after the Trash, else the last
+    /// one before it.
+    private func neighbour(of previous: Int?, in old: [GridEntry], through lookup: FileChanges? = nil) -> Int? {
+        guard !entries.isEmpty else { return nil }
+        guard let previous else { return nil }
+        guard previous < old.count else { return min(previous, entries.count - 1) }
+        let place: (GridEntry) -> Int? = { entry in
+            guard let lookup else { return self.index(ofPath: entry.canonicalPath) }
+            return lookup.url(of: entry).flatMap { self.index(of: $0) }
+        }
+        for entry in old[(previous + 1)...] { if let index = place(entry) { return index } }
+        for entry in old[..<previous].reversed() { if let index = place(entry) { return index } }
+        return min(previous, entries.count - 1)
+    }
+
     private func keepSelection(_ index: Int?) {
         keepingChoice = true
         selection = index
@@ -1200,7 +1322,7 @@ final class BrowserModel: ObservableObject {
     @Published var showInspector = false
     @Published var showHelp = false
     @Published private(set) var isLoading = false {
-        didSet { if !isLoading { refreshIfDeferred() } }
+        didSet { if !isLoading { refreshIfDeferred(); relistIfDeferred() } }
     }
     /// Counts the changes to folders' contents (the app's on disk, those
     /// outside it the folder shown was told of).
@@ -1340,6 +1462,9 @@ final class BrowserModel: ObservableObject {
     private var allEntries: [GridEntry] = [] { didSet { listRevision += 1 } }
     /// The search shown; the history can hold more (`Location.search`).
     private var search: SearchRun?
+    /// Every change the pane applied, for what was read meanwhile off the
+    /// main thread (`ChangeLog`).
+    let changeLog = ChangeLog()
     /// Unfinished searches kept running in the history; older ones stop.
     static let backgroundSearchLimit = 3
     /// A result to select as soon as the search produces it.
@@ -2008,6 +2133,7 @@ final class BrowserModel: ObservableObject {
         isLoading = true            // first: keeps the searchText reset below from searching
         loadingLocation = location
         refreshDeferred = false     // this reading is the one it waited for
+        relistAfterLoad = nil
         // Previews and emptiness come from FolderPreviewCache, which checks
         // each folder's date (changes outside the app: Finder, a camera import)
         emptyFolders = []
@@ -2057,7 +2183,8 @@ final class BrowserModel: ObservableObject {
             // A folder read again (`refresh`): its marks and whether the user
             // chose the selection stay, once the listing (and a search) is there
             defer {
-                if let kept {
+                // (not when a newer navigation won meanwhile: its folder has its own)
+                if let kept, self.loadGeneration == generation {
                     let here = Set(self.entries.map { $0.canonicalPath })
                     self.marked = kept.marks.intersection(here)
                     self.selectionChosen = kept.chosen
@@ -2075,8 +2202,9 @@ final class BrowserModel: ObservableObject {
                 }
             case .failure(let error as CocoaError):
                 // A grant kept for a volume that wasn't there opens now: read again
-                if await FolderAccess.shared.retry(covering: url) {
-                    guard self.loadGeneration == generation else { return }
+                let retried = await FolderAccess.shared.retry(covering: url)
+                guard self.loadGeneration == generation else { return }
+                if retried {
                     self.load(location, thenDetail: thenDetail, password: password, keeping: kept)
                     return
                 }
@@ -2084,12 +2212,14 @@ final class BrowserModel: ObservableObject {
                 // A file dropped from a folder outside every grant: the
                 // sandbox opened only the file, so it alone is shown (at once,
                 // in the full view when it was dropped there)
-                if needsAccess, let target, ArchivePath.split(url) == nil,
-                   let lone = await Blocking.run(.userInitiated, { Self.readableEntry(target) }) {
+                if needsAccess, let target, ArchivePath.split(url) == nil {
+                    let lone = await Blocking.run(.userInitiated, { Self.readableEntry(target) })
                     guard self.loadGeneration == generation else { return }
-                    ordered = self.sorted([parent, lone].compactMap { $0 })
-                    self.accessLimited = true
-                    break
+                    if let lone {
+                        ordered = self.sorted([parent, lone].compactMap { $0 })
+                        self.accessLimited = true
+                        break
+                    }
                 }
                 // Not "empty": the folder couldn't be listed (no permission, a share gone)
                 self.loadError = LoadError(archive: false, reason: error.localizedDescription,
@@ -2116,14 +2246,20 @@ final class BrowserModel: ObservableObject {
             if self.isFiltering {
                 if let run = location.search, run.matcher == self.matcher, !run.stoppedEarly {
                     // History: the remembered results; a search still
-                    // running goes on adding to them.
+                    // running goes on adding to them. A long list is sorted
+                    // off the main thread; what the walk brought or a change
+                    // moved meanwhile is taken in after.
                     self.search = run
                     self.isSearching = !run.finished
                     self.searchStopped = run.stoppedByUser
-                    self.entries = self.sorted(run.results)
+                    let sorted = await self.ordered(run.results)
+                    guard self.loadGeneration == generation, self.search === run else { return }
+                    self.entries = self.entryOrder.reconciled(sorted, with: run.results)
                     if let idx = self.index(of: target) { self.selection = idx } else { self.selectDefault(in: self.entries) }
                 } else {
-                    // The user typed while the folder loaded.
+                    // The user typed while the folder loaded: the search
+                    // remembered there is done with
+                    self.stopSearches(of: [location])
                     self.pendingResultSelection = target
                     self.applyFilter()
                 }
@@ -2682,6 +2818,22 @@ final class BrowserModel: ObservableObject {
             return result
         }
 
+        /// `sorted`, an earlier copy of `current` put in this order away
+        /// from the main thread, brought up to date with `current` (what
+        /// changed while it was sorted): the items still in `current`, as
+        /// they are there now, keep the sorted order; the others are merged
+        /// in where they sort.
+        func reconciled(_ sorted: [GridEntry], with current: [GridEntry]) -> [GridEntry] {
+            var now: [String: GridEntry] = [:]
+            now.reserveCapacity(current.count)
+            for entry in current where now[entry.canonicalPath] == nil { now[entry.canonicalPath] = entry }
+            var result: [GridEntry] = []
+            result.reserveCapacity(current.count)
+            for entry in sorted { if let kept = now.removeValue(forKey: entry.canonicalPath) { result.append(kept) } }
+            guard !now.isEmpty else { return result }
+            return merged(result, current.filter { now[$0.canonicalPath] != nil })
+        }
+
         /// Where each of `adding` sorted new items goes among `count` sorted
         /// ones (`listBefore(i, j)`: item i of the list comes before new item
         /// j): a binary search in what is left of the list for each, so at
@@ -2824,7 +2976,8 @@ final class BrowserModel: ObservableObject {
     func readLocationsIfNeeded() {
         guard sortKey == .distance, distanceOrigin != nil else { return }
         var added = false
-        for entry in listsShown where entry.isMedia && !locationsRead.contains(entry.url) && !locationsQueued.contains(entry.url) {
+        // (a walk's batch: only what it added can be new)
+        for entry in entriesAdded ?? listsShown where entry.isMedia && !locationsRead.contains(entry.url) && !locationsQueued.contains(entry.url) {
             added = true
             locationsQueued.insert(entry.url)
             locationPending.append((entry.url, entry.modDate))
@@ -2891,11 +3044,13 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Sort the lists again, keeping the selection.
-    /// Long lists are sorted off the main thread and shown once sorted
-    /// (sorted again when they or the order changed meanwhile).
+    /// Long lists are sorted off the main thread, one sort at a time (a
+    /// sort can't be stopped half way): asked again meanwhile, or the order
+    /// changed, it sorts once more when done. What came, went or moved while
+    /// it sorted is taken in (`EntryOrder.reconciled`), so each sort shows,
+    /// also while a search streams its batches.
     private func resort() {
-        resortTask?.cancel()
-        resortTask = nil
+        if resortTask != nil { resortAgain = true; return }
         guard allEntries.count + entries.count > Self.mainThreadSortLimit else {
             let keep = selectedEntry?.url
             allEntries = sorted(allEntries)
@@ -2905,20 +3060,34 @@ final class BrowserModel: ObservableObject {
             return
         }
         let all = allEntries, shown = entries, filtering = isFiltering || deep != nil
-        let order = entryOrder, orderSeen = orderRevision, listSeen = listRevision
+        let order = entryOrder, orderSeen = orderRevision, listSeen = listRevision, generation = loadGeneration
         resortTask = Task { [weak self] in
             // (not searching: the grid shows the folder's listing itself)
             let (sortedAll, sortedShown) = await Blocking.run(.userInitiated) {
                 (order.sorted(all), filtering ? order.sorted(shown) : [])
             }
-            guard let self, !Task.isCancelled else { return }
-            guard orderSeen == self.orderRevision, listSeen == self.listRevision else { self.resort(); return }
+            guard let self else { return }
+            self.resortTask = nil
+            defer {
+                if self.resortAgain || orderSeen != self.orderRevision {
+                    self.resortAgain = false
+                    self.resort()
+                }
+            }
+            // Another folder, a search begun or ended, the subfolders shown or
+            // left meanwhile: a list of its own
+            guard generation == self.loadGeneration, filtering == (self.isFiltering || self.deep != nil) else { return }
             let keep = self.selectedEntry?.url
-            self.allEntries = sortedAll
-            self.entries = filtering ? sortedShown : sortedAll
+            let current = listSeen == self.listRevision
+            let order = self.entryOrder
+            self.allEntries = current ? sortedAll : order.reconciled(sortedAll, with: self.allEntries)
+            self.entries = !filtering ? self.allEntries : current ? sortedShown : order.reconciled(sortedShown, with: self.entries)
             self.keepSelection(self.index(of: keep) ?? self.selection)
         }
     }
+
+    /// Asked to sort while a sort runs: once more when it is done.
+    private var resortAgain = false
 
     /// While sorting by capture date, read the dates of the media listed
     /// that aren't known yet (off the main thread, a few files at a time)
@@ -2926,7 +3095,7 @@ final class BrowserModel: ObservableObject {
     func readCaptureDatesIfNeeded() {
         guard sortKey == .captured else { return }
         var missing: [URL: Date?] = [:]
-        for entry in listsShown where entry.isMedia && !captureDatesRead.contains(entry.url) { missing[entry.url] = entry.modDate }
+        for entry in entriesAdded ?? listsShown where entry.isMedia && !captureDatesRead.contains(entry.url) { missing[entry.url] = entry.modDate }
         readCaptureDates(of: missing)
     }
 
@@ -3131,12 +3300,12 @@ final class BrowserModel: ObservableObject {
         guard let root = folderURL, matcher.isValid else { run.finished = true; return }
         isSearching = true
         let debounce = searchDebounce
-        let clock = run.clock
+        let clock = changeLog.clock, listed = changeLog.now
         run.task = Task { [weak self, weak run] in
             if costly, !candidates.isEmpty {
                 let found = await Self.matching(candidates, matcher)
                 guard let self, let run, !Task.isCancelled else { return }
-                self.add(SearchBatch(stamp: 0, entries: found), to: run)
+                self.add(SearchBatch(stamp: listed, entries: found), to: run)
             }
             if debounce > .zero { try? await Task.sleep(for: debounce) }
             guard !Task.isCancelled else { return }
@@ -3197,13 +3366,13 @@ final class BrowserModel: ObservableObject {
 
     /// Add a streamed batch to the search on screen. Internal so tests can
     /// deliver a batch the walk read before a rename or trash.
-    func appendSearchBatch(_ batch: [GridEntry]) {
-        if let search { add(SearchBatch(stamp: 0, entries: batch), to: search) }
+    func appendSearchBatch(_ batch: [GridEntry], stamp: Int = 0) {
+        if let search { add(SearchBatch(stamp: stamp, entries: batch), to: search) }
     }
 
     private func add(_ batch: SearchBatch, to run: SearchRun) {
-        if !batch.facts.isEmpty { learn(batch.facts) }
-        let fresh = run.add(batch)
+        if !batch.facts.isEmpty { learn(batch.facts, since: batch.walkStart) }
+        let fresh = run.add(changeLog.replay(batch.entries, since: batch.stamp))
         guard !fresh.isEmpty, run === search else { return }
         showResults(adding: fresh)
     }
@@ -3214,7 +3383,9 @@ final class BrowserModel: ObservableObject {
     private func showResults(adding fresh: [GridEntry]? = nil) {
         let keep = fresh == nil ? nil : selectedEntry?.url
         if let fresh {
+            entriesAdded = fresh
             entries = entryOrder.merged(entries, fresh)
+            entriesAdded = nil
         } else {
             entries = sorted(search?.results ?? [])
         }
@@ -3247,7 +3418,7 @@ final class BrowserModel: ObservableObject {
                     let stamp = clock?.now ?? 0
                     if await ArchivePath.readsFromArchive(root),
                        let found = try? await ArchiveStore.shared.matches(below: root, matching: matcher), !found.isEmpty {
-                        continuation.yield(SearchBatch(stamp: stamp, entries: found))
+                        continuation.yield(SearchBatch(stamp: stamp, entries: found, walkStart: stamp))
                     }
                     continuation.finish()
                 }
@@ -3262,10 +3433,20 @@ final class BrowserModel: ObservableObject {
             let shown = HiddenFiles.shown
             DispatchQueue.global(qos: .userInitiated).async {
                 let keys = entryKeys
-                var batch = SearchBatch(stamp: clock?.now ?? 0, entries: [])
-                var facts = FolderFacts()
+                let start = clock?.now ?? 0
+                var batch = SearchBatch(stamp: start, entries: [], walkStart: start)
+                var facts = FolderFacts(root: root)
                 var lastFlush = ContinuousClock.now
                 var flushAt = 64
+                // What was read, stamped for the changes made meanwhile
+                // (`ChangeClock.stamped`): the facts go with the first part
+                func yield(_ batch: SearchBatch) {
+                    guard let clock else { continuation.yield(batch); return }
+                    for (index, part) in clock.stamped(batch.entries, since: start).enumerated() {
+                        continuation.yield(SearchBatch(stamp: part.stamp, entries: part.entries,
+                                                       facts: index == 0 ? batch.facts : .init(), walkStart: start))
+                    }
+                }
                 let ending = FolderWalk(root: root, keys: keys, shown: shown).run(cancelled: { stop.isSet }) { url in
                     // A real folder named like an archive: its results are a folder's
                     if ArchiveName.format(of: url.lastPathComponent) != nil,
@@ -3282,10 +3463,12 @@ final class BrowserModel: ObservableObject {
                         if match.kind == .folder, !match.isArchive, match.linkTarget == nil { facts.found(folder: match.url) }
                     }
                     // (read along with the listing: no extra trip) A file,
-                    // not a folder named like one, not a Finder alias
-                    if mediaKind(of: url) != nil, let values = try? url.resourceValues(forKeys: keys),
+                    // not a folder named like one, not a Finder alias; an
+                    // archive holds media for a folder tile as a picture does
+                    let media = mediaKind(of: url) != nil
+                    if media || ArchiveName.format(ofFile: url) != nil, let values = try? url.resourceValues(forKeys: keys),
                        values.isDirectory != true, values.isAliasFile != true || values.isSymbolicLink == true {
-                        facts.met(media: url)
+                        if media { facts.met(media: url) } else { facts.met(archive: url) }
                     }
                     // Each batch is merged into the whole list on the main
                     // thread: the first results come at once, each batch
@@ -3294,8 +3477,8 @@ final class BrowserModel: ObservableObject {
                        batch.entries.count >= flushAt || ContinuousClock.now - lastFlush > .milliseconds(200) {
                         batch.facts = facts.take()
                         flushAt = min(flushAt * 2, 8192)
-                        continuation.yield(batch)
-                        batch = SearchBatch(stamp: clock?.now ?? 0, entries: [])
+                        yield(batch)
+                        batch = SearchBatch(stamp: start, entries: [], walkStart: start)
                         lastFlush = .now
                     }
                     return true
@@ -3303,15 +3486,31 @@ final class BrowserModel: ObservableObject {
                 let whole = ending == .whole
                 // Only a walk that went through knows which folders hold nothing
                 batch.facts = whole ? facts.finish() : facts.take()
-                if !batch.entries.isEmpty || !batch.facts.isEmpty { continuation.yield(batch) }
+                if !batch.entries.isEmpty || !batch.facts.isEmpty { yield(batch) }
                 continuation.finish()
             }
         }
     }
 
     /// What a search's walk learnt about the folders it found: their tiles
-    /// take it from the cache instead of walking them again.
-    private func learn(_ facts: FolderFacts.Learnt) {
+    /// take it from the cache instead of walking them again. Not about a
+    /// folder that a change since the walk began (`walkStart`) moved,
+    /// removed or changed the contents of: the walk may have seen it before.
+    private func learn(_ facts: FolderFacts.Learnt, since walkStart: Int) {
+        // (the changes since no longer all kept: nothing is known for sure)
+        guard let later = changeLog.since(walkStart) else { return }
+        var facts = facts
+        if !later.isEmpty {
+            let touched = Set(later.flatMap(\.affectedFolders))
+            let lookup = FileChanges(later)
+            let current: (URL) -> Bool = { folder in
+                let path = Self.canonicalPath(folder)
+                return !touched.contains(path) && lookup.path(path) == path
+            }
+            facts.withMedia = facts.withMedia.filter(current)
+            facts.previews = facts.previews.filter { current($0.key) }
+            facts.withoutMedia = facts.withoutMedia.filter(current)
+        }
         let cache = FolderPreviewCache.shared
         for folder in facts.withMedia { cache.learn(folder, hasMedia: true) }
         for (folder, files) in facts.previews { cache.learn(folder, files: files) }
@@ -3432,6 +3631,8 @@ final class BrowserModel: ObservableObject {
         guard let current = currentLocation else { return }
         if let last = backStack.last, Self.sameSpot(last, current) {
             backStack[backStack.count - 1] = current
+            // (a search of the place replaced stops, unless kept elsewhere)
+            if last.search !== current.search { stopSearches(of: [last]) }
         } else {
             let pushed = Self.pushing(current, onto: backStack)
             backStack = pushed.stack
@@ -3942,11 +4143,12 @@ final class BrowserModel: ObservableObject {
         guard viewMode == .atlas else { return }
         atlas.walking = deepWalking
         let context = (folderPath ?? "") + "\u{1}" + query + (deep != nil ? "\u{1}deep" : "")
-        // The walk's batches: only what came is looked at
-        if let added = atlasAdded { atlas.entriesAdded(added, context: context) } else { atlas.entriesChanged(entries, context: context) }
+        // The walks' batches: only what came is looked at
+        if let added = entriesAdded { atlas.entriesAdded(added, context: context) } else { atlas.entriesChanged(entries, context: context) }
     }
-    /// What the walk of the subfolders just added to `entries`.
-    private var atlasAdded: [GridEntry]?
+    /// What a walk's batch (the subfolders', a search's) just added to
+    /// `entries`, all that changed: what reacts to the list looks only at it.
+    private var entriesAdded: [GridEntry]?
 
     // MARK: The Atlas with the subfolders
 
@@ -4006,6 +4208,9 @@ final class BrowserModel: ObservableObject {
         /// A batch is merged off the main thread; the walk ended meanwhile.
         var merging = false
         var finishing = false
+        /// Changes outside the app below the folder while it walks: it walks
+        /// once more when it is through (`rewalkDeep`).
+        var again = false
 
         init(root: String) { self.root = root }
     }
@@ -4050,14 +4255,16 @@ final class BrowserModel: ObservableObject {
         }
         walk.selectAt = selectAt
         let own = allEntries.filter(\.isMedia)
-        walk.seen = Set(own.map(\.url.path))   // (the walk lists the folder as its listing did: the same paths)
+        walk.seen = Set(own.map(\.canonicalPath))
         deep = walk
         if !quiet { showDeep(keeping: selected?.url) }
         deepWalking = true
         let kept = explicitItems
+        let clock = changeLog.clock, start = changeLog.now
         walk.task = Task { [weak self] in
-            await Self.walkForSlideshow(folderURL, key: .name, ascending: true, kept: kept) { batch in
-                self?.deepFound(batch, in: walk)
+            await Self.walkForSlideshow(folderURL, key: .name, ascending: true, kept: kept, clock: clock, since: start) { batch, stamp in
+                guard let self else { return }
+                self.deepFound(self.changeLog.replay(batch, since: stamp), in: walk)
             }
             guard !Task.isCancelled else { return }
             self?.deepFinished(walk)
@@ -4074,13 +4281,13 @@ final class BrowserModel: ObservableObject {
         let order = entryOrder
         deep.sorting += 1
         let round = deep.sorting
-        let count = deep.items.count
         Task { [weak self] in
             let ordered = await Blocking.run(.userInitiated) { order.sorted(list) }
             guard let self, self.deep === deep, deep.sorting == round else { return }
             deep.sorted = round
-            let later = Array(deep.items.dropFirst(count))
-            self.showDeepList(later.isEmpty ? ordered : self.entryOrder.merged(ordered, later), keeping: self.selectedEntry?.url ?? url)
+            // What came, went or moved meanwhile (the walk's batches, changes on disk)
+            let now = self.allEntries.filter(\.isMedia) + deep.items
+            self.showDeepList(self.entryOrder.reconciled(ordered, with: now), keeping: self.selectedEntry?.url ?? url)
         }
     }
 
@@ -4098,7 +4305,8 @@ final class BrowserModel: ObservableObject {
 
     private func deepFound(_ batch: [GridEntry], in walk: DeepWalk) {
         guard deep === walk else { return }
-        let new = batch.filter { walk.seen.insert($0.url.path).inserted }
+        // (what a change carried out of the folder is none of its items)
+        let new = batch.filter { Self.isSameOrInside($0.canonicalPath, walk.root) && walk.seen.insert($0.canonicalPath).inserted }
         guard !new.isEmpty else { return }
         if walk.quiet { walk.found += new; return }
         walk.pending += new
@@ -4122,13 +4330,19 @@ final class BrowserModel: ObservableObject {
         // Finder does takes its time on thousands)
         guard entries.count + fresh.count > Self.deepMergeOnMainLimit else { showMerged(entryOrder.merged(entries, fresh), fresh, walk); return }
         walk.merging = true
-        let list = entries, order = entryOrder, revision = listRevision
+        let list = entries, order = entryOrder, revision = listRevision, stamp = changeLog.now
         Task { [weak self] in
             let merged = await Blocking.run(.userInitiated) { order.merged(list, fresh) }
             guard let self, self.deep === walk else { return }
             walk.merging = false
-            // The list changed meanwhile (a change on disk): merged into it as it is now
-            self.showMerged(revision == self.listRevision ? merged : self.entryOrder.merged(self.entries, fresh), fresh, walk)
+            if revision == self.listRevision {
+                self.showMerged(merged, fresh, walk)
+            } else {
+                // The list changed meanwhile (a change on disk): the batch,
+                // as the changes left it, merged into the list as it is now
+                let current = self.changeLog.replay(fresh, since: stamp).filter { Self.isSameOrInside($0.canonicalPath, walk.root) }
+                self.showMerged(self.entryOrder.merged(self.entries, current), current, walk)
+            }
             if !walk.pending.isEmpty { self.flushDeep(walk) } else if walk.finishing { self.deepFinished(walk) }
         }
     }
@@ -4140,9 +4354,9 @@ final class BrowserModel: ObservableObject {
     /// handed to what came.
     private func showMerged(_ list: [GridEntry], _ fresh: [GridEntry], _ walk: DeepWalk) {
         let keep = selectedEntry?.url
-        atlasAdded = fresh
+        entriesAdded = fresh
         entries = list
-        atlasAdded = nil
+        entriesAdded = nil
         if let at = walk.selectAt, let index = index(of: at) {
             walk.selectAt = nil
             walk.selectInside = nil
@@ -4172,7 +4386,23 @@ final class BrowserModel: ObservableObject {
         walk.selectInside = nil
         walk.selectAt = nil
         deepWalking = false
+        // Changed again below the folder while it walked: once more, after a
+        // pause (a folder written to all along is walked now and then, not
+        // over and over)
+        if walk.again {
+            walk.again = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.rewalkPause) { [weak self] in
+                MainActor.assumeIsolated {
+                    guard let self, self.deep === walk else { return }
+                    self.rewalkDeep()
+                }
+            }
+        }
     }
+
+    /// The least time between the end of the Atlas's walk and a walk again
+    /// for changes outside the app made while it ran.
+    static let rewalkPause: TimeInterval = 1
 
     /// Back to the folder's own listing (the grid or list, the preference
     /// off, a search): an item of a subfolder hands the selection to the
@@ -4204,8 +4434,12 @@ final class BrowserModel: ObservableObject {
 
     /// Changes below the folder made outside the app: the walk again, its
     /// items replaced once it is through.
-    private func rewalkDeep() {
-        guard deep != nil, wantsDeep else { return }
+    /// `now`: at once, the walk under way given up (the rules changed:
+    /// hidden items, Reload); else one walk at a time, the one under way
+    /// walking again when it is through.
+    private func rewalkDeep(now: Bool = false) {
+        guard let deep, wantsDeep else { return }
+        if deepWalking, !now { deep.again = true; return }
         startDeep(quiet: true)
     }
 
@@ -4660,7 +4894,16 @@ final class BrowserModel: ObservableObject {
         // Not while loading, under the full view or a slideshow: read again
         // once the listing is there, or back in the grid
         guard !isLoading, mode == .grid, slideshow == nil else { refreshDeferred = true; return }
-        guard let folderURL else { return }
+        guard let folderURL, let folderPath else { return }
+        // The Atlas's subfolders, changed below the folder: walked again,
+        // the folder's own listing stays
+        if deep != nil, !isFiltering, !folders.isEmpty {
+            let paths = folders.map(Self.canonicalPath)
+            if !paths.contains(folderPath), paths.contains(where: { Self.isSameOrInside($0, folderPath) }) {
+                rewalkDeep()
+                return
+            }
+        }
         // A search on screen keeps its results and its walk; only the
         // folders that changed are searched for what arrived. The folder's
         // own listing is read again once the search is cleared.
@@ -4679,26 +4922,50 @@ final class BrowserModel: ObservableObject {
     private var listingStale = false
 
     /// What arrived in `folders` that matches the search: the searched
-    /// folder itself by its listing, a folder below it by a walk of it.
+    /// folder itself by its listing (`walking` names the folders that came
+    /// in it, walked too), a folder below it by a walk of it. One walk per
+    /// folder at a time (a folder written to all along would else start one
+    /// walk after the other): a folder that changes again while it, or a
+    /// folder above it, is walked is walked once more when that is done.
     private func searchArrivals(in folders: [URL], below root: URL, for run: SearchRun) {
         let rootPath = Self.canonicalPath(root)
+        for folder in folders {
+            let path = Self.canonicalPath(folder)
+            guard Self.isSameOrInside(path, rootPath) else { continue }
+            if path != rootPath, run.arrivals.keys.contains(where: { path != $0 && Self.isSameOrInside(path, $0) || path == $0 }) {
+                run.arrivalsAgain.insert(path)
+                continue
+            }
+            startArrivals(in: folder, path: path, shallow: path == rootPath, for: run)
+        }
+    }
+
+    private func startArrivals(in folder: URL, path: String, shallow: Bool, for run: SearchRun) {
         let matcher = run.matcher
-        let clock = run.clock
-        for folder in folders where Self.isSameOrInside(Self.canonicalPath(folder), rootPath) {
-            let shallow = Self.canonicalPath(folder) == rootPath
-            Task { [weak self, weak run] in
-                if shallow {
-                    let stamp = clock.now
-                    let found = await Self.matching(Self.scan(folder).filter { $0.kind != .parent }, matcher)
-                    guard let self, let run else { return }
-                    self.add(SearchBatch(stamp: stamp, entries: found), to: run)
-                } else {
-                    for await batch in Self.recursiveMatches(under: folder, matching: matcher, clock: clock) {
-                        guard let self, let run else { return }
-                        self.add(batch, to: run)
-                    }
+        let clock = changeLog.clock, stamp = changeLog.now
+        // (the searched folder itself: its listing, at once, as often as it changes)
+        let key = shallow ? path + "\u{0}" + UUID().uuidString : path
+        run.arrivals[key] = Task { [weak self, weak run] in
+            if shallow {
+                let found = await Self.matching(Self.scan(folder).filter { $0.kind != .parent }, matcher)
+                guard let self, let run, !Task.isCancelled else { return }
+                self.add(SearchBatch(stamp: stamp, entries: found, walkStart: stamp), to: run)
+            } else {
+                for await batch in Self.recursiveMatches(under: folder, matching: matcher, clock: clock) {
+                    guard let self, let run, !Task.isCancelled else { return }
+                    self.add(batch, to: run)
                 }
             }
+            guard let self, let run, !Task.isCancelled else { return }
+            run.arrivals[key] = nil
+            // What changed again meanwhile, below no folder still walked
+            let again = run.arrivalsAgain.filter { pending in
+                !run.arrivals.keys.contains { Self.isSameOrInside(pending, $0) }
+            }
+            guard !again.isEmpty, run === self.search, let root = self.folderURL else { return }
+            run.arrivalsAgain.subtract(again)
+            let outermost = again.filter { pending in !again.contains { $0 != pending && Self.isSameOrInside(pending, $0) } }
+            self.searchArrivals(in: outermost.map { URL(fileURLWithPath: $0, isDirectory: true) }, below: root, for: run)
         }
     }
 
@@ -4708,13 +4975,19 @@ final class BrowserModel: ObservableObject {
         DispatchQueue.main.async { [weak self] in self?.refresh() }
     }
 
+    private func relistIfDeferred() {
+        guard let again = relistAfterLoad else { return }
+        relistAfterLoad = nil
+        DispatchQueue.main.async { [weak self] in self?.relist(force: again.force, searchAgain: again.searchAgain) }
+    }
+
     /// Whether a change in `folders` shows here: the folder itself, or one
-    /// below it while searching.
+    /// below it while searching or listing the Atlas's subfolders.
     func shows(any folders: [URL]) -> Bool {
         guard let folderPath else { return false }
         return folders.contains { folder in
             let path = Self.canonicalPath(folder)
-            return path == folderPath || (isFiltering && Self.isSameOrInside(path, folderPath))
+            return path == folderPath || ((isFiltering || deep != nil) && Self.isSameOrInside(path, folderPath))
         }
     }
 
@@ -4855,7 +5128,7 @@ final class BrowserModel: ObservableObject {
             return
         }
         relist(force: true, searchAgain: isFiltering)
-        rewalkDeep()
+        rewalkDeep(now: true)
     }
 
     /// The watch follows the folder shown (none inside an archive: nothing
@@ -4893,9 +5166,12 @@ final class BrowserModel: ObservableObject {
                 if now == nil {
                     let final = archive.deletingLastPathComponent().appendingPathComponent(DownloadName.finalName(of: archive.lastPathComponent))
                     if await Blocking.run(.utility, { FileManager.default.fileExists(atPath: final.path) }) {
+                        // (the lists first, as `adopt` does: the reading the
+                        // folder's move starts keeps the selection and marks
+                        // under their new paths)
                         let change = FileChange.moved(archive, to: final)
-                        self.followFolder(through: [change])
                         self.applyHere([change])
+                        self.followFolder(through: [change])
                     }
                     return false
                 }
@@ -4924,17 +5200,42 @@ final class BrowserModel: ObservableObject {
             return
         }
         let below = changed.filter { $0 != folderPath && Self.isSameOrInside($0, folderPath) }
-        if !below.isEmpty {
-            forgetBelow(below)
+        if changed.contains(folderPath) { relist(force: true) }
+        guard !below.isEmpty else { return }
+        // Only what the pane's walks see: not inside hidden folders (unless
+        // shown) or packages, which the search, the Atlas's walk and the
+        // folder tiles never walk into (a library's import, an app's cache
+        // written to all along). Looked at off the main thread.
+        let shown = HiddenFiles.shown, generation = loadGeneration
+        Task {
+            let seen = await Blocking.run(.utility) { below.filter { Self.walksInto($0, below: folderPath, shown: shown) } }
+            guard loadGeneration == generation, !seen.isEmpty else { return }
+            forgetBelow(seen)
             rewalkDeep()
             // A search shown finds what arrived there, and drops what went
             if isFiltering, let run = search {
-                let folders = below.map { URL(fileURLWithPath: $0, isDirectory: true) }
+                let folders = seen.map { URL(fileURLWithPath: $0, isDirectory: true) }
                 searchArrivals(in: folders, below: folderURL, for: run)
-                dropVanishedResults(in: Set(below))
+                dropVanishedResults(in: Set(seen))
             }
         }
-        if changed.contains(folderPath) { relist(force: true) }
+    }
+
+    /// Whether the walks below `root` reach `folder` (canonical paths): no
+    /// folder on the way from `root` down to it, nor itself, is hidden
+    /// (while hidden items aren't `shown`) or a package. A folder no longer
+    /// there counts by its name. Reads the disk.
+    nonisolated static func walksInto(_ folder: String, below root: String, shown: Bool) -> Bool {
+        guard folder != root, isSameOrInside(folder, root) else { return false }
+        let rest = folder.dropFirst(root == "/" ? 1 : root.count + 1)
+        var current = URL(fileURLWithPath: root, isDirectory: true)
+        for part in rest.split(separator: "/") {
+            current.appendPathComponent(String(part), isDirectory: true)
+            let values = try? current.resourceValues(forKeys: HiddenFiles.keys.union([.isPackageKey]))
+            if values?.isPackage == true { return false }
+            if !shown, HiddenFiles.isHidden(name: String(part), values: values) { return false }
+        }
+        return true
     }
 
     /// Folder tiles read their previews and emptiness again: the folders
@@ -4960,6 +5261,8 @@ final class BrowserModel: ObservableObject {
     private var relisting = false
     /// Asked again while reading: read once more when done.
     private var relistQueued: (force: Bool, searchAgain: Bool)?
+    /// Asked while the folder loads: read once more after (`load`).
+    private var relistAfterLoad: (force: Bool, searchAgain: Bool)?
 
     /// The folder shown, read again in place (changes outside the app: the
     /// Finder, a camera import, another Mac on a share): what came, went or
@@ -4968,7 +5271,13 @@ final class BrowserModel: ObservableObject {
     /// listed (one look at the disk, off the main thread). `searchAgain`: a
     /// search shown searches again once the listing is in (Reload).
     func relist(force: Bool = false, searchAgain: Bool = false) {
-        guard let folderURL, !isLoading else { return }
+        guard let folderURL else { return }
+        // A listing under way may have been read before the change: once
+        // more when it is in
+        guard !isLoading else {
+            relistAfterLoad = (force || relistAfterLoad?.force == true, searchAgain || relistAfterLoad?.searchAgain == true)
+            return
+        }
         guard ArchivePath.split(folderURL) == nil else {
             if force { load(Location(folder: folderURL, query: searchText, selected: selectedEntry?.url), keeping: (marked, selectionChosen)) }
             return
@@ -4978,7 +5287,7 @@ final class BrowserModel: ObservableObject {
             return
         }
         relisting = true
-        let generation = loadGeneration, known = listedStamp
+        let generation = loadGeneration, known = listedStamp, changes = changeLog.now
         Task {
             defer {
                 relisting = false
@@ -4995,6 +5304,13 @@ final class BrowserModel: ObservableObject {
             guard force || (stamp != nil && stamp != known) else { return }
             guard case .success(let listing) = await Self.listing(folderURL, kept: explicitItems) else { return }
             guard loadGeneration == generation, !isLoading else { return }
+            // The app changed the lists while it read (a rename, the Trash,
+            // a move, a new folder: FSEvents leaves those out, so nothing
+            // else would set right what this listing has from before them)
+            guard changeLog.now == changes else {
+                relistQueued = (true, searchAgain || relistQueued?.searchAgain == true)
+                return
+            }
             listedStamp = stamp
             merge(listing)
             if searchAgain, isFiltering {
@@ -5025,9 +5341,13 @@ final class BrowserModel: ObservableObject {
             if now != entry { renewed.append(now) }
         }
         let changedPaths = Set(renewed.map { $0.canonicalPath })
-        renewed += listing.entries.filter { !listed.contains($0.canonicalPath) }
+        let came = listing.entries.filter { !listed.contains($0.canonicalPath) }
+        renewed += came
         if !gone.isEmpty { applyHere(gone) }
         guard !renewed.isEmpty else { return }
+        // A folder that came (moved in whole: FSEvents names only the folder
+        // shown) is walked for the search and the Atlas's subfolders
+        let cameFolders = came.filter { $0.kind == .folder && $0.linkTarget == nil }.map(\.url)
         forgetBelow(renewed.filter { $0.kind == .folder }.map { $0.canonicalPath })
         let keep = selectedEntry?.url
         let previous = selection
@@ -5035,10 +5355,14 @@ final class BrowserModel: ObservableObject {
         allEntries = entryOrder.merged(unchanged, renewed)
         if isFiltering {
             // What arrived and matches: the search finds it
-            if let run = search, let folderURL { searchArrivals(in: [folderURL], below: folderURL, for: run) }
+            if let run = search, let folderURL { searchArrivals(in: [folderURL] + cameFolders, below: folderURL, for: run) }
             return
         }
-        if deep != nil { showDeep(keeping: keep); return }
+        if deep != nil {
+            showDeep(keeping: keep)
+            if !cameFolders.isEmpty { rewalkDeep() }
+            return
+        }
         entries = allEntries
         keepSelection(index(of: keep) ?? previous.map { min($0, entries.count - 1) })
     }
@@ -5099,7 +5423,8 @@ final class BrowserModel: ObservableObject {
     nonisolated static let sniffLimit = 5_000
 
     /// The folder shown went (deleted, moved away, its volume gone): the
-    /// nearest folder around it still there opens, at last the drives' level.
+    /// nearest folder around it still there opens, at last the drives' level;
+    /// one still there under its path (replaced in place) is read again.
     /// The app's own moves and renames reach the pane as `FileChange`s, and
     /// the folder shown follows them (`followFolder`); FSEvents may report
     /// the folder gone before that change arrives or while the disk is read
@@ -5131,7 +5456,14 @@ final class BrowserModel: ObservableObject {
             }
             guard loadGeneration == generation, let shown = self.folderURL else { return }
             guard Self.samePath(shown, folderURL), Self.transfersUnderWay == 0 else { followFolderGone(); return }
-            guard let place, !Self.samePath(place, folderURL) else { return }
+            guard let place else { return }
+            guard !Self.samePath(place, folderURL) else {
+                // A folder at the same path (another one swapped in, or the
+                // folder above it): what it holds read again
+                relist(force: true, searchAgain: isFiltering)
+                rewalkDeep(now: true)
+                return
+            }
             // Not into the history: the folder left is gone
             load(Location(folder: place, query: "", selected: nil))
         }
@@ -5163,6 +5495,7 @@ final class BrowserModel: ObservableObject {
         guard folderURL != nil, !isLoading, slideshow == nil else { return }
         forgetBelow(nil)
         relist(force: true, searchAgain: isFiltering)
+        rewalkDeep(now: true)
     }
 
     /// F1 / "Schnellbild Help". Not over the rename sheet: a second sheet
@@ -5266,6 +5599,8 @@ final class BrowserModel: ObservableObject {
         guard self.folderURL.map(Self.canonicalPath) == Self.canonicalPath(folderURL) else { return url }
         let entry = GridEntry(url: url, kind: .folder, modDate: Date())
         allEntries = entryOrder.merged(allEntries, [entry])
+        // (a listing read before it, `relist`, reads again)
+        changeLog.noteAdded()
         noteFolder(url, empty: true)
         if !isFiltering, deep == nil {
             entries = allEntries
@@ -5502,6 +5837,10 @@ final class BrowserModel: ObservableObject {
         // Into the folder shown (a drop onto the pane): read it again to show what came
         if target == shown { refresh(changed: [folder]); return }
         dropWhatLeft(keeping: keep)
+        // Copied into a folder below it (onto a result's folder tile, F5 into
+        // a subfolder the other pane shows): the search or the Atlas's
+        // subfolders find what came (FSEvents leaves the app's own copies out)
+        if copied, Self.isSameOrInside(target, shown), isFiltering || deep != nil { refresh(changed: [folder]) }
     }
 
     /// After a move: what went elsewhere leaves this folder's listing and
@@ -5511,7 +5850,7 @@ final class BrowserModel: ObservableObject {
         let inShown: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == shown }
         let belowShown: (GridEntry) -> Bool = { Self.isSameOrInside($0.canonicalPath, shown) }
         let before = (allEntries.count, entries.count)
-        let previous = selection
+        let previous = selection, old = entries
         allEntries = allEntries.filter(inShown)
         deep?.items = deep?.items.filter(belowShown) ?? []
         entries = isFiltering || deep != nil ? entries.filter(belowShown) : allEntries
@@ -5522,7 +5861,7 @@ final class BrowserModel: ObservableObject {
             keepSelection(index)
         } else if let previous, !entries.isEmpty {
             // What was selected went: its neighbour, as after the Trash
-            keepSelection(min(previous, entries.count - 1))
+            keepSelection(neighbour(of: previous, in: old))
         } else {
             selectDefault(in: entries)
         }
@@ -5778,6 +6117,9 @@ final class BrowserModel: ObservableObject {
     }
 
     private func applyHere(_ changes: [FileChange]) {
+        guard !changes.isEmpty else { return }
+        // What is still being read meanwhile replays them (`ChangeLog`)
+        changeLog.record(changes)
         // What the folders around the changes contain is no longer known.
         foldersChanged(changes.flatMap(\.affectedFolders))
         let lookup = FileChanges(changes)
@@ -5785,6 +6127,7 @@ final class BrowserModel: ObservableObject {
         let order = entryOrder
         let keep = selectedEntry.flatMap { lookup.url($0.url) }
         let previous = selection
+        let before = entries
         if !marked.isEmpty { marked = Set(marked.compactMap { lookup.path($0) }) }
         playbackPositions.follow(lookup)
         allEntries = order.following(allEntries, lookup)
@@ -5798,6 +6141,13 @@ final class BrowserModel: ObservableObject {
         if let deep, let shown = folderPath {
             let below: (GridEntry) -> Bool = { Self.isSameOrInside($0.canonicalPath, shown) }
             deep.items = order.following(deep.items, lookup).filter(below)
+            // (what the walk found and isn't shown yet too)
+            let follow: ([GridEntry]) -> [GridEntry] = { list in
+                list.compactMap { entry in lookup.url(of: entry).map { $0 == entry.url ? entry : entry.moved(to: $0) } }.filter(below)
+            }
+            if !deep.pending.isEmpty { deep.pending = follow(deep.pending) }
+            if !deep.found.isEmpty { deep.found = follow(deep.found) }
+            deep.seen = Set(deep.seen.compactMap { lookup.path($0) })
             entries = entries.filter(below)
         }
         // The other files too: renamed in place, gone when trashed or moved
@@ -5820,8 +6170,7 @@ final class BrowserModel: ObservableObject {
         // Marks only on what is still listed (a mark no tile shows would
         // take F5 / F6 / the Trash away from the selection)
         if !marked.isEmpty { marked.formIntersection(entries.map { $0.canonicalPath }) }
-        keepSelection(index(of: keep)
-            ?? (entries.isEmpty ? nil : previous.map { min($0, entries.count - 1) }))
+        keepSelection(index(of: keep) ?? neighbour(of: previous, in: before, through: lookup))
         if slideshow != nil { applyToSlideshow(lookup) }
         // The full view shows media only: back to the grid when what it showed went
         if mode == .detail, selectedMediaEntry == nil { mode = .grid }
@@ -6014,6 +6363,7 @@ final class BrowserModel: ObservableObject {
         let key = sortKey, ascending = sortAscending, origin = distanceOrigin, kept = explicitItems
         let startAt = show.startAt.map(Self.canonicalPath), startInside = show.startInside
         let partPause = slideshowPartPause
+        let clock = changeLog.clock, start = changeLog.now
         slideshowWalk = Task { [weak self] in
             // The show's parts: each search result; over one folder its own
             // media, then each subfolder
@@ -6041,15 +6391,20 @@ final class BrowserModel: ObservableObject {
             // What the walk finds goes into the show in a few large steps
             // (each one a pass over the show's items), not one per result
             // or folder
-            let arrivals = SlideshowArrivals { [weak self] batches in self?.addToSlideshow(batches, id: id) }
+            // (each batch as the changes made since it was read left it)
+            let arrivals = SlideshowArrivals { [weak self] batches in
+                guard let self else { return }
+                self.addToSlideshow(batches.map { ($0.part, self.changeLog.replay($0.items, since: $0.stamp)) }, id: id)
+            }
             for (step, number) in ([first] + parts.indices.filter({ $0 != first })).enumerated() {
                 if step > 0, let pause = partPause { arrivals.flush(); try? await Task.sleep(for: pause) }
                 switch parts[number] {
                 case .media(let items):
-                    if !items.isEmpty { arrivals.add(items, part: number) }
+                    if !items.isEmpty { arrivals.add(items, part: number, stamp: start) }
                 case .folder(let url):
-                    await Self.walkForSlideshow(url, key: key, ascending: ascending, origin: origin, kept: kept) { batch in
-                        arrivals.add(batch, part: number)
+                    await Self.walkForSlideshow(url, key: key, ascending: ascending, origin: origin, kept: kept,
+                                                clock: clock, since: start) { batch, stamp in
+                        arrivals.add(batch, part: number, stamp: stamp)
                     }
                 }
                 if Task.isCancelled { return }
@@ -6066,18 +6421,29 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Depth first: a folder's own media in the sort order, then each of its
-    /// subfolders in the sort order. Hands over one batch per folder.
+    /// subfolders in the sort order. Hands over one batch per folder, with
+    /// the count of `clock` from which on the changes are replayed on it
+    /// (`ChangeLog.replay`; `start`: the count when the walk began).
     nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool, origin: GeoPoint? = nil, kept: Set<String> = [],
-                                             found: @MainActor ([GridEntry]) -> Void) async {
+                                             clock: ChangeClock? = nil, since start: Int = 0,
+                                             found: @MainActor (_ batch: [GridEntry], _ stamp: Int) -> Void) async {
         guard !Task.isCancelled else { return }
         let sorted = await sortedListing(of: folder, key: key, ascending: ascending, origin: origin, kept: kept)
         guard !Task.isCancelled else { return }
         let media = sorted.filter(\.isMedia)
-        if !media.isEmpty { await found(media) }
+        if !media.isEmpty {
+            // (changes made meanwhile: what is still there and what was read before them)
+            let parts = if let clock, clock.now != start {
+                await Blocking.run { clock.stamped(media, since: start) }
+            } else {
+                [(stamp: start, entries: media)]
+            }
+            for part in parts { await found(part.entries, part.stamp) }
+        }
         let folders = sorted.filter { $0.kind == .folder }
         let links = await Blocking.run { Set(folders.filter { isLink($0.url) }.map(\.url)) }
         for sub in folders where !links.contains(sub.url) {
-            await walkForSlideshow(sub.url, key: key, ascending: ascending, origin: origin, kept: kept, found: found)
+            await walkForSlideshow(sub.url, key: key, ascending: ascending, origin: origin, kept: kept, clock: clock, since: start, found: found)
         }
     }
 

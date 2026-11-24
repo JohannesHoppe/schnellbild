@@ -4368,3 +4368,114 @@ final class ListLookupTests: XCTestCase {
         XCTAssertTrue(BrowserModel.samePath(m.folderURL!, moved), "the folder shown follows its own move")
     }
 }
+
+// MARK: - What was read meanwhile (`ChangeLog`)
+
+@MainActor
+final class ChangeLogTests: XCTestCase {
+    /// A change that moves what another moved: applied in order, not looked
+    /// up as if independent.
+    func testChangesBuildingOnEachOtherApplyInOrder() {
+        let b = URL(fileURLWithPath: "/r/b", isDirectory: true)
+        let c = URL(fileURLWithPath: "/r/c", isDirectory: true)
+        let changes = FileChanges([.moved(b, to: c), .moved(c.appendingPathComponent("x"), to: URL(fileURLWithPath: "/r/d"))])
+        XCTAssertEqual(changes.path("/r/b/x/f.jpg"), "/r/d/f.jpg")
+        XCTAssertEqual(changes.path("/r/b/y.jpg"), "/r/c/y.jpg")
+        XCTAssertEqual(changes.path("/r/c/x/g.jpg"), "/r/d/g.jpg")
+    }
+
+    /// What was read before changes gets them carried out; what was read
+    /// after none; when the changes since aren't all kept, nothing of it.
+    func testReplayCarriesOutTheChangesSinceTheReading() {
+        let log = ChangeLog()
+        let a = GridEntry(url: URL(fileURLWithPath: "/r/Trip/a.jpg"), kind: .image)
+        let b = GridEntry(url: URL(fileURLWithPath: "/r/Old/b.jpg"), kind: .image)
+        let before = log.now
+        log.record([.moved(URL(fileURLWithPath: "/r/Trip"), to: URL(fileURLWithPath: "/r/Iceland")),
+                    .removed(URL(fileURLWithPath: "/r/Old"))])
+        XCTAssertEqual(log.replay([a, b], since: before).map(\.url.path), ["/r/Iceland/a.jpg"])
+        XCTAssertEqual(log.replay([a, b], since: log.now).map(\.url.path), ["/r/Trip/a.jpg", "/r/Old/b.jpg"])
+        log.noteAdded()
+        XCTAssertEqual(log.now, before + 3, "something added counts")
+        XCTAssertEqual(log.since(before)?.count, 2, "but replays nothing")
+        log.record((0..<ChangeLog.keptLimit).map { .removed(URL(fileURLWithPath: "/elsewhere/\($0)")) })
+        XCTAssertNil(log.since(before))
+        XCTAssertEqual(log.replay([a], since: before), [], "not known for sure: left out")
+    }
+
+    /// A walk's batch read while changes were made: what is still on disk
+    /// is at its place now, what is gone was read before a change.
+    func testAWalksBatchIsStampedByWhatIsStillThere() throws {
+        let tree = try TempTree(self)
+        let here = GridEntry(url: try tree.file("here.jpg"), kind: .image)
+        let gone = GridEntry(url: tree.root.appendingPathComponent("gone.jpg"), kind: .image)
+        let clock = ChangeClock()
+        let unchanged = clock.stamped([here, gone], since: 0)
+        XCTAssertEqual(unchanged.map(\.stamp), [0], "no change since: all from the start")
+        clock.set(3)
+        let parts = clock.stamped([here, gone], since: 0)
+        XCTAssertEqual(parts.map(\.stamp), [3, 0])
+        XCTAssertEqual(parts.map { $0.entries.map(\.name) }, [["here.jpg"], ["gone.jpg"]])
+    }
+
+    /// A search whose walk is through still takes what a change below it
+    /// brings (the other pane copied into it): read before a rename made
+    /// meanwhile, it comes under the new path.
+    func testAFinishedSearchReplaysChangesOnWhatArrivesLate() async throws {
+        let tree = try TempTree(self)
+        try tree.file("photos/IMG_1.jpg")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "IMG")
+        XCTAssertEqual(m.names, ["IMG_1.jpg"])
+        let read = m.changeLog.now
+        m.selectEntry(named: "IMG_1.jpg")
+        await searchAndWait(m, "")
+        m.selectEntry(named: "photos")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Pics")
+        await searchAndWait(m, "IMG")
+        m.appendSearchBatch([GridEntry(url: tree.root.appendingPathComponent("photos/IMG_2.jpg"), kind: .image)], stamp: read)
+        XCTAssertEqual(Set(m.entries.map { m.relativeLocation(of: $0) }), ["Pics"], "no result under the old path")
+    }
+
+    /// The case as typed: a name stored decomposed ("u" and a combining
+    /// mark, as the file system writes it) matches a query typed precomposed.
+    func testNamesMatchWhetherComposedOrNot() {
+        let stored = "Su\u{0308}d 2024.jpg"
+        for mode in NameMatcher.Mode.allCases {
+            XCTAssertTrue(NameMatcher("Süd", mode: mode).matches(stored), "\(mode)")
+            XCTAssertTrue(NameMatcher("Su\u{0308}d", mode: mode).matches("Süd.jpg"), "\(mode)")
+        }
+        XCTAssertFalse(NameMatcher("süd", mode: .matchingCase).matches(stored))
+    }
+
+    /// A found folder holding only archives holds media for its tile (as
+    /// the tile itself counts it): not learnt as empty, no previews learnt
+    /// (the tile looks into the archive).
+    func testAFolderOfArchivesIsntLearntEmpty() {
+        let root = URL(fileURLWithPath: "/r", isDirectory: true)
+        let comics = root.appendingPathComponent("Comics", isDirectory: true)
+        var facts = FolderFacts(root: root)
+        facts.found(folder: comics)
+        facts.met(archive: comics.appendingPathComponent("issue1.cbz"))
+        let learnt = facts.finish()
+        XCTAssertEqual(learnt.withMedia, [comics])
+        XCTAssertEqual(learnt.withoutMedia, [])
+        XCTAssertNil(learnt.previews[comics])
+    }
+
+    /// The selected item trashed with others before it: the one after it
+    /// is selected, as in the Finder, not the one at its old place.
+    func testTheSelectionGoesToTheNeighbourOfWhatWent() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg"] { try tree.file(n) }
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "a.jpg" }), command: false, shift: false)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "c.jpg" }), command: true, shift: false)
+        XCTAssertEqual(m.marked.count, 2)
+        m.moveSelectionToTrash()
+        await waitUntil { m.names == ["..", "b.jpg", "d.jpg", "e.jpg"] }
+        XCTAssertEqual(m.selectedEntry?.name, "d.jpg")
+    }
+}

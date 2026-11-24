@@ -253,8 +253,10 @@ extension BrowserModel {
             }
             if !folders.isEmpty {
                 notifyFolderChanges(folders)
-                // Read again only when the folder shown (or a search over it) got something
-                if let shown = folderURL, isFiltering || folders.contains(where: { BrowserModel.samePath($0, shown) }) {
+                // Read again only when the folder shown (or a search or the
+                // Atlas's subfolders over it) got something
+                if let shown = folderURL, isFiltering || folders.contains(where: { BrowserModel.samePath($0, shown) })
+                    || showsDeep && folders.contains(where: { BrowserModel.isSameOrInside(BrowserModel.canonicalPath($0), BrowserModel.canonicalPath(shown)) }) {
                     refresh(changed: folders)
                 }
             }
