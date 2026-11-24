@@ -1,0 +1,40 @@
+# Makes the JPEG XL test fixtures (Scripts/make_jxl_fixtures.sh) and uploads
+# them with their source PNGs as artifact "jxl-fixtures", to be checked and
+# committed into Tests/SchnellbildTests/Pictures. This throwaway runner is the
+# only place libjxl's cjxl is installed: ImageIO reads JPEG XL but doesn't
+# write it, and no encoder is installed on a developer's Mac.
+name: JPEG XL fixtures
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fixtures:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+
+      - name: Install cjxl
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_NO_INSTALL_CLEANUP: "1"
+        run: |
+          brew install jpeg-xl
+          brew list --versions jpeg-xl
+
+      - name: Make the fixtures
+        env:
+          SOURCES: jxl-fixtures/sources
+        run: ./Scripts/make_jxl_fixtures.sh jxl-fixtures
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: jxl-fixtures
+          path: jxl-fixtures/
+          if-no-files-found: error
