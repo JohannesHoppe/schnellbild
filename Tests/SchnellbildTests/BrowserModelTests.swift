@@ -4016,6 +4016,14 @@ final class SafeTransferTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: restored.appendingPathComponent("a.jpg").path))
         let again = try tree.folder(LiveFiles.renameTemporaryName(for: "Photos"))
         XCTAssertNil(LiveFiles.restoreIfLeftOver(again, settled: 0), "never over a name taken")
+        // A file onto a file: the system's plain rename would replace it
+        let notes = tree.root.appendingPathComponent("notes.txt")
+        try Data("kept".utf8).write(to: notes)
+        let leftoverFile = tree.root.appendingPathComponent(LiveFiles.renameTemporaryName(for: "notes.txt"))
+        try Data("leftover".utf8).write(to: leftoverFile)
+        XCTAssertNil(LiveFiles.restoreIfLeftOver(leftoverFile, settled: 0), "never over a file taken")
+        XCTAssertEqual(try Data(contentsOf: notes), Data("kept".utf8))
+        XCTAssertEqual(try Data(contentsOf: leftoverFile), Data("leftover".utf8))
     }
 
     func testACopyIsWrittenUnderATemporaryNameAndLeftoversAreSwept() async throws {
@@ -4026,6 +4034,14 @@ final class SafeTransferTests: XCTestCase {
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"], "nothing left under a temporary name")
         XCTAssertThrowsError(try LiveFiles.copy(source, target.appendingPathComponent("a.jpg")), "never over a name taken")
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"])
+        // A copy that fails half way (a file it can't read): nothing under
+        // the real name, nothing under the temporary one
+        try tree.file("album/1.jpg", bytes: 100)
+        let unreadable = try tree.file("album/2.jpg", bytes: 100)
+        try FileManager.default.setAttributes([.posixPermissions: 0], ofItemAtPath: unreadable.path)
+        addTeardownBlock { try? FileManager.default.setAttributes([.posixPermissions: 0o644], ofItemAtPath: unreadable.path) }
+        XCTAssertThrowsError(try LiveFiles.copy(tree.root.appendingPathComponent("album"), target.appendingPathComponent("album")))
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"], "no cut-off copy left")
 
         let old = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
         let fresh = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
@@ -4033,6 +4049,14 @@ final class SafeTransferTests: XCTestCase {
         for url in [old, fresh, alike] { try Data(count: 5).write(to: url) }
         try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: old.path)
         try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: alike.path)
+        // One this process is writing stays, however old
+        let running = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
+        try Data(count: 5).write(to: running)
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: running.path)
+        PartialCopies.shared.begin(running)
+        XCTAssertFalse(LiveFiles.removeIfLeftOver(running), "a copy under way")
+        PartialCopies.shared.end(running)
+        XCTAssertTrue(LiveFiles.removeIfLeftOver(running))
         let m = makeModel()
         await openAndWait(m, target)
         XCTAssertEqual(m.names, ["..", "a.jpg"])
