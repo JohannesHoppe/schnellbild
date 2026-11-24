@@ -864,6 +864,16 @@ final class SearchTests: XCTestCase {
         m.searchText = "(a|a)*b"
         XCTAssertLessThan(Date().timeIntervalSince(start), 0.5, "the main thread goes on at once")
         XCTAssertTrue(m.isSearching)
+        // While the names are matched (each up to the matcher's deadline),
+        // the main thread keeps turning
+        var largestGap: TimeInterval = 0, last = Date(), beats = 0
+        while Date().timeIntervalSince(start) < 1, m.isSearching {
+            try await Task.sleep(nanoseconds: 10_000_000)
+            largestGap = max(largestGap, Date().timeIntervalSince(last))
+            last = Date()
+            beats += 1
+        }
+        XCTAssertLessThan(largestGap, 0.5, "the main thread was held while matching (\(beats) beats)")
         await searchAndWait(m, "^b")
         XCTAssertEqual(m.names, ["b.jpg"])
     }
