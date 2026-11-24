@@ -15,6 +15,14 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# A count that isn't one (empty, "20x", 0) would run the tests never or
+# more than once and still end green
+repeat="${REPEAT:-1}"
+if ! [[ "$repeat" =~ ^[1-9][0-9]*$ ]]; then
+    echo "!! REPEAT must be a whole number from 1, not '$REPEAT'" >&2
+    exit 2
+fi
+
 ./Scripts/fetch_vlckit.sh
 # The camera RAW samples PictureDecoderTests decodes (test data, not in the app)
 ./Scripts/fetch_raw_samples.sh
@@ -26,7 +34,6 @@ mkdir -p "$XCTEST/Contents/Frameworks"
 ditto "$BIN/VLCKit.framework" "$XCTEST/Contents/Frameworks/VLCKit.framework"
 
 timeout="${UNIT_TEST_TIMEOUT:-1200}"
-repeat="${REPEAT:-1}"
 
 # One run of the tests; its status, or 124 after the timeout
 run_tests() {
@@ -58,7 +65,7 @@ run_tests() {
 }
 
 rm -f "$BIN/.unit-tests-timed-out"
-for run in $(seq 1 "$repeat"); do
+for ((run = 1; run <= repeat; run++)); do
     [ "$repeat" -gt 1 ] && echo "=== run $run of $repeat"
     run_tests "$@"
 done

@@ -279,7 +279,7 @@ AVKit stays for the native formats: both decode through VideoToolbox, but AVKit 
   copies `VLCKit.framework` into the test bundle, then `swift test --skip-build`.
 - Any build needs `Vendor/VLCKit.xcframework` present → run
   `./Scripts/fetch_vlckit.sh` first (`test.sh` and `build_app.sh` call it for you). With `SCHNELLBILD_OWN_VLCKIT=1` it keeps whatever framework is there (a modified VLCKit, as the LGPL allows; see THIRD-PARTY-NOTICES), and `check_vlckit.sh` reports what fails the module check as a warning, unless the build is signed for release (`MACOS_SIGN_IDENTITY`, `APPSTORE_SIGN_IDENTITY`).
-- Scripts with an EXIT trap end it with `[ -n "${finished:-}" ] || exit 1` and set `finished=1` last: macOS's bash 3.2 otherwise reports an aborted expansion (an unset variable) as success.
+- Scripts with an EXIT trap end it with `[ -n "${finished:-}" ] || exit 1` and set `finished=1` where they end as intended, after their last command that can fail (only an `exit` with the status worked out may follow): macOS's bash 3.2 otherwise reports an aborted expansion (an unset variable) as success.
 - **`./Scripts/build_app.sh`** → `build/Schnellbild.app`: fetch VLCKit, check its modules (`Scripts/check_vlckit.sh`), render
   icon (`Resources/icon_1024.png`, gitignored; the `.icns` in `build/icon`, so a build changes no tracked file; the DMG takes the app's own icon as its volume icon; the README's `Resources/icon-256.png` comes from `make_site_images.py icons`), `swift build -c release`, assemble bundle, **embed VLCKit.framework into
   `Contents/Frameworks` + add `@executable_path/../Frameworks` rpath**, put the
