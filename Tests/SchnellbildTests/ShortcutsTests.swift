@@ -204,6 +204,15 @@ final class ShortcutsTests: XCTestCase {
         s.assign(chord("b"), to: .bossKey, replacing: chord("x"))
         XCTAssertEqual(s.resolve(chord("$x"), in: .grid), .blocked, "the boss key moved: ⇧X doesn't hide the windows")
         XCTAssertEqual(s.resolve(chord("$b"), in: .grid), .custom(.bossKey))
+        // The named keys the key bindings take alike with ⇧ too
+        s.assign(chord("space"), to: .fullScreen)
+        XCTAssertEqual(s.resolve(chord("$space"), in: .grid), .custom(.fullScreen), "⇧Space doesn't open the tile")
+        s.remove(chord("f10"), from: .quit)
+        XCTAssertEqual(s.resolve(chord("$f10"), in: .grid), .blocked, "⇧F10 doesn't ask to quit")
+        XCTAssertEqual(s.resolve(chord("$escape"), in: .full), .standard, "⇧Esc as Esc: still the full view's")
+        // … but not the arrows (⇧ marks) nor F6 (⇧F6 renames)
+        s.assign(chord("y"), to: .gridNext, replacing: chord("right"))
+        XCTAssertEqual(s.resolve(chord("$right"), in: .grid), .free, "⇧→ still marks")
         // The playlist's keys first while it has them, then the slideshow's
         XCTAssertEqual(s.resolve(chord("up"), in: [.show, .list]), .standard)
         XCTAssertEqual(s.resolve(chord("escape"), in: [.show, .list]), .standard)
@@ -414,5 +423,47 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertFalse(ShortcutsSettingsView.records(try key(in: browser), in: settings), "the browser window's key")
         XCTAssertFalse(ShortcutsSettingsView.records(try key(in: nil), in: settings), "a key of no window")
         XCTAssertFalse(ShortcutsSettingsView.records(try key(in: settings), in: nil), "the Settings window gone")
+    }
+
+    /// The Settings window a recording listens to is the one its view is
+    /// in, whatever event started it (VoiceOver's press has none of its own).
+    func testTheRecordingKnowsItsWindow() {
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 100), styleMask: [.titled],
+                              backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        let ref = HostWindow.Ref()
+        let probe = HostWindow.Probe()
+        probe.ref = ref
+        window.contentView?.addSubview(probe)
+        XCTAssertTrue(ref.window === window)
+    }
+
+    /// A mini key lights for its key however it was typed: "+" with ⇧ on a
+    /// US keyboard, "=" (the same key), "<" and ">" with ⇧.
+    func testAKeyPressMatchesItsKeyAsTyped() {
+        func press(_ key: BrowserModel.KeyInput, shift: Bool) -> BrowserModel.KeyPress {
+            BrowserModel.KeyPress(key: key, command: false, shift: shift)
+        }
+        XCTAssertTrue(press(.char("+"), shift: true).matches(.char("+"), command: false, shift: false))
+        XCTAssertTrue(press(.char("="), shift: false).matches(.char("+"), command: false, shift: false))
+        XCTAssertTrue(press(.char("<"), shift: true).matches(.char("<"), command: false, shift: false))
+        XCTAssertFalse(press(.char("-"), shift: false).matches(.char("+"), command: false, shift: false))
+        XCTAssertFalse(press(.char("l"), shift: true).matches(.char("l"), command: false, shift: false), "⇧L isn't L")
+        XCTAssertTrue(BrowserModel.KeyPress(key: .char("."), command: true, shift: true).matches(.char("."), command: true, shift: true),
+                      "a key by its place, exactly")
+    }
+
+    /// ⇧⌘. recorded on a US layout types "⌘>": the key by its place, which
+    /// Show Hidden Files holds, so the recording asks before it moves over.
+    func testARecordedKeyIsTakenByItsPlaceWhenAnActionHoldsThat() {
+        let s = Shortcuts(defaults: makeTestDefaults())
+        XCTAssertEqual(s.recorded(chord("@>"), physical: chord("$@."), for: .reload), chord("$@."))
+        XCTAssertEqual(s.conflicts(chord("$@."), for: .reload), [.hiddenFiles])
+        XCTAssertEqual(s.recorded(chord("$@."), physical: chord("$@."), for: .hiddenFiles), chord("$@."))
+        XCTAssertEqual(s.recorded(chord("@>"), physical: nil, for: .reload), chord("@>"), "no ⇧: as typed")
+        XCTAssertEqual(s.recorded(chord("<"), physical: chord("$,"), for: .reload), chord("<"),
+                       "the key as typed is an action's (Slower): as typed")
+        XCTAssertEqual(s.recorded(chord("@!"), physical: chord("$@1"), for: .reload), chord("@!"), "neither is anyone's: as typed")
     }
 }

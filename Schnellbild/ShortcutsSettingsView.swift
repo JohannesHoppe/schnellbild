@@ -35,6 +35,8 @@ struct ShortcutsSettingsView: View {
     /// Filters the list by an action's name or one of its keys.
     @State private var search = ""
     @State private var pendingPreset: ShortcutPreset?
+    /// The window this view is in: the one whose keys a recording takes.
+    @State private var host = HostWindow.Ref()
 
     private var differing: Int { ShortcutAction.allCases.filter(shortcuts.differsFromStandard).count }
 
@@ -101,6 +103,7 @@ struct ShortcutsSettingsView: View {
         }
         .padding(20)
         .frame(width: 660, height: 580)
+        .background(HostWindow(ref: host))
         .onDisappear { stopRecording() }
         .alert(conflict.map { Text(String(localized: "“\($0.chord.text)” is already the key for “\($0.othersText)”.")) } ?? Text(verbatim: ""),
                isPresented: Binding(get: { conflict != nil }, set: { if !$0 { conflict = nil } }),
@@ -275,13 +278,14 @@ struct ShortcutsSettingsView: View {
 
     /// The next key typed in the Settings window (ahead of everything else
     /// there, Esc and ⌫ included) is the new key; keys typed in the app's
-    /// other windows go on to them. The Settings window is the one the
-    /// click that starts the recording came in.
+    /// other windows go on to them. The Settings window is the one this
+    /// view is in, however the recording was started (a click, VoiceOver,
+    /// Voice Control).
     private func startRecording(_ new: Recording) {
         stopRecording()
         refusal = nil
         recording = new
-        weak var settings = NSApp.currentEvent?.window ?? NSApp.keyWindow
+        weak var settings = host.window ?? NSApp.currentEvent?.window ?? NSApp.keyWindow
         monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             let taken = MainActor.assumeIsolated { () -> Bool in
                 guard Self.records(event, in: settings) else { return false }
@@ -308,10 +312,11 @@ struct ShortcutsSettingsView: View {
     private func record(_ event: NSEvent) {
         guard let recording else { return }
         stopRecording()
-        guard let chord = KeyChord.from(event) else {
+        guard let typed = KeyChord.from(event) else {
             refusal = (recording.action, String(localized: "This key can't be used."))
             return
         }
+        let chord = shortcuts.recorded(typed, physical: KeyChord.physical(event), for: recording.action)
         guard !Shortcuts.isReserved(chord) else {
             refusal = (recording.action, String(localized: "\(chord.text) belongs to macOS or to text fields and can't be used."))
             return
@@ -322,5 +327,33 @@ struct ShortcutsSettingsView: View {
         } else {
             conflict = Conflict(chord: chord, action: recording.action, replacing: recording.replacing, others: others)
         }
+    }
+}
+
+/// Tells the AppKit window a SwiftUI view is in (`Ref.window`), as soon as
+/// the view is in one.
+struct HostWindow: NSViewRepresentable {
+    final class Ref {
+        weak var window: NSWindow?
+    }
+    let ref: Ref
+
+    final class Probe: NSView {
+        var ref: Ref?
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            if let window { ref?.window = window }
+        }
+    }
+
+    func makeNSView(context: Context) -> Probe {
+        let probe = Probe()
+        probe.ref = ref
+        return probe
+    }
+
+    func updateNSView(_ probe: Probe, context: Context) {
+        probe.ref = ref
+        if let window = probe.window { ref.window = window }
     }
 }

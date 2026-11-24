@@ -3853,8 +3853,12 @@ final class BrowserModel: ObservableObject {
         var option = false
         let id = UUID()
         let at = Date()
-        /// The same key, whenever pressed (letters in any case).
+        /// The same key, whenever pressed (letters in any case): as a
+        /// `KeyChord` reads it ("+" typed with ⇧ on a US keyboard is the
+        /// "+" key, "=" is "+"), or exactly (a key by its place, ⇧⌘.).
         func matches(_ key: KeyInput, command: Bool, shift: Bool, option: Bool = false) -> Bool {
+            if KeyChord(self.key, command: self.command, shift: self.shift, option: self.option)
+                == KeyChord(key, command: command, shift: shift, option: option) { return true }
             guard self.command == command, self.shift == shift, self.option == option else { return false }
             if case .char(let a) = self.key, case .char(let b) = key { return a.lowercased() == b.lowercased() }
             return self.key == key
