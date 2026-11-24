@@ -244,11 +244,12 @@ class Contrib(unittest.TestCase):
     def test_the_licences_have_a_section_per_library_with_its_texts(self):
         out = os.path.join(self.temp.name, "licences.txt")
         packages = {"ffmpeg": ["libavutil.a"], "freetype2": ["libfreetype.a"]}
-        missing = contrib.write_licences(out, self.vlc, self.build, packages, ["libavutil.a", "libfreetype.a"])
+        missing = contrib.write_licences(out, self.vlc, self.build, packages, ["libavutil.a", "libfreetype.a"],
+                                         ("3.7.5", "3.0.24"))
         self.assertEqual(missing, [])
         with open(out) as f:
             text = f.read()
-        self.assertTrue(text.startswith("Third-party libraries in VLCKit"))
+        self.assertTrue(text.startswith("Third-party libraries in VLCKit 3.7.5 (libVLC 3.0.24), built by"))
         self.assertIn("  libfreetype.a (freetype2)\n", text)
         rule = "=" * 80
         self.assertIn(f"{rule}\nffmpeg\n{rule}\n--- COPYING.LGPLv2.1\nGNU LESSER", text)
@@ -263,7 +264,7 @@ class Contrib(unittest.TestCase):
         out = os.path.join(self.temp.name, "licences.txt")
         missing = contrib.write_licences(out, self.vlc, self.build,
                                          {"ffmpeg": ["libavutil.a"], "freetype2": ["libfreetype.a"]},
-                                         ["libavutil.a", "libfreetype.a"])
+                                         ["libavutil.a", "libfreetype.a"], ("3.7.5", "3.0.24"))
         self.assertEqual(missing, ["ffmpeg", "freetype2"])
 
 

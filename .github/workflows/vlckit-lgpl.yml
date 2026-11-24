@@ -30,6 +30,11 @@ jobs:
     name: Build VLCKit (LGPL modules only)
     runs-on: macos-15
     timeout-minutes: 360
+    outputs:
+      vlckit: ${{ steps.versions.outputs.vlckit }}
+      vlckit_commit: ${{ steps.versions.outputs.vlckit_commit }}
+      vlc: ${{ steps.versions.outputs.vlc }}
+      vlc_commit: ${{ steps.versions.outputs.vlc_commit }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -40,6 +45,11 @@ jobs:
       # (vlckit_licenses.py, vlckit_contrib.py)
       - name: Tests of the VLCKit licence checks
         run: python3 -I -m unittest discover -s Scripts/tests -v
+
+      # The versions the script builds, for the release's tag, title and notes
+      - name: What is built
+        id: versions
+        run: ./Scripts/build_vlckit_lgpl.sh --versions | tee -a "$GITHUB_OUTPUT"
 
       - name: Build
         env:
@@ -125,12 +135,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TREE: ${{ needs.test.outputs.tree }}
+          VLCKIT: ${{ needs.build.outputs.vlckit }}
+          VLCKIT_COMMIT: ${{ needs.build.outputs.vlckit_commit }}
+          VLC: ${{ needs.build.outputs.vlc }}
+          VLC_COMMIT: ${{ needs.build.outputs.vlc_commit }}
         run: |
+          [ -n "$VLCKIT" ] && [ -n "$VLC" ] || { echo "!! the build job named no versions" >&2; exit 1; }
           SHA=$(shasum -a 256 VLCKit-lgpl.xcframework.zip | cut -d' ' -f1)
-          TAG="vlckit-3.7.5-lgpl-$GITHUB_RUN_NUMBER"
+          TAG="vlckit-$VLCKIT-lgpl-$GITHUB_RUN_NUMBER"
           SUMS=$(cd dist && shasum -a 256 * | sed 's/^/    /')
           cat > notes.md <<NOTES
-          VLCKit 3.7.5 (VideoLAN, tag 3.7.5, commit a213fd11; VLC 3.0.24, commit 6de05adc) for macOS on Apple silicon, built without VLC's modules under the GPL and without the modules a viewer of local files never needs (network access, stream output, service discovery, playlists and adaptive streaming, stream filters that start programs or fetch, keystores; the list is in the build script), for Schnellbild. Not a Schnellbild release.
+          VLCKit $VLCKIT (VideoLAN, tag $VLCKIT, commit ${VLCKIT_COMMIT:0:8}; VLC $VLC, commit ${VLC_COMMIT:0:8}) for macOS on Apple silicon, built without VLC's modules under the GPL and without the modules a viewer of local files never needs (network access, stream output, service discovery, playlists and adaptive streaming, stream filters that start programs or fetch, keystores; the list is in the build script), for Schnellbild. Not a Schnellbild release.
 
           Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every VLC module is under the GNU LGPL 2.1 or later; the third-party libraries compiled into it (FFmpeg and others) keep their own licences, whose texts are in VLCKit-third-party-licenses.txt, and none of their code in it is under the GPL (libzvbi and FFmpeg's AArch64 files under the GPL are left out; Scripts/vlckit_contrib.py checks every object linked). The complete source it was built from is attached: VLCKit at the tag (with the build script change as a patch), VLC with VLCKit's patches applied, Schnellbild's own changes to VLC applied on top of it (VLC-schnellbild-changes.patch), the third-party libraries' downloads (VLCKit-contrib-sources.tar) and the build tools' downloads (VLC-tools-sources.tar). See THIRD-PARTY-NOTICES.md.
 
@@ -142,5 +157,5 @@ jobs:
           $SUMS
           NOTES
           gh release create "$TAG" VLCKit-lgpl.xcframework.zip dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --prerelease --latest=false --title "VLCKit 3.7.5 without GPL modules (build $GITHUB_RUN_NUMBER)" --notes-file notes.md
+            --prerelease --latest=false --title "VLCKit $VLCKIT without GPL modules (build $GITHUB_RUN_NUMBER)" --notes-file notes.md
           echo "Published $TAG, SHA-256 $SHA, tree SHA-256 $TREE"

@@ -3,6 +3,7 @@
 and writes their licence texts.
 
     vlckit_contrib.py <VLC tree> <VLCKit binary> <licences file> [--report <file>]
+                      --versions <VLCKit tag> <VLC version>
 
 VideoLAN's build links every static library in the contrib prefix
 (contrib/*-apple-darwin*/lib/*.a) into VLCKit. For each of them:
@@ -345,14 +346,16 @@ def check(vlc, binary_symbols, libraries, build, nm_archive=None):
     return problems, packages, report
 
 
-def write_licences(path, vlc, build, packages, libraries):
+def write_licences(path, vlc, build, packages, libraries, versions):
     """The licences file: what is linked, then a section per package (a line
     of 80 "=", its name, a line of 80 "="; Schnellbild's About window splits
-    it there). Returns the packages without a licence file."""
+    it there). `versions`: VLCKit's tag and VLC's version. Returns the
+    packages without a licence file."""
     missing = []
     rule = "=" * 80
+    vlckit, libvlc = versions
     with open(path, "w", encoding="utf-8") as out:
-        out.write("Third-party libraries in VLCKit 3.7.5 (libVLC 3.0.24), built by Scripts/build_vlckit_lgpl.sh\n"
+        out.write(f"Third-party libraries in VLCKit {vlckit} (libVLC {libvlc}), built by Scripts/build_vlckit_lgpl.sh\n"
                   "from VideoLAN's contrib build with --disable-gpl. Each keeps its own licence; their texts follow.\n\n"
                   "Static libraries linked into VLCKit (and the library each comes from):\n")
         for library in sorted(libraries, key=str.lower):
@@ -389,7 +392,12 @@ def main():
         i = args.index("--report")
         report_path = args[i + 1]
         del args[i:i + 2]
-    if len(args) != 3:
+    versions = None
+    if "--versions" in args:
+        i = args.index("--versions")
+        versions = tuple(args[i + 1:i + 3])
+        del args[i:i + 3]
+    if len(args) != 3 or versions is None or len(versions) != 2:
         sys.exit(__doc__)
     vlc, binary, licences_path = args
     configs = glob.glob(os.path.join(vlc, "contrib", "*", "config.mak"))
@@ -407,7 +415,7 @@ def main():
         sys.exit("!! the binary has no local symbols: can't tell which objects are linked")
     problems, packages, report = check(vlc, defined, libraries, build)
     linked_names = [os.path.basename(l) for l in libraries if os.path.basename(l) in LIBRARIES]
-    missing = write_licences(licences_path, vlc, build, packages, linked_names)
+    missing = write_licences(licences_path, vlc, build, packages, linked_names, versions)
     problems += [f"{package}: no licence file in its source" for package in missing]
     if report_path:
         with open(report_path, "w") as f:
