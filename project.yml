@@ -16,8 +16,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"          # match the SwiftPM build's language mode
-    MARKETING_VERSION: "0.13.1"
-    CURRENT_PROJECT_VERSION: "18"
+    MARKETING_VERSION: "0.13.2"
+    CURRENT_PROJECT_VERSION: "19"
     # Ad-hoc sign (no Apple team needed) so the app + UI-test runner launch
     # without Gatekeeper flagging them as "damaged".
     CODE_SIGN_STYLE: Manual
