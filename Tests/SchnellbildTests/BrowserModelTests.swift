@@ -2794,7 +2794,7 @@ final class PathTests: XCTestCase {
     }
 }
 
-// MARK: - Review fixes: search stays consistent with renames and trash
+// MARK: - Search stays consistent with renames and trash
 
 @MainActor
 final class SearchConsistencyTests: XCTestCase {
@@ -3110,12 +3110,17 @@ final class ReviewFixTests: XCTestCase {
         let m = makeModel(FileActionsSpy())
         await openAndWait(m, tree.root)
         for i in [1, 2000, 3999] { m.click(m.entries[i], command: true, shift: false) }
-        let first = Date()
+        // One finding of them: the marks changed before each run (one more marked, then not)
+        var once = Double.infinity
+        for _ in 0..<3 {
+            m.click(m.entries[5], command: true, shift: false)
+            once = min(once, TimeBudget.seconds(.thread) { XCTAssertEqual(m.actionEntries.count, 4) })
+            m.click(m.entries[5], command: true, shift: false)
+        }
         XCTAssertEqual(m.actionEntries.count, 3)
-        let once = Date().timeIntervalSince(first)
-        let start = Date()
-        for _ in 0..<200 { XCTAssertTrue(m.canTrash) }
-        XCTAssertLessThan(Date().timeIntervalSince(start), max(once * 20, 0.05), "asked 200 times: not found 200 times")
+        TimeBudget.check("asked 200 times: not found 200 times", under: max(once * 20, 0.05)) {
+            for _ in 0..<200 { XCTAssertTrue(m.canTrash) }
+        }
         m.click(m.entries[1], command: true, shift: false)   // unmarks one
         XCTAssertEqual(m.actionEntries.count, 2, "a change of the marks is seen")
     }
