@@ -195,10 +195,11 @@ extension MapRenderer {
             let unit = viewport.unitBounds
             let north = WebMercator.coordinate(unit: CGPoint(x: 0.5, y: max(0, unit.minY))).latitude
             let south = WebMercator.coordinate(unit: CGPoint(x: 0.5, y: min(1, unit.maxY))).latitude
-            let west = unit.width >= 1 ? -180 : (Double(unit.minX) * 360 - 180).wrappedLongitude
-            let east = unit.width >= 1 ? 180 : (Double(unit.maxX) * 360 - 180).wrappedLongitude
-            let found = places.places(south: south - 0.5, north: north + 0.5, west: unit.width >= 1 ? west : (west - 1).wrappedLongitude,
-                                      east: unit.width >= 1 ? east : (east + 1).wrappedLongitude, maxMinZoom: zoom + 2)
+            // A degree to spare on each side: the west edge as it is (not wrapped)
+            // and the span from it, so a view nearly the world's width asks for all of it
+            let west = Double(unit.minX) * 360 - 180 - 1
+            let east = west + min(360, Double(unit.width) * 360 + 2)
+            let found = places.places(south: south - 0.5, north: north + 0.5, west: west, east: east, maxMinZoom: zoom + 2)
             for place in found.prefix(3000) {
                 let style: LabelStyle
                 switch place.kind {

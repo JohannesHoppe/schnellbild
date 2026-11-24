@@ -134,7 +134,7 @@ public final class MapRenderer: @unchecked Sendable {
             let cell = layer.extent / Double(sub), margin = cell * 0.08
             visible = CGRect(x: Double(ox) * cell - margin, y: Double(oy) * cell - margin,
                                  width: cell + 2 * margin, height: cell + 2 * margin)
-            for feature in layer.features where feature.bounds.intersects(visible) || feature.bounds.isEmpty && visible.contains(feature.bounds.origin) {
+            for feature in layer.features where feature.bounds.intersects(visible) {
                 body(feature, transform)
             }
         }

@@ -16,7 +16,10 @@ public struct Place: Equatable, Sendable {
     public var countryCode: String?
     /// The name as it is written there
     public var localName: String
-    /// The names in other languages that differ from `localName`, by the app's language codes
+    /// The names in other languages that differ from `localName`, by the
+    /// app's language codes: a language without an entry either has no name
+    /// for the place or calls it by its local name (the index stores no
+    /// name twice), which `label(in:)` tells apart by the script.
     public var names: [String: String]
 
     public var isLocality: Bool { kind.rawValue >= Kind.city.rawValue }
@@ -70,15 +73,39 @@ public struct MapLanguages: Equatable, Sendable {
     static func lacksLatin(_ text: String) -> Bool {
         !text.unicodeScalars.contains { $0.properties.isAlphabetic && $0.value < 0x0250 }
     }
+
+    /// Whether a name is written in the script of one of the index's
+    /// languages: Latin letters, Cyrillic, Japanese (kana or kanji), Korean
+    /// (Hangul) or Chinese (Han without kana or Hangul).
+    static func writes(_ language: String, _ text: String) -> Bool {
+        func has(_ ranges: ClosedRange<UInt32>...) -> Bool {
+            text.unicodeScalars.contains { scalar in ranges.contains { $0.contains(scalar.value) } }
+        }
+        let han = { has(0x3400...0x4DBF, 0x4E00...0x9FFF, 0xF900...0xFAFF) }
+        let kana = { has(0x3040...0x30FF, 0x31F0...0x31FF) }
+        let hangul = { has(0x1100...0x11FF, 0x3130...0x318F, 0xAC00...0xD7AF) }
+        switch language {
+        case _ where latin.contains(language): return !lacksLatin(text)
+        case "ru", "uk": return has(0x0400...0x052F)
+        case "ja": return (kana() || han()) && !hangul()
+        case "ko": return hangul()
+        case "zh-Hans", "zh-Hant": return han() && !kana() && !hangul()
+        default: return false
+        }
+    }
 }
 
 extension Place {
     /// The name in the first of the languages that has one, else the local
     /// name; a local name in another script yields to English for a reader
-    /// of a Latin script.
+    /// of a Latin script. A language the place has no entry for takes the
+    /// local name where that is written in the language's script (the index
+    /// leaves out a name that is the local one: "United States" in English,
+    /// "München" in German), so the next language's name never stands in for it.
     public func label(in languages: MapLanguages) -> String {
         for language in languages.order {
             if let name = names[language] { return name }
+            if MapLanguages.writes(language, localName) { return localName }
         }
         if languages.englishBeforeOtherScripts, MapLanguages.lacksLatin(localName), let english = names["en"] {
             return english
@@ -328,7 +355,9 @@ public final class PlaceIndex: @unchecked Sendable {
     // MARK: Queries
 
     /// Every place inside the span labelled from `maxMinZoom` on, the most
-    /// important first (lowest min_zoom, then largest population).
+    /// important first (lowest min_zoom, then largest population). The span
+    /// runs east from `west` to `east`, each in any turn of the circle (a
+    /// west of −190 is 170), the whole circle from 359° on.
     public func places(south: Double, north: Double, west: Double, east: Double, maxMinZoom: Double) -> [Place] {
         var found: [Place] = []
         let tiers = maxMinZoom >= tierSplit ? [0, 1] : [0]
@@ -440,13 +469,5 @@ public struct NearbyPlace: Equatable, Sendable {
             return String(localized: "near \(name), \(country)")
         }
         return String(localized: "near \(name)")
-    }
-}
-
-extension Double {
-    var wrappedLongitude: Double {
-        var lon = (self + 180).truncatingRemainder(dividingBy: 360)
-        if lon < 0 { lon += 360 }
-        return lon - 180
     }
 }

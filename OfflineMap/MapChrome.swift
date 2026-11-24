@@ -74,7 +74,7 @@ struct MapChrome<Surface: View, Buttons: View, Overlay: View>: View {
         return ForEach(markers.filter { proxy.isVisible($0.coordinate) }) { marker in
             Circle()
                 .fill(Color(cgColor: palette.accent.cgColor))
-                .overlay(Circle().stroke(Color(cgColor: (palette.isDark ? MapColor("#121212") : MapColor("#ffffff")).cgColor), lineWidth: 2))
+                .overlay(Circle().stroke(Color(cgColor: palette.accentText.cgColor), lineWidth: 2))
                 .frame(width: 12, height: 12)
                 .position(proxy.point(for: marker.coordinate))
         }
