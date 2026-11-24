@@ -391,7 +391,9 @@ final class MediaDataTests: XCTestCase {
         let other = DispatchSemaphore(value: 0)
         Task.detached { other.signal() }
         let ran = other.wait(timeout: .now() + 10)
-        // Every read still waiting for a writer is let go (an end of file), so none outlives the test
+        // Every read ends without a writer ever opening a FIFO
+        let unaided = done.wait(timeout: .now() + 10)
+        // A read still waiting for a writer is let go (an end of file), so none outlives the test
         let deadline = Date() + 60
         while done.wait(timeout: .now() + 0.05) == .timedOut, Date() < deadline {
             for fifo in fifos {
@@ -400,6 +402,7 @@ final class MediaDataTests: XCTestCase {
             }
         }
         XCTAssertEqual(ran, .success, "other async work waited behind the reads")
+        XCTAssertEqual(unaided, .success, "a read waited for a writer")
         XCTAssertEqual(done.wait(timeout: .now()), .success)
     }
 
