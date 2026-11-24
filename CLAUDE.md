@@ -398,7 +398,7 @@ AVKit stays for the native formats: both decode through VideoToolbox, but AVKit 
 - Releases are **Developer ID signed and notarized** (see CI & release). CI
   builds (`ci.yml`) stay ad-hoc signed.
 - Use the **`gh` CLI** for all GitHub work, never WebFetch. Grep freely.
-- Give honest, candid assessments: surface trade-offs and let the user decide,
+- Give candid assessments: surface trade-offs and let the user decide,
   rather than cheerleading.
 - This is a **public repo**: never write personal/identifying details (emails,
   private notes about the user) into tracked files.
