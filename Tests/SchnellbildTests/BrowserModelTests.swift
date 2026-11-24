@@ -4266,6 +4266,56 @@ final class LinkTests: XCTestCase {
         XCTAssertNotNil(LiveFiles.openableTarget(try link("comics.zip", to: zip)))
     }
 
+    /// The live open actions, run to the workspace (a spy there): ⌘↩ and
+    /// an other file's Open hand over what the item really is, and nothing
+    /// that runs, however it is named.
+    func testTheLiveOpenActionsHandOverOnlyWhatMayOpen() async throws {
+        let tree = try TempTree(self)
+        func link(_ name: String, to target: URL) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            try FileManager.default.createSymbolicLink(at: url, withDestinationURL: target)
+            return url
+        }
+        let script = try tree.file("run.command", bytes: 10)
+        let photo = try tree.file("photo.jpg", bytes: 10)
+        let notes = tree.root.appendingPathComponent("notes.txt")
+        try "hello".write(to: notes, atomically: true, encoding: .utf8)
+        let site = tree.root.appendingPathComponent("site.webloc")
+        try PropertyListSerialization.data(fromPropertyList: ["URL": "https://example.com/"], format: .xml, options: 0).write(to: site)
+        let holiday = try link("Holiday.jpg", to: script)
+        let readme = try link("readme.txt", to: script)
+        var launched: [(item: URL, app: URL?)] = []
+        let saved = LiveFiles.launch
+        LiveFiles.launch = { launched.append(($0, $1)) }
+        defer { LiveFiles.launch = saved }
+
+        let live = FileActions.live
+        live.openInDefaultApp(holiday)
+        live.openInDefaultApp(script)
+        live.openOtherFile(readme)
+        live.openOtherFile(script)
+        XCTAssertTrue(launched.isEmpty, "\(launched.map(\.item.lastPathComponent))")
+        live.openInDefaultApp(photo)
+        live.openOtherFile(notes)
+        live.openOtherFile(site)
+        XCTAssertEqual(launched.map(\.item.absoluteString), [photo.absoluteString, notes.absoluteString, "https://example.com/"])
+        XCTAssertEqual(launched.map { $0.app != nil }, [true, true, false], "a web address goes to the browser")
+
+        // Through the model (⌘↩ on the selection, Open on an other file);
+        // a link named like a picture that leads elsewhere is an other file
+        launched = []
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names, ["..", "photo.jpg"])
+        let others = Dictionary(uniqueKeysWithValues: m.otherFiles.map { ($0.name, $0) })
+        for name in ["Holiday.jpg", "readme.txt", "run.command"] { m.open(try XCTUnwrap(others[name], name)) }
+        XCTAssertTrue(launched.isEmpty, "\(launched.map(\.item.lastPathComponent))")
+        m.selectEntry(named: "photo.jpg")
+        m.openInDefaultApp()
+        m.open(try XCTUnwrap(others["notes.txt"]))
+        XCTAssertEqual(launched.map(\.item.lastPathComponent), ["photo.jpg", "notes.txt"])
+    }
+
     /// Drives on the drives' level are mounted and ejected by the system:
     /// never renamed or trashed here.
     func testDrivesAreNeitherRenamedNorTrashed() {

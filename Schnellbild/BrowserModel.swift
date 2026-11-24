@@ -347,7 +347,20 @@ enum LiveFiles {
     static func openWithDefaultApp(_ url: URL) {
         guard let target = openableTarget(url) else { NSSound.beep(); return }
         guard let app = NSWorkspace.shared.urlForApplication(toOpen: target) else { NSSound.beep(); return }
-        NSWorkspace.shared.open([target], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
+        launch(target, app)
+    }
+
+    /// Where every live open action hands an item to the workspace: with
+    /// the app that opens it, or nil for a web address (the browser). One
+    /// place, so tests run the open actions to their end with a spy here
+    /// instead of launching anything.
+    @MainActor
+    static var launch: (URL, URL?) -> Void = { item, app in
+        if let app {
+            NSWorkspace.shared.open([item], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
+        } else {
+            NSWorkspace.shared.open(item)
+        }
     }
 
     /// The item behind links and aliases, if it may be opened at all. A
@@ -398,12 +411,12 @@ enum LiveFiles {
     @MainActor
     static func openOtherFile(_ url: URL) -> Bool {
         if let web = webAddress(in: url) {
-            NSWorkspace.shared.open(web)
+            launch(web, nil)
             return true
         }
         guard let target = openableDocument(url),
               let app = NSWorkspace.shared.urlForApplication(toOpen: target) else { return false }
-        NSWorkspace.shared.open([target], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
+        launch(target, app)
         return true
     }
 
