@@ -28,6 +28,9 @@ struct GridEntry: Identifiable, Hashable {
     /// An entry of an archive read only in part (a download not finished, a
     /// volume missing) whose data runs past what is there.
     var isIncomplete = false
+    /// The item's file number on its volume, as listed: `merge` tells an
+    /// item renamed outside the app by it. Not part of the entry's equality.
+    var number = ItemNumber()
 
     /// The date a tile's preview is made for: a download still growing
     /// changes its date with every write, so its preview is made again at
@@ -64,8 +67,18 @@ struct GridEntry: Identifiable, Hashable {
     /// The same entry at another place (a rename or move); a link keeps
     /// pointing where it points, or follows its folder moved by the app.
     func moved(to new: URL, target: URL? = nil) -> GridEntry {
-        GridEntry(url: new, kind: kind, modDate: modDate, byteSize: byteSize, linkTarget: target ?? linkTarget)
+        var entry = GridEntry(url: new, kind: kind, modDate: modDate, byteSize: byteSize, linkTarget: target ?? linkTarget)
+        entry.number = number
+        return entry
     }
+}
+
+/// A file number (`URLResourceValues.fileIdentifier`) carried along with an
+/// entry: two entries equal but for it are the same entry.
+struct ItemNumber: Hashable {
+    var value: UInt64?
+    static func == (_: ItemNumber, _: ItemNumber) -> Bool { true }
+    func hash(into hasher: inout Hasher) {}
 }
 
 /// A file in a folder that the grid doesn't show (not a picture, video or
@@ -2538,7 +2551,7 @@ final class BrowserModel: ObservableObject {
     /// What `entry(for:keys:)` reads, prefetched by the listings.
     nonisolated static let entryKeys: Set<URLResourceKey> = [
         .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey, .isAliasFileKey,
-        .isHiddenKey
+        .isHiddenKey, .fileIdentifierKey
     ]
 
     /// Classify one file system item; nil for non-media files. Packages
@@ -2556,6 +2569,8 @@ final class BrowserModel: ObservableObject {
         // photo, a "Photos.zip" pointing to an installer no archive)
         var target = item
         let isLink = vals?.isSymbolicLink == true
+        // (the link's own number: the link is what is renamed)
+        let number = ItemNumber(value: vals?.fileIdentifier)
         if isLink {
             target = item.resolvingSymlinksInPath()
             vals = try? target.resourceValues(forKeys: keys)
@@ -2565,7 +2580,9 @@ final class BrowserModel: ObservableObject {
         if vals?.isDirectory == true {
             if ArchiveName.format(of: target.lastPathComponent) != nil { ArchivePath.noteFolder(target) }
             if ArchiveName.format(of: item.lastPathComponent) != nil { ArchivePath.noteFolder(item) }
-            return GridEntry(url: item, kind: .folder, modDate: date, linkTarget: isLink ? target : nil)
+            var entry = GridEntry(url: item, kind: .folder, modDate: date, linkTarget: isLink ? target : nil)
+            entry.number = number
+            return entry
         }
         if target != item, mediaKind(of: target) != mediaKind(of: item) { return nil }
         if isLink, ArchiveName.format(of: item.lastPathComponent) != nil,
@@ -2574,10 +2591,14 @@ final class BrowserModel: ObservableObject {
         // An archive opens like a folder (one found by its content too)
         if ArchiveName.format(ofFile: item) != nil {
             ArchivePath.noteArchive(item)
-            return GridEntry(url: item, kind: .folder, modDate: date, byteSize: vals?.fileSize)
+            var entry = GridEntry(url: item, kind: .folder, modDate: date, byteSize: vals?.fileSize)
+            entry.number = number
+            return entry
         }
         guard let kind = mediaKind(of: item) else { return nil }
-        return GridEntry(url: item, kind: kind, modDate: date, byteSize: vals?.fileSize)
+        var entry = GridEntry(url: item, kind: kind, modDate: date, byteSize: vals?.fileSize)
+        entry.number = number
+        return entry
     }
 
     /// Whether a photo or video lies anywhere below `folder`. Stops at the
@@ -5331,6 +5352,7 @@ final class BrowserModel: ObservableObject {
         var fresh: [String: GridEntry] = [:]
         for entry in listing.entries { fresh[entry.canonicalPath] = entry }
         followFinishedDownloads(fresh)
+        followRenames(fresh)
         var gone: [FileChange] = []
         var renewed: [GridEntry] = []
         var listed = Set<String>()
@@ -5365,6 +5387,30 @@ final class BrowserModel: ObservableObject {
         }
         entries = allEntries
         keepSelection(index(of: keep) ?? previous.map { min($0, entries.count - 1) })
+    }
+
+    /// Items renamed outside the app (the Finder, another program): an item
+    /// gone from the listing and one come under another name with the same
+    /// file number are the same item, moved (`FileChange.moved`), so its
+    /// selection, marks, playback position, slideshow place and an open
+    /// rename sheet go along, as for a rename in the app. A number seen
+    /// twice says nothing (a volume that gives none, or the same for all).
+    private func followRenames(_ fresh: [String: GridEntry]) {
+        let listed = Set(allEntries.map(\.canonicalPath))
+        var came: [UInt64: GridEntry] = [:], twice: Set<UInt64> = []
+        for entry in fresh.values where !listed.contains(entry.canonicalPath) {
+            guard let number = entry.number.value, number != 0 else { continue }
+            if came.updateValue(entry, forKey: number) != nil { twice.insert(number) }
+        }
+        guard !came.isEmpty else { return }
+        var moves: [FileChange] = []
+        var used: Set<UInt64> = []
+        for entry in allEntries where entry.kind != .parent && fresh[entry.canonicalPath] == nil {
+            guard let number = entry.number.value, !twice.contains(number), used.insert(number).inserted,
+                  let now = came[number], now.kind == entry.kind else { continue }
+            moves.append(.moved(entry.url, to: now.url))
+        }
+        if !moves.isEmpty { applyHere(moves) }
     }
 
     /// A download finished: its tool renamed "x.mp4.part" to "x.mp4". That

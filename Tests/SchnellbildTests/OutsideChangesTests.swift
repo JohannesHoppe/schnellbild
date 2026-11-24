@@ -148,6 +148,24 @@ final class OutsideChangesTests: XCTestCase {
 
     /// The pane stays at `folder` for a while (a wrong move would come
     /// within milliseconds: one look at the disk).
+    /// An item renamed outside the app (the Finder) is the same item under
+    /// its new name: it stays selected and marked, as after a rename in
+    /// the app.
+    func testAnItemRenamedOutsideStaysSelectedAndMarked() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "a.jpg" }), command: false, shift: false)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "b.jpg" }), command: true, shift: false)
+        XCTAssertEqual(m.marked.count, 2)
+        try FileManager.default.moveItem(at: tree.root.appendingPathComponent("b.jpg"), to: tree.root.appendingPathComponent("z.jpg"))
+        m.relist(force: true)
+        await waitUntil { m.names == ["..", "a.jpg", "c.jpg", "z.jpg"] }
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
+        XCTAssertEqual(Set(m.marked.map { ($0 as NSString).lastPathComponent }), ["a.jpg", "z.jpg"])
+    }
+
     /// A folder moved into the folder shown whole (FSEvents names only the
     /// folder shown): what it holds joins the search shown.
     func testAFolderMovedInWholeJoinsTheSearch() async throws {
