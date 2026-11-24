@@ -5,8 +5,12 @@
 # notarization without waiting; the DMG is kept as artifact "macos-signed".
 # mac-release.yml attaches it to the release as soon as Apple accepts it —
 # after minutes or days. A tag build fails without the secrets: a release is
-# always signed and notarized. Started by hand on a branch without them, the
-# DMG is ad-hoc signed and kept as artifact "macos" (no release).
+# always signed and notarized. Started by hand on main, the signed DMG is
+# submitted the same way and mac-release.yml keeps the stapled one as artifact
+# "macos-dmg" (no release); GitHub refuses a run on any other branch before
+# its first step (the environment's branch rule). Only in a copy of the
+# repository without the secrets is the DMG ad-hoc signed and kept as
+# artifact "macos".
 name: Release
 
 on:

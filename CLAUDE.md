@@ -346,12 +346,12 @@ AVKit stays for the native formats: both decode through VideoToolbox, but AVKit 
   inside VLCKit and its plugins first, inside out), the DMG signed and
   **submitted to Apple without waiting** (`Scripts/package_dmg.sh submit`),
   kept as artifact `macos-signed` (90 days). The job `release` creates the
-  GitHub Release, signed: not marked "Latest" until its DMG is attached, so the README's `releases/latest/download` link never 404s. A tag build without the secrets fails at its first step (a release is never ad-hoc signed); started by hand on a branch without them, the ad-hoc DMG is only kept as artifact `macos`.
-- `.github/workflows/mac-release.yml`: after every Release run, every 30 min
+  GitHub Release, signed: not marked "Latest" until its DMG is attached, so the README's `releases/latest/download` link never 404s. A tag build without the secrets fails at its first step (a release is never ad-hoc signed); started by hand on main, the signed DMG goes the same way and ends as mac-release.yml's artifact `macos-dmg` (no release); a run on any other branch is refused by the environment's branch rule before its first step; only a copy of the repository without the secrets keeps an ad-hoc DMG as artifact `macos`.
+- `.github/workflows/mac-release.yml`: after every Release run on main or a `v*` tag, every 30 min
   and by hand. Finds the newest app release (tagged `v…`, not a pre-release, from every page of the list: `Scripts/unfinished_releases.jq`, `BuildScriptsTests`) without `Schnellbild.dmg`, so data and VLCKit pre-releases published meanwhile never hide it, fetches
-  `macos-signed`, runs `package_dmg.sh finish` (scripts from the same commit):
+  `macos-signed`, runs `package_dmg.sh finish` (scripts from the same commit, which must be the one its tag points at, or on main for a build started there by hand; the token only in the steps that call `gh`, the checkout without credentials):
   Apple still checking → green, the next run asks again; accepted → staple,
-  check like Gatekeeper, attach to the release and mark it Latest (if it is the newest); rejected → artifact deleted; Apple refusing the API key → red (it would never pass on its own). Tag builds are found whether the tag was pushed or Release was started by hand on it; `finish` checks again that no DMG is attached yet before it staples.
+  check like Gatekeeper, attach to the release; rejected → artifact deleted; Apple refusing the API key → red (it would never pass on its own). Every lookup of GitHub's API ends the run red when it fails, never as "nothing to do" or "no DMG yet". Tag builds are found whether the tag was pushed or Release was started by hand on it; `finish` runs one at a time per release (two builds of one tag: the second finds the first one's DMG) and checks again that no DMG is attached yet before it staples. Each run's job `latest` then makes the newest app release that has its DMG "Latest", so a mark that failed after the upload is put right by the next run.
 - `.github/workflows/notary-status.yml` (manual): Apple's submissions + status.
 - Secrets in the GitHub environment `release` (only tags `v*` and `main`):
   `MACOS_CERT_P12` (base64 .p12 of the "Developer ID Application" certificate),

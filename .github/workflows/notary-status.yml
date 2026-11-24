@@ -5,10 +5,14 @@ permissions:
   contents: read
 jobs:
   status:
-    runs-on: macos-latest
+    runs-on: macos-15
     environment: release
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
       - name: Set up the Apple API key
         env:
           P8: ${{ secrets.NOTARY_KEY_P8 }}
