@@ -629,9 +629,34 @@ final class MetadataSourceTests: XCTestCase {
         // An external entity (a file of the Mac) is never read
         let external = "<?xml version=\"1.0\"?><!DOCTYPE x [<!ENTITY e SYSTEM \"file:///etc/hosts\">]><gpx><trk><trkseg><trkpt lat=\"1\" lon=\"1\"><time>&e;</time></trkpt></trkseg></trk></gpx>"
         XCTAssertNil(GPXTrack.read(Data(external.utf8)))
-        // Too large
+        // A document type in a document that reads otherwise: refused, near
+        // the start and past the first megabyte; external entities stay off
+        let track = "<gpx version=\"1.1\"><trk><trkseg><trkpt lat=\"60.0\" lon=\"5.0\"><time>2024-05-17T08:00:00Z</time></trkpt>"
+            + "<trkpt lat=\"60.1\" lon=\"5.1\"><time>2024-05-17T08:01:00Z</time></trkpt></trkseg></trk></gpx>"
+        let declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        XCTAssertNotNil(GPXTrack.read(Data((declaration + track).utf8)), "the track as such reads")
+        let typed = "<!DOCTYPE gpx [<!ENTITY place \"60.0\">]>\n"
+        XCTAssertNil(GPXTrack.read(Data((declaration + typed + track).utf8)), "a document type")
+        XCTAssertNil(GPXTrack.read(Data((declaration + "<!DOCTYPE gpx>\n" + track).utf8)), "a document type without entities")
+        let padding = "<!--" + String(repeating: " ", count: 1 << 20) + "-->\n"
+        XCTAssertNotNil(GPXTrack.read(Data((declaration + padding + track).utf8)), "the track as such reads")
+        XCTAssertNil(GPXTrack.read(Data((declaration + padding + typed + track).utf8)), "a document type past the first megabyte")
+        XCTAssertEqual(SafeXML.parser(for: Data((declaration + track).utf8), limit: 1 << 20)?.shouldResolveExternalEntities, false)
+        let xmp = try bytes("lightroom.xmp")
+        XCTAssertNotNil(XMPMetadata.read(xmp), "the XMP as such reads")
+        XCTAssertNil(XMPMetadata.read(Data("<!DOCTYPE x:xmpmeta>\n".utf8) + xmp), "a document type")
+        // Too large: one byte past the limit, a document that reads otherwise
         XCTAssertNil(XMPMetadata.read(Data(count: XMPMetadata.largest + 1)))
         XCTAssertNil(DJIFlightLog.read(Data(count: DJIFlightLog.largest + 1)))
+        func padded(_ data: Data, to count: Int) -> Data { data + Data(repeating: 0x20, count: count - data.count) }
+        XCTAssertNotNil(XMPMetadata.read(padded(xmp, to: XMPMetadata.largest)))
+        XCTAssertNil(XMPMetadata.read(padded(xmp, to: XMPMetadata.largest + 1)), "too large")
+        let flight = Data("1\n00:00:00,000 --> 00:00:01,000\n[latitude: 45.0] [longitude: 10.0] [altitude: 1200.5]\n\n".utf8)
+        XCTAssertEqual(DJIFlightLog.read(flight)?.first?.altitude, 1200.5, "the log as such reads")
+        XCTAssertNil(DJIFlightLog.read(padded(flight, to: DJIFlightLog.largest + 1)), "too large")
+        let high = DJIFlightLog.read(Data("1\n[latitude: 45.0] [longitude: 10.0] [altitude: 999999]\n\n".utf8))?.first
+        XCTAssertEqual(high?.point?.latitude, 45)
+        XCTAssertNil(high?.altitude, "1000 km up")
         // Cut off, unbalanced, nonsense
         XCTAssertNil(GPXTrack.read(Data("<gpx><trk><trkseg><trkpt lat=\"91\" lon=\"1\"><time>2024-01-01T00:00:00Z</time></trkpt>".utf8)))
         XCTAssertNil(GPXTrack.read(Data("not xml at all".utf8)))
