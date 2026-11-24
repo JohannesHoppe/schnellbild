@@ -158,14 +158,15 @@ final class PictureDecoderTests: XCTestCase {
         return Data(bytes)
     }
 
-    /// Thousands of damaged QOI and PCX files from a fixed seed, files cut
-    /// at every length, and crafted headers: none traps, none decodes to
+    /// Thousands of damaged QOI, PCX and DCX files from a fixed seed, files
+    /// cut at every length, and crafted headers: none traps, none decodes to
     /// more than the limits, a cut file keeps what it had.
     func testDamagedAndCraftedFilesNeverTrap() {
         var random = SplitMix(state: 0x5C11_E11B_11D0_0001)
         let reference = DecoderFixtures.reference(width: 40, height: 24)
+        let pcx = DecoderFixtures.PCXKind.allCases.map { DecoderFixtures.pcx(reference, kind: $0).data }
         let samples = [DecoderFixtures.qoi(reference, channels: 3), DecoderFixtures.qoi(reference, channels: 4)]
-            + DecoderFixtures.PCXKind.allCases.map { DecoderFixtures.pcx(reference, kind: $0).data }
+            + pcx + [DecoderFixtures.dcx(Array(pcx.prefix(2))), DecoderFixtures.dcx([pcx[0]])]
         for round in 0..<4000 {
             let sample = samples[round % samples.count]
             let data = damaged(sample, &random)
@@ -179,6 +180,7 @@ final class PictureDecoderTests: XCTestCase {
             for cut in 0..<sample.count {
                 _ = QOIDecoder.decode(sample.prefix(cut))
                 _ = PCXDecoder.decode(sample.prefix(cut))
+                _ = PCXDecoder.firstDCXPage(sample.prefix(cut)).flatMap(PCXDecoder.decode)
             }
         }
         // A file cut in half keeps its size and the rows it had
@@ -226,6 +228,16 @@ final class PictureDecoderTests: XCTestCase {
         XCTAssertNil(PCXDecoder.firstDCXPage(dcx))
         dcx.replaceSubrange(4..<8, with: [2, 0, 0, 0])
         XCTAssertNil(PCXDecoder.firstDCXPage(dcx))
+        // The first page ends where the second starts; a second offset
+        // past the end or before the first: the page runs to the end
+        let two = DecoderFixtures.dcx(Array(pcx.prefix(2)))
+        XCTAssertEqual(PCXDecoder.firstDCXPage(two), pcx[0])
+        for next: [UInt8] in [[0xFF, 0xFF, 0xFF, 0x7F], [0xFF, 0xFF, 0xFF, 0xFF], [1, 0, 0, 0], [16, 0, 0, 0]] {
+            var crafted = two
+            crafted.replaceSubrange(8..<12, with: next)
+            XCTAssertEqual(PCXDecoder.firstDCXPage(crafted), crafted.suffix(from: 16), "second offset \(next)")
+            XCTAssertNotNil(PCXDecoder.firstDCXPage(crafted).flatMap(PCXDecoder.decode))
+        }
     }
 
     // MARK: LibRaw
