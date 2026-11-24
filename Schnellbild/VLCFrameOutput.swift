@@ -153,7 +153,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // in the stream comes once this output has opened (`refreshColour`)
         let colour = deep ? media.flatMap(LibVLCVideo.colour(of:)) : nil
         let proposed = (width: Int(width.pointee), height: Int(height.pointee))
-        let shown = Self.shownSize(track: media.flatMap(Self.videoTrack(of:)), decoded: proposed)
+        let shown = LibVLCVideo.shownSize(track: media.flatMap(LibVLCVideo.visibleTrack(of:)), decoded: proposed)
         let w = shown.width, h = shown.height
         width.pointee = UInt32(w)
         height.pointee = UInt32(h)
@@ -249,14 +249,6 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         }
     }
 
-    /// The video track's pixel size and pixel shape (VLCKit's track
-    /// information).
-    struct Track: Equatable {
-        var width: Int
-        var height: Int
-        var sampleAspect: Double
-    }
-
     /// The media the player plays from now on (set with `player.media`).
     /// `newFormat`: VLC opens its output anew for it (decoded in software
     /// after VideoToolbox: another chroma); until then the pictures VLC
@@ -273,37 +265,6 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
 
     /// When the media was handed over (`use`).
     private var usedAt = Date.distantPast
-
-    /// The video track's visible size (`LibVLCVideo.visibleTrack`: the
-    /// container's, else the stream's as VLC states it).
-    static func videoTrack(of media: VLCMedia) -> Track? {
-        LibVLCVideo.visibleTrack(of: media).map { Track(width: $0.width, height: $0.height, sampleAspect: $0.sampleAspect) }
-    }
-
-    /// The size the pictures are shown at: the track's visible size when it
-    /// fits in what VLC decodes (else VLC's own size), turned as VLC turns
-    /// the picture, with non-square pixels widened (or made taller); even
-    /// sides, as NV12 needs. `visibleHeight`: before the pixels are made
-    /// square.
-    static func shownSize(track: Track?, decoded: (width: Int, height: Int)) -> (width: Int, height: Int, visibleHeight: Int) {
-        var w = decoded.width, h = decoded.height
-        var aspect = 1.0
-        if var track {
-            // VLC hands over an upright picture of a video stored turned
-            if (track.width > track.height) != (w > h), track.width != track.height, w != h {
-                swap(&track.width, &track.height)
-                track.sampleAspect = 1 / track.sampleAspect
-            }
-            if track.width <= w, track.height <= h { w = track.width; h = track.height }
-            if track.sampleAspect.isFinite, abs(track.sampleAspect - 1) > 0.01 {
-                aspect = min(max(track.sampleAspect, 0.25), 4)
-            }
-        }
-        let visibleHeight = h
-        if aspect > 1 { w = Int((Double(w) * aspect).rounded()) } else if aspect < 1 { h = Int((Double(h) / aspect).rounded()) }
-        func even(_ side: Int) -> Int { max(2, side + side % 2) }
-        return (even(w), even(h), visibleHeight)
-    }
 
     /// The pictures' size as shown, once VLC has opened its output.
     var pictureSize: CGSize? {

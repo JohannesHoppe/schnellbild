@@ -3,6 +3,7 @@ import CoreImage
 import AppKit
 import ImageIO
 @testable import Schnellbild
+import VLCFrames
 
 /// Pictures and videos: what auto enhance measures, the size VLC's pictures
 /// are shown at, PDF pages, and a file's identity through a rename.
@@ -71,9 +72,9 @@ final class MediaTests: XCTestCase {
     }
 
     func testVLCPicturesAreShownAtTheVisibleSizeWithSquarePixels() {
-        typealias Track = VLCFrameOutput.Track
+        typealias Track = LibVLCVideo.Track
         func shown(_ track: Track?, _ w: Int, _ h: Int) -> [Int] {
-            let s = VLCFrameOutput.shownSize(track: track, decoded: (w, h))
+            let s = LibVLCVideo.shownSize(track: track, decoded: (w, h))
             return [s.width, s.height, s.visibleHeight]
         }
         XCTAssertEqual(shown(Track(width: 1920, height: 1080, sampleAspect: 1), 1920, 1152), [1920, 1080, 1080], "AV1 padding")

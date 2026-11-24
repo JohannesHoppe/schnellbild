@@ -71,7 +71,8 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
     /// How a grab ended.
     public enum Outcome: CustomStringConvertible {
         case frame(CGImage)
-        /// VLC wasn't asked: no reader may open the file (`VLCSafety`).
+        /// VLC wasn't asked: the file isn't a regular one (`RegularFile`) or
+        /// no reader may open it (`VLCSafety`).
         case refused
         /// VLC opened it and failed (`failed`) or got to its end
         /// (`ended`, `stopped`) without a picture.
@@ -117,7 +118,12 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         wantedWidth = max(16, width)
     }
 
-    deinit { pixels?.deallocate() }
+    deinit {
+        pixels?.deallocate()
+        // A grab nothing holds any more answers as it goes: its caller never
+        // waits for ever
+        done?(.failed("ended"))
+    }
 
     /// Where in the video the frame is taken, as a share of its length.
     private static let position = 0.3
@@ -140,7 +146,11 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
                 grab.lock.unlock()
                 guard !cancelled else { return continuation.resume(returning: .cancelled) }
                 grab.queue.async { grab.start(url: url) }
-                grab.queue.asyncAfter(deadline: .now() + timeout) { grab.finish(with: .timedOut) }
+                // On a queue of its own, so it fires while the grab's queue
+                // waits; weak, so a finished grab and its picture go at once
+                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout) { [weak grab] in
+                    grab?.finish(with: .timedOut)
+                }
             }
         } onCancel: {
             grab.finish(with: .cancelled)
@@ -151,10 +161,14 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         lock.lock()
         let over = finished
         lock.unlock()
-        guard !over, let api = LibVLCVideo.shared else { return finish(with: .failed("no libVLC")) }
-        let head = VLCSafety.head(of: url)
-        // No reader may open it (`:demux=none`): no picture can come
-        guard VLCSafety.reader(for: url, head: head) != nil else { return finish(with: .refused) }
+        guard !over else { return }
+        // Only a regular file (`RegularFile`): VLC would wait for ever for
+        // the writer of a FIFO named like a video. No reader may open it
+        // (`:demux=none`): no picture can come
+        guard let head = VLCSafety.head(of: url), VLCSafety.reader(for: url, head: head) != nil else {
+            return finish(with: .refused)
+        }
+        guard let api = LibVLCVideo.shared else { return finish(with: .failed("no libVLC")) }
         let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: head)
         // `:no-play-and-pause`: at its end the player ends (VLCKit's default
@@ -231,21 +245,12 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         let media = self.media
         lock.unlock()
         let source = String(decoding: (0..<4).map { UInt8(bitPattern: chroma[$0]) }, as: UTF8.self)
-        var shape = (width: Double(width.pointee), height: Double(height.pointee))
-        // The visible height as `VLCFrameOutput` takes it: the track's when it
-        // fits in what VLC decodes, else VLC's own
-        var visibleHeight = Int(height.pointee)
+        // The shape and the visible height as the full view takes them
+        // (`LibVLCVideo.shownSize`), scaled to the wanted width
         let track = media.flatMap(LibVLCVideo.visibleTrack(of:))
-        if var track {
-            // VLC hands over an upright picture of a video stored turned
-            if (track.width > track.height) != (shape.width > shape.height), track.width != track.height {
-                swap(&track.width, &track.height)
-                track.sampleAspect = 1 / track.sampleAspect
-            }
-            if track.width <= Int(width.pointee), track.height <= Int(height.pointee) { visibleHeight = track.height }
-            let aspect = track.sampleAspect.isFinite && track.sampleAspect > 0 ? min(max(track.sampleAspect, 0.25), 4) : 1
-            shape = (Double(track.width) * aspect, Double(track.height))
-        }
+        let shown = LibVLCVideo.shownSize(track: track, decoded: (Int(width.pointee), Int(height.pointee)))
+        let shape = (width: Double(shown.width), height: Double(shown.height))
+        let visibleHeight = shown.visibleHeight
         let format: Format = LibVLCVideo.isDeep(chroma: source)
             ? .rgba
             : .nv12(fullRange: source.hasPrefix("J"), hd: VideoColour.isHD(visibleHeight: visibleHeight))
@@ -463,11 +468,10 @@ public enum VLCSafety {
         return nil
     }
 
-    /// A file's first bytes (nil: none to read, e.g. a path through an archive).
+    /// A file's first bytes (nil: none to read, e.g. a path through an
+    /// archive, or not a regular file: `RegularFile`). Waits on the disk.
     public static func head(of url: URL) -> Data? {
-        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
-        defer { try? handle.close() }
-        return try? handle.read(upToCount: 512)
+        RegularFile.head(of: url, count: 512)
     }
 
     static func reader(forExtension ext: String) -> Reader? {

@@ -1,4 +1,5 @@
 import Foundation
+import VLCFrames
 
 // MARK: - Bytes
 
@@ -21,21 +22,24 @@ struct MemoryBytes: ByteSource {
     }
 }
 
-/// A file read in parts (a movie's index sits anywhere in it, often at the end).
+/// A file read in parts (a movie's index sits anywhere in it, often at the
+/// end). Only a regular file (`RegularFile`: a FIFO named like a video is
+/// refused, not waited on); its reads wait on the disk, so it is made and
+/// read on `Blocking`'s threads.
 final class FileBytes: ByteSource {
     private let handle: FileHandle
     let size: UInt64
 
     init?(_ url: URL) {
-        guard let handle = try? FileHandle(forReadingFrom: url), let end = try? handle.seekToEnd() else { return nil }
-        self.handle = handle
-        size = end
+        guard let file = try? RegularFile.open(url) else { return nil }
+        handle = file.handle
+        size = file.size
     }
-
-    deinit { try? handle.close() }
 
     func read(at offset: UInt64, count: Int) -> [UInt8]? {
         guard count >= 0, offset <= size, UInt64(count) <= size - offset else { return nil }
+        // FileHandle answers a read of no bytes with nil
+        guard count > 0 else { return [] }
         guard (try? handle.seek(toOffset: offset)) != nil, let data = try? handle.read(upToCount: count),
               data.count == count else { return nil }
         return [UInt8](data)
@@ -208,6 +212,9 @@ enum MP4Boxes {
     static func mediaLength(_ bytes: [UInt8], track: Box) -> Double? {
         guard let media = child("mdia", of: track, in: bytes), let header = child("mdhd", of: media, in: bytes),
               let version = bytes.u8(header.payload.lowerBound) else { return nil }
+        // Read within the box: version 1 holds 64-bit times (32 bytes up to
+        // the duration's end), version 0 32-bit ones (20 bytes)
+        guard header.payload.count >= (version == 1 ? 32 : 20) else { return nil }
         let at = header.payload.lowerBound
         let scale = bytes.u32(at + (version == 1 ? 20 : 12))
         let duration = version == 1 ? bytes.u64(at + 24) : bytes.u32(at + 16).map(UInt64.init)
@@ -247,7 +254,8 @@ enum MP4Boxes {
         }
         guard sawFileType else { return nil }
         var movie = Movie()
-        if let xmpBox, xmpBox.count <= largestXMP, let bytes = source.read(at: xmpBox.lowerBound, count: Int(xmpBox.count)) {
+        // An empty XMP box counts as none (the user data's XMP is read then)
+        if let xmpBox, !xmpBox.isEmpty, xmpBox.count <= largestXMP, let bytes = source.read(at: xmpBox.lowerBound, count: Int(xmpBox.count)) {
             movie.xmp = bytes
         }
         guard let movieIndex, movieIndex.count <= largestIndex,
@@ -265,7 +273,7 @@ enum MP4Boxes {
             case "udta":
                 for item in boxes(in: bytes, box.payload) {
                     if item.type == "\u{A9}xyz", movie.location == nil { movie.location = userDataLocation(bytes, item) }
-                    if item.type == "XMP_", movie.xmp == nil, item.payload.count <= largestXMP { movie.xmp = Array(bytes[item.payload]) }
+                    if item.type == "XMP_", movie.xmp == nil, !item.payload.isEmpty, item.payload.count <= largestXMP { movie.xmp = Array(bytes[item.payload]) }
                 }
             case "trak":
                 if movie.telemetry.isEmpty, let samples = telemetrySamples(bytes, track: box, fileSize: fileSize) {

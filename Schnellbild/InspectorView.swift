@@ -350,7 +350,9 @@ struct InspectorView: View {
         let kind = entry.kind
         let modified = entry.modDate
         let found = await detachedCancellable(priority: .utility) { () -> (MediaReport?, FileFacts?, Date?) in
-            let created = FileReport.created(url)
+            // What waits on the disk runs on `Blocking`'s threads: a share
+            // that stalls would otherwise hold Swift's
+            let created = await Blocking.run(.utility) { FileReport.created(url) }
             // Time and place from every source, the files beside it too (not inside archives)
             func adopting(_ report: MediaReport?) async -> MediaReport? {
                 guard !ArchivePath.isInside(url) else { return report }
@@ -364,13 +366,16 @@ struct InspectorView: View {
             case .image:
                 // SVG, PDF: their own size (ImageIO reads neither)
                 if VectorPicture.isVector(url) {
-                    guard let size = await MediaInfo.pixelSize(ofAnywhere: url), size.width.isFinite, size.height.isFinite else {
+                    // A PDF opened once, for its size and whether it is a preview
+                    let pages = PDFPages.isPDF(url) ? await PDFPages.open(url) : nil
+                    let size = PDFPages.isPDF(url) ? pages?.size(of: 0) : await VectorPicture.size(of: url)
+                    guard let size, size.width.isFinite, size.height.isFinite else {
                         return (nil, nil, created)
                     }
                     let shown = "\(Int(max(0, min(size.width, 1e15)))) × \(Int(max(0, min(size.height, 1e15)))) px"
                     // An Illustrator file shown by the picture it carries says so
                     var facts: FileFacts?
-                    if PDFPages.isPDF(url), BrowserModel.shownExtension(of: url) == "ai", await PDFPages.open(url)?.isPreview == true {
+                    if pages?.isPreview == true, BrowserModel.shownExtension(of: url) == "ai" {
                         facts = FileFacts(format: FileFacts.previewFormat(of: url))
                     }
                     return (MediaReport(media: [InfoRow(label: String(localized: "Resolution"), value: shown)]), facts, created)
@@ -380,7 +385,10 @@ struct InspectorView: View {
             case .video:
                 // Inside an archive there are no first bytes to read without unpacking
                 guard !ArchivePath.isInside(url) else { return (nil, nil, created) }
-                let facts = FileFacts.video(head: VLCSafety.head(of: url), named: url)
+                // Only a regular file (no first bytes otherwise): AVFoundation
+                // would wait for ever for the writer of a FIFO named like a video
+                guard let head = await Blocking.run(.utility, { VLCSafety.head(of: url) }) else { return (nil, nil, created) }
+                let facts = FileFacts.video(head: head, named: url)
                 return (await adopting(await VideoMetadata.report(url)), facts, created)
             default:
                 return (nil, nil, created)
