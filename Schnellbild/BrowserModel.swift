@@ -6765,7 +6765,7 @@ final class AVPlaybackControl: PlaybackControl {
 
     private var composition: AVVideoComposition?
     private var enhancer: VideoEnhancer?
-    private var compositionTask: Task<Void, Never>?
+    private(set) var compositionTask: Task<Void, Never>?
     /// Where auto enhance's look goes (the model, for the sliders).
     var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
@@ -6807,13 +6807,20 @@ final class AVPlaybackControl: PlaybackControl {
         guard compositionTask == nil else { return }
         let asset = item.asset
         compositionTask = Task { [weak self] in
+            // A file without a picture (sound alone in an MP4 or MOV) gets no
+            // composition: AVFoundation completes making one with neither a
+            // composition nor an error, on which the async call traps.
+            let track = try? await asset.loadTracks(withMediaType: .video).first
             // How long a frame lasts: a redraw stays within the frame shown
-            if self?.frameDuration == nil, let track = try? await asset.loadTracks(withMediaType: .video).first,
+            if self?.frameDuration == nil, let track,
                let duration = try? await track.load(.minFrameDuration), duration.seconds > 0, duration.seconds.isFinite {
                 self?.frameDuration = duration.seconds
             }
-            let made = try? await AVVideoComposition.videoComposition(with: asset) { request in
-                enhancer.process(request)
+            var made: AVVideoComposition?
+            if track != nil, !Task.isCancelled {
+                made = try? await AVVideoComposition.videoComposition(with: asset) { request in
+                    enhancer.process(request)
+                }
             }
             guard let self, !Task.isCancelled else { return }
             self.compositionTask = nil   // also after a failure: the next change tries again

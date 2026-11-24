@@ -2,11 +2,85 @@ import XCTest
 import CoreImage
 import AppKit
 import ImageIO
+import AVFoundation
 @testable import Schnellbild
 
 /// Pictures and videos: what auto enhance measures, the size VLC's pictures
 /// are shown at, PDF pages, and a file's identity through a rename.
 final class MediaTests: XCTestCase {
+    /// A look keeps a Display P3 photo's colours: its red stays P3's red,
+    /// not sRGB's red written in P3.
+    func testALookKeepsAWideGamutPicture() throws {
+        let p3 = CGColorSpace(name: CGColorSpace.displayP3)!
+        let context = try XCTUnwrap(CGContext(data: nil, width: 64, height: 64, bitsPerComponent: 8, bytesPerRow: 0, space: p3,
+                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        context.setFillColor(CGColor(colorSpace: p3, components: [1, 0, 0, 1])!)
+        context.fill(CGRect(x: 0, y: 0, width: 64, height: 64))
+        let picture = try XCTUnwrap(context.makeImage())
+        // (sharpening an even picture changes none of its pixels)
+        let rendered = try XCTUnwrap(Look.render(picture, with: Look(sharpness: 0.5)))
+        XCTAssertEqual(rendered.colorSpace?.name, CGColorSpace.displayP3)
+        XCTAssertEqual(rendered.bitsPerComponent, 8)
+        let bytes = [UInt8](try XCTUnwrap(rendered.dataProvider?.data as Data?))
+        let middle = 32 * rendered.bytesPerRow + 32 * 4
+        XCTAssertGreaterThan(bytes[middle], 250, "red")
+        XCTAssertLessThan(bytes[middle + 1], 5, "green")
+        XCTAssertLessThan(bytes[middle + 2], 5, "blue")
+    }
+
+    /// A look keeps a 16-bit picture's steps: a gentle ramp doesn't
+    /// collapse to 8-bit steps.
+    func testALookKeepsADeepPicture() throws {
+        let width = 1024, height = 4
+        var ramp = [UInt16](repeating: 0, count: width * height)
+        for y in 0..<height { for x in 0..<width { ramp[y * width + x] = UInt16(20_000 + x * 4) } }
+        let data = ramp.withUnsafeBytes { Data($0) }
+        let picture = try XCTUnwrap(CGImage(width: width, height: height, bitsPerComponent: 16, bitsPerPixel: 16, bytesPerRow: width * 2,
+                                            space: CGColorSpace(name: CGColorSpace.linearGray)!,
+                                            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue | CGBitmapInfo.byteOrder16Little.rawValue),
+                                            provider: CGDataProvider(data: data as CFData)!, decode: nil, shouldInterpolate: false,
+                                            intent: .defaultIntent))
+        let rendered = try XCTUnwrap(Look.render(picture, with: Look(sharpness: 0.5)))
+        XCTAssertEqual(rendered.bitsPerComponent, 16, "half floats")
+        let floats = try XCTUnwrap(rendered.dataProvider?.data as Data?).withUnsafeBytes { Array($0.bindMemory(to: Float16.self)) }
+        let row = rendered.bytesPerRow / 2
+        var values = Set<Float16>()
+        for x in 100..<900 { values.insert(floats[2 * row + x * 4]) }
+        XCTAssertGreaterThan(values.count, 40, "more steps than 8 bits have in that range (about 13; half floats about 100)")
+    }
+
+    /// A sound-only MP4 played in AVKit with a look: no video composition
+    /// (AVFoundation makes none for a file without a picture, and the call
+    /// trapped on that).
+    @MainActor
+    func testALookOnASoundOnlyMP4() async throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let url = folder.appendingPathComponent("sound.mp4")
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 44_100, channels: 1))
+        do {
+            let file = try AVAudioFile(forWriting: url, settings: [AVFormatIDKey: kAudioFormatMPEG4AAC, AVSampleRateKey: 44_100,
+                                                                    AVNumberOfChannelsKey: 1])
+            let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 44_100))
+            buffer.frameLength = 44_100
+            try file.write(from: buffer)
+        }
+        let asset = AVURLAsset(url: url)
+        let pictures = try await asset.loadTracks(withMediaType: .video)
+        let sounds = try await asset.loadTracks(withMediaType: .audio)
+        XCTAssertTrue(pictures.isEmpty)
+        XCTAssertFalse(sounds.isEmpty)
+        let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)))
+        control.setEnhancement(.auto)
+        await control.compositionTask?.value
+        XCTAssertNil(control.player.currentItem?.videoComposition)
+        control.setEnhancement(.manual(Look(exposure: 0.3)))
+        await control.compositionTask?.value
+        XCTAssertNil(control.player.currentItem?.videoComposition)
+        control.pause()
+    }
+
     /// A grey square on a transparent background measures as grey: the
     /// transparent pixels aren't counted as black.
     func testTransparentPixelsAreNotMeasured() throws {

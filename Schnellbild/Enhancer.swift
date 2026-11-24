@@ -103,10 +103,23 @@ struct Look: Equatable, Sendable {
 
     static let context = CIContext(options: [.cacheIntermediates: false])
 
-    /// A still picture with a look.
+    /// A still picture with a look, in the picture's own colours and depth:
+    /// a wide-gamut photo (Display P3) keeps its gamut, a picture of more
+    /// than 8 bits its steps (half floats, the colour space extended).
     static func render(_ picture: CGImage, with look: Look) -> CGImage? {
         let image = CIImage(cgImage: picture)
-        return context.createCGImage(look.apply(to: image), from: image.extent)
+        let filtered = look.apply(to: image)
+        let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
+        let own = picture.colorSpace.flatMap { $0.model == .rgb ? $0 : nil } ?? sRGB
+        if picture.bitsPerComponent > 8 {
+            let extended = CGColorSpaceCreateExtended(own) ?? CGColorSpace(name: CGColorSpace.extendedSRGB)!
+            return context.createCGImage(filtered, from: image.extent, format: .RGBAh, colorSpace: extended)
+                ?? context.createCGImage(filtered, from: image.extent, format: .RGBAh,
+                                         colorSpace: CGColorSpace(name: CGColorSpace.extendedSRGB)!)
+        }
+        // (a colour space Core Image can't write into: sRGB)
+        return context.createCGImage(filtered, from: image.extent, format: .RGBA8, colorSpace: own)
+            ?? context.createCGImage(filtered, from: image.extent, format: .RGBA8, colorSpace: sRGB)
     }
 }
 
