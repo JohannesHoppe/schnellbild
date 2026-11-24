@@ -69,12 +69,19 @@ jobs:
         os: [ macos-15, macos-26 ]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      # qlvideo.sh builds and runs Swift helpers
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+      # The release's asset can be replaced: only the DMG checked here is
+      # installed and opened
       - name: Get QuickLook Video rel-313
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release download rel-313 --repo Marginal/QuickLookVideo --pattern 'QLVideo_313.dmg' --dir "$RUNNER_TEMP"
-          shasum -a 256 "$RUNNER_TEMP/QLVideo_313.dmg"
+          echo "23b6c3e094caad5c44a9fcb2f865074f6a1f0cdb33fb6f81edad978ecd1d6f61  $RUNNER_TEMP/QLVideo_313.dmg" | shasum -a 256 -c
       - name: Turn it on, ask for thumbnails
         run: ./Spike/MediaExtension/qlvideo.sh "$RUNNER_TEMP/QLVideo_313.dmg" "$PWD/out"
       - name: Keep the screenshots and thumbnails

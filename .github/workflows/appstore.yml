@@ -118,6 +118,9 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+
       - name: Texts, screenshots, URLs, categories, review notes${{ inputs.upload && ', build' || '' }}
         env:
           # An App Manager key if there is one, else the notarization key.

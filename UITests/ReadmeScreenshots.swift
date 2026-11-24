@@ -5,7 +5,8 @@ import AppKit
 /// .github/workflows/screenshots.yml. A UI test can't photograph a window
 /// with its shadow (nor write outside its container), so for each picture it
 /// puts "shoot:<name>" on the pasteboard and waits for "done:<name>" from the
-/// workflow's helper (Scripts/shoot_window.swift). Runs only with this
+/// workflow's helper (Scripts/shoot_window.swift; "failed:<name>" when it
+/// couldn't take it). Runs only with this
 /// environment (xcodebuild passes TEST_RUNNER_<name> to the test runner as <name>):
 ///   SCREENSHOTS=1      take them
 ///   SCREENSHOT_SUFFIX  appended to each name, e.g. "-dark"
@@ -60,9 +61,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString("\(front ? "shoot-front" : "shoot"):\(picture)", forType: .string)
+        // The shell answers "failed:<name>" when it couldn't take the picture
         eventually("\(picture) photographed", timeout: 30) {
-            pasteboard.string(forType: .string) == "done:\(picture)"
+            let answer = pasteboard.string(forType: .string)
+            return answer == "done:\(picture)" || answer == "failed:\(picture)"
         }
+        XCTAssertEqual(pasteboard.string(forType: .string), "done:\(picture)", "the shell couldn't photograph \(picture)")
     }
 
     /// The video's control bar in the middle of each of the sample video's

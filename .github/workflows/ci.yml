@@ -135,11 +135,8 @@ jobs:
           key: ${{ runner.os }}-spm-${{ hashFiles('Package.swift') }}
           restore-keys: ${{ runner.os }}-spm-
 
-      - name: Cache VLCKit
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env', 'Scripts/fetch_raw_samples.sh', 'Scripts/raw_samples.env') }}
+      - name: Cache Vendor
+        uses: ./.github/actions/vendor-cache
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
@@ -212,6 +209,10 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
+      # check_thumbnail_extension.sh compiles its probe with swiftc
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+
       - name: Get the app (built by build-test in this run)
         env:
           GH_TOKEN: ${{ github.token }}
@@ -271,11 +272,8 @@ jobs:
           cat build/xcodegen-refetch.log
           grep -q 'Downloading XcodeGen' build/xcodegen-refetch.log
 
-      - name: Cache VLCKit
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env', 'Scripts/fetch_raw_samples.sh', 'Scripts/raw_samples.env') }}
+      - name: Cache Vendor
+        uses: ./.github/actions/vendor-cache
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
@@ -300,17 +298,16 @@ jobs:
           hdiutil create -size 64m -fs APFS -volname SchnellbildUITests -o build/uitests-volume.dmg
           hdiutil attach build/uitests-volume.dmg
           test -d /Volumes/SchnellbildUITests
-          # The Dock hidden: on the runner's small screen it covers the
-          # bottom of a tall window (Settings → Folder access)
-          defaults write com.apple.dock autohide -bool true
-          defaults write com.apple.dock autohide-delay -float 1000
-          killall Dock
-          sleep 2
+          # The Dock covers the bottom of a tall window (Settings → Folder access)
+          ./Scripts/hide_dock.sh
 
       - name: Build the brightness meter
         run: mkdir -p build && swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness
 
       - name: Run XCUITests
+        # About an hour; a hang the tests' own waits don't catch ends here,
+        # not at GitHub's six-hour limit (repeated runs take longer)
+        timeout-minutes: ${{ inputs.repeat && 340 || 120 }}
         env:
           ONLY: ${{ inputs.only || 'SchnellbildUITests' }}
           REPEAT: ${{ inputs.repeat }}
@@ -320,45 +317,41 @@ jobs:
           # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>:<red>:<green>:<blue>" back;
           # "shot:<name>:<x>,<y>,<w>,<h>" keeps a picture of that region as measurements/<name>.png.
           mkdir -p measurements
-          (
-            # One failed capture must not end the helper (the step runs with -e)
-            set +e
-            while :; do
-              request=$(pbpaste 2>/dev/null || true)
-              case "$request" in
-                measure:*)
-                  rest=${request#measure:}
-                  id=${rest%%:*}
-                  rect=${rest#*:}
-                  shot=measurements/$id-region.png
-                  screencapture -x -R "$rect" "$shot"
-                  screencapture -x "measurements/$id-screen.png"
-                  read -r mean spread red green blue < <(build/measure_brightness "$shot" || echo "-1 -1 -1 -1 -1")
-                  echo "== measure $id $rect: $mean ± $spread (RGB $red $green $blue)"
-                  printf 'measured:%s:%s:%s:%s:%s:%s' "$id" "$mean" "$spread" "$red" "$green" "$blue" | pbcopy
-                  ;;
-                shot:*)
-                  # A picture to look at (AboutUITests): "shot:<name>:<x>,<y>,<w>,<h>"
-                  rest=${request#shot:}
-                  name=${rest%%:*}
-                  rect=${rest#*:}
-                  echo "== shot $name $rect"
-                  screencapture -x -R "$rect" "measurements/$name.png"
-                  printf 'shot-done:%s' "$name" | pbcopy
-                  ;;
-                sample:*)
-                  # A test found the app hanging: what its threads are doing
-                  id=${request#sample:}
-                  echo "== sample $id"
-                  sample Schnellbild 3 -file "measurements/sample-$id.txt" >/dev/null 2>&1
-                  head -c 60000 "measurements/sample-$id.txt" 2>/dev/null || echo "(no sample)"
-                  printf 'sampled:%s' "$id" | pbcopy
-                  ;;
-              esac
-              sleep 0.2
-            done
-          ) &
-          helper=$!
+          source Scripts/pasteboard_requests.sh
+          handle() {
+            case "$1" in
+              measure:*)
+                rest=${1#measure:}
+                id=${rest%%:*}
+                rect=${rest#*:}
+                shot=measurements/$id-region.png
+                screencapture -x -R "$rect" "$shot"
+                screencapture -x "measurements/$id-screen.png"
+                # A failed measurement answers -1: the test fails (ScreenMeasure.swift)
+                read -r mean spread red green blue < <(build/measure_brightness "$shot" || echo "-1 -1 -1 -1 -1")
+                echo "== measure $id $rect: $mean ± $spread (RGB $red $green $blue)"
+                answer "measured:$id:$mean:$spread:$red:$green:$blue"
+                ;;
+              shot:*)
+                # A picture to look at (AboutUITests): "shot:<name>:<x>,<y>,<w>,<h>"
+                rest=${1#shot:}
+                name=${rest%%:*}
+                rect=${rest#*:}
+                echo "== shot $name $rect"
+                screencapture -x -R "$rect" "measurements/$name.png"
+                answer "shot-done:$name"
+                ;;
+              sample:*)
+                # A test found the app hanging: what its threads are doing
+                id=${1#sample:}
+                echo "== sample $id"
+                sample Schnellbild 3 -file "measurements/sample-$id.txt" >/dev/null 2>&1
+                head -c 60000 "measurements/sample-$id.txt" 2>/dev/null || echo "(no sample)"
+                answer "sampled:$id"
+                ;;
+            esac
+          }
+          serve_requests handle
           status=0
           # Several tests or classes: separated by commas
           only=()
@@ -374,7 +367,7 @@ jobs:
             "${only[@]}" \
             -derivedDataPath build/DerivedData \
             ${REPEAT:+-test-iterations "$REPEAT" -run-tests-until-failure} || status=1
-          kill "$helper" 2>/dev/null || true
+          stop_serving
           exit $status
 
       - name: Show VLC's log
@@ -419,11 +412,8 @@ jobs:
       - name: Select Xcode
         run: Scripts/select_xcode.sh
 
-      - name: Cache VLCKit
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_libraw.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env', 'Scripts/fetch_raw_samples.sh', 'Scripts/raw_samples.env') }}
+      - name: Cache Vendor
+        uses: ./.github/actions/vendor-cache
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
