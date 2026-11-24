@@ -529,9 +529,7 @@ final class AtlasModel: ObservableObject {
             guard newValue != cameraState.camera else { return }
             cameraState.camera = newValue
             // Moved by the user (drag, scroll, pinch, buttons), not only held in the view's limits
-            if mapSize.width > 0, newValue != cameraSet, newValue != held(cameraSet), tour == nil {
-                userMovedMap = true
-            }
+            if tour == nil, mapSize.width > 0, isUsersMove(newValue) { userMovedMap = true }
             if needsClusters(at: newValue) { scheduleClusters() }
         }
     }
@@ -566,10 +564,21 @@ final class AtlasModel: ObservableObject {
                       clusters.count, clusterZoom ?? -1, needsFit ? "pending" : "done", userMovedMap ? "yes" : "no",
                       motion["glide"] ?? 0, motion["throw"] ?? 0, motion["fade"] ?? 0, MapMotion.thrownPoints)
     }
-    /// The camera the Atlas set last (at first the one the map starts with):
-    /// a camera the view reports that is neither it nor it held in the view's
-    /// limits is the user's.
-    private var cameraSet = MapCamera.world
+    /// The camera the Atlas set last: a camera the view reports that is
+    /// neither it nor it held in the view's limits is the user's.
+    private var cameraSet: MapCamera?
+
+    /// Whether a camera the view reports is a move by the user. Before the
+    /// Atlas set one, the view holding the camera it starts with (in a size
+    /// the Atlas may not know yet) changes only its zoom: anything else is
+    /// the user's (a drag or a pinch while the first places are read).
+    private func isUsersMove(_ c: MapCamera) -> Bool {
+        guard let set = cameraSet else {
+            let start = MapCamera.world
+            return c.center != start.center || c.pitch != start.pitch || c.heading != start.heading
+        }
+        return c != set && c != held(set)
+    }
 
     private func setCamera(_ next: MapCamera) {
         cameraSet = next
