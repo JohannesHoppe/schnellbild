@@ -3940,6 +3940,32 @@ final class UndoTests: XCTestCase {
         XCTAssertTrue(m.canTrash, "free again once done")
     }
 
+    /// A second ⌘⌫ (or the menu) while the item's parts are still looked up
+    /// off the main thread, before the prompt: asked once. (The prompt is
+    /// answered No, so nothing reaches the real Trash.)
+    func testASecondTrashDuringThePartsLookupAsksOnce() async throws {
+        let tree = try TempTree(self)
+        try tree.file("x.part1.rar", bytes: 10)
+        try tree.file("x.part2.rar", bytes: 10)
+        let spy = FileActionsSpy()
+        spy.confirm = false
+        var actions = spy.actions
+        actions.runsOffMain = true
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: actions)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "x.part1.rar")
+        XCTAssertTrue(m.canTrash)
+        m.moveSelectionToTrash()
+        XCTAssertTrue(m.trashLookupPending, "looked up off the main thread")
+        XCTAssertFalse(m.canTrash, "the menu item is off while it is looked up")
+        m.moveSelectionToTrash()
+        await waitUntil { !m.trashLookupPending }
+        XCTAssertEqual(spy.confirmNames, [["x.part1.rar"]], "asked once")
+        XCTAssertEqual(spy.confirmDetails.count, 1)
+        XCTAssertTrue(spy.trashed.isEmpty)
+        XCTAssertTrue(m.canTrash, "free again once answered")
+    }
+
     /// ⌘Z and ⇧⌘Z are told apart from other keys (⌥, ⌃, other letters).
     func testTheUndoKeys() throws {
         func key(_ characters: String, _ flags: NSEvent.ModifierFlags, code: UInt16 = 6) throws -> NSEvent {
