@@ -329,10 +329,14 @@ enum DecoderFixtures {
 
     /// A DNG of the picture `scale` times as large: 16-bit samples of linear
     /// light in an RGGB Bayer mosaic, the camera's colours sRGB's (its
-    /// ColorMatrix1 is the inverse of sRGB's to XYZ), as shot neutral; with
-    /// `preview` its first IFD is the picture at its own size in 8-bit RGB
-    /// and the raw data a sub-IFD, as cameras write them.
-    static func dng(_ picture: RGBA, scale: Int = 2, preview: Bool, make: String = "Schnellbild", model: String = "Test Camera") -> Data {
+    /// ColorMatrix1 is the inverse of sRGB's to XYZ); with `preview` its
+    /// first IFD is the picture at its own size in 8-bit RGB and the raw
+    /// data a sub-IFD, as cameras write them. `asShotNeutral`: the camera
+    /// saw white as these red, green and blue (each sample scaled by its
+    /// channel's), so only its white balance gives the picture back;
+    /// `orientation`: the EXIF orientation written (the raw data as it is).
+    static func dng(_ picture: RGBA, scale: Int = 2, preview: Bool, make: String = "Schnellbild", model: String = "Test Camera",
+                    asShotNeutral: [Double] = [1, 1, 1], orientation: Int = 1) -> Data {
         let w = picture.width * scale, h = picture.height * scale
         var raw = Data(count: w * h * 2)
         for y in 0..<h {
@@ -340,7 +344,7 @@ enum DecoderFixtures {
                 let px = picture[x / scale, y / scale]
                 let c = (y & 1) * 2 + (x & 1)   // R G / G B
                 let channel = c == 0 ? 0 : c == 3 ? 2 : 1
-                let v = UInt16((linear(px[channel]) * 65535).rounded())
+                let v = UInt16((linear(px[channel]) * asShotNeutral[channel] * 65535).rounded())
                 raw[(y * w + x) * 2] = UInt8(v & 0xFF)
                 raw[(y * w + x) * 2 + 1] = UInt8(v >> 8)
             }
@@ -349,10 +353,10 @@ enum DecoderFixtures {
         var tiff = TIFFWriter()
         let modelName = make + " " + model
         let dngTags: [TIFFWriter.Entry] = [
-            .ascii(271, make), .ascii(272, model), .short(274, [1]),
+            .ascii(271, make), .ascii(272, model), .short(274, [orientation]),
             .bytes(50706, [1, 4, 0, 0]), .ascii(50708, modelName),
             .srational(50721, inverse.map { (Int32(($0 * 10000).rounded()), 10000) }),
-            .rational(50728, [(1, 1), (1, 1), (1, 1)]), .short(50778, [21]),
+            .rational(50728, asShotNeutral.map { (UInt32(($0 * 10000).rounded()), 10000) }), .short(50778, [21]),
         ]
         let rawTags: [TIFFWriter.Entry] = [
             .long(254, [0]), .long(256, [w]), .long(257, [h]), .short(258, [16]), .short(259, [1]), .short(262, [32803]),

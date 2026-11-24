@@ -174,28 +174,68 @@ func makeTestDefaults() -> UserDefaults {
     TestDefaults.make()
 }
 
+/// The preferences suites of the tests. Each name holds the test process's
+/// id ("sb.tests.<pid>.<label>.<UUID>"): the suites are removed when the
+/// process ends, and what a process that didn't end normally (killed,
+/// crashed) left behind is removed by the next test process.
 enum TestDefaults {
+    static let prefix = "sb.tests."
     private static let lock = NSLock()
     private static var names: [String] = []
 
-    static func make() -> UserDefaults {
-        let name = "sb.tests.\(UUID().uuidString)"
-        lock.lock()
-        if names.isEmpty { atexit { TestDefaults.removeAll() } }
-        names.append(name)
-        lock.unlock()
-        return UserDefaults(suiteName: name)!
+    static func make(_ label: String = "") -> UserDefaults {
+        UserDefaults(suiteName: name(label))!
     }
 
+    /// A suite's name, removed with the others (for code that opens the suite itself).
+    static func name(_ label: String = "") -> String {
+        let name = prefix + "\(getpid())." + (label.isEmpty ? "" : label + ".") + UUID().uuidString
+        lock.lock()
+        if names.isEmpty {
+            removeLeftovers()
+            atexit { TestDefaults.removeAll() }
+        }
+        names.append(name)
+        lock.unlock()
+        return name
+    }
+
+    private static var preferences: URL {
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Preferences")
+    }
+
+    private static func file(_ name: String) -> URL { preferences.appendingPathComponent("\(name).plist") }
+
+    /// Emptied, then their files removed. The preferences daemon writes an
+    /// emptied suite's file on its own time, which may be after the file
+    /// was removed (an empty suite's file comes back): removed again until
+    /// none has come back for a moment.
     static func removeAll() {
         lock.lock()
         let made = names
         names = []
         lock.unlock()
-        let preferences = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Preferences")
         for name in made {
             UserDefaults.standard.removePersistentDomain(forName: name)
-            try? FileManager.default.removeItem(at: preferences.appendingPathComponent("\(name).plist"))
+            CFPreferencesAppSynchronize(name as CFString)
+        }
+        let deadline = Date() + 2
+        var quiet = 0
+        while quiet < 3, Date() < deadline {
+            var removed = false
+            for name in made where (try? FileManager.default.removeItem(at: file(name))) != nil { removed = true }
+            quiet = removed ? 0 : quiet + 1
+            usleep(50_000)
+        }
+    }
+
+    /// The files of suites whose test process has ended.
+    private static func removeLeftovers() {
+        let files = (try? FileManager.default.contentsOfDirectory(atPath: preferences.path)) ?? []
+        for file in files where file.hasPrefix(prefix) && file.hasSuffix(".plist") {
+            guard let pid = Int32(file.dropFirst(prefix.count).prefix { $0 != "." }), pid > 0, pid != getpid(),
+                  kill(pid, 0) != 0, errno == ESRCH else { continue }
+            try? FileManager.default.removeItem(at: preferences.appendingPathComponent(file))
         }
     }
 }
@@ -749,14 +789,28 @@ final class OpenFolderTests: XCTestCase {
         await openAndWait(BrowserModel(defaults: defaults), tree.root)
         let m = BrowserModel(defaults: defaults)
         m.restoreConfirmDelay = .zero
-        m.restoreLastFolder()
-        var confirmedEarly = false
-        await waitUntil {
-            if defaults.string(forKey: BrowserModel.restoreUnconfirmedKey) == nil, !m.isAt(tree.root) { confirmedEarly = true }
-            return m.isAt(tree.root)
+        // Looked at the moment the mark is removed (on the main thread), not by polling
+        final class Watch: NSObject {
+            let key: String
+            var shownWhenConfirmed: [Bool] = []
+            init(key: String) { self.key = key }
+            var shown: () -> Bool = { false }
+            override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?,
+                                       context: UnsafeMutableRawPointer?) {
+                guard (object as? UserDefaults)?.string(forKey: key) == nil else { return }
+                XCTAssertTrue(Thread.isMainThread)
+                shownWhenConfirmed.append(shown())
+            }
         }
-        XCTAssertFalse(confirmedEarly, "confirmed before the folder was shown")
+        let watch = Watch(key: BrowserModel.restoreUnconfirmedKey)
+        watch.shown = { MainActor.assumeIsolated { m.isAt(tree.root) } }
+        defaults.addObserver(watch, forKeyPath: BrowserModel.restoreUnconfirmedKey, options: [.new], context: nil)
+        defer { defaults.removeObserver(watch, forKeyPath: BrowserModel.restoreUnconfirmedKey) }
+        m.restoreLastFolder()
+        XCTAssertNotNil(defaults.string(forKey: BrowserModel.restoreUnconfirmedKey), "marked while it opens")
+        await waitUntil { m.isAt(tree.root) }
         await waitUntil { defaults.string(forKey: BrowserModel.restoreUnconfirmedKey) == nil }
+        XCTAssertEqual(watch.shownWhenConfirmed, [true], "confirmed only once the folder was shown")
     }
 
     /// A normal quit confirms the folders of every window's panes, not only the first window's.
@@ -782,8 +836,7 @@ final class OpenFolderTests: XCTestCase {
 
     func testUITestingUsesSeparateResettableDefaults() {
         XCTAssertTrue(BrowserModel.makeDefaults(arguments: ["app"]) === UserDefaults.standard)
-        let name = "sb.tests.reset.\(UUID().uuidString)"
-        defer { UserDefaults.standard.removePersistentDomain(forName: name) }
+        let name = TestDefaults.name("reset")
         let suite = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing"], suite: name)
         XCTAssertFalse(suite === UserDefaults.standard)
         suite.set("x", forKey: BrowserModel.lastFolderKey)
@@ -852,6 +905,16 @@ final class SearchTests: XCTestCase {
         m.searchText = "(a|a)*b"
         XCTAssertLessThan(Date().timeIntervalSince(start), 0.5, "the main thread goes on at once")
         XCTAssertTrue(m.isSearching)
+        // While the names are matched (each up to the matcher's deadline),
+        // the main thread keeps turning
+        var largestGap: TimeInterval = 0, last = Date(), beats = 0
+        while Date().timeIntervalSince(start) < 1, m.isSearching {
+            try await Task.sleep(nanoseconds: 10_000_000)
+            largestGap = max(largestGap, Date().timeIntervalSince(last))
+            last = Date()
+            beats += 1
+        }
+        XCTAssertLessThan(largestGap, 0.5, "the main thread was held while matching (\(beats) beats)")
         await searchAndWait(m, "^b")
         XCTAssertEqual(m.names, ["b.jpg"])
     }
@@ -2733,7 +2796,7 @@ final class PathTests: XCTestCase {
     }
 }
 
-// MARK: - Review fixes: search stays consistent with renames and trash
+// MARK: - Search stays consistent with renames and trash
 
 @MainActor
 final class SearchConsistencyTests: XCTestCase {
@@ -3021,7 +3084,7 @@ final class ReviewFixTests: XCTestCase {
 
         XCTAssertTrue(FolderAccess(sandboxed: false).covers(URL(fileURLWithPath: "/anywhere")))
         let sandboxed = FolderAccess(sandboxed: true)
-        sandboxed.defaults = UserDefaults(suiteName: "access-\(UUID().uuidString)")!
+        sandboxed.defaults = TestDefaults.make("access")
         sandboxed.restore()
         await sandboxed.restored()
         XCTAssertFalse(sandboxed.covers(URL(fileURLWithPath: "/anywhere")), "nothing granted yet")
@@ -3030,7 +3093,7 @@ final class ReviewFixTests: XCTestCase {
 
     /// Light or dark: as the system's until chosen, then kept.
     func testTheAppearanceIsKept() throws {
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "appearance-\(UUID().uuidString)"))
+        let defaults = TestDefaults.make("appearance")
         XCTAssertEqual(AppAppearance.stored(in: defaults), .system)
         XCTAssertNil(AppAppearance.system.appearanceName)
         defaults.set(AppAppearance.dark.rawValue, forKey: AppAppearance.key)
@@ -3049,12 +3112,17 @@ final class ReviewFixTests: XCTestCase {
         let m = makeModel(FileActionsSpy())
         await openAndWait(m, tree.root)
         for i in [1, 2000, 3999] { m.click(m.entries[i], command: true, shift: false) }
-        let first = Date()
+        // One finding of them: the marks changed before each run (one more marked, then not)
+        var once = Double.infinity
+        for _ in 0..<3 {
+            m.click(m.entries[5], command: true, shift: false)
+            once = min(once, TimeBudget.seconds(.thread) { XCTAssertEqual(m.actionEntries.count, 4) })
+            m.click(m.entries[5], command: true, shift: false)
+        }
         XCTAssertEqual(m.actionEntries.count, 3)
-        let once = Date().timeIntervalSince(first)
-        let start = Date()
-        for _ in 0..<200 { XCTAssertTrue(m.canTrash) }
-        XCTAssertLessThan(Date().timeIntervalSince(start), max(once * 20, 0.05), "asked 200 times: not found 200 times")
+        TimeBudget.check("asked 200 times: not found 200 times", under: max(once * 20, 0.05)) {
+            for _ in 0..<200 { XCTAssertTrue(m.canTrash) }
+        }
         m.click(m.entries[1], command: true, shift: false)   // unmarks one
         XCTAssertEqual(m.actionEntries.count, 2, "a change of the marks is seen")
     }
@@ -4047,6 +4115,32 @@ final class UndoTests: XCTestCase {
         XCTAssertTrue(m.canTrash, "free again once done")
     }
 
+    /// A second ⌘⌫ (or the menu) while the item's parts are still looked up
+    /// off the main thread, before the prompt: asked once. (The prompt is
+    /// answered No, so nothing reaches the real Trash.)
+    func testASecondTrashDuringThePartsLookupAsksOnce() async throws {
+        let tree = try TempTree(self)
+        try tree.file("x.part1.rar", bytes: 10)
+        try tree.file("x.part2.rar", bytes: 10)
+        let spy = FileActionsSpy()
+        spy.confirm = false
+        var actions = spy.actions
+        actions.runsOffMain = true
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: actions)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "x.part1.rar")
+        XCTAssertTrue(m.canTrash)
+        m.moveSelectionToTrash()
+        XCTAssertTrue(m.trashLookupPending, "looked up off the main thread")
+        XCTAssertFalse(m.canTrash, "the menu item is off while it is looked up")
+        m.moveSelectionToTrash()
+        await waitUntil { !m.trashLookupPending }
+        XCTAssertEqual(spy.confirmNames, [["x.part1.rar"]], "asked once")
+        XCTAssertEqual(spy.confirmDetails.count, 1)
+        XCTAssertTrue(spy.trashed.isEmpty)
+        XCTAssertTrue(m.canTrash, "free again once answered")
+    }
+
     /// ⌘Z and ⇧⌘Z are told apart from other keys (⌥, ⌃, other letters).
     func testTheUndoKeys() throws {
         func key(_ characters: String, _ flags: NSEvent.ModifierFlags, code: UInt16 = 6) throws -> NSEvent {
@@ -4123,6 +4217,14 @@ final class SafeTransferTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: restored.appendingPathComponent("a.jpg").path))
         let again = try tree.folder(LiveFiles.renameTemporaryName(for: "Photos"))
         XCTAssertNil(LiveFiles.restoreIfLeftOver(again, settled: 0), "never over a name taken")
+        // A file onto a file: the system's plain rename would replace it
+        let notes = tree.root.appendingPathComponent("notes.txt")
+        try Data("kept".utf8).write(to: notes)
+        let leftoverFile = tree.root.appendingPathComponent(LiveFiles.renameTemporaryName(for: "notes.txt"))
+        try Data("leftover".utf8).write(to: leftoverFile)
+        XCTAssertNil(LiveFiles.restoreIfLeftOver(leftoverFile, settled: 0), "never over a file taken")
+        XCTAssertEqual(try Data(contentsOf: notes), Data("kept".utf8))
+        XCTAssertEqual(try Data(contentsOf: leftoverFile), Data("leftover".utf8))
     }
 
     func testACopyIsWrittenUnderATemporaryNameAndLeftoversAreSwept() async throws {
@@ -4133,6 +4235,14 @@ final class SafeTransferTests: XCTestCase {
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"], "nothing left under a temporary name")
         XCTAssertThrowsError(try LiveFiles.copy(source, target.appendingPathComponent("a.jpg")), "never over a name taken")
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"])
+        // A copy that fails half way (a file it can't read): nothing under
+        // the real name, nothing under the temporary one
+        try tree.file("album/1.jpg", bytes: 100)
+        let unreadable = try tree.file("album/2.jpg", bytes: 100)
+        try FileManager.default.setAttributes([.posixPermissions: 0], ofItemAtPath: unreadable.path)
+        addTeardownBlock { try? FileManager.default.setAttributes([.posixPermissions: 0o644], ofItemAtPath: unreadable.path) }
+        XCTAssertThrowsError(try LiveFiles.copy(tree.root.appendingPathComponent("album"), target.appendingPathComponent("album")))
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"], "no cut-off copy left")
 
         let old = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
         let fresh = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
@@ -4140,6 +4250,14 @@ final class SafeTransferTests: XCTestCase {
         for url in [old, fresh, alike] { try Data(count: 5).write(to: url) }
         try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: old.path)
         try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: alike.path)
+        // One this process is writing stays, however old
+        let running = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
+        try Data(count: 5).write(to: running)
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: running.path)
+        PartialCopies.shared.begin(running)
+        XCTAssertFalse(LiveFiles.removeIfLeftOver(running), "a copy under way")
+        PartialCopies.shared.end(running)
+        XCTAssertTrue(LiveFiles.removeIfLeftOver(running))
         let m = makeModel()
         await openAndWait(m, target)
         XCTAssertEqual(m.names, ["..", "a.jpg"])
@@ -4347,6 +4465,56 @@ final class LinkTests: XCTestCase {
         XCTAssertNil(LiveFiles.openableTarget(try link("Photos2.zip", to: tree.root.appendingPathComponent("disk.dmg"))))
         XCTAssertNil(LiveFiles.openableTarget(try link("holiday.jpg", to: zip)), "a link must lead to its own kind")
         XCTAssertNotNil(LiveFiles.openableTarget(try link("comics.zip", to: zip)))
+    }
+
+    /// The live open actions, run to the workspace (a spy there): ⌘↩ and
+    /// an other file's Open hand over what the item really is, and nothing
+    /// that runs, however it is named.
+    func testTheLiveOpenActionsHandOverOnlyWhatMayOpen() async throws {
+        let tree = try TempTree(self)
+        func link(_ name: String, to target: URL) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            try FileManager.default.createSymbolicLink(at: url, withDestinationURL: target)
+            return url
+        }
+        let script = try tree.file("run.command", bytes: 10)
+        let photo = try tree.file("photo.jpg", bytes: 10)
+        let notes = tree.root.appendingPathComponent("notes.txt")
+        try "hello".write(to: notes, atomically: true, encoding: .utf8)
+        let site = tree.root.appendingPathComponent("site.webloc")
+        try PropertyListSerialization.data(fromPropertyList: ["URL": "https://example.com/"], format: .xml, options: 0).write(to: site)
+        let holiday = try link("Holiday.jpg", to: script)
+        let readme = try link("readme.txt", to: script)
+        var launched: [(item: URL, app: URL?)] = []
+        let saved = LiveFiles.launch
+        LiveFiles.launch = { launched.append(($0, $1)) }
+        defer { LiveFiles.launch = saved }
+
+        let live = FileActions.live
+        live.openInDefaultApp(holiday)
+        live.openInDefaultApp(script)
+        live.openOtherFile(readme)
+        live.openOtherFile(script)
+        XCTAssertTrue(launched.isEmpty, "\(launched.map(\.item.lastPathComponent))")
+        live.openInDefaultApp(photo)
+        live.openOtherFile(notes)
+        live.openOtherFile(site)
+        XCTAssertEqual(launched.map(\.item.absoluteString), [photo.absoluteString, notes.absoluteString, "https://example.com/"])
+        XCTAssertEqual(launched.map { $0.app != nil }, [true, true, false], "a web address goes to the browser")
+
+        // Through the model (⌘↩ on the selection, Open on an other file);
+        // a link named like a picture that leads elsewhere is an other file
+        launched = []
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names, ["..", "photo.jpg"])
+        let others = Dictionary(uniqueKeysWithValues: m.otherFiles.map { ($0.name, $0) })
+        for name in ["Holiday.jpg", "readme.txt", "run.command"] { m.open(try XCTUnwrap(others[name], name)) }
+        XCTAssertTrue(launched.isEmpty, "\(launched.map(\.item.lastPathComponent))")
+        m.selectEntry(named: "photo.jpg")
+        m.openInDefaultApp()
+        m.open(try XCTUnwrap(others["notes.txt"]))
+        XCTAssertEqual(launched.map(\.item.lastPathComponent), ["photo.jpg", "notes.txt"])
     }
 
     /// Drives on the drives' level are mounted and ejected by the system:

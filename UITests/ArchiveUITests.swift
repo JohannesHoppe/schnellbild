@@ -133,6 +133,8 @@ final class ArchiveUITests: SchnellbildUITestCase {
         waitForBadge(containing: "clip.mp4")
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "Paused")
+        // Still the player it opened in (AVKit's container is "video.avkit" until VLC has a player there)
+        XCTAssertTrue(element("video.vlc").exists == vlc, vlc ? "VLC's player" : "taken over by VLC")
     }
 
     func testASolidRarInAVKit() throws { try checkRarPhotosAndVideo("photos-solid.rar", vlc: false) }

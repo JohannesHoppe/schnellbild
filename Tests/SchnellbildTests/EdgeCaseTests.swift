@@ -295,11 +295,10 @@ final class UnreadableFolderTests: XCTestCase {
     func testResetStateKeepsTheGrantsUnlessAskedNotTo() throws {
         let grants = [Data("grant".utf8)]
         func suite(_ name: String) throws -> String {
-            let suite = "reset-\(name)-\(UUID().uuidString)"
+            let suite = TestDefaults.name("reset-\(name)")
             let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
             defaults.set(grants, forKey: FolderAccess.key)
             defaults.set("/somewhere", forKey: "lastFolder-test")
-            addTeardownBlock { UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite) }
             return suite
         }
         let kept = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state"], suite: try suite("kept"))
@@ -392,7 +391,9 @@ final class MediaDataTests: XCTestCase {
         let other = DispatchSemaphore(value: 0)
         Task.detached { other.signal() }
         let ran = other.wait(timeout: .now() + 10)
-        // Every read still waiting for a writer is let go (an end of file), so none outlives the test
+        // Every read ends without a writer ever opening a FIFO
+        let unaided = done.wait(timeout: .now() + 10)
+        // A read still waiting for a writer is let go (an end of file), so none outlives the test
         let deadline = Date() + 60
         while done.wait(timeout: .now() + 0.05) == .timedOut, Date() < deadline {
             for fifo in fifos {
@@ -401,6 +402,7 @@ final class MediaDataTests: XCTestCase {
             }
         }
         XCTAssertEqual(ran, .success, "other async work waited behind the reads")
+        XCTAssertEqual(unaided, .success, "a read waited for a writer")
         XCTAssertEqual(done.wait(timeout: .now()), .success)
     }
 

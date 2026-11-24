@@ -90,8 +90,19 @@ public final class XCUIScreen {
     public static let main = XCUIScreen()
     public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
 }
+public protocol XCUIElementSnapshot {
+    var identifier: String { get }
+    var label: String { get }
+    var value: Any? { get }
+}
+private struct ElementSnapshot: XCUIElementSnapshot {
+    var identifier: String { "" }
+    var label: String { "" }
+    var value: Any? { nil }
+}
 public class XCUIElement {
     public typealias ElementType = XCUIElementType
+    public func snapshot() throws -> XCUIElementSnapshot { ElementSnapshot() }
     public var elementType: XCUIElementType { .any }
     public static func perform(withKeyModifiers flags: KeyModifierFlags, block: () -> Void) { block() }
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {}

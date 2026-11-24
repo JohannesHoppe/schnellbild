@@ -310,16 +310,25 @@ final class VisualUITests: SchnellbildUITestCase {
     func testAVKitVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: false) }
     func testVLCVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: true) }
 
-    /// VLC shows no messages over the video (auto enhance takes a snapshot
-    /// every second; VLC would announce each one with its path and a
-    /// preview). The grey video is even, so the top corners of the
-    /// picture, where VLC puts them, stay even too (the app's own badge
-    /// sits in the middle between them).
+    /// VLC shows no messages over the video (its on-screen messages off,
+    /// `:no-osd`, and the file's title, `--no-video-title-show`), also
+    /// after what VLC's own interface announces there: a pause, the
+    /// volume, the speed, a jump, auto enhance. The grey video is even, so
+    /// the top corners of the picture, where VLC puts its messages, stay
+    /// even too (the app's own badge sits in the middle between them).
+    /// Paused first: the video lasts 3 s and would end before the corners
+    /// are measured.
     func testVLCShowsNoMessagesOverTheVideo() throws {
         let video = try openVideo("grey.mp4", vlc: true)
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        app.typeKey(.upArrow, modifierFlags: [])
+        app.typeKey(">", modifierFlags: [])
+        app.typeKey(.leftArrow, modifierFlags: [])
         app.typeKey("e", modifierFlags: [])
         waitForBadge(containing: "Enhanced")
-        settle(2.5)
+        eventually("paused, at the speed set", timeout: 10) { self.text(of: video).contains("speed 1.25") }
+        settle(1.5)
         let picture = picture(in: video)
         let width = picture.width, height = picture.height
         for (side, x) in [("left", picture.minX + width * 0.03), ("right", picture.minX + width * 0.67)] {
@@ -1076,15 +1085,22 @@ final class VisualUITests: SchnellbildUITestCase {
     }
 
     /// Paging from a good photo onto a broken one shows that it's broken,
-    /// never the previous photo.
+    /// never the previous photo: measured on screen, the colour bars of
+    /// a.jpg (bright) give way to the dark failure view.
     func testABrokenPhotoNeverShowsThePreviousOne() throws {
         try put("broken.jpg", at: "b-broken.jpg")
         launch(open: tempDir.appendingPathComponent("a.jpg").path)
         let image = element("fullImage")
         eventually("a.jpg loads", timeout: 15) { text(of: image).hasSuffix("loaded") }
+        settle(1)
+        let good = try screenBrightness(of: image)
+        XCTAssertGreaterThan(good, 0.3, "a.jpg's colour bars on screen")
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "b-broken.jpg")
         eventually("shown as broken", timeout: 15) { text(of: image).hasSuffix("failed") }
+        settle(1)
+        let broken = try screenBrightness(of: image)
+        XCTAssertLessThan(broken, 0.15, "the failure view, not a.jpg (\(good) before)")
     }
 }
 

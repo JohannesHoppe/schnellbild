@@ -34,9 +34,12 @@ final class AtlasUITests: SchnellbildUITestCase {
     /// The tiles on screen: each one's first item and how many items it holds.
     private var mapTiles: [String: String] {
         var tiles: [String: String] = [:]
+        // Each tile read in one go: the clusters re-form while the map moves
         for tile in app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.norway-'"))
-            .allElementsBoundByIndex where tile.exists {
-            tiles[tile.identifier] = text(of: tile).components(separatedBy: ", ").last ?? ""
+            .allElementsBoundByIndex {
+            guard let snapshot = try? tile.snapshot() else { continue }
+            let value = (snapshot.value as? String) ?? ""
+            tiles[snapshot.identifier] = (value.isEmpty ? snapshot.label : value).components(separatedBy: ", ").last ?? ""
         }
         return tiles
     }
@@ -82,9 +85,16 @@ final class AtlasUITests: SchnellbildUITestCase {
         XCTAssertTrue(text(of: first).contains("items"), text(of: first))
         let count = Int(text(of: first).components(separatedBy: ", ").last?.split(separator: " ").first ?? "") ?? 0
         XCTAssertGreaterThan(count, 1, "the trip's first place holds several items at the fitted zoom")
-        let before = mapTiles
-        // Zoomed in: the tiles on screen change (they part, others leave the view)
-        open(first, until: "zoomed in", timeout: 10) { self.mapTiles != before }
+        let before = mapTiles, zoomBefore = mapState().zoom
+        XCTAssertFalse(zoomBefore.isNaN)
+        // Zoomed in: the map's zoom goes up and the tiles on screen change
+        // (they part, others leave the view), the Atlas still shown (not
+        // the photo opened, which hides its tiles)
+        open(first, until: "zoomed in", timeout: 10) {
+            self.mapState().zoom > zoomBefore + 0.5 && !self.mapTiles.isEmpty && self.mapTiles != before
+        }
+        XCTAssertTrue(element("atlas").exists, "still the Atlas")
+        XCTAssertFalse(element("fullImage").exists, "the photo opened instead")
         // The arrows move among the tiles; Bryggen's photos lie within metres of each other, one tile at
         // every zoom, which → goes through first
         for _ in 0..<5 where atlasSelected("norway-01-bryggen.jpg") {
