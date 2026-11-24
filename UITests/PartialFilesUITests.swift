@@ -16,6 +16,9 @@ final class PartialFilesUITests: SchnellbildUITestCase {
         let bar = element("videoProgress")
         XCTAssertTrue(bar.waitForExistence(timeout: 20))
         eventually("plays", timeout: 15) { self.percent(bar) > 5 }
+        // AVKit played it, not VLC taking over (the container is "video.avkit" whenever VLC has no player there)
+        XCTAssertTrue(element("video.avkit").exists, "AVKit's player")
+        XCTAssertFalse(element("video.vlc").exists, "taken over by VLC")
     }
 
     /// A Matroska download cut off plays in VLC.

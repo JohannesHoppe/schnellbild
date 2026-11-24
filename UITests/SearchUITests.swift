@@ -80,6 +80,10 @@ final class SearchUITests: SchnellbildUITestCase {
         stop.click()
         eventually("stopped") { !stop.exists && !self.app.staticTexts["Searching subfolders…"].exists }
         XCTAssertTrue(app.staticTexts["a.jpg"].exists, "the result found so far stays")
+        // Still the search's results, not the folder (a.jpg is in both)
+        XCTAssertEqual(text(of: searchField), "a.jpg", "the query stays")
+        XCTAssertFalse(app.staticTexts["b.jpg"].exists, "the folder's other items stay out")
+        XCTAssertFalse(app.staticTexts["c.jpg"].exists, "the folder's other items stay out")
     }
 
     func testCommandFFocusesSearchAndEscapeClears() {
