@@ -408,11 +408,21 @@ final class ContainerTests: XCTestCase {
         // Two frames of `frame` bytes each, then a small one
         let block: [UInt8] = [0x81, 0, 0, 0x80]
         let small = element([0xA3], [0x81, 0, 40, 0x00, 9, 9])
-        let clusterBody = element([0xE7], [0]) + [0xA3] + size8(Int64(block.count) + frame)
-        let second = [0xA3] + size8(Int64(block.count) + frame)
-        let clusterLength = Int64(clusterBody.count + block.count) + frame + Int64(second.count + block.count) + frame + Int64(small.count)
-        let head = header + [0x18, 0x53, 0x80, 0x67, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-            + element([0x16, 0x54, 0xAE, 0x6B], entry) + [0x1F, 0x43, 0xB6, 0x75] + size8(clusterLength) + clusterBody + block
+        let blockSize: [UInt8] = size8(Int64(block.count) + frame)
+        let timestamp: [UInt8] = element([0xE7], [0])
+        let clusterBody: [UInt8] = timestamp + [0xA3] + blockSize
+        let second: [UInt8] = [0xA3] + blockSize
+        let firstPart: Int64 = Int64(clusterBody.count + block.count) + frame
+        let secondPart: Int64 = Int64(second.count + block.count) + frame
+        let clusterLength: Int64 = firstPart + secondPart + Int64(small.count)
+        let segment: [UInt8] = [0x18, 0x53, 0x80, 0x67, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+        let tracks: [UInt8] = element([0x16, 0x54, 0xAE, 0x6B], entry)
+        let clusterHead: [UInt8] = [0x1F, 0x43, 0xB6, 0x75] + size8(clusterLength)
+        var head: [UInt8] = header + segment
+        head += tracks
+        head += clusterHead
+        head += clusterBody
+        head += block
         let firstData = Int64(head.count)
         // The rest lies at its place in the file; zeros between
         var tail = [UInt8]()
@@ -441,8 +451,8 @@ final class ContainerTests: XCTestCase {
         let index = try MatroskaIndex(bytes)
         XCTAssertEqual(index.clusters.count, 1)
         let frames = try index.frames(inCluster: 0, track: 1)
-        XCTAssertEqual(frames.map(\.length), [Int(frame), Int(frame), 2])
-        XCTAssertEqual(frames.map(\.time), [0, 0, 40])
+        XCTAssertEqual(frames.map { (f: MatroskaIndex.Frame) in f.length }, [Int(frame), Int(frame), 2])
+        XCTAssertEqual(frames.map { (f: MatroskaIndex.Frame) in f.time }, [0, 0, 40])
         XCTAssertEqual(frames.first?.offset, firstData)
         XCTAssertEqual(frames.last.map { $0.offset + Int64($0.length) }, length)
         XCTAssertLessThan(bytes.bytesRead, 1 << 20, "the headers only, not the frames' data")
