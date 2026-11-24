@@ -6,7 +6,8 @@ import UniformTypeIdentifiers
 @testable import Schnellbild
 
 /// Every picture format the app lists is a picture to it and is drawn:
-/// ImageIO's formats from a file made in the test (`FormatFixtures`),
+/// ImageIO's formats from a file made in the test (`FormatFixtures`) or,
+/// where ImageIO doesn't write them (WebP, JPEG XL), a committed one,
 /// Illustrator files as PDFs or by their preview, PostScript by the
 /// preview it carries, ZIP documents by the picture inside, Netpbm bitmaps.
 final class ImageFormatTests: XCTestCase {
@@ -63,10 +64,12 @@ final class ImageFormatTests: XCTestCase {
 
     /// The formats ImageIO reads that a test can make, under each of their
     /// extensions: a picture to the app, decoded at its size, left red
-    /// (where the format keeps colour).
+    /// (where the format keeps colour). WebP and JPEG XL, which ImageIO
+    /// doesn't write, from their committed files: never left out.
     func testEveryFormatImageIOReadsIsShown() async throws {
-        for (ext, data) in FormatFixtures.all() {
-            guard let data else { print("formats: no fixture for .\(ext) on this macOS"); continue }
+        for (ext, written) in FormatFixtures.all() {
+            let committed = Self.committed.contains(ext) ? try Data(contentsOf: try Self.fixture("picture.\(ext)")) : nil
+            guard let data = written ?? committed else { print("formats: no fixture for .\(ext) on this macOS"); continue }
             let url = try file("picture.\(ext)", data)
             if BrowserModel.systemImageExtensions.contains(ext), !BrowserModel.imageExtensions.contains(ext) {
                 // This macOS doesn't read it (DICOM on macOS 15): another file
@@ -86,11 +89,8 @@ final class ImageFormatTests: XCTestCase {
     /// the reference picture exactly; an animated one plays at its own
     /// frame times.
     func testWebPIsShownAndAnimatedWebPKeepsItsTimes() async throws {
-        func fixture(_ name: String) throws -> URL {
-            try XCTUnwrap(Bundle.module.url(forResource: name, withExtension: nil, subdirectory: "Pictures"), "missing fixture \(name)")
-        }
         let reference = DecoderFixtures.reference()
-        let url = try fixture("picture.webp")
+        let url = try Self.fixture("picture.webp")
         XCTAssertEqual(kind(of: url), .image)
         let picture = await MediaData.picture(url)
         let source = try XCTUnwrap(picture?.source)
@@ -98,12 +98,45 @@ final class ImageFormatTests: XCTestCase {
         XCTAssertEqual([image.width, image.height], [reference.width, reference.height])
         XCTAssertEqual(DecoderFixtures.RGBA.of(image, width: reference.width, height: reference.height).difference(to: reference).max, 0,
                        "lossless")
-        let animated = try fixture("animated.webp")
+        let animated = try Self.fixture("animated.webp")
         let animatedPicture = await MediaData.picture(animated)
         let animatedSource = try XCTUnwrap(animatedPicture?.source)
         let frames = try XCTUnwrap(AnimationFrames.of(animatedSource, side: 256))
         XCTAssertEqual(frames.count, 2)
         XCTAssertEqual(frames.delays, [0.25, 0.5])
+    }
+
+    /// JPEG XL, which ImageIO reads but doesn't write: committed lossless
+    /// files (`Scripts/make_jxl_fixtures.sh`, libjxl's cjxl), decoded
+    /// through the app's path to the reference picture exactly, the one
+    /// with alpha with every alpha value kept.
+    func testJPEGXLIsShownWithItsAlpha() async throws {
+        for (name, expected) in [("picture.jxl", DecoderFixtures.reference()), ("alpha.jxl", DecoderFixtures.reference(alpha: true))] {
+            let url = try Self.fixture(name)
+            XCTAssertEqual(kind(of: url), .image, name)
+            let picture = await MediaData.picture(url)
+            let source = try XCTUnwrap(picture?.source, name)
+            let image = try XCTUnwrap(MediaInfo.scaledDown(source, at: 0, maxPixel: 4096, now: true), name)
+            XCTAssertEqual([image.width, image.height], [expected.width, expected.height], name)
+            guard image.width == expected.width, image.height == expected.height else { continue }
+            // Both drawn the same way (premultiplied), so the colours match where alpha does
+            let got = DecoderFixtures.RGBA.of(image, width: expected.width, height: expected.height)
+            let want = DecoderFixtures.RGBA.of(expected.image, width: expected.width, height: expected.height)
+            XCTAssertEqual(got.difference(to: want).max, 0, "\(name): lossless")
+            let alpha = { (rgba: DecoderFixtures.RGBA) in stride(from: 3, to: rgba.pixels.count, by: 4).map { rgba.pixels[$0] } }
+            XCTAssertEqual(alpha(got), alpha(want), "\(name): alpha")
+        }
+        let alphaPicture = await MediaData.picture(try Self.fixture("alpha.jxl"))
+        let withAlpha = try XCTUnwrap(alphaPicture?.source)
+        let shown = try XCTUnwrap(CGImageSourceCreateImageAtIndex(withAlpha, 0, nil))
+        XCTAssertFalse([.none, .noneSkipFirst, .noneSkipLast].contains(shown.alphaInfo), "alpha.jxl decoded with alpha")
+    }
+
+    /// The formats whose fixtures are committed files (`Pictures`), not made in the test.
+    private static let committed: Set<String> = ["webp", "jxl"]
+
+    private static func fixture(_ name: String) throws -> URL {
+        try XCTUnwrap(Bundle.module.url(forResource: name, withExtension: nil, subdirectory: "Pictures"), "missing fixture \(name)")
     }
 
     /// Formats no test can make (camera RAW, AVC in HEIF, AVIF sequences,
