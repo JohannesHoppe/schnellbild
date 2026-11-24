@@ -4,7 +4,8 @@
 if ("IntersectionObserver" in window) {
   document.documentElement.classList.add("js");
 
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // "Reduce motion" as it is now: it can be turned on while the page is open
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
   // Sections rise in once they come into view.
   const reveal = new IntersectionObserver((entries) => {
@@ -23,7 +24,7 @@ if ("IntersectionObserver" in window) {
       counter.unobserve(entry.target);
       const match = entry.target.textContent.match(/^(\d+)(.*)$/);
       const target = match ? Number(match[1]) : 0;
-      if (still || target < 2) continue;
+      if (reduceMotion.matches || target < 2) continue;
       const start = performance.now();
       const step = (now) => {
         const t = Math.min(1, (now - start) / 1200);
@@ -36,20 +37,34 @@ if ("IntersectionObserver" in window) {
   document.querySelectorAll(".stat b").forEach((element) => counter.observe(element));
 
   // The demo video plays muted while it is on screen and stops when it leaves;
-  // with "reduce motion" it keeps its controls and waits for a click.
-  if (!still) {
-    const playing = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) entry.target.play().catch(() => { entry.target.controls = true; });
-        else entry.target.pause();
+  // with "reduce motion", also once it is turned on, it stops, keeps its
+  // controls and waits for a click.
+  const demos = [...document.querySelectorAll("video.demo")];
+  const visible = new Set();
+  const playing = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) visible.add(entry.target);
+      else visible.delete(entry.target);
+      if (reduceMotion.matches) continue;
+      if (entry.isIntersecting) entry.target.play().catch(() => { entry.target.controls = true; });
+      else entry.target.pause();
+    }
+  }, { threshold: 0.4 });
+  const followMotion = () => {
+    for (const video of demos) {
+      if (reduceMotion.matches) {
+        video.pause();
+        video.controls = true;
+      } else {
+        video.controls = false;
+        video.muted = true;
+        if (visible.has(video)) video.play().catch(() => { video.controls = true; });
       }
-    }, { threshold: 0.4 });
-    document.querySelectorAll("video.demo").forEach((video) => {
-      video.controls = false;
-      video.muted = true;
-      playing.observe(video);
-    });
-  }
+    }
+  };
+  followMotion();
+  reduceMotion.addEventListener("change", followMotion);
+  demos.forEach((video) => playing.observe(video));
 
   // Close the language menu when clicking or tabbing elsewhere, or with Escape.
   function closeMenus(keep) {
@@ -77,7 +92,7 @@ if ("IntersectionObserver" in window) {
     const y = scrollY;
     const height = innerHeight;
     document.body.classList.toggle("scrolled", y > 8);
-    if (still) return;
+    if (reduceMotion.matches) return;
     if (hero) hero.style.setProperty("--p", Math.min(1, y / (height * 0.45)).toFixed(3));
     for (const element of drifting) {
       const box = element.getBoundingClientRect();
@@ -140,11 +155,12 @@ if ("IntersectionObserver" in window) {
 // The video's still carries the video playing, the badge and the bar moving along
 // (build_site.py motion): the theme's video (data-light / data-dark: "url|type,…"),
 // shown once it plays, while it is on screen. With "reduce motion" (site.css hides
-// it) or without script the still stands alone.
+// it; turned on while it plays, it stops) or without script the still stands alone.
 const motion = (() => {
   const root = document.documentElement;
   const systemDark = matchMedia("(prefers-color-scheme: dark)");
-  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  const still = () => reduceMotion.matches;
   const theme = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
   // The sources of the theme shown, in `video` (another video's when given)
   function use(video, from = video) {
@@ -162,22 +178,26 @@ const motion = (() => {
     video.load();
   }
   function play(video) {
-    if (!still) video.play().catch(() => {});
+    if (!still()) video.play().catch(() => {});
   }
   const videos = [...document.querySelectorAll("video.motion")];
-  if (!still && videos.length && "IntersectionObserver" in window) {
+  if (videos.length && "IntersectionObserver" in window) {
     const seen = new Set();
     const watch = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (entry.isIntersecting) { seen.add(entry.target); use(entry.target); play(entry.target); }
-        else { seen.delete(entry.target); entry.target.pause(); }
+        if (entry.isIntersecting) {
+          seen.add(entry.target);
+          if (!still()) { use(entry.target); play(entry.target); }
+        } else { seen.delete(entry.target); entry.target.pause(); }
       }
     }, { threshold: 0.25 });
     videos.forEach((video) => {
       video.addEventListener("playing", () => video.classList.add("on"));
       watch.observe(video);
     });
-    document.addEventListener("themeshown", () => seen.forEach((video) => { use(video); play(video); }));
+    const resume = () => seen.forEach((video) => { use(video); play(video); });
+    document.addEventListener("themeshown", () => { if (!still()) resume(); });
+    reduceMotion.addEventListener("change", () => (still() ? videos.forEach((video) => video.pause()) : resume()));
   }
   return { use, play, still };
 })();
@@ -253,7 +273,7 @@ const motion = (() => {
     large.src = widest(shot);
     large.alt = shot.alt;
     source = shot.closest(".playing")?.querySelector("video.motion") || null;
-    moving.hidden = !source || motion.still;
+    moving.hidden = !source || motion.still();
     if (moving.hidden) {
       moving.pause();
       return;

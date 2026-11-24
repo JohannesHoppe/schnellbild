@@ -29,6 +29,11 @@ class FormatListTests(unittest.TestCase):
     def test_the_list_is_what_the_app_shows(self):
         self.assertEqual(site_formats.differences(self.formats), [])
 
+    def test_no_format_id_is_another_id_of_the_page(self):
+        self.assertEqual(site_formats.id_clashes(self.formats), [])
+        crafted = [{"id": "raw"}, {"id": "gif"}, {"id": "gif"}]
+        self.assertEqual(len(site_formats.id_clashes(crafted)), 2)
+
     def test_the_readme_names_every_extension(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         self.assertEqual(site_formats.readme_missing(self.formats, readme), [])

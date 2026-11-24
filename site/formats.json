@@ -67,7 +67,7 @@
     {"id": "orf", "group": "raw", "kind": "picture", "name": "Olympus Raw Format", "abbr": "ORF", "ext": ["orf"], "uti": "com.olympus.raw-image"},
     {"id": "ori", "group": "raw", "kind": "picture", "name": "Olympus Raw Image", "abbr": "ORI", "ext": ["ori"]},
     {"id": "rw2", "group": "raw", "kind": "picture", "name": "Panasonic Raw 2", "abbr": "RW2", "ext": ["rw2"], "uti": "com.panasonic.rw2-raw-image"},
-    {"id": "raw", "group": "raw", "kind": "picture", "name": "Panasonic Raw", "abbr": "RAW", "ext": ["raw"], "uti": "com.panasonic.raw-image"},
+    {"id": "panasonic-raw", "group": "raw", "kind": "picture", "name": "Panasonic Raw", "abbr": "RAW", "ext": ["raw"], "uti": "com.panasonic.raw-image"},
     {"id": "rwl", "group": "raw", "kind": "picture", "name": "Leica Raw", "abbr": "RWL", "ext": ["rwl"], "uti": "com.leica.rwl-raw-image"},
     {"id": "pef", "group": "raw", "kind": "picture", "name": "Pentax Electronic File", "abbr": "PEF", "ext": ["pef"], "uti": "com.pentax.raw-image"},
     {"id": "srw", "group": "raw", "kind": "picture", "name": "Samsung Raw", "abbr": "SRW", "ext": ["srw"], "uti": "com.samsung.raw-image"},

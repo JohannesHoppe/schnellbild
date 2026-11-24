@@ -53,6 +53,9 @@ LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb"
 # column of .feature (one column up to 820 px, there at most 540 px high).
 HERO_SIZES = "(max-width: 1112px) calc(100vw - 40px), 1072px"
 FEATURE_SIZES = "(max-width: 820px) min(calc(100vw - 40px), 770px), (max-width: 1080px) calc(58.4vw - 56px), 574px"
+# An alternatives page's hero: the screenshot in the right one of two columns (1fr and
+# 1.15fr, 48 px apart) of .wrap, the whole width up to 820 px (site.css .alt-hero).
+ALT_HERO_SIZES = "(max-width: 820px) calc(100vw - 40px), (max-width: 1080px) calc(53.5vw - 47px), 531px"
 # The four views under the hero: four in a row of .wrap (16 px apart), two on phones (12 px apart).
 VIEW_SIZES = "(max-width: 700px) calc(50vw - 26px), (max-width: 1080px) calc(25vw - 22px), 248px"
 
@@ -79,6 +82,9 @@ THEME_ICONS = ('<svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path
                '<path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>')
 GLOBE = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
 
+# What the build found: translations missing (the page shows English there) and
+# everything else that is wrong (files missing, data that disagrees); each line
+# names its item, and either fails --check
 missing = []
 problems = []
 
@@ -93,7 +99,7 @@ def load(code, english):
         missing.append(f"{code}: no {path.name}")
         return english
     data = json.loads(path.read_text(encoding="utf-8"))
-    return merge_translation(data, english, missing, f"{code}: ") if code != "en" else data
+    return merge_translation(data, english, missing, problems, f"{code}: ") if code != "en" else data
 
 
 def app_string(code, key):
@@ -123,7 +129,7 @@ def srcset(master):
     variants = shot_variants(master)
     for _, path in variants:
         if not path.exists():
-            problems.append(f"{path.relative_to(ROOT)} (python3 Scripts/make_site_images.py shots)")
+            problems.append(f"{path.relative_to(ROOT)} is missing (python3 Scripts/make_site_images.py shots)")
     return ", ".join(f"/{path.relative_to(DOCS)} {width}w" for width, path in variants)
 
 
@@ -178,7 +184,7 @@ def motion(name):
     for theme in ("light", "dark"):
         for file in m["files"][theme].values():
             if not (DOCS / "screenshots" / file).exists():
-                problems.append(f"docs/screenshots/{file} (Scripts/make_video_animation.py)")
+                problems.append(f"docs/screenshots/{file} is missing (Scripts/make_video_animation.py)")
     data = " ".join(f'data-{theme}="{esc(",".join(f"/screenshots/{file}|{MOTION_TYPES[kind]}" for kind, file in m["files"][theme].items()))}"'
                     for theme in ("light", "dark"))
     style = f"left:{pct(x, shot_w)};top:{pct(y, shot_h)};width:{pct(w, shot_w)};height:{pct(h, shot_h)}"
@@ -230,7 +236,7 @@ def demo(label):
     for name in ("demo-short-960.webm", "demo-short-960.mp4", "demo-short-1280.webm",
                  "demo-short-1280.mp4", "demo-poster-1280.webp"):
         if not (DEMO / name).exists():
-            missing.append(f"docs/demo/{name}")
+            problems.append(f"docs/demo/{name} is missing")
     # AV1 Main, 8 bit, at the files' levels (3.0 and 3.1), so a browser that has
     # WebM but no AV1 decoder takes the MP4
     sources = "".join(
@@ -257,7 +263,9 @@ def hero_shot_url(code):
 
 def json_ld(data):
     text = json.dumps({"@context": "https://schema.org", **data}, ensure_ascii=False, indent=1)
-    return '<script type="application/ld+json">\n' + text.replace("</", "<\\/") + "\n</script>"
+    # "<" only inside JSON's strings, there as \u003c: no "</script" or "<!--" can end
+    # or change the script element
+    return '<script type="application/ld+json">\n' + text.replace("<", "\\u003c") + "\n</script>"
 
 
 def app_data(code, t):
@@ -408,7 +416,7 @@ def globe_band():
     for theme in ("light", "dark"):
         for name in ("1600", "3200", "phone"):
             if not (HERO / f"globe-{theme}-{name}.webp").exists():
-                missing.append(f"docs/hero/globe-{theme}-{name}.webp")
+                problems.append(f"docs/hero/globe-{theme}-{name}.webp is missing")
     phone = "(max-width: 640px)"
     def wide(theme):
         return f"/hero/globe-{theme}-1600.webp 1600w, /hero/globe-{theme}-3200.webp 3200w"
@@ -430,9 +438,9 @@ def views(code, t):
     captions = [v["caption"] for v in t["views"]]
     for caption, key in zip(captions, ["Grid", None, "Map", "Globe"]):
         if key and caption != app_string(code, key):
-            missing.append(f"{code}: views caption {caption!r} isn't the app's {key!r}, {app_string(code, key)!r}")
+            problems.append(f"{code}: views caption {caption!r} isn't the app's {key!r}, {app_string(code, key)!r}")
     if captions[1].casefold() not in app_string(code, "Next view (grid, list, Atlas)").casefold():
-        missing.append(f"{code}: views caption {captions[1]!r} isn't in the app's 'Next view (grid, list, Atlas)'")
+        problems.append(f"{code}: views caption {captions[1]!r} isn't in the app's 'Next view (grid, list, Atlas)'")
     items = "".join(
         f'<li data-reveal style="--i:{i}"><figure>{shot(name, code, v["alt"], sizes=VIEW_SIZES)}'
         f'<figcaption>{esc(v["caption"])}</figcaption></figure></li>'
@@ -664,13 +672,13 @@ def manifest(t):
 english = json.loads((I18N / "en.json").read_text(encoding="utf-8"))
 tr = {code: load(code, english) for code in LANGUAGES}
 alternatives = Alternatives({
-    "esc": esc, "head": head, "topbar": topbar, "footer": footer, "shot": shot, "home_path": home_path,
-    "folder": folder, "json_ld": json_ld, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE, "DMG": DMG,
-    "missing": missing})
+    "esc": esc, "head": head, "topbar": topbar, "footer": footer, "shot": shot, "icon": icon, "home_path": home_path,
+    "ALT_HERO_SIZES": ALT_HERO_SIZES, "folder": folder, "json_ld": json_ld, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE, "DMG": DMG,
+    "missing": missing, "problems": problems})
 formats = Formats({
     "esc": esc, "head": head, "topbar": topbar, "footer": footer, "home_path": home_path, "folder": folder,
     "json_ld": json_ld, "breadcrumb_list": breadcrumb_list, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE,
-    "DMG": DMG, "DOCS": DOCS, "missing": missing})
+    "DMG": DMG, "DOCS": DOCS, "problems": problems})
 alternative_pages = alternatives.pages()
 # The list of formats is what the app shows, and the README's tables name every one
 problems.extend(differences(formats.formats))
@@ -682,7 +690,7 @@ for code in LANGUAGES:
     pages[DOCS / folder(code) / "index.html"] = home(code, tr[code])
     pages[DOCS / folder(code) / tr[code]["privacySlug"] / "index.html"] = privacy(code, tr[code])
     if not (DOCS / "og" / f"{code}.jpg").exists():
-        missing.append(f"{code}: docs/og/{code}.jpg (python3 Scripts/make_site_images.py og)")
+        problems.append(f"{code}: docs/og/{code}.jpg is missing (python3 Scripts/make_site_images.py og)")
 
 pages.update(alternative_pages)
 pages.update(formats.pages())
@@ -695,7 +703,7 @@ pages.update(sitemaps(pages))
 for line in missing:
     print("missing, English used:", line, file=sys.stderr)
 for line in problems:
-    print("missing:", line, file=sys.stderr)
+    print("problem:", line, file=sys.stderr)
 
 # Pages the build doesn't make (a language's old privacy slug, a sitemap of a
 # language that is gone) would stay online.
@@ -708,7 +716,7 @@ if "--check" in sys.argv:
         sys.exit("docs/ is out of date, run python3 Scripts/build_site.py: " + ", ".join(stale))
     if orphans or missing or problems:
         sys.exit("docs/ has pages the build doesn't make: " + ", ".join(orphans) if orphans
-                 else "screenshot variants are missing" if problems else "translations are missing")
+                 else "the site has problems (listed above)" if problems else "translations are missing (listed above)")
     print(f"docs/ is up to date ({len(pages)} pages)")
 else:
     for path, text in pages.items():
