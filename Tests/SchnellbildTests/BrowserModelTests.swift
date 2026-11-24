@@ -4193,8 +4193,35 @@ final class SafeTransferTests: XCTestCase {
         let saved = BrowserModel.onTransfersDone
         BrowserModel.onTransfersDone = { waitedFor = true }
         defer { BrowserModel.onTransfersDone = saved }
+        let renames = Locked<[(to: String, result: Int32)]>([])
+        let system = LiveFiles.systemRename
+        LiveFiles.systemRename = { from, to, flags in
+            let result = system(from, to, flags)
+            renames.withLock { $0.append(((to as NSString).lastPathComponent, result)) }
+            return result
+        }
+        defer { LiveFiles.systemRename = system }
         try await m.rename(entry, to: "Photos")
         XCTAssertTrue(waitedFor, "counted among the transfers quitting waits for")
+        XCTAssertEqual(renames.withLock { $0.map(\.to) }, ["Photos"], "the system's rename, straight to the new name")
+        XCTAssertEqual(renames.withLock { $0.map(\.result) }, [0], "done in that one step")
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tree.root.path), ["Photos"])
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tree.root.appendingPathComponent("Photos").path), ["a.jpg"])
+    }
+
+    /// A volume that renames in no single step: the item goes by a hidden
+    /// name carrying the new one, and ends under the new name with nothing
+    /// else left.
+    func testACaseOnlyRenameOnAVolumeWithoutTheSystemsRename() throws {
+        let tree = try TempTree(self)
+        try tree.file("photos/a.jpg")
+        let system = LiveFiles.systemRename
+        LiveFiles.systemRename = { _, _, _ in errno = ENOTSUP; return -1 }
+        defer { LiveFiles.systemRename = system }
+        let copyItem = LiveFiles.copyItem
+        LiveFiles.copyItem = { _, _ in XCTFail("a rename copies nothing") }
+        defer { LiveFiles.copyItem = copyItem }
+        try LiveFiles.move(tree.root.appendingPathComponent("photos"), tree.root.appendingPathComponent("Photos"))
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tree.root.path), ["Photos"])
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tree.root.appendingPathComponent("Photos").path), ["a.jpg"])
     }
@@ -4231,7 +4258,22 @@ final class SafeTransferTests: XCTestCase {
         let tree = try TempTree(self)
         let source = try tree.file("a.jpg", bytes: 100)
         let target = try tree.folder("Sorted")
+        // While it is written: under the hidden name only, known as under way
+        var written: [URL] = []
+        let copyItem = LiveFiles.copyItem
+        defer { LiveFiles.copyItem = copyItem }
+        LiveFiles.copyItem = { from, to in
+            written.append(to)
+            XCTAssertTrue(LiveFiles.isPartialCopy(to.lastPathComponent), "written under a temporary name, not \(to.lastPathComponent)")
+            XCTAssertEqual(to.deletingLastPathComponent().standardizedFileURL, target.standardizedFileURL, "in the target folder")
+            XCTAssertTrue(PartialCopies.shared.isRunning(to), "a listing meanwhile leaves it alone")
+            XCTAssertFalse(FileManager.default.fileExists(atPath: target.appendingPathComponent("a.jpg").path), "nothing under the real name yet")
+            try copyItem(from, to)
+        }
         try LiveFiles.copy(source, target.appendingPathComponent("a.jpg"))
+        LiveFiles.copyItem = copyItem
+        XCTAssertEqual(written.count, 1)
+        XCTAssertFalse(written.first.map(PartialCopies.shared.isRunning) ?? true, "not under way once renamed")
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"], "nothing left under a temporary name")
         XCTAssertThrowsError(try LiveFiles.copy(source, target.appendingPathComponent("a.jpg")), "never over a name taken")
         XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"])

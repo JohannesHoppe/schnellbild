@@ -577,7 +577,7 @@ enum LiveFiles {
     /// leftover (the app ended between the two steps) is put back by the
     /// next listing (`restoreIfLeftOver`).
     static func renameCase(_ from: URL, _ to: URL) throws {
-        if renamex_np(from.path, to.path, UInt32(RENAME_EXCL)) == 0 { return }
+        if systemRename(from.path, to.path, UInt32(RENAME_EXCL)) == 0 { return }
         let refused = errno
         if refused == EEXIST, ItemIdentity.of(from).map({ $0 == ItemIdentity.of(to) }) == true, rename(from.path, to.path) == 0 { return }
         let fm = FileManager.default
@@ -592,6 +592,10 @@ enum LiveFiles {
             throw error
         }
     }
+
+    /// The system's rename with flags (`renamex_np`; tests stand in a volume
+    /// that refuses it, and see which way a rename went).
+    nonisolated(unsafe) static var systemRename: (String, String, UInt32) -> Int32 = { renamex_np($0, $1, $2) }
 
     /// What an item is called between the two steps of a case-only rename:
     /// hidden, with the name it gets ("<prefix><UUID>-Photos"); a name too
@@ -664,13 +668,17 @@ enum LiveFiles {
         PartialCopies.shared.begin(temp)
         defer { PartialCopies.shared.end(temp) }
         do {
-            try fm.copyItem(at: from, to: temp)
+            try copyItem(from, temp)
             try fm.moveItem(at: temp, to: to)
         } catch {
             try? fm.removeItem(at: temp)
             throw error
         }
     }
+
+    /// How an item is copied to where it is written (tests see where that is
+    /// while the copy runs).
+    nonisolated(unsafe) static var copyItem: (URL, URL) throws -> Void = { try FileManager.default.copyItem(at: $0, to: $1) }
 
     /// A copy's temporary item left behind (the app ended during the
     /// copy): removed when its folder is listed, unless this process is
