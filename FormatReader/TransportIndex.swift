@@ -64,12 +64,33 @@ final class TransportIndex: @unchecked Sendable {
         // The frame duration: the smallest step between those frames' times
         let times = Set(headTimes.map { relative($0) }).sorted()
         frameDuration = zip(times.dropFirst(), times).map { $0 - $1 }.filter { $0 > 0 }.min() ?? 3600
-        // The last frame's, from the end of the file
-        let tailStart = max(0, (length - (1 << 20)) / Int64(size) * Int64(size))
-        let tail = tailStart == 0 ? head : [UInt8](try source.read(at: tailStart, count: Int(length - tailStart)))
-        let last = pesStarts(in: tail, base: tailStart).map { relative($0.pts) }.max() ?? 0
-        duration = max(0, last) + frameDuration
+        // The last frame's, from the end of the file: the last MB, further
+        // back (at most `tailSearched`) when no frame starts in it
+        let window = Int64(1 << 20) / Int64(size) * Int64(size)
+        var last: Int64?
+        var tailEnd = length
+        while last == nil, tailEnd > 0, length - tailEnd < Self.tailSearched {
+            let tailStart = max(0, (tailEnd - window) / Int64(size) * Int64(size))
+            let tail = tailStart == 0 && tailEnd == length ? head : [UInt8](try source.read(at: tailStart, count: Int(tailEnd - tailStart)))
+            last = pesStarts(in: tail, base: tailStart).map { relative($0.pts) }.max()
+            tailEnd = tailStart
+        }
+        // A time no later than the first frames' (clips joined byte by byte,
+        // their clocks starting again; none found): the length by the head's
+        // rate of bytes, so a time asked for maps along the whole file
+        let headEnd = pesStarts(in: head, base: 0).map { relative($0.pts) }.max() ?? 0
+        if let found = last, found >= headEnd {
+            duration = found + frameDuration
+        } else if headEnd > 0, head.count > 0, Int64(head.count) < length {
+            duration = Int64((Double(headEnd + frameDuration) * Double(length) / Double(head.count)).rounded())
+        } else {
+            duration = max(0, last ?? 0) + frameDuration
+        }
+        duration = min(duration, Int64(1) << 33)
     }
+
+    /// How far back from its end a stream is searched for its last frame.
+    static let tailSearched: Int64 = 16 << 20
 
     // MARK: Frames
 

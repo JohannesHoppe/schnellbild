@@ -396,6 +396,75 @@ final class ContainerTests: XCTestCase {
         XCTAssertTrue(early.hasFrames(track: 2))
     }
 
+    /// A cluster larger than any read (5 s at a high bit rate): its frames
+    /// come from its elements' headers, the frames' data isn't read.
+    func testAClusterLargerThanAnyReadGivesItsFrames() throws {
+        let video = element([0xE0], element([0xB0], [64]) + element([0xBA], [48]))
+        let entry = element([0xAE], element([0xD7], [1]) + element([0x83], [1]) + element([0x86], Array("V_MPEG4/ISO/AVC".utf8))
+                            + element([0x63, 0xA2], [1, 2, 3]) + video)
+        let header = element([0x1A, 0x45, 0xDF, 0xA3], element([0x42, 0x82], Array("matroska".utf8)))
+        func size8(_ value: Int64) -> [UInt8] { [0x01] + (0..<7).map { UInt8(truncatingIfNeeded: value >> (8 * (6 - $0))) } }
+        let frame = Int64(MatroskaIndex.largestRead) + (8 << 20)
+        // Two frames of `frame` bytes each, then a small one
+        let block: [UInt8] = [0x81, 0, 0, 0x80]
+        let small = element([0xA3], [0x81, 0, 40, 0x00, 9, 9])
+        let clusterBody = element([0xE7], [0]) + [0xA3] + size8(Int64(block.count) + frame)
+        let second = [0xA3] + size8(Int64(block.count) + frame)
+        let clusterLength = Int64(clusterBody.count + block.count) + frame + Int64(second.count + block.count) + frame + Int64(small.count)
+        let head = header + [0x18, 0x53, 0x80, 0x67, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+            + element([0x16, 0x54, 0xAE, 0x6B], entry) + [0x1F, 0x43, 0xB6, 0x75] + size8(clusterLength) + clusterBody + block
+        let firstData = Int64(head.count)
+        // The rest lies at its place in the file; zeros between
+        var tail = [UInt8]()
+        tail += second + block
+        let tailAt = firstData + frame
+        let smallAt = tailAt + Int64(tail.count) + frame
+        let length = smallAt + Int64(small.count)
+        final class Placed: ByteReading, @unchecked Sendable {
+            let parts: [(Int64, Data)]
+            let length: Int64
+            private(set) var bytesRead = 0
+            init(_ parts: [(Int64, Data)], length: Int64) { self.parts = parts; self.length = length }
+            func read(at offset: Int64, count: Int) throws -> Data {
+                guard offset >= 0, offset < length, count > 0 else { return Data() }
+                let end = min(length, offset + Int64(count))
+                bytesRead += Int(end - offset)
+                var out = Data(count: Int(end - offset))
+                for (at, data) in parts where at < end && at + Int64(data.count) > offset {
+                    let from = max(at, offset), to = min(end, at + Int64(data.count))
+                    out.replaceSubrange(Int(from - offset)..<Int(to - offset), with: data.subdata(in: Int(from - at)..<Int(to - at)))
+                }
+                return out
+            }
+        }
+        let bytes = Placed([(0, Data(head)), (tailAt, Data(tail)), (smallAt, Data(small))], length: length)
+        let index = try MatroskaIndex(bytes)
+        XCTAssertEqual(index.clusters.count, 1)
+        let frames = try index.frames(inCluster: 0, track: 1)
+        XCTAssertEqual(frames.map(\.length), [Int(frame), Int(frame), 2])
+        XCTAssertEqual(frames.map(\.time), [0, 0, 40])
+        XCTAssertEqual(frames.first?.offset, firstData)
+        XCTAssertEqual(frames.last.map { $0.offset + Int64($0.length) }, length)
+        XCTAssertLessThan(bytes.bytesRead, 1 << 20, "the headers only, not the frames' data")
+    }
+
+    /// The duration of a transport stream whose last MB holds no frame's
+    /// start (a long frame, other streams), and of clips joined byte by byte
+    /// whose clock starts again lower: about the whole file, not a frame.
+    func testATransportStreamsDurationReachesItsEnd() throws {
+        // 300 frames at 25 a second, the last one spanning 1.2 MB
+        let long = transportStream((0..<300).map { (pts: Int64($0) * 3600, more: $0 == 299 ? 6_500 : 0) })
+        let index = try TransportIndex(MemoryBytes(long))
+        XCTAssertEqual(index.duration, 300 * 3600)
+        // Two clips of 150 frames, 7 KB each, the second's clock lower than the first's start
+        let first: [(pts: Int64, more: Int)] = (0..<150).map { (pts: 900_000 + Int64($0) * 3600, more: 40) }
+        let second: [(pts: Int64, more: Int)] = (0..<150).map { (pts: Int64($0) * 3600, more: 40) }
+        let joined = transportStream(first + second)
+        let both = try TransportIndex(MemoryBytes(joined))
+        XCTAssertGreaterThan(both.duration, 10 * 90_000, "about the 12 s of both, by the bytes")
+        XCTAssertLessThan(both.duration, 14 * 90_000)
+    }
+
     func testSaturatingArithmetic() {
         XCTAssertEqual(Int64.max.saturatingAdd(1), .max)
         XCTAssertEqual(Int64.min.saturatingAdd(-1), .min)

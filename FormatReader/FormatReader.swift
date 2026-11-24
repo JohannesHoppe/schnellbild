@@ -287,6 +287,12 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
 
     func firstPart() -> Int? { part(from: 0, step: 1) }
 
+    /// The presentation time of the last frame shown (the last part with frames).
+    func lastFrameTime() -> Int64? {
+        guard let part = part(from: source.partCount - 1, step: -1), let frames = frames(inPart: part) else { return nil }
+        return frames.frames.map(\.time).max()
+    }
+
     func loadTrackInfo(completionHandler: @escaping (METrackInfo?, (any Error)?) -> Void) {
         let info = METrackInfo(__mediaType: kCMMediaType_Video, trackID: source.id, formatDescriptions: [source.format])
         info.naturalSize = CMVideoFormatDescriptionGetPresentationDimensions(source.format, usePixelAspectRatio: true, useCleanAperture: true)
@@ -306,9 +312,15 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
     func generateSampleCursor(atPresentationTimeStamp presentationTimeStamp: CMTime,
                               completionHandler: @escaping ((any MESampleCursor)?, (any Error)?) -> Void) {
         queue.async { [self] in
-            var target = CMTimeConvertScale(presentationTimeStamp, timescale: timescale, method: .default).value
-            // Quick Look asks for its thumbnail at 10 s: a shorter video gives a picture a quarter in
-            if source.duration > 0, target > source.duration { target = source.duration / 4 }
+            // The last frame shown at or before the time; past the end, the last frame
+            var target = presentationTimeStamp.isPositiveInfinity ? Int64.max
+                : presentationTimeStamp.isNegativeInfinity ? Int64.min
+                : CMTimeConvertScale(presentationTimeStamp, timescale: timescale, method: .default).value
+            // Quick Look asks for its thumbnail at 10 s: a video that ends before
+            // (its last frame, not only its stated duration) gives a picture a quarter in
+            if source.duration > 0, target > source.duration, target != .max, let last = lastFrameTime(), target > last {
+                target = source.duration / 4
+            }
             guard let part = part(from: source.part(target), step: -1) ?? firstPart(),
                   let frames = frames(inPart: part) else { return completionHandler(nil, MEError(.noSamples)) }
             var position = 0
