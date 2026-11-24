@@ -76,6 +76,45 @@ final class PictureDecoderTests: XCTestCase {
         XCTAssertEqual(PCXDecoder.decode(page)?.pixels, first.expected.pixels)
     }
 
+    // MARK: The app's path
+
+    /// Through the app's path (the file read, decoded and handed to ImageIO
+    /// as the full view gets it): every pixel as decoded, compared to the
+    /// last row and column (no mean that a defect in a row or column hides
+    /// in); a QOI marked linear is shown as linear light.
+    func testTheAppsPathShowsEveryPixel() async throws {
+        func shown(_ name: String, _ data: Data) async throws -> DecoderFixtures.RGBA {
+            let url = try file(name, data)
+            let picture = await MediaData.picture(url)
+            let source = try XCTUnwrap(picture?.source, name)
+            let image = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil), name)
+            return DecoderFixtures.RGBA.of(image, width: image.width, height: image.height)
+        }
+        func check(_ name: String, _ data: Data, _ expected: CGImage) async throws {
+            let got = try await shown(name, data)
+            XCTAssertEqual([got.width, got.height], [expected.width, expected.height], name)
+            guard got.width == expected.width, got.height == expected.height else { return }
+            let want = DecoderFixtures.RGBA.of(expected, width: expected.width, height: expected.height)
+            XCTAssertLessThanOrEqual(got.difference(to: want).max, 1, name)
+        }
+        let reference = DecoderFixtures.reference(width: 96, height: 60), withAlpha = DecoderFixtures.reference(width: 96, height: 60, alpha: true)
+        try await check("rgb.qoi", DecoderFixtures.qoi(reference, channels: 3), reference.image)
+        try await check("rgba.qoi", DecoderFixtures.qoi(withAlpha, channels: 4), withAlpha.image)
+        for kind in DecoderFixtures.PCXKind.allCases {
+            let pcx = DecoderFixtures.pcx(kind == .rgba ? withAlpha : reference, kind: kind)
+            try await check("\(kind.rawValue).pcx", pcx.data, pcx.expected.image)
+        }
+        let first = DecoderFixtures.pcx(reference, kind: .rgb), second = DecoderFixtures.pcx(reference, kind: .mono)
+        try await check("pages.dcx", DecoderFixtures.dcx([first.data, second.data]), first.expected.image)
+        // Linear light: the same numbers read as linear sRGB
+        let provider = CGDataProvider(data: Data(reference.pixels) as CFData)!
+        let linear = try XCTUnwrap(CGImage(width: reference.width, height: reference.height, bitsPerComponent: 8, bitsPerPixel: 32,
+                                           bytesPerRow: reference.width * 4, space: CGColorSpace(name: CGColorSpace.linearSRGB)!,
+                                           bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue), provider: provider,
+                                           decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+        try await check("linear.qoi", DecoderFixtures.qoi(reference, channels: 3, linear: true), linear)
+    }
+
     // MARK: Everywhere a picture goes
 
     /// The formats are pictures in a listing, in a folder tile's previews,
