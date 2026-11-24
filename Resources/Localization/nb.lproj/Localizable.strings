@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Mappen og alt i den, også filer Schnellbild ikke viser, flyttes til papirkurven.";
 "All parts of this archive will be moved to the Trash." = "Alle deler av dette arkivet flyttes til papirkurven.";
 "The file will be moved to the Trash." = "Filen flyttes til papirkurven.";
+"Undo Copy moves what was copied to the Trash." = "«Angre kopiering» flytter det som ble kopiert, til papirkurven.";
+"Undo New Folder moves the new folder to the Trash." = "«Angre ny mappe» flytter den nye mappen til papirkurven.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "«Gjør om flytt til papirkurven» flytter det som ble tatt ut av papirkurven, tilbake dit.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Søk i navn på mapper, arkiver, bilder og videoer (inkl. undermapper)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Ingen mappe, arkiv, bilde eller video med navn som inneholder «%@», i denne mappen eller undermappene.";
 "Search stopped. No matches so far." = "Søket er stoppet. Ingen treff så langt.";

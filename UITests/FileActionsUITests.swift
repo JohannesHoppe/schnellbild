@@ -96,6 +96,11 @@ final class FileActionsUITests: SchnellbildUITestCase {
     private func trash(_ name: String, in pane: XCUIElement) {
         select(name, in: pane)
         app.typeKey(.delete, modifierFlags: .command)
+        confirmTrash()
+    }
+
+    /// Every way to the Trash asks first (⌘⌫, Undo Copy, Redo Move to Trash).
+    private func confirmTrash() {
         let confirm = app.buttons["Move to Trash"].firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5), "asks first")
         confirm.click()
@@ -154,6 +159,7 @@ final class FileActionsUITests: SchnellbildUITestCase {
         app.typeKey(.F5, modifierFlags: [])
         eventually("copied into B") { self.exists(self.folderB, "photo.jpg") && self.exists(self.folderA, "photo.jpg") }
         contextMenu("Undo Copy", on: "other.jpg", in: right)
+        confirmTrash()
         eventually("the copy gone") { !self.exists(self.folderB, "photo.jpg") && self.exists(self.folderA, "photo.jpg") }
         contextMenu("Redo Copy", on: "other.jpg", in: right)
         eventually("copied again") { self.exists(self.folderB, "photo.jpg") }
@@ -165,6 +171,7 @@ final class FileActionsUITests: SchnellbildUITestCase {
         app.typeKey(.F5, modifierFlags: [])
         eventually("copied to the volume") { self.exists(self.onVolume, "second.jpg") && self.exists(self.folderA, "second.jpg") }
         contextMenu("Undo Copy", on: "away.jpg", in: right)
+        confirmTrash()
         eventually("the copy on the volume gone") { !self.exists(self.onVolume, "second.jpg") }
         contextMenu("Redo Copy", on: "away.jpg", in: right)
         eventually("copied to the volume again") { self.exists(self.onVolume, "second.jpg") }
@@ -198,6 +205,7 @@ final class FileActionsUITests: SchnellbildUITestCase {
         contextMenu("Undo Move to Trash", on: "second.jpg", in: left)
         eventually("back from the Trash") { self.exists(self.folderA, "photo.jpg") }
         contextMenu("Redo Move to Trash", on: "second.jpg", in: left)
+        confirmTrash()
         eventually("in the Trash again") { !self.exists(self.folderA, "photo.jpg") }
 
         try FileManager.default.copyItem(at: onVolume.appendingPathComponent("away.jpg"), to: onVolume.appendingPathComponent("stays.jpg"))
@@ -207,6 +215,7 @@ final class FileActionsUITests: SchnellbildUITestCase {
         contextMenu("Undo Move to Trash", on: "stays.jpg", in: right)
         eventually("back from the volume's Trash") { self.exists(self.onVolume, "away.jpg") }
         contextMenu("Redo Move to Trash", on: "stays.jpg", in: right)
+        confirmTrash()
         eventually("in the volume's Trash again") { !self.exists(self.onVolume, "away.jpg") }
     }
 }

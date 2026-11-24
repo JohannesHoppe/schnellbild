@@ -29,6 +29,8 @@ final class UndoUITests: SchnellbildUITestCase {
         clickMenu("Edit", title)
     }
 
+    /// Every way to the Trash asks first: ⌘⌫, Undo Copy, Undo New Folder,
+    /// Redo Move to Trash.
     private func confirmTrash() {
         let confirm = app.buttons["Move to Trash"].firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5), "asks before trashing")
@@ -60,15 +62,18 @@ final class UndoUITests: SchnellbildUITestCase {
         waitFor("Album", present: true, "⌘Z takes it out of the Trash")
         XCTAssertTrue(exists("Album/x.jpg"), "with what it holds")
         app.typeKey("z", modifierFlags: [.command, .shift])
+        confirmTrash()
         waitFor("Album", present: false, "⇧⌘Z: in the Trash again")
         clickEdit("Undo Move to Trash")
         waitFor("Album", present: true, "Edit → Undo")
         clickEdit("Redo Move to Trash")
+        confirmTrash()
         waitFor("Album", present: false, "Edit → Redo")
 
         try contextMenuItem("a.jpg", "Undo Move to Trash").click()
         waitFor("Album", present: true, "the context menu's Undo")
         try contextMenuItem("a.jpg", "Redo Move to Trash").click()
+        confirmTrash()
         waitFor("Album", present: false, "the context menu's Redo")
         app.typeKey("z", modifierFlags: .command)
         waitFor("Album", present: true, "back for good")
@@ -87,6 +92,7 @@ final class UndoUITests: SchnellbildUITestCase {
         app.typeKey("z", modifierFlags: .command)
         waitFor("c.jpg", present: true, "⌘Z")
         clickEdit("Redo Move to Trash")
+        confirmTrash()
         waitFor("c.jpg", present: false, "Edit → Redo")
         clickEdit("Undo Move to Trash")
         waitFor("c.jpg", present: true, "Edit → Undo")
@@ -104,6 +110,7 @@ final class UndoUITests: SchnellbildUITestCase {
         waitFor("a.jpg", present: true, "one ⌘Z brings back the set")
         waitFor("b.jpg", present: true, "one ⌘Z brings back the set")
         app.typeKey("z", modifierFlags: [.command, .shift])
+        confirmTrash()
         waitFor("a.jpg", present: false, "⇧⌘Z")
         waitFor("b.jpg", present: false, "⇧⌘Z")
         clickEdit("Undo Move to Trash")
@@ -125,6 +132,7 @@ final class UndoUITests: SchnellbildUITestCase {
         eventually("every part back", timeout: 15) { parts.allSatisfy { self.exists($0) } }
         XCTAssertTrue(tile(parts[0]).waitForExistence(timeout: 10))
         app.typeKey("z", modifierFlags: [.command, .shift])
+        confirmTrash()
         eventually("every part in the Trash again", timeout: 15) { parts.allSatisfy { !self.exists($0) } }
         app.typeKey("z", modifierFlags: .command)
         eventually("every part back again", timeout: 15) { parts.allSatisfy { self.exists($0) } }
@@ -156,6 +164,7 @@ final class UndoUITests: SchnellbildUITestCase {
         field.typeText("Sorted\r")
         waitFor("Sorted", present: true, "made")
         clickEdit("Undo New Folder")
+        confirmTrash()
         waitFor("Sorted", present: false, "Undo New Folder")
         app.typeKey("z", modifierFlags: [.command, .shift])
         waitFor("Sorted", present: true, "Redo New Folder")
@@ -193,11 +202,13 @@ final class UndoUITests: SchnellbildUITestCase {
         XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")
         XCTAssertEqual(editItem(0).title, "Undo Copy")
         app.typeKey("z", modifierFlags: .command)
+        confirmTrash()
         eventually("the copy went to the Trash", timeout: 15) { !self.exists("Sorted/a.jpg") && !rightA.exists }
         XCTAssertTrue(exists("a.jpg"), "the original stays")
         clickEdit("Redo Copy")
         eventually("copied again", timeout: 15) { self.exists("Sorted/a.jpg") && rightA.exists }
         clickEdit("Undo Copy")
+        confirmTrash()
         eventually("the copy went to the Trash again", timeout: 15) { !self.exists("Sorted/a.jpg") }
         XCTAssertTrue(exists("a.jpg"))
     }

@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.";
 "All parts of this archive will be moved to the Trash." = "All parts of this archive will be moved to the Trash.";
 "The file will be moved to the Trash." = "The file will be moved to the Trash.";
+"Undo Copy moves what was copied to the Trash." = "Undo Copy moves what was copied to the Trash.";
+"Undo New Folder moves the new folder to the Trash." = "Undo New Folder moves the new folder to the Trash.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "Redo Move to Trash moves what was taken out of the Trash back into it.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Search names of folders, archives, pictures and videos (incl. subfolders)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders.";
 "Search stopped. No matches so far." = "Search stopped. No matches so far.";

@@ -82,7 +82,7 @@ final class FileActionsSpy {
                 self.confirmDetails.append(detail)
                 return self.confirm
             },
-            trash: { url in
+            trash: { url, _ in
                 if let error = self.trashError { throw error }
                 if let during = self.duringTrash { self.duringTrash = nil; during() }
                 self.trashed.append(url)
@@ -3811,6 +3811,68 @@ final class UndoTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("b.jpg").path))
         XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
         XCTAssertTrue(m.undoHistory.undoSteps.isEmpty)
+    }
+
+    /// Every way to the Trash asks first: ⌘⌫ on one item and on marked
+    /// ones, an other file's Move to Trash, Undo Copy, Undo New Folder and
+    /// Redo Move to Trash. A no trashes nothing, and an Undo or Redo asked
+    /// for stays where it was.
+    func testEveryWayToTheTrashAsksFirst() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "notes.txt"] { try tree.file(n) }
+        let target = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        func exists(_ path: String) -> Bool { FileManager.default.fileExists(atPath: tree.root.appendingPathComponent(path).path) }
+
+        // The steps to undo: a copy, a new folder, a trash undone (to redo)
+        m.move([tree.root.appendingPathComponent("a.jpg")], into: target, how: .copy)
+        await waitUntil { m.transfersRunning == 0 && exists("Sorted/a.jpg") }
+        m.newFolderRequested = true
+        _ = try await m.createFolder(named: "New")
+        m.selectEntry(named: "b.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { !exists("b.jpg") }
+        XCTAssertEqual(spy.confirmNames.last, ["b.jpg"])
+        m.undo()
+        await waitUntil { exists("b.jpg") && !m.undoHistory.running }
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.copy, .newFolder])
+        XCTAssertEqual(m.undoHistory.redoSteps.map(\.kind), [.trash])
+        spy.trashed = []
+        spy.confirmNames = []
+
+        // No to every question
+        spy.confirm = false
+        m.redo()
+        XCTAssertEqual(spy.confirmNames.last, ["b.jpg"], "Redo Move to Trash asks")
+        m.undo()
+        XCTAssertEqual(spy.confirmNames.last, ["New"], "Undo New Folder asks")
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.copy, .newFolder], "a no leaves the step where it was")
+        XCTAssertEqual(m.undoHistory.redoSteps.map(\.kind), [.trash])
+        await waitUntil { !m.isLoading && m.names.contains("c.jpg") }
+        m.selectEntry(named: "c.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { spy.confirmNames.last == ["c.jpg"] }
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "a.jpg" }), command: true, shift: false)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "b.jpg" }), command: true, shift: false)
+        m.moveSelectionToTrash()
+        XCTAssertEqual(Set(spy.confirmNames.last ?? []), ["a.jpg", "b.jpg", "c.jpg"], "the marked ones, asked together")
+        m.moveToTrash(try XCTUnwrap(m.otherFiles.first { $0.name == "notes.txt" }))
+        XCTAssertEqual(spy.confirmNames.last, ["notes.txt"])
+        XCTAssertEqual(spy.trashed, [], "nothing trashed")
+        for path in ["a.jpg", "b.jpg", "c.jpg", "notes.txt", "New", "Sorted/a.jpg"] { XCTAssertTrue(exists(path), path) }
+
+        // Yes: Undo New Folder and Undo Copy ask, then trash
+        spy.confirm = true
+        m.undo()
+        await waitUntil { !exists("New") && !m.undoHistory.running }
+        XCTAssertEqual(spy.confirmNames.last, ["New"])
+        m.undo()
+        await waitUntil { !exists("Sorted/a.jpg") && !m.undoHistory.running }
+        XCTAssertEqual(spy.confirmNames.last, ["a.jpg"], "Undo Copy names the copy")
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["New", "a.jpg"])
+        XCTAssertTrue(exists("a.jpg"), "the original stays")
     }
 
     /// The name was taken meanwhile: nothing is overwritten, it is reported.

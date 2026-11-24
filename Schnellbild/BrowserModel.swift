@@ -161,6 +161,22 @@ extension PlaybackControl {
     func setSpeed(_ speed: Double) {}
 }
 
+/// The user's yes to moving items to the Trash. Every way to the Trash
+/// (`FileActions.trash`, `LiveFiles.trash`) takes one, and only the
+/// confirmation makes one (`FileActions.askTrash`, the user's answer to
+/// `confirmTrash`): nothing goes to the Trash without the question asked
+/// first, whichever path leads there.
+struct TrashConsent: Sendable {
+    private init() {}
+
+    /// Asks through `confirm` (the alert, a test's spy); a consent only on yes.
+    @MainActor
+    fileprivate static func ask(_ names: [String], _ detail: String,
+                                through confirm: @MainActor ([String], String) -> Bool) -> TrashConsent? {
+        confirm(names, detail) ? TrashConsent() : nil
+    }
+}
+
 /// Side effects on the file system and the workspace. Injectable, so tests
 /// can observe them without touching Finder, the Trash, or modal alerts.
 struct FileActions {
@@ -178,7 +194,8 @@ struct FileActions {
     /// contents, an archive's parts).
     var confirmTrash: @MainActor (_ names: [String], _ detail: String) -> Bool
     /// Returns where the item now lies in the Trash (for Undo), if known.
-    var trash: @MainActor (URL) throws -> URL?
+    /// Only with the user's yes (`askTrash`).
+    var trash: @MainActor (URL, TrashConsent) throws -> URL?
     var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
     /// Into another folder: moved on the same volume, copied to another
     /// (as the Finder does). Returns whether it was moved.
@@ -205,6 +222,13 @@ struct FileActions {
                                detail: String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions."),
                                yes: String(localized: "Keep"), no: String(localized: "Forget"))
     }
+    /// Asks before items go to the Trash (`confirmTrash`): the consent
+    /// every way to the Trash takes, nil when the user says no.
+    @MainActor
+    func askTrash(_ names: [String], _ detail: String) -> TrashConsent? {
+        TrashConsent.ask(names, detail, through: confirmTrash)
+    }
+
     /// Where moves and copies into folders run: the live actions off the
     /// main thread (a copy to a share takes long) through `LiveFiles`, which
     /// is what their closures call too; others (a test's spy) through their
@@ -268,7 +292,7 @@ struct FileActions {
             return NSAlert.confirm(String(localized: "Move \(names.count) items to the Trash?"), detail: listed + "\n\n" + detail,
                                    yes: yes, warning: true)
         },
-        trash: { try LiveFiles.trash($0) },
+        trash: { try LiveFiles.trash($0, $1) },
         move: { try LiveFiles.move($0, $1) },
         transfer: { try LiveFiles.transfer($0, $1) },
         createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
@@ -658,9 +682,10 @@ enum LiveFiles {
         return !a.isEqual(b)
     }
 
-    /// Where the item now lies in the Trash, if the volume says.
+    /// Where the item now lies in the Trash, if the volume says. Only with
+    /// the user's yes (`FileActions.askTrash`).
     @discardableResult
-    static func trash(_ url: URL) throws -> URL? {
+    static func trash(_ url: URL, _ consent: TrashConsent) throws -> URL? {
         var result: NSURL?
         try FileManager.default.trashItem(at: url, resultingItemURL: &result)
         return result as URL?
@@ -4745,8 +4770,8 @@ final class BrowserModel: ObservableObject {
 
     func moveToTrash(_ file: OtherFile) {
         guard canChange(file), !isBeingTrashed(file.url) else { return }
-        guard fileActions.confirmTrash([file.name], String(localized: "The file will be moved to the Trash.")) else { return }
-        trashFiles([(file.url, false)]) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
+        guard let consent = fileActions.askTrash([file.name], String(localized: "The file will be moved to the Trash.")) else { return }
+        trashFiles([(file.url, false)], consent) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
 
     func openInDefaultApp() {
@@ -4811,8 +4836,8 @@ final class BrowserModel: ObservableObject {
                 ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
                 : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
                 : String(localized: "The file will be moved to the Trash.")
-            guard fileActions.confirmTrash([entry.name], detail) else { return }
-            trashItems([entry]) { [self] trashed in
+            guard let consent = fileActions.askTrash([entry.name], detail) else { return }
+            trashItems([entry], consent) { [self] trashed in
                 guard !trashed.isEmpty else { return }
                 // (the other pane follows through `onFileChange`)
                 clearMarks()
@@ -4828,9 +4853,9 @@ final class BrowserModel: ObservableObject {
     /// an item inside a folder trashed before it is gone with it).
     private func trashMarked(_ items: [GridEntry]) {
         let detail = String(localized: "The marked items will be moved to the Trash, folders with everything in them.")
-        guard fileActions.confirmTrash(items.map(\.name), detail) else { return }
+        guard let consent = fileActions.askTrash(items.map(\.name), detail) else { return }
         clearMarks()
-        trashItems(items) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
+        trashItems(items, consent) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
 
     /// File-system work: off the main thread for the live actions (a share
@@ -4852,11 +4877,11 @@ final class BrowserModel: ObservableObject {
     /// can't go doesn't keep the others: the set is broken either way, and
     /// the tile goes with its first part). Hands on what went, at least in
     /// part; the first failure is reported.
-    private func trashItems(_ items: [GridEntry], then: @escaping @MainActor ([URL]) -> Void) {
-        trashFiles(items.map { ($0.url, $0.isArchive) }, then: then)
+    private func trashItems(_ items: [GridEntry], _ consent: TrashConsent, then: @escaping @MainActor ([URL]) -> Void) {
+        trashFiles(items.map { ($0.url, $0.isArchive) }, consent, then: then)
     }
 
-    private func trashFiles(_ urls: [(URL, Bool)], then: @escaping @MainActor ([URL]) -> Void) {
+    private func trashFiles(_ urls: [(URL, Bool)], _ consent: TrashConsent, then: @escaping @MainActor ([URL]) -> Void) {
         let spy = fileActions.runsOffMain ? nil : fileActions.trash
         let work: @Sendable () -> (trashed: [URL], parts: [UndoStep.Part], error: Error?) = {
             var trashed: [URL] = []
@@ -4877,7 +4902,7 @@ final class BrowserModel: ObservableObject {
                 var gone = false
                 for file in files {
                     do {
-                        let inTrash = if let spy { try MainActor.assumeIsolated { try spy(file) } } else { try LiveFiles.trash(file) }
+                        let inTrash = if let spy { try MainActor.assumeIsolated { try spy(file, consent) } } else { try LiveFiles.trash(file, consent) }
                         if let inTrash { parts.append(.trashed(file, inTrash: inTrash, identity: ItemIdentity.of(inTrash))) }
                         gone = true
                     } catch {

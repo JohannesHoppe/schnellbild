@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Der Ordner und alles darin, auch Dateien, die Schnellbild nicht zeigt, wird in den Papierkorb gelegt.";
 "All parts of this archive will be moved to the Trash." = "Alle Teile dieses Archivs werden in den Papierkorb gelegt.";
 "The file will be moved to the Trash." = "Die Datei wird in den Papierkorb gelegt.";
+"Undo Copy moves what was copied to the Trash." = "„Kopieren widerrufen“ legt das Kopierte in den Papierkorb.";
+"Undo New Folder moves the new folder to the Trash." = "„Neuer Ordner widerrufen“ legt den neuen Ordner in den Papierkorb.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "„In den Papierkorb legen wiederholen“ legt das aus dem Papierkorb Geholte wieder hinein.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Namen von Ordnern, Archiven, Bildern und Videos suchen (mit Unterordnern)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Kein Ordner, Archiv, Bild oder Video, dessen Name „%@“ enthält, in diesem Ordner oder seinen Unterordnern.";
 "Search stopped. No matches so far." = "Suche angehalten. Bisher keine Treffer.";

@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "此檔案夾及其中的所有內容（包含 Schnellbild 不顯示的檔案）將被丟到垃圾桶。";
 "All parts of this archive will be moved to the Trash." = "此封存檔的所有部分將被丟到垃圾桶。";
 "The file will be moved to the Trash." = "此檔案將被丟到垃圾桶。";
+"Undo Copy moves what was copied to the Trash." = "「還原拷貝」會將拷貝的項目丟到垃圾桶。";
+"Undo New Folder moves the new folder to the Trash." = "「還原新增檔案夾」會將新檔案夾丟到垃圾桶。";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "「重做丟到垃圾桶」會將從垃圾桶取出的項目再次丟到垃圾桶。";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "搜尋檔案夾、封存檔、影像和影片的名稱（包含子檔案夾）";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "此檔案夾及其子檔案夾中沒有名稱包含「%@」的檔案夾、封存檔、影像或影片。";
 "Search stopped. No matches so far." = "已停止搜尋。目前沒有符合的項目。";

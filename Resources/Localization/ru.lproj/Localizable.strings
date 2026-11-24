@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Папка и всё её содержимое, включая файлы, которые Schnellbild не показывает, будут перемещены в Корзину.";
 "All parts of this archive will be moved to the Trash." = "Все части этого архива будут перемещены в Корзину.";
 "The file will be moved to the Trash." = "Файл будет перемещен в Корзину.";
+"Undo Copy moves what was copied to the Trash." = "«Отменить копирование» перемещает скопированное в Корзину.";
+"Undo New Folder moves the new folder to the Trash." = "«Отменить создание папки» перемещает новую папку в Корзину.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "«Повторить перемещение в Корзину» возвращает в Корзину то, что было из нее извлечено.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Искать имена папок, архивов, изображений и видео (вкл. подпапки)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Нет папки, архива, изображения или видео, имя которого содержит «%@», в этой папке или ее подпапках.";
 "Search stopped. No matches so far." = "Поиск остановлен. Совпадений пока нет.";

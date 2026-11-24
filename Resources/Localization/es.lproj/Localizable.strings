@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "La carpeta y todo su contenido, incluidos los archivos que Schnellbild no muestra, se trasladarán a la papelera.";
 "All parts of this archive will be moved to the Trash." = "Todas las partes de este archivo se trasladarán a la papelera.";
 "The file will be moved to the Trash." = "El archivo se trasladará a la papelera.";
+"Undo Copy moves what was copied to the Trash." = "«Deshacer copia» traslada lo copiado a la papelera.";
+"Undo New Folder moves the new folder to the Trash." = "«Deshacer nueva carpeta» traslada la carpeta nueva a la papelera.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "«Rehacer traslado a la papelera» devuelve a la papelera lo que se sacó de ella.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Buscar nombres de carpetas, archivos, imágenes y vídeos (incl. subcarpetas)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Ninguna carpeta, archivo, imagen o vídeo cuyo nombre contenga «%@», en esta carpeta o sus subcarpetas.";
 "Search stopped. No matches so far." = "Búsqueda detenida. Sin resultados por ahora.";

@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Папку й усе, що в ній, зокрема файли, які Schnellbild не показує, буде переміщено в Смітник.";
 "All parts of this archive will be moved to the Trash." = "Усі частини цього архіву буде переміщено в Смітник.";
 "The file will be moved to the Trash." = "Файл буде переміщено в Смітник.";
+"Undo Copy moves what was copied to the Trash." = "«Скасувати копіювання» переміщує скопійоване в Смітник.";
+"Undo New Folder moves the new folder to the Trash." = "«Скасувати створення папки» переміщує нову папку в Смітник.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "«Повторити переміщення в Смітник» повертає в Смітник те, що з нього було вийнято.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Шукати назви папок, архівів, зображень і відео (з підпапками)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Немає папки, архіву, зображення чи відео, назва яких містить «%@», у цій папці та її підпапках.";
 "Search stopped. No matches so far." = "Пошук зупинено. Поки що збігів немає.";

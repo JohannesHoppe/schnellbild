@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Klasör ve içindeki her şey, Schnellbild’in göstermediği dosyalar dahil, Çöp Sepetine taşınacak.";
 "All parts of this archive will be moved to the Trash." = "Bu arşivin tüm parçaları Çöp Sepetine taşınacak.";
 "The file will be moved to the Trash." = "Dosya Çöp Sepetine taşınacak.";
+"Undo Copy moves what was copied to the Trash." = "“Kopyalamayı Geri Al”, kopyalananları Çöp Sepeti’ne taşır.";
+"Undo New Folder moves the new folder to the Trash." = "“Yeni Klasörü Geri Al”, yeni klasörü Çöp Sepeti’ne taşır.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "“Çöp Sepeti’ne Taşımayı Yinele”, Çöp Sepeti’nden çıkarılanları yeniden oraya taşır.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Klasör, arşiv, resim ve video adlarını ara (alt klasörler dahil)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Bu klasörde veya alt klasörlerinde adı “%@” içeren klasör, arşiv, resim ya da video yok.";
 "Search stopped. No matches so far." = "Arama durduruldu. Şimdiye kadar eşleşme yok.";
