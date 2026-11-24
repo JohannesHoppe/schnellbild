@@ -285,7 +285,7 @@ private struct WindowView: View {
             }
             // ⌘Z / ⇧⌘Z while text is typed (the search, a name in a sheet)
             // undo the typing, not the file action Edit → Undo names
-            if ContentView.isUndoKey(event), MainActor.assumeIsolated({ NSApp.keyWindow?.firstResponder is NSText }) {
+            if ContentView.isUndoKey(event), MainActor.assumeIsolated({ ContentView.textEditor != nil }) {
                 let redo = event.modifierFlags.contains(.shift)
                 _ = MainActor.assumeIsolated { NSApp.sendAction(Selector((redo ? "redo:" : "undo:")), to: nil, from: nil) }
                 return nil
@@ -313,7 +313,7 @@ private struct WindowView: View {
             // Decide on the main actor whether to consume the key.
             let consume = MainActor.assumeIsolated { () -> Bool in
                 let model = window.active
-                let editor = NSApp.keyWindow?.firstResponder as? NSText
+                let editor = ContentView.textEditor
                 // Typing: a field editor at work, or the search field about to
                 // get one (a click makes it first responder before editing
                 // starts; its first key must not act as D, E …). Not any text
@@ -414,6 +414,15 @@ extension ContentView {
         let flags = event.modifierFlags.intersection([.command, .shift, .control, .option])
         guard flags == .command || flags == [.command, .shift] else { return false }
         return LatinKeys.letter(of: event) == "z"
+    }
+
+    /// The field editor of the text being typed in the key window, if any.
+    /// A selectable text that can't be edited (the Inspector's values, after
+    /// a click to select or copy them) has one too, but types nothing: the
+    /// browser's keys stay the browser's.
+    @MainActor static var textEditor: NSText? {
+        guard let editor = NSApp.keyWindow?.firstResponder as? NSText, editor.isEditable else { return nil }
+        return editor
     }
 
     /// Keys that go straight to the text field being edited, ahead of the
