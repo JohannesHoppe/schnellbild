@@ -4,7 +4,7 @@
   "alternativesSlug": "alternativer",
   "formatsSlug": "formater",
   "title": "Schnellbild: en bildefremviser og videospiller for macOS som rett og slett ikke suger",
-  "seoTitle": "Schnellbild · gratis bildefremviser og MKV-spiller for Mac",
+  "seoTitle": "Schnellbild | gratis bildefremviser og MKV-spiller for Mac",
   "seoDescription": "Rask, gratis bildefremviser for Mac som også spiller av MKV, AVI og WebM: miniatyrer, lysbildefremvisning, ZIP og RAR som mapper. Alternativ til IrfanView.",
   "keywords": "bildefremvisning Mac, bildefremviser Mac, bildeviser Mac, fotoviser macOS, lysbildefremvisning Mac, gratis bildeviser, MKV player Mac, MKV-spiller Mac, videospiller Mac, spill av AVI WebM, IrfanView-alternativ, XnView-alternativ, Phiewer-alternativ, IINA-alternativ, åpne bilder i RAR, tegneserier CBZ CBR, Schnellbild",
   "navFeatures": "Funksjoner",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formater",
     "title": "Alle formater Schnellbild viser",
-    "seoTitle": "Støttede formater: bilder, RAW, video, arkiver · Schnellbild for Mac",
+    "seoTitle": "Støttede formater: bilder, RAW, video, arkiver | Schnellbild for Mac",
     "description": "Alle formater den gratis bildeviseren Schnellbild åpner på Mac, med fullt navn og filendelse: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z med flere.",
     "keywords": "filformater Mac, åpne HEIC på Mac, RAW-viser Mac, åpne CR3, åpne NEF, MKV-spiller Mac, spille av AVI på Mac, spille av WebM på Mac, åpne PSD uten Photoshop, åpne EPS på Mac, JPEG XL-viser, åpne AVIF, DDS-viser, CBR CBZ-leser Mac, Schnellbild",
     "lead": "Schnellbild viser {count} formater med {extensions} filendelser: bilder, kamera-RAW, dokumenter, videoer og arkiver, som åpnes som mapper.",

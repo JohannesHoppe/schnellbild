@@ -44,7 +44,7 @@ final class AtlasUITests: SchnellbildUITestCase {
     func testTheAtlasShowsTheTripAndSharesTheSelection() throws {
         openAtlas()
         XCTAssertTrue(element("atlasStripTitle").waitForExistence(timeout: 5))
-        XCTAssertEqual(text(of: element("atlasStripTitle")), "No location · 1")
+        XCTAssertEqual(text(of: element("atlasStripTitle")), "No location, 1")
         XCTAssertTrue(element("timeline").exists)
 
         // The photo without a place, in the strip: selected here, selected in the grid

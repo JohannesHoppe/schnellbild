@@ -4,7 +4,7 @@
   "alternativesSlug": "alternativy",
   "formatsSlug": "formaty",
   "title": "Schnellbild: prohlížeč obrázků a videí pro macOS, který prostě není na houby",
-  "seoTitle": "Schnellbild · prohlížeč obrázků a přehrávač MKV pro Mac",
+  "seoTitle": "Schnellbild | prohlížeč obrázků a přehrávač MKV pro Mac",
   "seoDescription": "Rychlý prohlížeč fotek pro Mac zdarma, který přehraje i MKV, AVI a WebM: náhledy, prezentace, ZIP a RAR jako složky. Alternativa k IrfanView a XnView.",
   "keywords": "prohlížeč obrázků Mac, prohlížeč fotek Mac, prohlížeč fotek zdarma, přehrávač MKV Mac, MKV player Mac, přehrávač videa Mac, přehrávač AVI pro Mac, přehrát AVI WebM, alternativa k IrfanView, alternativa k XnView, alternativa k Phiewer, alternativa k IINA, otevřít obrázky v RAR, čtečka komiksů CBZ CBR, prezentace, Schnellbild",
   "navFeatures": "Funkce",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formáty",
     "title": "Všechny formáty, které Schnellbild zobrazí",
-    "seoTitle": "Podporované formáty: obrázky, RAW, videa, archivy · Schnellbild pro Mac",
+    "seoTitle": "Podporované formáty: obrázky, RAW, videa, archivy | Schnellbild pro Mac",
     "description": "Všechny formáty, které bezplatný prohlížeč Schnellbild otevře na Macu, s plným názvem a příponou: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z a další.",
     "keywords": "formáty souborů Mac, otevřít HEIC na Macu, prohlížeč RAW Mac, otevřít CR3, otevřít NEF, přehrávač MKV Mac, přehrát AVI na Macu, přehrát WebM na Macu, otevřít PSD bez Photoshopu, otevřít EPS na Macu, prohlížeč JPEG XL, otevřít AVIF, prohlížeč DDS, čtečka CBR CBZ Mac, Schnellbild",
     "lead": "Schnellbild zobrazí {count} formátů se {extensions} příponami souborů: obrázky, RAW z fotoaparátu, dokumenty, videa a archivy, které se otevírají jako složky.",

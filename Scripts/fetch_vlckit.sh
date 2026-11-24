@@ -4,7 +4,7 @@
 # workflow vlckit-lgpl.yml), published as a pre-release of this repository. The
 # download is verified against the SHA-256 pinned here, and the unpacked
 # framework against the tree SHA-256 pinned here (both printed by the
-# workflow) — it aborts on any mismatch. A framework vendored already is
+# workflow); it aborts on any mismatch. A framework vendored already is
 # used only while its tree SHA-256 still matches (a changed CI cache or local
 # copy is fetched again).
 set -euo pipefail
@@ -42,10 +42,10 @@ fi
 STAMP="$DEST/.vlckit-version"
 if [ -d "$FRAMEWORK" ] && [ -f "$STAMP" ] && [ "$(cat "$STAMP")" = "$VERSION $SHA256" ]; then
     if [ "$(tree_sha256 "$FRAMEWORK")" = "$TREE_SHA256" ]; then
-        echo "==> VLCKit.xcframework $VERSION already vendored — skipping."
+        echo "==> VLCKit.xcframework $VERSION already vendored, skipping."
         exit 0
     fi
-    echo "==> The vendored VLCKit.xcframework differs from $VERSION — fetching it again."
+    echo "==> The vendored VLCKit.xcframework differs from $VERSION, fetching it again."
 fi
 
 TMP="$(mktemp -d)"

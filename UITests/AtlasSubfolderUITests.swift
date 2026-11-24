@@ -81,7 +81,7 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         eventually("Geiranger") { self.text(of: status).hasPrefix("station 5 of 8") }
         let item = element("tourItem")
         eventually("the ferry's MKV after the photos and the video", timeout: 40) { item.exists && item.label.hasPrefix("norway-ferry.mkv") }
-        XCTAssertEqual(item.label, "norway-ferry.mkv · video vlc", "played through VLC, as in the full view")
+        XCTAssertEqual(item.label, "norway-ferry.mkv, video vlc", "played through VLC, as in the full view")
         // Its pictures reach VLC's output
         eventually("VLC's first pictures", timeout: 10) {
             ((try? String(contentsOf: log, encoding: .utf8)) ?? "").contains("vlc picture 1 of media")

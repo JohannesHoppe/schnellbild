@@ -2173,7 +2173,7 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(player.calls, ["pause", "play"])
     }
 
-    /// a.jpg, clip.mp4, z.jpg — open on the video with a player at the start.
+    /// a.jpg, clip.mp4, z.jpg: open on the video with a player at the start.
     private func openOnVideo() async throws -> (BrowserModel, PlayerSpy) {
         let tree = try TempTree(self)
         for n in ["a.jpg", "clip.mp4", "z.jpg"] { try tree.file(n) }

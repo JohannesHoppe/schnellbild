@@ -1,31 +1,31 @@
-# Demo GIF — storyboard
+# Demo GIF: storyboard
 
-The GIF has one job: in the first 3 seconds, convey "damn, that's fast" — or
-people scroll past on HN/Reddit. Everything below serves that. Keep it ~25–30 s,
+The GIF has one job: in the first 3 seconds, convey "damn, that's fast", or
+people scroll past on HN/Reddit. Everything below serves that. Keep it ~25 to 30 s,
 silent, looping.
 
 ## Shot list (beat → what it proves)
 
-**0–4 s — The hook: thumbnails snap in.**
+**0 to 4 s. The hook: thumbnails snap in.**
 Open a folder (drag it onto the window, or ⌘O) → tiles fill in *instantly*. Use a
 **mixed folder**: photos + a **RAW/PSD** + a **PDF** + a **video** (poster frame).
 One shot shows both *speed* and *QuickLook breadth*. **If at all possible, a
-folder on the network share** — that's the whole story.
+folder on the network share**: that's the whole story.
 
-**4–9 s — Keyboard navigation.**
+**4 to 9 s. Keyboard navigation.**
 Arrow keys race through the grid, selection moving → Return → one image big →
 ←/→ in the full view, large images switching with no load hitch (shows the
 ImageIO-downsampled full view). This is the core loop: browse fast with keys.
 
-**9–14 s — Breadth, fast.**
+**9 to 14 s. Breadth, fast.**
 Quickly: `⌥←`/`⌥→` rotate, one `+` zoom, then briefly play a **video** (ideally an
 **AVI**, to show the VLCKit fallback in passing). Keep moving, don't linger.
 
-**14–19 s — Search (what Preview can't do).**
+**14 to 19 s. Search (what Preview can't do).**
 ⌘F → type three letters → matches from all subfolders (folders and files)
 pop in live. A clear differentiator.
 
-**19–24 s — Folder nav + F1.**
+**19 to 24 s. Folder nav + F1.**
 Into a subfolder (Return on a folder tile), Backspace back up (Norton `..`) →
 **F1** → shortcut cheat sheet flashes → Esc. Signals "thought-through, fully
 keyboard-driven."
@@ -41,13 +41,13 @@ scroll-stopper), polish (F1) last.
   README slot).
 - **Dark mode** (looks premium for a media viewer), 15 fps, 680 px wide, looping,
   **silent**.
-- **Neutral sample files** — no private/identifiable filenames on screen.
+- **Neutral sample files**: no private/identifiable filenames on screen.
 - Don't let the mouse hunt around; deliberate key moves, hide the cursor where
   possible.
 
 ## Honest caveat
 
-A GIF sells the *feel* ("looks snappy") but doesn't *prove* speed — there's no
+A GIF sells the *feel* ("looks snappy") but doesn't *prove* speed. There's no
 reference. The real proof is a **"Schnellbild vs. Preview over the network"
 benchmark**. Ideal: GIF for the eye, a benchmark number/clip for the skeptics in
 the comments.

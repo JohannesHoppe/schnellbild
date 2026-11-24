@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Larger / smaller thumbnails";
 "Clear search" = "Clear search";
 "Previous / next item, also from a video or PDF" = "Previous / next item, also from a video or PDF";
-"Next picture · play/pause video" = "Next picture · play/pause video";
+"Next picture; play/pause video" = "Next picture; play/pause video";
 "Zoom in / out" = "Zoom in / out";
 "Fit to window / 100 %" = "Fit to window / 100 %";
 "Rotate left / right" = "Rotate left / right";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "The name must end in a picture extension, such as “.%@”.";
 "The name must end in a video extension, such as “.%@”." = "The name must end in a video extension, such as “.%@”.";
 "Grid and full view" = "Grid and full view";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Previous / next · Videos: 10 % of the length back / ahead";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Previous / next; videos: 10 % of the length back / ahead";
 "Wrong password for this archive." = "Wrong password for this archive.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "The archive is incomplete: still downloading, a part missing, or damaged.";
 "A file listed in this archive is missing." = "A file listed in this archive is missing.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Reset to original";
 "Files are not changed." = "Files are not changed.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)";
-"Open picture or video · open folder or archive" = "Open picture or video · open folder or archive";
+"Open picture or video; open folder or archive" = "Open picture or video; open folder or archive";
 "Clear the search; again: leave the field" = "Clear the search; again: leave the field";
 "A folder or file named “%@” already exists in this folder." = "A folder or file named “%@” already exists in this folder.";
 "Choose a folder" = "Choose a folder";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Louder";
 "Quieter" = "Quieter";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Pictures zoomed in: look further up / down; videos: volume up / down (remembered)";
 "%lld so far" = "%lld so far";
 "New Folder" = "New Folder";
 "Create" = "Create";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "%lld items here, %@ among them";
 "%lld items here: double-click to zoom in" = "%lld items here: double-click to zoom in";
 "%lld items at one place: click for the next one" = "%lld items at one place: click for the next one";
-"No location · %lld" = "No location · %lld";
+"No location, %lld" = "No location, %lld";
 "%lld of %lld" = "%lld of %lld";
 "Show All" = "Show All";
 "The whole span again" = "The whole span again";

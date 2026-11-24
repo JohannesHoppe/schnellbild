@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Більші / менші мініатюри";
 "Clear search" = "Очистити пошук";
 "Previous / next item, also from a video or PDF" = "Попередній / наступний об’єкт, також із відео чи PDF";
-"Next picture · play/pause video" = "Наступне зображення · відтворити / пауза";
+"Next picture; play/pause video" = "Наступне зображення; відтворити / пауза";
 "Zoom in / out" = "Збільшити / зменшити";
 "Fit to window / 100 %" = "За розміром вікна / 100 %";
 "Rotate left / right" = "Повернути ліворуч / праворуч";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Назва має закінчуватися розширенням зображення, наприклад «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Назва має закінчуватися розширенням відео, наприклад «.%@».";
 "Grid and full view" = "Сітка й повний вигляд";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед · PDF: попередня / наступна сторінка; на початку / в кінці: попередній / наступний об’єкт";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Попередній / наступний · Відео: 10 % тривалості назад / вперед";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Зображення: попереднє / наступне; відео: 10 % тривалості назад / вперед; PDF: попередня / наступна сторінка (на початку / в кінці: попередній / наступний об’єкт)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Попередній / наступний; відео: 10 % тривалості назад / вперед";
 "Wrong password for this archive." = "Неправильний пароль для цього архіву.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архів неповний: він ще завантажується, бракує частини або його пошкоджено.";
 "A file listed in this archive is missing." = "Бракує файлу, зазначеного в цьому архіві.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Скинути до оригіналу";
 "Files are not changed." = "Файли не змінюються.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Автопокращення увімк. / вимк. (експозиція, контраст, насиченість, різкість; файли не змінюються)";
-"Open picture or video · open folder or archive" = "Відкрити зображення або відео · відкрити папку або архів";
+"Open picture or video; open folder or archive" = "Відкрити зображення або відео; відкрити папку або архів";
 "Clear the search; again: leave the field" = "Очистити пошук; повторно: вийти з поля";
 "A folder or file named “%@” already exists in this folder." = "Папка або файл із назвою «%@» уже є в цій папці.";
 "Choose a folder" = "Виберіть папку";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Гучніше";
 "Quieter" = "Тихіше";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Збільшені зображення: дивитися вище / нижче · Відео: гучніше / тихіше (запам’ятовується)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Збільшені зображення: дивитися вище / нижче; відео: гучніше / тихіше (запам’ятовується)";
 "%lld so far" = "поки %lld";
 "New Folder" = "Нова папка";
 "Create" = "Створити";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "Тут: %1$lld, серед них %2$@";
 "%lld items here: double-click to zoom in" = "Тут: %lld. Подвійне клацання наближає";
 "%lld items at one place: click for the next one" = "В одному місці: %lld. Клацання вибирає наступний";
-"No location · %lld" = "Без місця · %lld";
+"No location, %lld" = "Без місця, %lld";
 "%lld of %lld" = "%1$lld з %2$lld";
 "Show All" = "Показати все";
 "The whole span again" = "Знову весь період";

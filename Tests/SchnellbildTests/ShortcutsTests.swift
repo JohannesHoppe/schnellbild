@@ -367,13 +367,13 @@ final class ShortcutsTests: XCTestCase {
         }
         XCTAssertEqual(helpKeys("Next view: grid, list, Atlas (a click on a column sorts by it)"), "L")
         let glyphs = KeyGlyphs.current
-        XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / − · ⌘ + + / ⌘ + −")
+        XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / −, ⌘ + + / ⌘ + −")
         XCTAssertEqual(helpKeys("Previous / next item"), "\(glyphs.left) / \(glyphs.right)")
         XCTAssertEqual(helpKeys("First / last item"), "⤒ (fn + ◀) / ⤓ (fn + ▶)")
         let atlasMoves = "Atlas: to the nearest item on the map that way; down into the strip of items without a location"
         XCTAssertEqual(helpKeys(atlasMoves), "\(glyphs.left) / \(glyphs.right) / \(glyphs.up) / \(glyphs.down)")
         XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘ + 1 … ⌘ + 6")
-        XCTAssertEqual(helpKeys("Copy / move the marked items into the other pane's folder"), "⇧ + ⌘ + C / ⇧ + ⌘ + M · F5 / F6")
+        XCTAssertEqual(helpKeys("Copy / move the marked items into the other pane's folder"), "⇧ + ⌘ + C / ⇧ + ⌘ + M, F5 / F6")
         XCTAssertEqual(helpKeys("Undo / redo renaming, trashing, moving, copying, a new folder"), "⌘ + Z / ⇧ + ⌘ + Z")
         let sort = ShortcutsHelpView.groups(s).flatMap(\.shortcuts).first { $0.keys == "⌘ + 1 … ⌘ + 6" }?.caps
         XCTAssertEqual(sort?.parts, [.cap("⌘"), .plus, .cap("1"), .through, .cap("⌘"), .plus, .cap("6")], "a cap per key")

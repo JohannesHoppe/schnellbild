@@ -39,7 +39,7 @@ fetch_verified "UnRAR $VERSION source" "$URL" "$SHA256" "$TMP/unrar.tar.gz" "$UP
 tar -xzf "$TMP/unrar.tar.gz" -C "$TMP"
 [ -f "$TMP/unrar/dll.hpp" ] || { echo "!! unexpected UnRAR archive layout" >&2; exit 1; }
 # One error state per thread: UnRAR keeps one for the process (ErrHandler),
-# and the app reads several archives at once — another thread's error (a
+# and the app reads several archives at once: another thread's error (a
 # wrong password tried elsewhere, a stopped stream) must not fail this read.
 grep -q '^EXTVAR ErrorHandler ErrHandler;$' "$TMP/unrar/global.hpp" || { echo "!! UnRAR's ErrHandler declaration changed" >&2; exit 1; }
 # Native/CArchives/rar_shim.cpp declares UnRAR's handle (dll.cpp's DataSet)

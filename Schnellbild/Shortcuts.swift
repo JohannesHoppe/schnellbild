@@ -479,7 +479,7 @@ enum ShortcutAction: String, CaseIterable {
         case .fullFineAhead:     return String(localized: "Video: 1 % ahead")
         case .fullUp:            return String(localized: "Look further up (videos: louder)")
         case .fullDown:          return String(localized: "Look further down (videos: quieter)")
-        case .fullSpace:         return String(localized: "Next picture · play/pause video")
+        case .fullSpace:         return String(localized: "Next picture; play/pause video")
         case .zoomIn:            return String(localized: "Zoom in")
         case .zoomOut:           return String(localized: "Zoom out")
         case .zoomFit:           return String(localized: "Fit")

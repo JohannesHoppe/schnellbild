@@ -2,7 +2,7 @@
 # (Spike/TrashUndo), by hand: a sandboxed probe with the Store's
 # entitlements moves files and folders to the Trash and back out, from a
 # later process too, and on a volume of its own.
-name: Spike — Trash in the sandbox
+name: "Spike: Trash in the sandbox"
 
 on:
   workflow_dispatch:

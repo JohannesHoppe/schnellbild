@@ -292,7 +292,7 @@ struct AtlasThumbnail: View {
 struct AtlasStripTitle: View {
     let text: String
 
-    static func localized(count: Int) -> AtlasStripTitle { AtlasStripTitle(text: String(localized: "No location · \(count)")) }
+    static func localized(count: Int) -> AtlasStripTitle { AtlasStripTitle(text: String(localized: "No location, \(count)")) }
 
     var body: some View {
         Text(verbatim: text)
@@ -360,7 +360,7 @@ private struct AtlasStrip: View, Equatable {
 // MARK: - Timeline
 
 /// The items by time, always under the map: a thumbnail now and then and a
-/// bar per stretch of time; the from–to range (the handles, or a drag
+/// bar per stretch of time; the range from and to (the handles, or a drag
 /// across) narrows what the map and the strip show; a click jumps to the
 /// item nearest that time. Times are shown as the clocks where the items
 /// were taken showed them.
@@ -629,7 +629,7 @@ private struct TourStage: View {
     private func caption(item: AtlasItem, tour: TourPlayer) -> some View {
         VStack(spacing: 2) {
             if let place { Text(verbatim: place).font(.headline) }
-            Text(verbatim: AtlasTimeline.text(item.date, in: item.zone, time: true) + " · " + item.name)
+            Text(verbatim: AtlasTimeline.text(item.date, in: item.zone, time: true) + ", " + item.name)
                 .font(.caption).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -706,7 +706,7 @@ private struct TourPicture: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .ignore)
         // Under `--ui-testing` also what shows it (a plain group's value doesn't reach XCUITest)
-        .accessibilityLabel(test: item.name + " · " + player, spoken: item.name)
+        .accessibilityLabel(test: item.name + ", " + player, spoken: item.name)
         .accessibilityIdentifier("tourItem")
         .task(id: item.url) {
             image = ThumbnailCache.shared.image(for: item.url)

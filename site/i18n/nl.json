@@ -4,7 +4,7 @@
   "alternativesSlug": "alternatieven",
   "formatsSlug": "formaten",
   "title": "Schnellbild: een fotoviewer en videospeler voor macOS waar je niet gek van wordt",
-  "seoTitle": "Schnellbild · gratis fotoviewer en MKV-player voor de Mac",
+  "seoTitle": "Schnellbild | gratis fotoviewer en MKV-player voor de Mac",
   "seoDescription": "Snelle, gratis fotoviewer voor de Mac, speelt ook MKV, AVI en WebM: miniaturen, diavoorstelling, ZIP en RAR als mappen. Alternatief voor IrfanView en XnView.",
   "keywords": "fotoviewer Mac, image viewer Mac, photo viewer Mac, afbeeldingsviewer macOS, gratis fotoviewer, MKV player Mac, MKV afspelen Mac, videospeler Mac, AVI WebM afspelen, diavoorstelling Mac, IrfanView Mac alternatief, XnView alternatief, Phiewer alternatief, IINA alternatief, RAR afbeeldingen openen, CBZ reader, strips CBZ CBR, Schnellbild",
   "navFeatures": "Functies",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formaten",
     "title": "Alle formaten die Schnellbild toont",
-    "seoTitle": "Ondersteunde formaten: afbeeldingen, RAW, video’s, archieven · Schnellbild voor Mac",
+    "seoTitle": "Ondersteunde formaten: afbeeldingen, RAW, video’s, archieven | Schnellbild voor Mac",
     "description": "Alle formaten die de gratis viewer Schnellbild op de Mac opent, met volledige naam en bestandsextensie: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z en meer.",
     "keywords": "bestandsformaten Mac, HEIC openen Mac, RAW-viewer Mac, CR3 openen, NEF openen, MKV-speler Mac, AVI afspelen Mac, WebM afspelen Mac, PSD openen zonder Photoshop, EPS openen Mac, JPEG XL viewer, AVIF openen, DDS viewer, CBR CBZ lezer Mac, Schnellbild",
     "lead": "Schnellbild toont {count} formaten met {extensions} bestandsextensies: afbeeldingen, camera-RAW, documenten, video’s en archieven, die als mappen openen.",

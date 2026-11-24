@@ -83,7 +83,7 @@ ctx.fillPath()
 
 ctx.restoreGState()
 
-// MARK: Lightning bolt (bottom-right, "fast") — straddles the card corner
+// MARK: Lightning bolt (bottom-right, "fast"), straddles the card corner
 let bw = S * 0.235
 let bh = bw * 1.22
 let ar = bh / bw

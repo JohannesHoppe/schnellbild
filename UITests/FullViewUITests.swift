@@ -7,12 +7,12 @@ final class FullViewUITests: SchnellbildUITestCase {
     private func openA() {
         launchOnTempDir()
         app.typeKey(.space, modifierFlags: [])
-        waitForBadge(containing: "1 / 3  ·  a.jpg")
+        waitForBadge(containing: "1 / 3, a.jpg")
     }
 
     func testOpensImageFileDirectlyInFullView() {
         launch(open: tempDir.appendingPathComponent("b.jpg").path)
-        waitForBadge(containing: "2 / 3  ·  b.jpg")
+        waitForBadge(containing: "2 / 3, b.jpg")
         eventually("the image loads") { text(of: fullImage).hasSuffix("loaded") }
     }
 
@@ -40,12 +40,12 @@ final class FullViewUITests: SchnellbildUITestCase {
     func testArrowsAndSpacePageThroughImages() {
         openA()
         app.typeKey(.rightArrow, modifierFlags: [])
-        waitForBadge(containing: "2 / 3  ·  b.jpg")
+        waitForBadge(containing: "2 / 3, b.jpg")
         app.typeKey(.downArrow, modifierFlags: [])   // ↓ doesn't page pictures
         RunLoop.current.run(until: Date().addingTimeInterval(0.5))
-        XCTAssertTrue(text(of: badge).contains("2 / 3  ·  b.jpg"), text(of: badge))
+        XCTAssertTrue(text(of: badge).contains("2 / 3, b.jpg"), text(of: badge))
         app.typeKey(.rightArrow, modifierFlags: [])
-        waitForBadge(containing: "3 / 3  ·  c.jpg")
+        waitForBadge(containing: "3 / 3, c.jpg")
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "3 / 3", timeout: 2)   // clamps at the end
         app.typeKey(.leftArrow, modifierFlags: [])
@@ -137,7 +137,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         openA()
         app.typeKey("s", modifierFlags: [])
         waitForBadge(containing: "Slideshow")
-        waitForBadge(containing: "/ 3  ·")
+        waitForBadge(containing: "/ 3,")
         app.typeKey(.space, modifierFlags: [])   // paused: nothing moves on by itself
         waitForBadge(containing: "Paused")
         app.typeKey("p", modifierFlags: [])
@@ -158,17 +158,17 @@ final class FullViewUITests: SchnellbildUITestCase {
 
         // The show follows the new order
         rowC.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()   // (XCUITest finds no hit point on the row after a drag)
-        waitForBadge(containing: "1 / 3  ·  c.jpg")
+        waitForBadge(containing: "1 / 3, c.jpg")
         app.typeKey(.rightArrow, modifierFlags: .command)
-        waitForBadge(containing: "2 / 3  ·  a.jpg")
+        waitForBadge(containing: "2 / 3, a.jpg")
         app.typeKey(.rightArrow, modifierFlags: .command)
-        waitForBadge(containing: "3 / 3  ·  b.jpg")
+        waitForBadge(containing: "3 / 3, b.jpg")
 
         // b taken out of the playlist: the file stays
         rowB.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
         app.typeKey(.delete, modifierFlags: [])
         eventually("b is out of the playlist") { !rowB.exists }
-        waitForBadge(containing: "/ 2  ·")
+        waitForBadge(containing: "/ 2,")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("b.jpg").path))
         XCTAssertTrue(playlist.exists, "⌫ in the list takes out, it doesn't close")
 
@@ -217,7 +217,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         launchOnTempDir()
         toolbarButton("slideshowButton").click()
         waitForBadge(containing: "Slideshow")
-        waitForBadge(containing: "/ 4  ·")   // the subfolder walked ("/ 3+" until then)
+        waitForBadge(containing: "/ 4,")   // the subfolder walked ("/ 3+" until then)
         XCTAssertFalse(searchField.exists, "nothing but the pictures")
         waitForBadge(containing: "d.jpg", timeout: 15)   // reaches the subfolder
         app.typeKey(.escape, modifierFlags: [])

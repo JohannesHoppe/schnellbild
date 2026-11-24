@@ -31,7 +31,7 @@ fetch_verified() {
         exit 1
     fi
     if [ "$actual" != "$expected" ]; then
-        echo "!! ${name}: SHA-256 mismatch — refusing this download ($url)." >&2
+        echo "!! ${name}: SHA-256 mismatch, refusing this download ($url)." >&2
         echo "   expected $expected" >&2
         echo "   got      $actual" >&2
         exit 1
@@ -46,7 +46,7 @@ fetch_verified() {
 fetch_pinned() {
     local dest="$1" base="$2" file="$3" sha="$4"
     if [ -f "$dest/$file" ] && [ "$(sha256_of "$dest/$file")" = "$sha" ]; then
-        echo "==> $file already there — skipping."
+        echo "==> $file already there, skipping."
         return
     fi
     ( fetch_verified "$file" "$base/$file" "$sha" "$dest/$file.part" ) || { rm -f "$dest/$file.part"; exit 1; }

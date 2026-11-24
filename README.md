@@ -46,7 +46,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ## Contents
 
-[Browse folders](#browse-folders) · [List view](#list-view) · [Atlas: map, globe, timeline, tour](#atlas-your-photos-on-the-map-and-the-globe) · [Sort](#sort) · [Search](#search-including-subfolders) · [Full view](#full-view) · [Zoom and rotate](#zoom-and-rotate) · [Slideshow and playlist](#slideshow) · [Videos](#videos) · [Finder previews](#finder-previews-for-more-videos) · [Auto enhance](#auto-enhance-and-adjustments) · [File info](#file-info) · [Rename, trash, undo](#rename-reveal-trash-sort-into-folders) · [Dual pane](#dual-pane-sort-your-holiday-photos) · [Archives](#archives-as-folders) · [Boss key](#boss-key) · [All keys at hand](#all-keys-at-hand) · [Your own keys](#your-own-keys) · [Settings](#settings) · [Accessibility](#accessibility) · [Formats](#supported-file-formats) · [Safety](#safe-with-files-from-others)
+[Browse folders](#browse-folders), [List view](#list-view), [Atlas: map, globe, timeline, tour](#atlas-your-photos-on-the-map-and-the-globe), [Sort](#sort), [Search](#search-including-subfolders), [Full view](#full-view), [Zoom and rotate](#zoom-and-rotate), [Slideshow and playlist](#slideshow), [Videos](#videos), [Finder previews](#finder-previews-for-more-videos), [Auto enhance](#auto-enhance-and-adjustments), [File info](#file-info), [Rename, trash, undo](#rename-reveal-trash-sort-into-folders), [Dual pane](#dual-pane-sort-your-holiday-photos), [Archives](#archives-as-folders), [Boss key](#boss-key), [All keys at hand](#all-keys-at-hand), [Your own keys](#your-own-keys), [Settings](#settings), [Accessibility](#accessibility), [Formats](#supported-file-formats), [Safety](#safe-with-files-from-others)
 
 ## Features
 
@@ -78,7 +78,7 @@ The keys are written as macOS's menus draw them: <kbd>⌘</kbd> Command, <kbd>�
 | <kbd>⌘</kbd> + <kbd>[</kbd> / <kbd>⌘</kbd> + <kbd>]</kbd> | back / forward, restoring the folder, the search and the selection |
 | <kbd>⌘</kbd> + <kbd>R</kbd> | read the folder again (View → Reload) |
 | <kbd>⤒</kbd> / <kbd>⤓</kbd> | first / last item |
-| <kbd>+</kbd> / <kbd>−</kbd> · <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd> | larger / smaller thumbnails (a trackpad pinch too) |
+| <kbd>+</kbd> / <kbd>−</kbd>, <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd> | larger / smaller thumbnails (a trackpad pinch too) |
 | <kbd>L</kbd> | the next view: grid, list, Atlas, then the grid again |
 | <kbd>F</kbd> / <kbd>⌃</kbd> + <kbd>⌘</kbd> + <kbd>F</kbd> | full screen |
 | <kbd>↩</kbd> / <kbd>F2</kbd> / <kbd>⇧</kbd> + <kbd>F6</kbd> | rename the selected folder or file, as in the Finder (<kbd>↩</kbd> on `..`: up a level; <kbd>F6</kbd> too in a single pane) |
@@ -117,7 +117,7 @@ The keys are written as macOS's menus draw them: <kbd>⌘</kbd> Command, <kbd>�
 - **With the subfolders:** it shows the photos and videos of every subfolder too (archives included, hidden folders only while hidden files are shown), as the slideshow plays them; they come in while the subfolders are read, and "Include subfolders" over the map turns that off (Schnellbild remembers it). While you search, it shows the results.
 - **One selection:** a click selects, the same item as in the grid and the list; one from a subfolder selects the folder it lies in there, and a folder selected in the grid hands the selection to its first photo in the Atlas. <kbd>Space</kbd> or a double click opens it, and the full view opened from the Atlas goes on from folder to folder. A double click on a tile of several zooms in until they part; the arrow keys go to the nearest tile that way.
 - **Photos taken at the very same place** stay one tile however far you zoom in: each click on it selects the next of them, as do <kbd>▶</kbd> and <kbd>◀</kbd>.
-- **Without a location:** photos and videos without one wait in a strip under the map ("No location · 12"), to select and open like the others; none gets a made-up place.
+- **Without a location:** photos and videos without one wait in a strip under the map ("No location, 12"), to select and open like the others; none gets a made-up place.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/atlas-globe-near-dark.webp">
@@ -218,7 +218,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 
 | Key | Action |
 |---|---|
-| <kbd>+</kbd> / <kbd>−</kbd> · <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd> | zoom in / out |
+| <kbd>+</kbd> / <kbd>−</kbd>, <kbd>⌘</kbd> + <kbd>+</kbd> / <kbd>⌘</kbd> + <kbd>−</kbd> | zoom in / out |
 | <kbd>0</kbd> / <kbd>1</kbd> | fit to window / a photo's real size (100 %; a photo smaller than the window stays fitted, a video always) |
 | <kbd>⌥</kbd> + <kbd>◀</kbd> / <kbd>⌥</kbd> + <kbd>▶</kbd> | rotate left / right |
 
@@ -250,7 +250,7 @@ It starts where you are: from the full view at the picture you're looking at; in
 |---|---|
 | <kbd>S</kbd> | start the slideshow (again: end it) |
 | <kbd>P</kbd> | show / hide the playlist |
-| <kbd>▲</kbd> / <kbd>▼</kbd> · <kbd>↩</kbd> · <kbd>⌫</kbd> | in the playlist, after a click in it: choose an item · show it · take it out of the playlist (the file stays) |
+| <kbd>▲</kbd> / <kbd>▼</kbd>, <kbd>↩</kbd>, <kbd>⌫</kbd> | in the playlist, after a click in it: choose an item, show it, take it out of the playlist (the file stays) |
 | <kbd>Space</kbd> | pause / resume |
 | <kbd>◀</kbd> / <kbd>▶</kbd> | previous / next picture; in a video 10 % of its length back / ahead |
 | <kbd>⇧</kbd> + <kbd>◀</kbd> / <kbd>⇧</kbd> + <kbd>▶</kbd> | in a video 1 % of its length back / ahead |

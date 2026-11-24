@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Větší / menší náhledy";
 "Clear search" = "Vymazat hledání";
 "Previous / next item, also from a video or PDF" = "Předchozí / další položka, i z videa nebo PDF";
-"Next picture · play/pause video" = "Další obrázek · přehrát / pozastavit video";
+"Next picture; play/pause video" = "Další obrázek; přehrát / pozastavit video";
 "Zoom in / out" = "Zvětšit / zmenšit";
 "Fit to window / 100 %" = "Přizpůsobit oknu / 100 %";
 "Rotate left / right" = "Otočit doleva / doprava";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Název musí končit příponou obrázku, například „.%@“.";
 "The name must end in a video extension, such as “.%@”." = "Název musí končit příponou videa, například „.%@“.";
 "Grid and full view" = "Mřížka a celé zobrazení";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Obrázky: předchozí / další · Videa: 10 % délky zpět / vpřed · PDF: předchozí / další stránka; na začátku / konci: předchozí / další položka";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Předchozí / další · Videa: 10 % délky zpět / vpřed";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Obrázky: předchozí / další; videa: 10 % délky zpět / vpřed; PDF: předchozí / další stránka (na začátku / konci: předchozí / další položka)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Předchozí / další; videa: 10 % délky zpět / vpřed";
 "Wrong password for this archive." = "Nesprávné heslo pro tento archiv.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Archiv je neúplný: stále se stahuje, chybí jeho část, nebo je poškozený.";
 "A file listed in this archive is missing." = "Chybí soubor uvedený v tomto archivu.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Obnovit originál";
 "Files are not changed." = "Soubory se nemění.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Automatické vylepšení zap. / vyp. (expozice, kontrast, sytost, ostrost; soubory se nemění)";
-"Open picture or video · open folder or archive" = "Otevřít obrázek nebo video · otevřít složku nebo archiv";
+"Open picture or video; open folder or archive" = "Otevřít obrázek nebo video; otevřít složku nebo archiv";
 "Clear the search; again: leave the field" = "Vymazat hledání; znovu: opustit pole";
 "A folder or file named “%@” already exists in this folder." = "Složka nebo soubor s názvem „%@“ už v této složce existuje.";
 "Choose a folder" = "Vyberte složku";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Hlasitěji";
 "Quieter" = "Tišeji";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Přiblížené obrázky: posun nahoru / dolů · Videa: hlasitěji / tišeji (zapamatuje se)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Přiblížené obrázky: posun nahoru / dolů; videa: hlasitěji / tišeji (zapamatuje se)";
 "%lld so far" = "zatím %lld";
 "New Folder" = "Nová složka";
 "Create" = "Vytvořit";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "Zde: %1$lld, mezi nimi %2$@";
 "%lld items here: double-click to zoom in" = "Zde: %lld. Dvojitým kliknutím přiblížíte";
 "%lld items at one place: click for the next one" = "Na jednom místě: %lld. Kliknutím vyberete další";
-"No location · %lld" = "Bez polohy · %lld";
+"No location, %lld" = "Bez polohy, %lld";
 "%lld of %lld" = "%1$lld z %2$lld";
 "Show All" = "Zobrazit vše";
 "The whole span again" = "Znovu celé období";

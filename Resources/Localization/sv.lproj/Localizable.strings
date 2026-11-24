@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Större / mindre miniatyrer";
 "Clear search" = "Rensa sökningen";
 "Previous / next item, also from a video or PDF" = "Föregående / nästa objekt, även från en video eller PDF";
-"Next picture · play/pause video" = "Nästa bild · spela upp / pausa video";
+"Next picture; play/pause video" = "Nästa bild; spela upp / pausa video";
 "Zoom in / out" = "Zooma in / ut";
 "Fit to window / 100 %" = "Anpassa till fönstret / 100 %";
 "Rotate left / right" = "Rotera åt vänster / höger";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Namnet måste sluta med en bildfiländelse, till exempel ”.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Namnet måste sluta med en videofiländelse, till exempel ”.%@”.";
 "Grid and full view" = "Rutnät och helvy";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Bilder: föregående / nästa · Videor: 10 % av längden bakåt / framåt · PDF:er: föregående / nästa sida; i början / slutet: föregående / nästa objekt";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Föregående / nästa · Videor: 10 % av längden bakåt / framåt";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Bilder: föregående / nästa; videor: 10 % av längden bakåt / framåt; PDF:er: föregående / nästa sida (i början / slutet: föregående / nästa objekt)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Föregående / nästa; videor: 10 % av längden bakåt / framåt";
 "Wrong password for this archive." = "Fel lösenord för det här arkivet.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet är ofullständigt: det laddas fortfarande ner, en del saknas eller så är det skadat.";
 "A file listed in this archive is missing." = "En fil som finns listad i det här arkivet saknas.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Återställ till original";
 "Files are not changed." = "Filerna ändras inte.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Autoförbättra på / av (exponering, kontrast, mättnad, skärpa; filerna ändras inte)";
-"Open picture or video · open folder or archive" = "Öppna bild eller video · öppna mapp eller arkiv";
+"Open picture or video; open folder or archive" = "Öppna bild eller video; öppna mapp eller arkiv";
 "Clear the search; again: leave the field" = "Rensa sökningen; igen: lämna fältet";
 "A folder or file named “%@” already exists in this folder." = "Det finns redan en mapp eller fil med namnet ”%@” i den här mappen.";
 "Choose a folder" = "Välj en mapp";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Högre";
 "Quieter" = "Lägre";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Inzoomade bilder: titta längre upp / ner · Videor: högre / lägre volym (sparas)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Inzoomade bilder: titta längre upp / ner; videor: högre / lägre volym (sparas)";
 "%lld so far" = "%lld hittills";
 "New Folder" = "Ny mapp";
 "Create" = "Skapa";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "%1$lld här, bland dem %2$@";
 "%lld items here: double-click to zoom in" = "%lld här: dubbelklicka för att zooma in";
 "%lld items at one place: click for the next one" = "%lld på samma plats: klicka för nästa";
-"No location · %lld" = "Utan plats · %lld";
+"No location, %lld" = "Utan plats, %lld";
 "%lld of %lld" = "%1$lld av %2$lld";
 "Show All" = "Visa alla";
 "The whole span again" = "Hela perioden igen";

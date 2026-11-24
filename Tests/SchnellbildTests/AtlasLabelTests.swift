@@ -113,14 +113,14 @@ final class AtlasLabelTests: XCTestCase {
             let status = TourStatusLabel(text: place)
             XCTAssertGreaterThanOrEqual(laidOut(status).width, width(place, size: 12) - 1, "\(language): “\(place)”")
             XCTAssertGreaterThanOrEqual(laidOut(status, width: 40).width, width(place, size: 12) - 1, "\(language): “\(place)” squeezed")
-            let strip = format(table, "No location · %lld", 99_999)
+            let strip = format(table, "No location, %lld", 99_999)
             let title = AtlasStripTitle(text: strip)
             XCTAssertGreaterThanOrEqual(laidOut(title).width, width(strip, size: 10), "\(language): “\(strip)”")
             XCTAssertGreaterThanOrEqual(laidOut(title, width: 40).width, width(strip, size: 10), "\(language): “\(strip)” squeezed")
         }
         // What the app shows is these views with its own words
         XCTAssertEqual(TourStatusLabel.localized(station: 3, of: 8).text, String(localized: "Place \(3) of \(8)"))
-        XCTAssertEqual(AtlasStripTitle.localized(count: 12).text, String(localized: "No location · \(12)"))
+        XCTAssertEqual(AtlasStripTitle.localized(count: 12).text, String(localized: "No location, \(12)"))
     }
 
     /// A status or title cut to a width is caught by the measure above.

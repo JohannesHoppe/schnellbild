@@ -301,7 +301,7 @@ for locale in locales {
 // What App Store Connect shows now for name and subtitle, read back.
 for localization in items(try await api("GET", "/v1/appInfos/\(id(appInfo))/appInfoLocalizations")) {
     let values = attributes(localization)
-    say("    \(values["locale"] ?? ""): \(values["name"] ?? "–") / \(values["subtitle"] ?? "–")")
+    say("    \(values["locale"] ?? ""): \(values["name"] ?? "-") / \(values["subtitle"] ?? "-")")
 }
 
 // The age rating: every question App Store Connect asks is answered in app.json

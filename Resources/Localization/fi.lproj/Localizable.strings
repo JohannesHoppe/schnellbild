@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Isommat / pienemmät miniatyyrit";
 "Clear search" = "Tyhjennä haku";
 "Previous / next item, also from a video or PDF" = "Edellinen / seuraava kohde, myös videosta tai PDF:stä";
-"Next picture · play/pause video" = "Seuraava kuva · toista / keskeytä video";
+"Next picture; play/pause video" = "Seuraava kuva; toista / keskeytä video";
 "Zoom in / out" = "Lähennä / loitonna";
 "Fit to window / 100 %" = "Sovita ikkunaan / 100 %";
 "Rotate left / right" = "Kierrä vasemmalle / oikealle";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Nimen on päätyttävä kuvan päätteeseen, kuten ”.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Nimen on päätyttävä videon päätteeseen, kuten ”.%@”.";
 "Grid and full view" = "Ruudukko ja koko näkymä";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Kuvat: edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen · PDF:t: edellinen / seuraava sivu; alussa / lopussa: edellinen / seuraava kohde";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Kuvat: edellinen / seuraava; videot: 10 % pituudesta taakse / eteen; PDF:t: edellinen / seuraava sivu (alussa / lopussa: edellinen / seuraava kohde)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Edellinen / seuraava; videot: 10 % pituudesta taakse / eteen";
 "Wrong password for this archive." = "Väärä salasana tähän arkistoon.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkisto on keskeneräinen: sitä ladataan vielä, osa puuttuu tai se on vahingoittunut.";
 "A file listed in this archive is missing." = "Tässä arkistossa lueteltu tiedosto puuttuu.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Palauta alkuperäiseksi";
 "Files are not changed." = "Tiedostoja ei muuteta.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Automaattinen parannus päälle / pois (valotus, kontrasti, värikylläisyys, terävyys; tiedostoja ei muuteta)";
-"Open picture or video · open folder or archive" = "Avaa kuva tai video · avaa kansio tai arkisto";
+"Open picture or video; open folder or archive" = "Avaa kuva tai video; avaa kansio tai arkisto";
 "Clear the search; again: leave the field" = "Tyhjennä haku; uudelleen: poistu kentästä";
 "A folder or file named “%@” already exists in this folder." = "Tässä kansiossa on jo kansio tai tiedosto nimeltä ”%@”.";
 "Choose a folder" = "Valitse kansio";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Kovemmalle";
 "Quieter" = "Hiljemmalle";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Lähennetyt kuvat: katso ylemmäs / alemmas · Videot: äänenvoimakkuus ylös / alas (muistetaan)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Lähennetyt kuvat: katso ylemmäs / alemmas; videot: äänenvoimakkuus ylös / alas (muistetaan)";
 "%lld so far" = "tähän mennessä %lld";
 "New Folder" = "Uusi kansio";
 "Create" = "Luo";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "Täällä: %1$lld, mukana %2$@";
 "%lld items here: double-click to zoom in" = "Täällä: %lld. Lähennä kaksoisosoittamalla";
 "%lld items at one place: click for the next one" = "Samassa paikassa: %lld. Seuraava osoittamalla";
-"No location · %lld" = "Ei sijaintia · %lld";
+"No location, %lld" = "Ei sijaintia, %lld";
 "%lld of %lld" = "%1$lld/%2$lld";
 "Show All" = "Näytä kaikki";
 "The whole span again" = "Koko aikaväli taas";

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Runs the SwiftPM unit tests. VLCKit is a binary framework linked into the
-# module, but SwiftPM doesn't embed it into the .xctest bundle — and its
-# install name is @loader_path/../Frameworks/… — so we copy it in before
+# module, but SwiftPM doesn't embed it into the .xctest bundle, and its
+# install name is @loader_path/../Frameworks/…, so we copy it in before
 # running, then test without rebuilding.
 #
 # Arguments go to `swift test` (`--filter VideoFormatTests`). REPEAT=<n>

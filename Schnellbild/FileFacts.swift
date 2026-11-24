@@ -157,11 +157,11 @@ struct StreamFacts: Equatable, Sendable {
 
     var isEmpty: Bool { video == nil && audio == nil }
 
-    /// "Video 1 · Audio 2 · Subtitles 1".
+    /// "Video 1, Audio 2, Subtitles 1".
     var tracksText: String? {
         let parts = [(String(localized: "Video"), videoTracks), (String(localized: "Audio"), audioTracks),
                      (String(localized: "Subtitles"), subtitleTracks)].filter { $0.1 > 0 }.map { "\($0.0) \($0.1)" }
-        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+        return parts.isEmpty ? nil : parts.joined(separator: ", ")
     }
 
     /// Units in the user's language: "25 fps", "25 B/s", "25 i/s" …

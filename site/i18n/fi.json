@@ -4,7 +4,7 @@
   "alternativesSlug": "vaihtoehdot",
   "formatsSlug": "formaatit",
   "title": "Schnellbild: kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä",
-  "seoTitle": "Schnellbild · ilmainen kuvankatselin ja MKV-soitin Macille",
+  "seoTitle": "Schnellbild | ilmainen kuvankatselin ja MKV-soitin Macille",
   "seoDescription": "Nopea, ilmainen kuvankatselin Macille, joka toistaa myös MKV-, AVI- ja WebM-videot: pienoiskuvat, diaesitys, ZIP ja RAR kansioina. Vaihtoehto IrfanViewille.",
   "keywords": "kuvankatselin Mac, kuvankatseluohjelma Mac, valokuvien katselu Mac, image viewer Mac, ilmainen kuvankatselin, MKV-soitin Mac, MKV player Mac, videosoitin Mac, AVI WebM toisto, diaesitys, IrfanView-vaihtoehto, XnView-vaihtoehto, Phiewer-vaihtoehto, IINA-vaihtoehto, RAR-kuvien avaaminen, sarjakuvalukija CBZ CBR, Schnellbild",
   "navFeatures": "Ominaisuudet",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formaatit",
     "title": "Kaikki formaatit, jotka Schnellbild näyttää",
-    "seoTitle": "Tuetut formaatit: kuvat, RAW, videot, arkistot · Schnellbild Macille",
+    "seoTitle": "Tuetut formaatit: kuvat, RAW, videot, arkistot | Schnellbild Macille",
     "description": "Kaikki formaatit, jotka ilmainen kuvankatselin Schnellbild avaa Macilla, koko nimellä ja tiedostopäätteellä: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z ja muita.",
     "keywords": "tiedostomuodot Mac, avaa HEIC Macilla, RAW-katselin Mac, avaa CR3, avaa NEF, MKV-soitin Mac, toista AVI Macilla, toista WebM Macilla, avaa PSD ilman Photoshopia, avaa EPS Macilla, JPEG XL -katselin, avaa AVIF, DDS-katselin, CBR CBZ -lukija Mac, Schnellbild",
     "lead": "Schnellbild näyttää {count} formaattia ja {extensions} tiedostopäätettä: kuvat, kameran RAW-kuvat, asiakirjat, videot ja arkistot, jotka avautuvat kuin kansiot.",

@@ -4,7 +4,7 @@
   "alternativesSlug": "alternatives",
   "formatsSlug": "formats",
   "title": "Schnellbild: переглядач зображень і відео для Mac, який просто не дратує",
-  "seoTitle": "Schnellbild · переглядач зображень і відеоплеєр для Mac",
+  "seoTitle": "Schnellbild | переглядач зображень і відеоплеєр для Mac",
   "seoDescription": "Швидкий безкоштовний переглядач фото для Mac, що відтворює й відео: MKV, AVI, WebM. Мініатюри, клавіші, слайд-шоу, ZIP і RAR як папки. Альтернатива XnView.",
   "keywords": "переглядач зображень Mac, переглядач фото Mac, перегляд фото macOS, відеоплеєр для Mac, MKV плеєр Mac, MKV player Mac, відтворення AVI WebM, слайд-шоу Mac, комікси CBZ CBR, відкрити зображення в RAR, image viewer Mac, photo viewer Mac, альтернатива XnView, альтернатива IrfanView для Mac, альтернатива Phiewer, альтернатива IINA для перегляду відео, Schnellbild",
   "navFeatures": "Можливості",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Формати",
     "title": "Усі формати, які показує Schnellbild",
-    "seoTitle": "Підтримувані формати: зображення, RAW, відео, архіви · Schnellbild для Mac",
+    "seoTitle": "Підтримувані формати: зображення, RAW, відео, архіви | Schnellbild для Mac",
     "description": "Усі формати, які відкриває безкоштовний переглядач Schnellbild на Mac, з повними назвами й розширеннями: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z та інші.",
     "keywords": "формати файлів Mac, відкрити HEIC на Mac, переглядач RAW Mac, відкрити CR3, відкрити NEF, MKV плеєр Mac, відтворити AVI на Mac, WebM плеєр Mac, відкрити PSD без Photoshop, відкрити EPS на Mac, переглядач JPEG XL, відкрити AVIF, переглядач DDS, читалка CBR CBZ Mac, Schnellbild",
     "lead": "Schnellbild показує {count} форматів із {extensions} розширеннями файлів: зображення, RAW із камер, документи, відео й архіви, які відкриваються як папки.",

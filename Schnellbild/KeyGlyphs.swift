@@ -62,7 +62,8 @@ struct KeyCaps: Equatable {
         case then
         /// Through (a range).
         case through
-        /// Between the keys of different pairs: "+ / − · ⌘+ / ⌘−".
+        /// Between the keys of different pairs: "+ / −, ⌘+ / ⌘−" as text, a wider
+        /// gap between the caps.
         case group
         /// The other way to type the key, in parentheses.
         case open, close
@@ -85,7 +86,7 @@ struct KeyCaps: Equatable {
             case .or: return " / "
             case .then: return " "
             case .through: return " … "
-            case .group: return " · "
+            case .group: return ", "
             case .open: return " ("
             case .close: return ")"
             case .words(let words): return words
@@ -189,6 +190,9 @@ struct KeyCapsView: View {
         case .then:
             // A sequence: a gap, no sign
             Color.clear.frame(width: style.size * 0.15, height: 1)
+        case .group:
+            // Another pair: a wider gap, no sign
+            Color.clear.frame(width: style.size * 0.6, height: 1)
         default:
             Text(verbatim: KeyCaps([part]).text.trimmingCharacters(in: .whitespaces))
                 .font(.system(size: style.size * 0.9))

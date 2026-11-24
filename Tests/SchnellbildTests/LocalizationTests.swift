@@ -87,6 +87,25 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
+    /// The app's texts have no em or en dash and no middle dot (U+00B7) as a
+    /// separator (commas, semicolons, colons or parentheses instead).
+    /// Korean keeps its 가운뎃점 between the words of a list.
+    func testNoTextHasADashOrAMiddleDot() throws {
+        for language in languages {
+            for file in ["Localizable.strings", "Localizable.stringsdict", "InfoPlist.strings"] {
+                let url = root.appendingPathComponent("\(language).lproj/\(file)")
+                guard FileManager.default.fileExists(atPath: url.path) else { continue }
+                let text = try String(contentsOf: url, encoding: .utf8)
+                for (number, line) in text.components(separatedBy: "\n").enumerated() {
+                    XCTAssertFalse(line.contains("\u{2013}") || line.contains("\u{2014}"), "\(language)/\(file):\(number + 1) has an em or en dash: \(line)")
+                    if language != "ko" {
+                        XCTAssertFalse(line.contains("\u{00B7}"), "\(language)/\(file):\(number + 1) has a middle dot: \(line)")
+                    }
+                }
+            }
+        }
+    }
+
     // MARK: The code against the tables
 
     /// The UI texts written in the code: the string literals a call that
@@ -307,7 +326,7 @@ final class LocalizationTests: XCTestCase {
     }
 
     /// Each language's plurals have the categories its numbers need, as
-    /// CLDR counts whole numbers (Russian "1 / 2–4 / 5 и более", Japanese
+    /// CLDR counts whole numbers (Russian "1 / 2 to 4 / 5 и более", Japanese
     /// one form), and none it never uses (a "one" in Japanese would never
     /// show; Czech "many" is for fractions).
     func testEveryLanguageHasThePluralCategoriesItNeeds() throws {

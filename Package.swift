@@ -130,7 +130,7 @@ let package = Package(
                 .unsafeFlags(["-w"])
             ]
         ),
-        // Official VideoLAN VLCKit, vendored locally — fetch it first with
+        // Official VideoLAN VLCKit, vendored locally; fetch it first with
         // Scripts/fetch_vlckit.sh. The xcframework is gitignored (large binary).
         .binaryTarget(
             name: "VLCKit",

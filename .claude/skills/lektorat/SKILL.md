@@ -14,12 +14,13 @@ Schnellbilds Texte erscheinen unter dem Namen von Johannes Hoppe (HAUS HOPPE - I
 3. **Im Kontext bewerten.** Ein Wort ist erst dann eine Floskel, wenn es nichts aussagt. „Die tatsächliche Größe der Datei“ ist Inhalt, „das ist tatsächlich wichtig“ ist Füllung.
 4. **Ersetzen** durch die konkrete Aussage, meist kürzer. Bleibt nach dem Streichen nichts übrig, war der Satz überflüssig.
 5. **Nachziehen:** Was in der Master-Sprache korrigiert ist, sinngemäß in allen Übersetzungen ändern, dann dort eigene Treffer suchen. Übersetzungen klingen natürlich, nicht Wort für Wort.
-6. **Bauen und prüfen:** `python3 Scripts/build_site.py --check` (der Build schlägt bei Gedankenstrichen fehl), JSON gültig, Store-Grenzen eingehalten (`AppStore/metadata/README.md`).
+6. **Bauen und prüfen:** `python3 Scripts/build_site.py --check` (der Build schlägt bei Gedankenstrichen und beim Mittelpunkt fehl; die Texte der App prüft `LocalizationTests`), JSON gültig, Store-Grenzen eingehalten (`AppStore/metadata/README.md`).
 
 ## Harte Regeln
 
 - **Nie „ehrlich“ als Etikett.** Unsere Texte nennen sich nie selbst ehrlich, fair, transparent, offen, aufrichtig, unvoreingenommen. Das legt nahe, andere Texte von uns seien es nicht. Die Fakten nennen, das Etikett weglassen: „Schnellbild und IINA nebeneinander“, nicht „fair nebeneinander“; „Was IINA besser kann“, nicht „ehrlich gesagt kann IINA …“. Das gilt in jeder Sprache: honest/honestly, fair/fairly, transparent, candid, unbiased; ehrlich, fair, offen gesagt; honnête/franchement, honesto/sinceramente, onesto/sinceramente, eerlijk, uczciwy/szczerze, ärlig, ærlig, rehellinen, upřímný/poctivý, dürüst, честный/честно, чесний/чесно, 正直/率直, 솔직/정직, 诚实/坦白, 誠實/坦白, 公平/公正.
-- **Keine Gedankenstriche** (— –) als Satzzeichen. Stattdessen Punkt, Komma, Doppelpunkt, Semikolon oder Klammer. Trenner in Titeln sind „·“.
+- **Keine Gedankenstriche** (Halbgeviert- und Geviertstrich, U+2013 und U+2014) als Satzzeichen. Stattdessen Punkt, Komma, Doppelpunkt, Semikolon oder Klammer.
+- **Kein Mittelpunkt „·“ als Trenner**, weder in Titeln noch in Aufzählungen oder Texten der App. Stattdessen Komma, Semikolon oder ein Zeilenumbruch. Trenner in Titeln ist „|“ („Formate | Schnellbild“). Einzige Ausnahme: der koreanische 가운뎃점 in Aufzählungen (이미지·동영상, ZIP·RAR), ein normales Satzzeichen des Koreanischen.
 - **Kein Eigenlob, keine Beteuerung.** Nicht „sorgfältig geprüft“, „gemessen“, „bewiesen“, „belegt“, „nachgeprüft“, „verifiziert“ über die eigene Arbeit. Die Quelle verlinken, das reicht.
 - **Keine unbelegten Superlative und keine Zahlen als Schmuck.** Eine Zahl nur, wenn sie stimmt und der Leser sie braucht.
 - **Keine Kontrastfigur als Effekt:** „nicht X, sondern Y“, „nicht nur X, sondern auch Y“, „es geht nicht um X“, „Weniger X, mehr Y“, EN „it's not X, it's Y“, „not only … but also“, „rather than“. Sachlich ist sie erlaubt („liest nur, entpackt nichts“).

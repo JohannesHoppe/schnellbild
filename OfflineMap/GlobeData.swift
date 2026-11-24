@@ -124,7 +124,7 @@ public struct Heightmap: Sendable {
                 cls[j * width + i] = mask[y * px + x] == 0 ? 0 : (lat < -60 ? 2 : 1)
             }
         }
-        // Distance to the coast in cells north–south (two-pass chamfer, wrapping east–west; a step east or
+        // Distance to the coast in cells north-south (two-pass chamfer, wrapping east-west; a step east or
         // west is as long as the row's cosine), for land and for sea
         let aspect = Double(height) * 2 / Double(width)
         let steps: [(Double, Double)] = (0..<height).map { (j: Int) -> (Double, Double) in
@@ -163,8 +163,8 @@ public struct Heightmap: Sendable {
             }
             smooth[k] = value
         }
-        // Each row averaged over about the same distance east–west as one cell
-        // north–south (cells narrow towards the poles), so no wedges meet there
+        // Each row averaged over about the same distance east-west as one cell
+        // north-south (cells narrow towards the poles), so no wedges meet there
         for j in 0..<height {
             let lat = 90 - (Double(j) + 0.5) * 180 / Double(height)
             let reach = min(width / 2, Int(1 / max(0.001, cos(lat * .pi / 180))) / 2)

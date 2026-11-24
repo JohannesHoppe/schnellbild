@@ -3,8 +3,8 @@ import AppKit
 
 /// The always-visible search field (an `NSSearchField`).
 ///
-/// It only takes keyboard focus when clicked or on ⌘F — never on its own when
-/// the window appears — so the grid's keyboard shortcuts work right away.
+/// It only takes keyboard focus when clicked or on ⌘F, never on its own when
+/// the window appears, so the grid's keyboard shortcuts work right away.
 /// Escape, Return and ↓ are routed to `onKey` instead of the field editor.
 struct SearchField: NSViewRepresentable {
     @Binding var text: String
@@ -81,7 +81,7 @@ struct SearchField: NSViewRepresentable {
 }
 
 /// An `NSSearchField` that only becomes first responder on a click or when
-/// focus is requested explicitly — AppKit would otherwise make it the
+/// focus is requested explicitly; AppKit would otherwise make it the
 /// window's initial first responder and swallow the grid's keys.
 final class FocusGatedSearchField: NSSearchField {
     private var focusAllowed = false

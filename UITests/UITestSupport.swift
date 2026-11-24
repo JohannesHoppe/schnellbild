@@ -410,7 +410,7 @@ class SchnellbildUITestCase: XCTestCase {
         return nil
     }
 
-    /// The full view's position badge ("n / m  ·  name").
+    /// The full view's position badge ("n / m, name").
     var badge: XCUIElement { app.staticTexts["positionBadge"] }
 
     func waitForBadge(containing needle: String, timeout: TimeInterval = 15,

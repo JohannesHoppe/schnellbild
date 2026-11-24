@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "サムネールを大きく / 小さく";
 "Clear search" = "検索をクリア";
 "Previous / next item, also from a video or PDF" = "前 / 次の項目（ビデオや PDF からも）";
-"Next picture · play/pause video" = "次の画像 · ビデオを再生 / 一時停止";
+"Next picture; play/pause video" = "次の画像、ビデオを再生 / 一時停止";
 "Zoom in / out" = "拡大 / 縮小";
 "Fit to window / 100 %" = "ウインドウに合わせる / 100 %";
 "Rotate left / right" = "左 / 右に回転";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "名前は“.%@”などの画像の拡張子で終わる必要があります。";
 "The name must end in a video extension, such as “.%@”." = "名前は“.%@”などのビデオの拡張子で終わる必要があります。";
 "Grid and full view" = "グリッドと全体表示";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "画像：前 / 次 · ビデオ：長さの 10 % 戻る / 進む · PDF：前 / 次のページ。先頭 / 末尾では前 / 次の項目へ";
-"Previous / next · Videos: 10 % of the length back / ahead" = "前 / 次 · ビデオ：長さの 10 % 戻る / 進む";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "画像：前 / 次、ビデオ：長さの 10 % 戻る / 進む、PDF：前 / 次のページ（先頭 / 末尾では前 / 次の項目へ）";
+"Previous / next; videos: 10 % of the length back / ahead" = "前 / 次、ビデオ：長さの 10 % 戻る / 進む";
 "Wrong password for this archive." = "このアーカイブのパスワードが違います。";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "アーカイブが不完全です。ダウンロード中か、一部が欠けているか、破損しています。";
 "A file listed in this archive is missing." = "このアーカイブに記載されているファイルが見つかりません。";
@@ -114,7 +114,7 @@
 "Reset to original" = "オリジナルに戻す";
 "Files are not changed." = "ファイルは変更されません。";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "自動補正オン / オフ（露出、コントラスト、彩度、シャープネス。ファイルは変更されません）";
-"Open picture or video · open folder or archive" = "画像またはビデオを開く · フォルダまたはアーカイブを開く";
+"Open picture or video; open folder or archive" = "画像またはビデオを開く、フォルダまたはアーカイブを開く";
 "Clear the search; again: leave the field" = "検索をクリア。もう一度：フィールドから出る";
 "A folder or file named “%@” already exists in this folder." = "このフォルダには“%@”という名前のフォルダまたはファイルがすでにあります。";
 "Choose a folder" = "フォルダを選択";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "音量を上げる";
 "Quieter" = "音量を下げる";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "拡大した画像：上 / 下を表示 · ビデオ：音量を上げる / 下げる（記憶されます）";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "拡大した画像：上 / 下を表示、ビデオ：音量を上げる / 下げる（記憶されます）";
 "%lld so far" = "現在 %lld";
 "New Folder" = "新規フォルダ";
 "Create" = "作成";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "ここに%1$lld件（%2$@ など）";
 "%lld items here: double-click to zoom in" = "ここに%lld件：ダブルクリックで拡大";
 "%lld items at one place: click for the next one" = "同じ場所に%lld件：クリックで次へ";
-"No location · %lld" = "位置情報なし · %lld";
+"No location, %lld" = "位置情報なし、%lld";
 "%lld of %lld" = "%2$lld件中%1$lld件";
 "Show All" = "すべて表示";
 "The whole span again" = "期間全体に戻す";

@@ -6,7 +6,7 @@ import simd
 /// subsolar point after NOAA's solar calculator (Jean Meeus, Astronomical
 /// Algorithms, ch. 25 and 28, the low-accuracy method: about 0.01°), the
 /// Greenwich mean sidereal time (Meeus 12.4) and the precession of the
-/// equinox from J2000 (Meeus 21.2–21.4, IAU 1976). `GlobeMathTests` check
+/// equinox from J2000 (Meeus 21.2 to 21.4, IAU 1976). `GlobeMathTests` check
 /// them against Meeus' worked examples and the solstices and equinoxes.
 public enum Astronomy {
     /// The Julian day of a moment (UTC; the difference to Terrestrial Time,
@@ -87,7 +87,7 @@ public enum Astronomy {
     public static func siderealTime(at date: Date) -> Double { siderealTime(julianDay: julianDay(date)) }
 
     /// The rotation that takes equatorial coordinates of J2000 to those of
-    /// the mean equinox of the date (Meeus 21.2–21.4).
+    /// the mean equinox of the date (Meeus 21.2 to 21.4).
     public static func precession(julianDay jd: Double) -> simd_double3x3 {
         let t = centuries(jd)
         let arcsec = 1.0 / 3600

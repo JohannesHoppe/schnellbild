@@ -65,7 +65,7 @@ final class ThumbnailCache {
 
     /// The system thumbnail for a file (embedded previews, including
     /// RAW/PSD/PDF/video), from memory when the cached one is at least
-    /// `side` big at `scale` (the display's pixels per point) — so a smaller
+    /// `side` big at `scale` (the display's pixels per point), so a smaller
     /// tile size reuses it, and a larger one or a sharper display gets a
     /// sharper one. `modified` is the file's date as listed: a file changed
     /// in another app since gets a fresh thumbnail.

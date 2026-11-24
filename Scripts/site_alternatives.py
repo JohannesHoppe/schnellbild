@@ -23,6 +23,7 @@ import re
 from pathlib import Path
 
 from make_site_images import FEATURE_SHOTS
+from site_formats import unwanted
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "site" / "alternatives"
@@ -144,8 +145,12 @@ class Alternatives:
         self.words = {code: self.load(code, english) for code in ctx["LANGUAGES"]}
         for code, words in self.words.items():
             for where, text in strings(words):
-                if re.search("[–—]", text):
-                    ctx["problems"].append(f"alternatives {code}: {where} has an em or en dash (see Working conventions)")
+                if re.search(unwanted(code), text):
+                    ctx["problems"].append(f"alternatives {code}: {where} has an em or en dash or a middle dot (see Working conventions)")
+        for slug, p in self.products.items():
+            for where, text in strings(p):
+                if re.search(unwanted("en"), text):
+                    ctx["problems"].append(f"products/{slug}.json: {where} has an em or en dash or a middle dot (see Working conventions)")
         for key in self.keys:
             if key not in self.ours:
                 ctx["problems"].append(f"schnellbild.json: no row {key}")

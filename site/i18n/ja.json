@@ -4,7 +4,7 @@
   "alternativesSlug": "alternatives",
   "formatsSlug": "formats",
   "title": "Schnellbild：イライラしない、Mac用の画像・動画ビューア",
-  "seoTitle": "Schnellbild · Mac用の画像ビューア。動画再生、漫画、スライドショーも",
+  "seoTitle": "Schnellbild | Mac用の画像ビューア。動画再生、漫画、スライドショーも",
   "seoDescription": "Mac用の高速で無料の画像ビューア。AVI・MKVの動画再生、ZIP・RARの漫画（CBZ・CBR）、スライドショーに対応し、キーボードでめくれます。Honeyview、MassiGra、Leeyesの代わりにMacで。",
   "keywords": "画像ビューア Mac, Mac 画像ビュアー, 写真ビューア Mac, フォトビューアー Mac, 動画再生 Mac, Mac 動画プレイヤー, AVI 再生 Mac, MKV 再生 Mac, FLV 再生 Mac, 漫画ビューア Mac, ZIP RAR 漫画, CBZ CBR, スライドショー Mac, 写真 スライドショー Mac, Honeyview Mac 代わり, MassiGra Mac 代わり, Leeyes Mac 代わり, BandiView 代わり, XnView 代替, Phiewer 代替, Schnellbild",
   "navFeatures": "機能",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "対応フォーマット",
     "title": "Schnellbildが表示できるすべてのフォーマット",
-    "seoTitle": "対応フォーマット：画像、RAW、動画、アーカイブ · Mac用Schnellbild",
+    "seoTitle": "対応フォーマット：画像、RAW、動画、アーカイブ | Mac用Schnellbild",
     "description": "無料のMac用ビューアSchnellbildが開けるすべてのフォーマットを、正式名称と拡張子で一覧にしました。JPEG、HEIC、AVIF、RAW、PSD、PDF、EPS、MKV、AVI、WebM、ZIP、RAR、7zなど。",
     "keywords": "ファイル形式 Mac, HEIC 開く Mac, RAW ビューア Mac, CR3 開く, NEF 開く, MKV 再生 Mac, AVI 再生 Mac, WebM 再生 Mac, PSD 開く Photoshopなし, EPS 開く Mac, JPEG XL ビューア, AVIF 開く, DDS ビューア, CBR CBZ リーダー Mac, Schnellbild",
     "lead": "Schnellbildは{count}種類のフォーマット、{extensions}種類の拡張子を表示します。画像、カメラRAW、書類、動画、そしてフォルダのように開くアーカイブです。",

@@ -4,7 +4,7 @@
   "alternativesSlug": "alternatives",
   "formatsSlug": "formats",
   "title": "Schnellbild：一款用着不闹心的 Mac 图片和视频查看器",
-  "seoTitle": "Schnellbild · 免费的 Mac 看图软件和视频播放器（支持 MKV）",
+  "seoTitle": "Schnellbild | 免费的 Mac 看图软件和视频播放器（支持 MKV）",
   "seoDescription": "快速、免费的 Mac 看图软件和视频播放器：缩略图、键盘翻页、幻灯片，播放 MKV、AVI、WebM，ZIP、RAR 压缩包和漫画像文件夹一样打开。Phiewer 的替代品。",
   "keywords": "Mac 看图软件, Mac 图片查看器, 照片查看器, 免费看图软件, Mac 播放器, Mac 视频播放器, MKV 播放器 Mac, AVI WebM 播放, Phiewer 替代, 浏览视频的 IINA 替代, 打开 RAR 图片, 漫画阅读器, CBZ CBR, 幻灯片, 双窗格, Schnellbild",
   "navFeatures": "功能",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "支持的格式",
     "title": "Schnellbild 显示的全部格式",
-    "seoTitle": "支持的格式：图片、RAW、视频、压缩包 · Mac 版 Schnellbild",
+    "seoTitle": "支持的格式：图片、RAW、视频、压缩包 | Mac 版 Schnellbild",
     "description": "免费的 Mac 看图软件 Schnellbild 能打开的全部格式，附完整名称和扩展名：JPEG、HEIC、AVIF、RAW、PSD、PDF、EPS、MKV、AVI、WebM、ZIP、RAR、7z 等。",
     "keywords": "文件格式 Mac, Mac 打开 HEIC, Mac RAW 查看器, 打开 CR3, 打开 NEF, Mac MKV 播放器, Mac 播放 AVI, Mac 播放 WebM, 不用 Photoshop 打开 PSD, Mac 打开 EPS, JPEG XL 查看器, 打开 AVIF, DDS 查看器, CBR CBZ 阅读器 Mac, Schnellbild",
     "lead": "Schnellbild 能显示 {count} 种格式、{extensions} 种扩展名：图片、相机 RAW、文稿、视频，以及像文件夹一样打开的压缩包。",

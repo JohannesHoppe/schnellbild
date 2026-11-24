@@ -4,7 +4,7 @@
   "alternativesSlug": "alternativas",
   "formatsSlug": "formatos",
   "title": "Schnellbild: um visualizador de fotos e vídeos para Mac que não dá dor de cabeça",
-  "seoTitle": "Schnellbild · visualizador de fotos e player MKV para Mac",
+  "seoTitle": "Schnellbild | visualizador de fotos e player MKV para Mac",
   "seoDescription": "Visualizador de fotos e player de vídeo grátis para Mac: MKV e AVI pelo VLC integrado, ZIP, RAR e quadrinhos CBZ como pastas. Alternativa ao XnView.",
   "keywords": "visualizador de fotos Mac, visualizador de imagens Mac, player MKV Mac, abrir MKV no Mac, reproduzir MKV no Mac, player de vídeo Mac, reproduzir AVI WebM, apresentação de slides, alternativa ao XnView, alternativa ao IrfanView, alternativa ao ACDSee, alternativa ao Phiewer, alternativa ao IINA para assistir a vídeos, abrir imagens RAR, leitor de quadrinhos CBZ CBR, mangá, painel duplo, Schnellbild",
   "navFeatures": "Recursos",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formatos",
     "title": "Todos os formatos que o Schnellbild mostra",
-    "seoTitle": "Formatos compatíveis: imagens, RAW, vídeos, arquivos · Schnellbild para Mac",
+    "seoTitle": "Formatos compatíveis: imagens, RAW, vídeos, arquivos | Schnellbild para Mac",
     "description": "Todos os formatos que o visualizador gratuito Schnellbild abre no Mac, com nome completo e extensão: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z e mais.",
     "keywords": "formatos de arquivo Mac, abrir HEIC no Mac, visualizador RAW Mac, abrir CR3, abrir NEF, player MKV Mac, reproduzir AVI no Mac, reproduzir WebM no Mac, abrir PSD sem Photoshop, abrir EPS no Mac, visualizador JPEG XL, abrir AVIF, visualizador DDS, leitor CBR CBZ Mac, Schnellbild",
     "lead": "O Schnellbild mostra {count} formatos com {extensions} extensões de arquivo: imagens, RAW de câmera, documentos, vídeos e arquivos compactados, que abrem como pastas.",

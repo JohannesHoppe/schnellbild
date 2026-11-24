@@ -3,7 +3,7 @@
 # the entitlement and never asks it without). Spike/MediaExtension/enable.sh
 # turns it on in System Settings (a mouse click, as a person would) and
 # asks it through AVFoundation and Quick Look.
-name: Spike — Media Extension
+name: "Spike: Media Extension"
 
 on:
   workflow_dispatch:

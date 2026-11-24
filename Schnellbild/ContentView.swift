@@ -3,8 +3,8 @@ import AppKit
 import Carbon.HIToolbox
 
 /// The window: one pane or two (the dual pane), with what belongs to the
-/// window — toolbar, keys, drop zones, the mini keyboard, the slideshow's
-/// full screen. It works on the active pane.
+/// window (toolbar, keys, drop zones, the mini keyboard, the slideshow's
+/// full screen). It works on the active pane.
 struct ContentView: View {
     @EnvironmentObject var window: WindowModel
 
@@ -255,7 +255,7 @@ private struct WindowView: View {
         }
     }
 
-    // MARK: - Keyboard (one NSEvent monitor — focus-independent)
+    // MARK: - Keyboard (one NSEvent monitor, focus-independent)
 
     /// All shortcuts run through a local key monitor, so they work regardless
     /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
@@ -652,7 +652,7 @@ struct PaneView: View {
                     let parts = statusParts
                     StatusFlow {
                         ForEach(Array(parts.enumerated()), id: \.offset) { index, part in
-                            Text(verbatim: index < parts.count - 1 ? part + " ·" : part).fixedSize()
+                            Text(verbatim: index < parts.count - 1 ? part + "," : part).fixedSize()
                         }
                     }
                     .accessibilityElement(children: .ignore)
@@ -748,7 +748,7 @@ struct PaneView: View {
             .disabled(!model.canRevealFolder)
     }
 
-    private var statusText: String { statusParts.joined(separator: " · ") }
+    private var statusText: String { statusParts.joined(separator: ", ") }
 
     /// The status bar's text in parts, which it keeps whole when it breaks
     /// the text over two lines.
@@ -808,27 +808,27 @@ struct PaneView: View {
         .padding(atTop ? .top : .bottom, 16)
     }
 
-    /// "3 / 12 · name" (a PDF: "· Page 2 / 9"); in a slideshow "Slideshow · 3 / 57 · name" ("57 so
+    /// "3 / 12, name" (a PDF: ", Page 2 / 9"); in a slideshow "Slideshow, 3 / 57, name" ("57 so
     /// far" while subfolders are still being walked).
     private func badgeText(entry: GridEntry) -> String {
         var text: String
         if let show = model.slideshow {
             // While subfolders are still read the count isn't final: "57 so far"
             let count = show.loading ? String(localized: "\(show.items.count) so far") : "\(show.items.count)"
-            text = String(localized: "Slideshow") + "  ·  \(show.index + 1) / \(count)  ·  \(entry.name)"
-            if show.paused && entry.kind == .image { text += "  ·  " + String(localized: "Paused") }
+            text = String(localized: "Slideshow") + ", \(show.index + 1) / \(count), \(entry.name)"
+            if show.paused && entry.kind == .image { text += ", " + String(localized: "Paused") }
         } else {
-            text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
+            text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount), \(entry.name)"
             // A PDF: the page on screen
             if let pdf = model.pdfPosition, pdf.url == entry.url {
-                text += "  ·  " + String(localized: "Page \(pdf.page + 1) / \(pdf.count)")
+                text += ", " + String(localized: "Page \(pdf.page + 1) / \(pdf.count)")
             }
         }
-        if entry.kind == .video && model.videoPaused { text += "  ·  " + String(localized: "Paused") }
-        if entry.kind == .video && model.playbackSpeed != 1 { text += "  ·  " + PlaybackSpeed.text(model.playbackSpeed) }
+        if entry.kind == .video && model.videoPaused { text += ", " + String(localized: "Paused") }
+        if entry.kind == .video && model.playbackSpeed != 1 { text += ", " + PlaybackSpeed.text(model.playbackSpeed) }
         switch model.enhancement {
-        case .auto:   text += "  ·  " + String(localized: "Enhanced")
-        case .manual: text += "  ·  " + String(localized: "Adjusted")
+        case .auto:   text += ", " + String(localized: "Enhanced")
+        case .manual: text += ", " + String(localized: "Adjusted")
         case .off:    break
         }
         return text

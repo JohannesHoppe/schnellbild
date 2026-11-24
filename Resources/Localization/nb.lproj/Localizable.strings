@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Større / mindre miniatyrbilder";
 "Clear search" = "Tøm søket";
 "Previous / next item, also from a video or PDF" = "Forrige / neste objekt, også fra en video eller PDF";
-"Next picture · play/pause video" = "Neste bilde · spill av / sett video på pause";
+"Next picture; play/pause video" = "Neste bilde; spill av / sett video på pause";
 "Zoom in / out" = "Zoom inn / ut";
 "Fit to window / 100 %" = "Tilpass til vinduet / 100 %";
 "Rotate left / right" = "Roter mot venstre / høyre";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Navnet må slutte med en bildefiltype, for eksempel «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Navnet må slutte med en videofiltype, for eksempel «.%@».";
 "Grid and full view" = "Rutenett og full visning";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Bilder: forrige / neste · Videoer: 10 % av lengden bakover / fremover · PDF-er: forrige / neste side; ved starten / slutten: forrige / neste objekt";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Forrige / neste · Videoer: 10 % av lengden bakover / fremover";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Bilder: forrige / neste; videoer: 10 % av lengden bakover / fremover; PDF-er: forrige / neste side (ved starten / slutten: forrige / neste objekt)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Forrige / neste; videoer: 10 % av lengden bakover / fremover";
 "Wrong password for this archive." = "Feil passord for dette arkivet.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet er ufullstendig: det lastes fortsatt ned, en del mangler, eller det er skadet.";
 "A file listed in this archive is missing." = "En fil som er oppført i dette arkivet, mangler.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Tilbakestill til original";
 "Files are not changed." = "Filene endres ikke.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Autoforbedring på / av (eksponering, kontrast, metning, skarphet; filene endres ikke)";
-"Open picture or video · open folder or archive" = "Åpne bilde eller video · åpne mappe eller arkiv";
+"Open picture or video; open folder or archive" = "Åpne bilde eller video; åpne mappe eller arkiv";
 "Clear the search; again: leave the field" = "Tøm søket; igjen: forlat feltet";
 "A folder or file named “%@” already exists in this folder." = "Det finnes allerede en mappe eller fil med navnet «%@» i denne mappen.";
 "Choose a folder" = "Velg en mappe";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Høyere";
 "Quieter" = "Lavere";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Bilder zoomet inn: se lenger opp / ned · Videoer: høyere / lavere lyd (huskes)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Bilder zoomet inn: se lenger opp / ned; videoer: høyere / lavere lyd (huskes)";
 "%lld so far" = "%lld så langt";
 "New Folder" = "Ny mappe";
 "Create" = "Opprett";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "%1$lld her, blant dem %2$@";
 "%lld items here: double-click to zoom in" = "%lld her: dobbeltklikk for å zoome inn";
 "%lld items at one place: click for the next one" = "%lld på samme sted: klikk for det neste";
-"No location · %lld" = "Uten sted · %lld";
+"No location, %lld" = "Uten sted, %lld";
 "%lld of %lld" = "%1$lld av %2$lld";
 "Show All" = "Vis alle";
 "The whole span again" = "Hele perioden igjen";

@@ -4,7 +4,7 @@
   "alternativesSlug": "alternatives",
   "formatsSlug": "formats",
   "title": "Schnellbild: an image & video viewer for macOS that just doesn't suck",
-  "seoTitle": "Schnellbild · Free Image Viewer & MKV Player for Mac",
+  "seoTitle": "Schnellbild | Free Image Viewer & MKV Player for Mac",
   "seoDescription": "Fast, free image viewer and video player for Mac: thumbnails, slideshow, MKV, AVI, WebM, ZIP and RAR as folders. A Phiewer, XnView and IrfanView alternative.",
   "keywords": "mac image viewer, photo viewer Mac, picture viewer macOS, free image viewer, MKV player Mac, play MKV on Mac, video player Mac, MP4 player Mac, AVI WebM player, Phiewer alternative, XnView alternative, IrfanView for Mac alternative, IINA alternative, open RAR images, ZIP comic viewer, CBZ CBR reader, comic reader Mac, photo slideshow Mac, dual pane, Schnellbild",
   "navFeatures": "Features",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formats",
     "title": "Every format Schnellbild shows",
-    "seoTitle": "Supported formats: pictures, RAW, videos, archives · Schnellbild for Mac",
+    "seoTitle": "Supported formats: pictures, RAW, videos, archives | Schnellbild for Mac",
     "description": "Every format the free Mac viewer Schnellbild opens, with full names and file extensions: JPEG, HEIC, AVIF, camera RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z and more.",
     "keywords": "file formats Mac viewer, open HEIC on Mac, RAW viewer Mac, CR3 viewer, NEF viewer, DNG viewer, MKV player Mac, AVI player Mac, WebM player Mac, PSD viewer Mac, EPS viewer Mac, JPEG XL viewer, AVIF viewer, DDS viewer Mac, QOI viewer, PCX viewer, CBR CBZ reader Mac, Schnellbild",
     "lead": "Schnellbild shows {count} formats with {extensions} file extensions: pictures, camera RAW, documents, videos and archives, which open like folders.",

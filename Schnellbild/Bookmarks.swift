@@ -53,7 +53,7 @@ final class Bookmarks: ObservableObject {
 
     private func save() { defaults.set(folders.map(\.path), forKey: Self.key) }
 
-    /// "Holiday" — "Photos/Holiday" when two bookmarks share a name.
+    /// "Holiday", or "Photos/Holiday" when two bookmarks share a name.
     func title(of folder: URL) -> String {
         let name = folder.lastPathComponent
         let twins = folders.filter { $0.lastPathComponent == name }.count > 1

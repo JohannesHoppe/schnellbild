@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Miniaturas más grandes / pequeñas";
 "Clear search" = "Borrar la búsqueda";
 "Previous / next item, also from a video or PDF" = "Elemento anterior / siguiente, también desde un vídeo o un PDF";
-"Next picture · play/pause video" = "Imagen siguiente · reproducir / pausar vídeo";
+"Next picture; play/pause video" = "Imagen siguiente; reproducir / pausar vídeo";
 "Zoom in / out" = "Acercar / alejar";
 "Fit to window / 100 %" = "Ajustar a la ventana / 100 %";
 "Rotate left / right" = "Girar a la izquierda / derecha";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "El nombre debe terminar en una extensión de imagen, como «.%@».";
 "The name must end in a video extension, such as “.%@”." = "El nombre debe terminar en una extensión de vídeo, como «.%@».";
 "Grid and full view" = "Cuadrícula y vista completa";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Imágenes: anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante · PDF: página anterior / siguiente; al principio / final: elemento anterior / siguiente";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Imágenes: anterior / siguiente; vídeos: 10 % de la duración atrás / adelante; PDF: página anterior / siguiente (al principio / final: elemento anterior / siguiente)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Anterior / siguiente; vídeos: 10 % de la duración atrás / adelante";
 "Wrong password for this archive." = "Contraseña incorrecta para este archivo.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "El archivo está incompleto: aún se está descargando, falta una parte o está dañado.";
 "A file listed in this archive is missing." = "Falta un archivo que figura en este archivo.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Restablecer el original";
 "Files are not changed." = "Los archivos no se modifican.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Mejora automática sí / no (exposición, contraste, saturación, nitidez; los archivos no se modifican)";
-"Open picture or video · open folder or archive" = "Abrir imagen o vídeo · abrir carpeta o archivo";
+"Open picture or video; open folder or archive" = "Abrir imagen o vídeo; abrir carpeta o archivo";
 "Clear the search; again: leave the field" = "Borrar la búsqueda; otra vez: salir del campo";
 "A folder or file named “%@” already exists in this folder." = "Ya existe en esta carpeta una carpeta o un archivo llamado «%@».";
 "Choose a folder" = "Elige una carpeta";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Más alto";
 "Quieter" = "Más bajo";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Imágenes ampliadas: ver más arriba / abajo · Vídeos: más / menos volumen (se recuerda)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Imágenes ampliadas: ver más arriba / abajo; vídeos: más / menos volumen (se recuerda)";
 "%lld so far" = "%lld por ahora";
 "New Folder" = "Nueva carpeta";
 "Create" = "Crear";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "%1$lld aquí, entre ellos %2$@";
 "%lld items here: double-click to zoom in" = "%lld aquí: doble clic para acercar";
 "%lld items at one place: click for the next one" = "%lld en el mismo lugar: clic para el siguiente";
-"No location · %lld" = "Sin ubicación · %lld";
+"No location, %lld" = "Sin ubicación, %lld";
 "%lld of %lld" = "%1$lld de %2$lld";
 "Show All" = "Mostrar todo";
 "The whole span again" = "De nuevo todo el periodo";

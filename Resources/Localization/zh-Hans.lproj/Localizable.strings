@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "更大 / 更小的缩略图";
 "Clear search" = "清除搜索";
 "Previous / next item, also from a video or PDF" = "上一个 / 下一个项目，视频或 PDF 中也可";
-"Next picture · play/pause video" = "下一张图像 · 播放 / 暂停视频";
+"Next picture; play/pause video" = "下一张图像；播放 / 暂停视频";
 "Zoom in / out" = "放大 / 缩小";
 "Fit to window / 100 %" = "适合窗口 / 100 %";
 "Rotate left / right" = "向左 / 向右旋转";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "名称必须以图像扩展名结尾，例如“.%@”。";
 "The name must end in a video extension, such as “.%@”." = "名称必须以视频扩展名结尾，例如“.%@”。";
 "Grid and full view" = "网格和完整视图";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "图像：上一张 / 下一张 · 视频：后退 / 前进时长的 10 % · PDF：上一页 / 下一页；在开头 / 结尾：上一个 / 下一个项目";
-"Previous / next · Videos: 10 % of the length back / ahead" = "上一个 / 下一个 · 视频：后退 / 前进时长的 10 %";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "图像：上一张 / 下一张；视频：后退 / 前进时长的 10 %；PDF：上一页 / 下一页（在开头 / 结尾：上一个 / 下一个项目）";
+"Previous / next; videos: 10 % of the length back / ahead" = "上一个 / 下一个；视频：后退 / 前进时长的 10 %";
 "Wrong password for this archive." = "此归档的密码错误。";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "归档不完整：仍在下载中、缺少某一部分或已损坏。";
 "A file listed in this archive is missing." = "此归档中列出的一个文件缺失。";
@@ -114,7 +114,7 @@
 "Reset to original" = "重置为原始";
 "Files are not changed." = "文件不会被更改。";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "自动增强开 / 关（曝光、对比度、饱和度、锐度；文件不会被更改）";
-"Open picture or video · open folder or archive" = "打开图像或视频 · 打开文件夹或归档";
+"Open picture or video; open folder or archive" = "打开图像或视频；打开文件夹或归档";
 "Clear the search; again: leave the field" = "清除搜索；再次：离开搜索栏";
 "A folder or file named “%@” already exists in this folder." = "此文件夹中已存在名为“%@”的文件夹或文件。";
 "Choose a folder" = "选择文件夹";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "调高音量";
 "Quieter" = "调低音量";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "放大的图像：向上 / 向下查看 · 视频：调高 / 调低音量（会记住）";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "放大的图像：向上 / 向下查看；视频：调高 / 调低音量（会记住）";
 "%lld so far" = "目前 %lld";
 "New Folder" = "新建文件夹";
 "Create" = "创建";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "此处 %1$lld 项，包括 %2$@";
 "%lld items here: double-click to zoom in" = "此处 %lld 项：连按两次可放大";
 "%lld items at one place: click for the next one" = "同一地点 %lld 项：点按可选下一项";
-"No location · %lld" = "无位置 · %lld";
+"No location, %lld" = "无位置，%lld";
 "%lld of %lld" = "%1$lld / %2$lld";
 "Show All" = "显示全部";
 "The whole span again" = "恢复整个时间段";

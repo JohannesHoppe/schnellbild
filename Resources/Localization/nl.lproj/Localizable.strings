@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Grotere / kleinere miniaturen";
 "Clear search" = "Wis zoekopdracht";
 "Previous / next item, also from a video or PDF" = "Vorig / volgend onderdeel, ook vanuit een video of PDF";
-"Next picture · play/pause video" = "Volgende afbeelding · video afspelen / pauzeren";
+"Next picture; play/pause video" = "Volgende afbeelding; video afspelen / pauzeren";
 "Zoom in / out" = "Zoom in / uit";
 "Fit to window / 100 %" = "Passend in venster / 100 %";
 "Rotate left / right" = "Draai naar links / rechts";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "De naam moet eindigen op een afbeeldingsextensie, zoals ‘.%@’.";
 "The name must end in a video extension, such as “.%@”." = "De naam moet eindigen op een video-extensie, zoals ‘.%@’.";
 "Grid and full view" = "Raster en volledige weergave";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Afbeeldingen: vorige / volgende · Video’s: 10 % van de lengte terug / vooruit · PDF’s: vorige / volgende pagina; aan het begin / einde: vorige / volgende onderdeel";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Vorige / volgende · Video’s: 10 % van de lengte terug / vooruit";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Afbeeldingen: vorige / volgende; video’s: 10 % van de lengte terug / vooruit; PDF’s: vorige / volgende pagina (aan het begin / einde: vorige / volgende onderdeel)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Vorige / volgende; video’s: 10 % van de lengte terug / vooruit";
 "Wrong password for this archive." = "Onjuist wachtwoord voor dit archief.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Het archief is onvolledig: het wordt nog gedownload, er ontbreekt een deel, of het is beschadigd.";
 "A file listed in this archive is missing." = "Een bestand dat in dit archief staat vermeld, ontbreekt.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Herstel naar origineel";
 "Files are not changed." = "De bestanden worden niet gewijzigd.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Automatisch verbeteren aan / uit (belichting, contrast, verzadiging, scherpte; de bestanden worden niet gewijzigd)";
-"Open picture or video · open folder or archive" = "Open afbeelding of video · open map of archief";
+"Open picture or video; open folder or archive" = "Open afbeelding of video; open map of archief";
 "Clear the search; again: leave the field" = "Wis de zoekopdracht; nogmaals: verlaat het veld";
 "A folder or file named “%@” already exists in this folder." = "Er bestaat in deze map al een map of bestand met de naam ‘%@’.";
 "Choose a folder" = "Kies een map";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Harder";
 "Quieter" = "Zachter";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Ingezoomde afbeeldingen: verder omhoog / omlaag kijken · Video’s: volume harder / zachter (onthouden)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Ingezoomde afbeeldingen: verder omhoog / omlaag kijken; video’s: volume harder / zachter (onthouden)";
 "%lld so far" = "%lld tot nu toe";
 "New Folder" = "Nieuwe map";
 "Create" = "Maak aan";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "%1$lld hier, waaronder %2$@";
 "%lld items here: double-click to zoom in" = "%lld hier: dubbelklik om in te zoomen";
 "%lld items at one place: click for the next one" = "%lld op één plek: klik voor het volgende";
-"No location · %lld" = "Zonder locatie · %lld";
+"No location, %lld" = "Zonder locatie, %lld";
 "%lld of %lld" = "%1$lld van %2$lld";
 "Show All" = "Alles tonen";
 "The whole span again" = "Weer de hele periode";

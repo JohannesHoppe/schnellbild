@@ -34,6 +34,13 @@ GROUPS = ["photo", "pro", "texture", "document", "raw", "video", "archive"]
 KINDS = ["picture", "document", "video", "archive"]
 
 
+def unwanted(code):
+    """What a site text in the language `code` may not hold: em and en dashes,
+    and the middle dot (U+00B7) as a separator (page titles use "|"). Korean keeps
+    its 가운뎃점 between the words of a list (이미지·동영상)."""
+    return "[\u2013\u2014]" if code == "ko" else "[\u2013\u2014\u00b7]"
+
+
 def load():
     formats = json.loads(LIST.read_text(encoding="utf-8"))["formats"]
     macos = json.loads(MACOS.read_text(encoding="utf-8"))["names"]
@@ -181,12 +188,12 @@ class Formats:
                     if note not in w["notes"]:
                         problems.append(f"formats {code}: notes.{note}")
             for where, text in self.texts(w):
-                if re.search("[–—]", text):
-                    problems.append(f"formats {code}: {where} has an em or en dash (see Working conventions)")
+                if re.search(unwanted(code), text):
+                    problems.append(f"formats {code}: {where} has an em or en dash or a middle dot (see Working conventions)")
         for uti, names in self.macos.items():
             for code, name in names.items():
-                if re.search("[–—]", name):
-                    problems.append(f"formats-macos.json: {uti} in {code} has an em or en dash")
+                if re.search(unwanted(code), name):
+                    problems.append(f"formats-macos.json: {uti} in {code} has an em or en dash or a middle dot")
 
     @staticmethod
     def texts(words, where="formats"):

@@ -725,8 +725,8 @@ final class NotificationToken {
 }
 
 /// A change the app made on disk (rename, trash). One value is applied to
-/// every list the model holds — the folder, the search results, results
-/// still streaming in, the history — so they all agree.
+/// every list the model holds (the folder, the search results, results
+/// still streaming in, the history), so they all agree.
 struct FileChange {
     private enum Kind { case moved(to: String), removed }
     private let path: String
@@ -1413,7 +1413,7 @@ final class BrowserModel: ObservableObject {
     /// The place `load` is reading, for the history while it loads.
     private var loadingLocation: Location?
 
-    /// Set by the grid based on window width — for row-accurate ↑/↓.
+    /// Set by the grid based on window width, for row-accurate ↑/↓.
     @Published var columnCount: Int = 1
     /// Tile size in the grid (⌘+/⌘-).
     @Published var thumbnailSide: CGFloat = 150
@@ -1422,7 +1422,7 @@ final class BrowserModel: ObservableObject {
     @Published var zoom: CGFloat = 1
     /// Set by the full-size view: factor that corresponds to 100 % actual pixels.
     @Published var actualSizeFactor: CGFloat = 1
-    /// View-only rotation in degrees (multiples of 90) — never written to disk.
+    /// View-only rotation in degrees (multiples of 90), never written to disk.
     @Published var rotation: Double = 0
     private let maxZoom: CGFloat = 8
 
@@ -1709,7 +1709,7 @@ final class BrowserModel: ObservableObject {
         playbackPositions.leave(url, at: player.playedSeconds, length: player.lengthSeconds,
                                 playing: player.isPlaying, list: list)
     }
-    /// The player of the video on screen — for keyboard control
+    /// The player of the video on screen, for keyboard control
     /// (play/pause, skimming). Set by the video views.
     weak var activePlayer: PlaybackControl? {
         didSet {
@@ -2465,7 +2465,7 @@ final class BrowserModel: ObservableObject {
     }
 
     /// CLI / UI-test seam: `--open=<path>` opens a folder (grid) or a file
-    /// (straight into the full-size view) on launch — same rules as drag &
+    /// (straight into the full-size view) on launch, with the same rules as drag &
     /// drop. One argument: AppKit reads "-name value" pairs as settings, so a
     /// path as an argument of its own can end up unpaired, and AppKit then
     /// takes it for a file to open and shows no window.
@@ -2757,7 +2757,7 @@ final class BrowserModel: ObservableObject {
     /// How many pictures a folder tile fans out.
     nonisolated static let previewCount = 3
 
-    /// Sorted: ".." on top, then folders, then media — each group by key.
+    /// Sorted: ".." on top, then folders, then media; each group by key.
     /// Ties (same kind, date or size) fall back to the name, always A→Z, so
     /// the order is stable. `captured` holds the capture dates read so far.
     nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool,
@@ -3894,8 +3894,8 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - Counters / media
 
-    /// Recomputed once whenever `entries` changes — avoids walking the array
-    /// (three filters + a firstIndex) on every render of the status bar / badge.
+    /// Recomputed once whenever `entries` changes, so the status bar / badge needn't walk the array
+    /// (three filters + a firstIndex) on every render.
     private(set) var folderCount = 0
     /// Archives, counted apart from folders (they open like folders).
     private(set) var archiveCount = 0
@@ -3957,7 +3957,7 @@ final class BrowserModel: ObservableObject {
         return clamped <= 1.01 ? 1 : clamped
     }
 
-    // MARK: - Rotation (view-only — the file on disk is never modified)
+    // MARK: - Rotation (view-only: the file on disk is never modified)
 
     func rotateLeft()  { rotation = (rotation - 90).truncatingRemainder(dividingBy: 360) }
     func rotateRight() { rotation = (rotation + 90).truncatingRemainder(dividingBy: 360) }
@@ -4105,7 +4105,7 @@ final class BrowserModel: ObservableObject {
     /// handled (and should be consumed). Pure enough to unit-test exhaustively.
     /// ⌘⌫ and ⌘↩ return false so they reach their menu items. While a text
     /// field is being edited (`textEditing`) or a sheet is open, keys belong
-    /// to them — except F1 and F2.
+    /// to them, except F1 and F2.
     @discardableResult
     func handleKey(_ key: KeyInput, command: Bool, shift: Bool = false, option: Bool = false,
                    textEditing: Bool = false, repeating: Bool = false) -> Bool {
@@ -4524,7 +4524,7 @@ final class BrowserModel: ObservableObject {
             if showHelp { showHelp = false } else { openHelp() }
             return true
         case .f2, .f6:
-            // Rename: F2, and Norton's F6 (in a single pane; ⇧F6 anywhere —
+            // Rename: F2, and Norton's F6 (in a single pane; ⇧F6 anywhere:
             // in the dual pane F6 moves, the window's, never renames). Also
             // while typing in the search field; not during a slideshow (the
             // selection is in the hidden grid).
@@ -4666,7 +4666,7 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - Slideshow
 
-    /// Focus the search field — only when it is enabled (a folder is open);
+    /// Focus the search field, only when it is enabled (a folder is open);
     /// a request on the disabled field would grab focus later.
     func focusSearch() {
         searchFocused = folderURL != nil
@@ -6072,7 +6072,7 @@ final class BrowserModel: ObservableObject {
         undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
 
         // Stay where we are: same folder, same query, same results (and the
-        // full view stays open) — only the renamed item and, for a folder,
+        // full view stays open): only the renamed item and, for a folder,
         // everything listed inside it get the new path.
         // A folder named like an archive stays a folder
         if isFolder, ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(new) }
@@ -6323,7 +6323,7 @@ final class BrowserModel: ObservableObject {
     /// not the video's end.
     private var pausedByKey = false
 
-    /// Called by the players when playback starts, pauses or ends — also
+    /// Called by the players when playback starts, pauses or ends, also
     /// through their own on-screen controls.
     func playbackStateChanged(_ player: PlaybackControl, isPlaying: Bool) {
         guard player === activePlayer else { return }
@@ -6411,7 +6411,7 @@ final class BrowserModel: ObservableObject {
 
     /// Start a slideshow. Over `folder` if given (a folder tile's context
     /// menu, the drop zone); otherwise over the search results while
-    /// searching, else the current folder — always the whole of it (▶︎ means
+    /// searching, else the current folder, always the whole of it (▶︎ means
     /// "this folder"). It starts at the item the full view shows, or at the
     /// file / in the folder the user selected in the grid (not the tile
     /// selected on opening a folder), and goes on from there, starting over

@@ -1,4 +1,4 @@
-# xcodegen spec — generates Schnellbild.xcodeproj for the app + XCUITests.
+# xcodegen spec: generates Schnellbild.xcodeproj for the app + XCUITests.
 # The .xcodeproj itself is generated (gitignored); this file is the source.
 # Run:  xcodegen generate
 name: Schnellbild

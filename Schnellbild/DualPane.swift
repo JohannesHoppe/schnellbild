@@ -3,8 +3,8 @@ import AppKit
 import Combine
 
 /// A window: one pane, or two side by side (the dual pane, D or ⌃O, as in
-/// the file commanders). Each pane is a `BrowserModel` of its own — folder,
-/// search, history, sort, full view; keys and the toolbar act on the active
+/// the file commanders). Each pane is a `BrowserModel` of its own (folder,
+/// search, history, sort, full view); keys and the toolbar act on the active
 /// one (Tab switches). F5 copies, F6 moves the active pane's marked items
 /// into the other pane's folder; what one pane changes on disk, every other
 /// pane (of this window and the others) follows.

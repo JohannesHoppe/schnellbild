@@ -230,7 +230,7 @@
     "https://www.bandisoft.com/bandiview/help/shortcut/"
    ],
    "how": "docs",
-   "note": "Ctrl+1…9 starts a slideshow with 1–9 s per image"
+   "note": "Ctrl+1…9 starts a slideshow with 1 to 9 s per image"
   },
   "slideshow_recursive": {
    "value": "no",

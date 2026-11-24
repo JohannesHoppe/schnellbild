@@ -210,7 +210,7 @@ fragment float4 globeFragment(MeshOut in [[stage_in]], constant Uniforms &u [[bu
     float3 nrm = v;
     float h = 0;
     if (u.relief.w > 0) {
-        // The slope over the same distance east and north (a texel north–south)
+        // The slope over the same distance east and north (a texel north-south)
         float dLat = u.heightTexel.y * 180;
         float dLon = min(dLat / max(cos(lat), 0.02), 30.0);
         h = heightKm(heights, hs, latDeg, lonDeg);

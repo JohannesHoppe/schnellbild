@@ -935,7 +935,7 @@ final class VisualUITests: SchnellbildUITestCase {
             guard let range = label.range(of: "decoded ") else { return 0 }
             return Int(label[range.upperBound...].prefix { $0.isNumber }) ?? 0
         }
-        waitForBadge(containing: "3 / 4  ·  bb.pdf  ·  Page 1 / 3")
+        waitForBadge(containing: "3 / 4, bb.pdf, Page 1 / 3")
         eventually("page 1 drawn", timeout: 15) { self.text(of: image).hasSuffix("loaded, page 1 of 3") }
         settle(1)
         let red = try colour()

@@ -7,7 +7,7 @@ over the network), be upfront about scope (it's a *viewer*, not an editor).
 
 ## Show HN
 
-**Title:** Show HN: Schnellbild – a fast macOS image/video viewer that doesn't choke on network folders
+**Title:** Show HN: Schnellbild, a fast macOS image/video viewer that doesn't choke on network folders
 
 **Body:**
 
@@ -16,37 +16,37 @@ network share (NAS), while macOS Preview stays smooth. So I built the lean
 viewer I actually wanted: open a folder, thumbnails appear right away, arrow
 through them, one image big. Nothing more.
 
-Why it stays fast — the same tricks Preview uses that most viewers skip:
+Why it stays fast: the same tricks Preview uses that most viewers skip:
 
 - Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls the
   *embedded* preview (EXIF thumbnail, JPEG-in-RAW), so it reads a few KB over the
-  network instead of tens of MB — and supports RAW/PSD/PDF/HEIC plus video
+  network instead of tens of MB, and supports RAW/PSD/PDF/HEIC plus video
   poster frames for free.
 - Lazy, parallel thumbnail loading; the full view downsamples via ImageIO to
   screen size (no 8000px image sitting in RAM); nothing blocks the main thread.
 
 Kept deliberately lean: folder navigation (Norton-style `..`), keyboard-first
 (Phiewer-like bindings, F1 cheat sheet), search (folder and file names,
-always recursive), zoom/pan/pinch/rotate (view-only — never touches your files), video
+always recursive), zoom/pan/pinch/rotate (view-only, never touches your files), video
 via AVKit with a VLCKit fallback for AVI/MKV/WebM, animated GIFs, slideshow,
 sort, trash, light/dark.
 
 SwiftUI, ~1k LOC, MIT, unit + XCUITest E2E, CI. macOS 15+.
 
-It's a viewer, not an organizer — no library, no tagging, no AI. If you browse
+It's a viewer, not an organizer: no library, no tagging, no AI. If you browse
 big image folders (especially over a network) and just want something that
 doesn't lag, this is for you.
 
 Repo: https://github.com/JohannesHoppe/schnellbild
 
-Feedback very welcome — especially: does it feel faster than Preview on *your*
+Feedback very welcome. Especially: does it feel faster than Preview on *your*
 network setup?
 
 ---
 
 ## r/macapps
 
-**Title:** I built Schnellbild — a fast, keyboard-driven image/video viewer (free, open source)
+**Title:** I built Schnellbild, a fast, keyboard-driven image/video viewer (free, open source)
 
 **Body:**
 
@@ -64,7 +64,7 @@ even over the network.
 
 Download/build: https://github.com/JohannesHoppe/schnellbild
 
-Would love to know if it feels snappier than what you use now — particularly on
+Would love to know if it feels snappier than what you use now, particularly on
 network volumes.
 
 ---

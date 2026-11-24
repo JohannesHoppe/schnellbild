@@ -454,7 +454,7 @@ final class AtlasModel: ObservableObject {
 
     // MARK: Timeline
 
-    /// The timeline's from–to; nil: the whole span.
+    /// The timeline's span from and to; nil: the whole span.
     @Published var range: ClosedRange<Date>? { didSet { if range != oldValue { filter() } } }
 
     /// From the first item's time to the last's (the items are in the order

@@ -4,7 +4,7 @@
   "alternativesSlug": "alternativer",
   "formatsSlug": "formater",
   "title": "Schnellbild: en billedfremviser og videoafspiller til macOS, der bare ikke er noget bras",
-  "seoTitle": "Schnellbild · gratis billedfremviser og MKV-afspiller til Mac",
+  "seoTitle": "Schnellbild | gratis billedfremviser og MKV-afspiller til Mac",
   "seoDescription": "Hurtig, gratis billedfremviser til Mac, der også afspiller MKV, AVI og WebM: miniaturer, diasshow, ZIP og RAR som mapper. Alternativ til IrfanView og XnView.",
   "keywords": "billedfremviser Mac, billedviser Mac, fotofremviser macOS, gratis billedfremviser, MKV player Mac, MKV-afspiller Mac, videoafspiller Mac, afspil AVI WebM, diasshow Mac, IrfanView-alternativ, XnView-alternativ, Phiewer-alternativ, IINA-alternativ, åbn billeder i RAR, tegneserier CBZ CBR, Schnellbild",
   "navFeatures": "Funktioner",
@@ -187,7 +187,7 @@
   "formats": {
     "short": "Formater",
     "title": "Alle formater, Schnellbild viser",
-    "seoTitle": "Understøttede formater: billeder, RAW, video, arkiver · Schnellbild til Mac",
+    "seoTitle": "Understøttede formater: billeder, RAW, video, arkiver | Schnellbild til Mac",
     "description": "Alle formater, som den gratis billedfremviser Schnellbild åbner på Mac, med fuldt navn og filendelse: JPEG, HEIC, AVIF, RAW, PSD, PDF, EPS, MKV, AVI, WebM, ZIP, RAR, 7z med flere.",
     "keywords": "filformater Mac, åbn HEIC på Mac, RAW-fremviser Mac, åbn CR3, åbn NEF, MKV-afspiller Mac, afspil AVI på Mac, afspil WebM på Mac, åbn PSD uden Photoshop, åbn EPS på Mac, JPEG XL-fremviser, åbn AVIF, DDS-fremviser, CBR CBZ-læser Mac, Schnellbild",
     "lead": "Schnellbild viser {count} formater med {extensions} filendelser: billeder, kamera-RAW, dokumenter, videoer og arkiver, som åbner som mapper.",

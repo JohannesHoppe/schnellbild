@@ -467,7 +467,7 @@ enum VideoMetadata {
         let subtitles = (counts[.subtitle] ?? 0) + (counts[.text] ?? 0) + (counts[.closedCaption] ?? 0)
         let parts = [(String(localized: "Video"), counts[.video] ?? 0), (String(localized: "Audio"), counts[.audio] ?? 0),
                      (String(localized: "Subtitles"), subtitles)].filter { $0.1 > 0 }.map { "\($0.0) \($0.1)" }
-        if !parts.isEmpty { rows.append(InfoRow(label: String(localized: "Tracks"), value: parts.joined(separator: " · "))) }
+        if !parts.isEmpty { rows.append(InfoRow(label: String(localized: "Tracks"), value: parts.joined(separator: ", "))) }
         if rate > 0 { rows.append(InfoRow(label: String(localized: "Bitrate"), value: StreamFacts.describeBitrate(Double(rate)))) }
         return rows
     }

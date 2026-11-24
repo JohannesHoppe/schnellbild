@@ -32,7 +32,7 @@ struct SchnellbildApp: App {
         // Media Extensions the user has turned on in System Settings (format
         // readers and video decoders, Apple's own for ProRes RAW too, or
         // another app's for MKV, AVI …) open those videos in AVKit, and
-        // Quick Look makes the grid's thumbnails with them (macOS 26) — but
+        // Quick Look makes the grid's thumbnails with them (macOS 26), but
         // only for an app that opts in, as Finder does:
         // https://github.com/Marginal/QuickLookVideo/issues/191,
         // https://github.com/Marginal/QuickLookVideo/issues/197.

@@ -62,7 +62,7 @@
 "Larger / smaller thumbnails" = "Крупнее / мельче миниатюры";
 "Clear search" = "Очистить поиск";
 "Previous / next item, also from a video or PDF" = "Предыдущий / следующий объект, также из видео или PDF";
-"Next picture · play/pause video" = "Следующее изображение · воспроизвести / пауза";
+"Next picture; play/pause video" = "Следующее изображение; воспроизвести / пауза";
 "Zoom in / out" = "Увеличить / уменьшить";
 "Fit to window / 100 %" = "По размеру окна / 100 %";
 "Rotate left / right" = "Повернуть влево / вправо";
@@ -105,8 +105,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Имя должно заканчиваться расширением изображения, например «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Имя должно заканчиваться расширением видео, например «.%@».";
 "Grid and full view" = "Сетка и полный вид";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Изображения: предыдущее / следующее · Видео: 10 % длительности назад / вперед · PDF: предыдущая / следующая страница; в начале / конце: предыдущий / следующий объект";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Предыдущий / следующий · Видео: 10 % длительности назад / вперед";
+"Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)" = "Изображения: предыдущее / следующее; видео: 10 % длительности назад / вперед; PDF: предыдущая / следующая страница (в начале / конце: предыдущий / следующий объект)";
+"Previous / next; videos: 10 % of the length back / ahead" = "Предыдущий / следующий; видео: 10 % длительности назад / вперед";
 "Wrong password for this archive." = "Неверный пароль для этого архива.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архив неполный: он ещё загружается, не хватает части, или он повреждён.";
 "A file listed in this archive is missing." = "Отсутствует файл, указанный в этом архиве.";
@@ -114,7 +114,7 @@
 "Reset to original" = "Сбросить до оригинала";
 "Files are not changed." = "Файлы не изменяются.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Автоулучшение вкл. / выкл. (экспозиция, контраст, насыщенность, резкость; файлы не изменяются)";
-"Open picture or video · open folder or archive" = "Открыть изображение или видео · открыть папку или архив";
+"Open picture or video; open folder or archive" = "Открыть изображение или видео; открыть папку или архив";
 "Clear the search; again: leave the field" = "Очистить поиск; повторно: покинуть поле";
 "A folder or file named “%@” already exists in this folder." = "Папка или файл с именем «%@» уже есть в этой папке.";
 "Choose a folder" = "Выберите папку";
@@ -148,7 +148,7 @@
 "+1 %" = "+1 %";
 "Louder" = "Громче";
 "Quieter" = "Тише";
-"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Увеличенные изображения: смотреть выше / ниже · Видео: громче / тише (запоминается)";
+"Pictures zoomed in: look further up / down; videos: volume up / down (remembered)" = "Увеличенные изображения: смотреть выше / ниже; видео: громче / тише (запоминается)";
 "%lld so far" = "пока %lld";
 "New Folder" = "Новая папка";
 "Create" = "Создать";
@@ -579,7 +579,7 @@
 "%lld items here, %@ among them" = "Здесь: %1$lld, в том числе %2$@";
 "%lld items here: double-click to zoom in" = "Здесь: %lld. Двойной щелчок приближает";
 "%lld items at one place: click for the next one" = "В одном месте: %lld. Щелчок выбирает следующий";
-"No location · %lld" = "Без места · %lld";
+"No location, %lld" = "Без места, %lld";
 "%lld of %lld" = "%1$lld из %2$lld";
 "Show All" = "Показать все";
 "The whole span again" = "Снова весь период";

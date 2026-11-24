@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 
 /// The list view (L): a row per item with a small preview, the whole name
 /// and its attributes. A click on a column's header sorts by it, again
-/// reverses it — the same sort as the sort menu and ⌘1 … ⌘6 (the Distance
+/// reverses it: the same sort as the sort menu and ⌘1 … ⌘6 (the Distance
 /// column only while sorting by distance). Rows act like
 /// tiles (`EntryInteractions`); the files the app doesn't show follow, grey.
 struct EntryListView: View {

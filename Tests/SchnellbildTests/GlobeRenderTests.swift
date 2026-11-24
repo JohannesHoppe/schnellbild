@@ -196,7 +196,7 @@ final class GlobeRenderTests: XCTestCase {
         for (name, ra, dec) in [("Procyon", 114.825, 5.225), ("Pleiades", 56.75, 24.12)] {
             let p = place(ra, dec)
             XCTAssertGreaterThan(brightness(image, at: p, radius: 4), background + 25, "\(name) at \(p)")
-            // Mirrored east–west it would be elsewhere
+            // Mirrored east-west it would be elsewhere
             let mirrored = CGPoint(x: size.width - p.x, y: p.y)
             XCTAssertLessThan(brightness(image, at: mirrored, radius: 4), brightness(image, at: p, radius: 4), "\(name) not mirrored")
         }

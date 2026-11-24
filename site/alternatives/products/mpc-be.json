@@ -135,7 +135,7 @@
   },
   "multiple_windows": {
    "value": "partial",
-   "note": "multiple-instance setting (0–2)",
+   "note": "multiple-instance setting (0 to 2)",
    "evidence": [
     "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
    ],

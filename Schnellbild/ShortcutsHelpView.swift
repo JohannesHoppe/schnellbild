@@ -8,7 +8,7 @@ enum HelpKeys {
     case action(ShortcutAction)
     /// Two actions, as the row's "previous / next": [◀] / [▶],
     /// [⌘] + [[] / [⌘] + []]; with more keys each, pair by pair:
-    /// [+] / [−] · [⌘] + [+] / [⌘] + [−].
+    /// [+] / [−]   [⌘] + [+] / [⌘] + [−] (a gap between the pairs).
     case pair(ShortcutAction, ShortcutAction)
     /// Several actions, one key each: [⌘] + [1] … [⌘] + [5] while they have
     /// Schnellbild's keys, else every key.
@@ -112,7 +112,7 @@ struct ShortcutsHelpView: View {
             ("Grid", [
                 Row(.pair(.gridPrevious, .gridNext), action: "Previous / next item"),
                 Row(.pair(.gridRowUp, .gridRowDown), action: "One row up / down"),
-                Row(.action(.gridOpen), action: "Open picture or video · open folder or archive"),
+                Row(.action(.gridOpen), action: "Open picture or video; open folder or archive"),
                 Row(.action(.gridBack), action: "Back (where you were, also a search); without history the enclosing folder"),
                 Row(.pair(.gridFirst, .gridLast), action: "First / last item"),
                 Row(.action(.toggleList), action: "Next view: grid, list, Atlas (a click on a column sorts by it)"),
@@ -123,11 +123,11 @@ struct ShortcutsHelpView: View {
                 Row(.action(.gridClear), action: "Clear search"),
             ]),
             ("Full view", [
-                Row(.pair(.fullPrevious, .fullNext), action: "Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item"),
+                Row(.pair(.fullPrevious, .fullNext), action: "Pictures: previous / next; videos: 10 % of the length back / ahead; PDFs: previous / next page (at the start / end: previous / next item)"),
                 Row(.pair(.fullPreviousItem, .fullNextItem), action: "Previous / next item, also from a video or PDF"),
-                Row(.pair(.fullUp, .fullDown), action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
+                Row(.pair(.fullUp, .fullDown), action: "Pictures zoomed in: look further up / down; videos: volume up / down (remembered)"),
                 Row(.pair(.fullFineBack, .fullFineAhead), action: "Video: 1 % of the length back / ahead"),
-                Row(.action(.fullSpace), action: "Next picture · play/pause video"),
+                Row(.action(.fullSpace), action: "Next picture; play/pause video"),
                 Row(.pair(.zoomIn, .zoomOut), action: "Zoom in / out"),
                 Row(.pair(.zoomFit, .zoomActual), action: "Fit to window / 100 %"),
                 Row(.pair(.rotateLeft, .rotateRight), action: "Rotate left / right"),
@@ -146,10 +146,10 @@ struct ShortcutsHelpView: View {
             ("Slideshow", [
                 Row(.action(.startSlideshow), action: "Start: all pictures and videos in this folder and its subfolders (while searching: the results)"),
                 Row(.action(.showPause), action: "Pause / resume"),
-                Row(.pair(.fullPrevious, .fullNext), action: "Previous / next · Videos: 10 % of the length back / ahead"),
+                Row(.pair(.fullPrevious, .fullNext), action: "Previous / next; videos: 10 % of the length back / ahead"),
                 Row(.pair(.fullFineBack, .fullFineAhead), action: "Video: 1 % of the length back / ahead"),
                 Row(.pair(.fullPreviousItem, .fullNextItem), action: "Previous / next item"),
-                Row(.pair(.fullUp, .fullDown), action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
+                Row(.pair(.fullUp, .fullDown), action: "Pictures zoomed in: look further up / down; videos: volume up / down (remembered)"),
                 Row(.action(.fullScreen), action: "Toggle full screen"),
                 Row(.action(.info), action: "File info"),
                 Row(.action(.enhance), action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
