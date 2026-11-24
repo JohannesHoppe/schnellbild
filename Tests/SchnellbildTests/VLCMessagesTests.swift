@@ -40,7 +40,16 @@ final class VLCMessagesTests: XCTestCase {
             try await Task.sleep(for: .milliseconds(20))
         }
         XCTAssertNotNil(output.latestPicture, "pictures from VLC")
-        try await Task.sleep(for: .milliseconds(500))
+        var before: [String] = []
+        var seen: CVPixelBuffer?
+        let snapshotAt = Date().addingTimeInterval(0.5)
+        while Date() < snapshotAt {
+            try await Task.sleep(for: .milliseconds(5))
+            guard let picture = output.latestPicture, picture !== seen else { continue }
+            seen = picture
+            before.append(VLCFrameOutput.probe(picture, shown: picture).map(String.init(describing:)) ?? "none")
+        }
+        print("VLCMessagesTests \(options): before the snapshot: \(before.joined(separator: "; "))")
         let tree = try TempTree(self)
         held.player.saveVideoSnapshot(at: tree.root.appendingPathComponent("snapshot.png").path, withWidth: 0, andHeight: 0)
         var text = 0, all = 0
@@ -51,7 +60,9 @@ final class VLCMessagesTests: XCTestCase {
             guard let picture = output.latestPicture, picture !== last else { continue }
             last = picture
             all += 1
-            if VLCFrameOutput.probe(picture, shown: picture)?.text == true { text += 1 }
+            let probe = VLCFrameOutput.probe(picture, shown: picture)
+            if probe?.text == true { text += 1 }
+            print("VLCMessagesTests \(options): after the snapshot: \(probe.map(String.init(describing:)) ?? "none")")
         }
         await Task.detached { held.player.stop() }.value
         return (text, all)
