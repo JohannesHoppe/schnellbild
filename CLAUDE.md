@@ -77,7 +77,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     (the local key monitor sees keys before menu key equivalents). While a
     text field is edited the monitor hands them to the field editor instead
     (`ContentView.textFieldTakes`, also ⌘ with an arrow), so they edit the
-    text. Keys with ⌥ pass untouched except ⌥← / ⌥→ (turn the picture, `handleKey(option:)`); keys with ⌃ pass untouched, except ⌃⌘F (full screen, through
+    text; a selectable text that can't be edited (the Inspector's values, after a click) types nothing, so the keys stay the browser's (`ContentView.textEditor`). The menu items that act on a browser window are disabled while another window of the app has the keys (Settings, About: `WindowModel.inFront`, `WindowFocus.browserInFront`), so ⌘⌫, ⌘↩ or ⌘↑ typed in Settings' search field or the About window's find bar never trash, open or leave anything in the window behind it. Keys with ⌥ pass untouched except ⌥← / ⌥→ (turn the picture, `handleKey(option:)`); keys with ⌃ pass untouched, except ⌃⌘F (full screen, through
     `FullScreenSwitch`) and ⌃O (the dual pane). On a layout without Latin
     letters a letter key is read as on the user's Latin layout (`LatinKeys`).
   - Packages (`.photoslibrary`, `.app`) are single items, as in the Finder:

@@ -17,6 +17,10 @@ struct SchnellbildApp: App {
     private let defaults: UserDefaults
     private var window: WindowModel { focus.current ?? first }
     private var model: BrowserModel { window.active }
+    /// Off while another window of the app (Settings, About) has the keys:
+    /// the menu items acting on a browser window are disabled then, so a key
+    /// typed there (⌘⌫ in a search field) never reaches the window behind it.
+    private var away: Bool { !focus.browserInFront }
 
     init() {
         // Before anything starts VLC
@@ -72,108 +76,122 @@ struct SchnellbildApp: App {
                 NewWindowButton()
                 Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut(shortcuts.menuShortcut(.openFolder))
-                    .disabled(window.anySheetOpen || model.presenting)
+                    .disabled(window.anySheetOpen || model.presenting || away)
             }
             CommandGroup(replacing: .undoRedo) {
                 UndoCommands(history: model.undoHistory, window: window, model: model)
+                    .disabled(away)
             }
             CommandMenu("Go") {
-                Button("Start Slideshow") { model.startSlideshow() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.startSlideshow))
-                    .disabled(model.folderURL == nil || window.anySheetOpen)
-                Divider()
-                Button("Back") { model.navigateBack() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.back))
-                    .disabled(!model.canGoBack || window.anySheetOpen)
-                Button("Forward") { model.navigateForward() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.forward))
-                    .disabled(!model.canGoForward || window.anySheetOpen)
-                Button("Enclosing Folder") { model.goToParentFolder() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.enclosingFolder))
-                    .disabled(!model.canGoUp || window.anySheetOpen)
-                Divider()
-                // (not in a slideshow or the tour: the search bar is hidden there)
-                Button("Search") { model.focusSearch() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.search))
-                    .disabled(window.anySheetOpen || model.presenting)
+                Group {
+                    Button("Start Slideshow") { model.startSlideshow() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.startSlideshow))
+                        .disabled(model.folderURL == nil || window.anySheetOpen)
+                    Divider()
+                    Button("Back") { model.navigateBack() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.back))
+                        .disabled(!model.canGoBack || window.anySheetOpen)
+                    Button("Forward") { model.navigateForward() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.forward))
+                        .disabled(!model.canGoForward || window.anySheetOpen)
+                    Button("Enclosing Folder") { model.goToParentFolder() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.enclosingFolder))
+                        .disabled(!model.canGoUp || window.anySheetOpen)
+                    Divider()
+                    // (not in a slideshow or the tour: the search bar is hidden there)
+                    Button("Search") { model.focusSearch() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.search))
+                        .disabled(window.anySheetOpen || model.presenting)
+                }
+                .disabled(away)
             }
             CommandMenu("Video") {
                 VideoCommands(model: model, window: window, shortcuts: shortcuts)
+                    .disabled(away)
             }
             CommandMenu("Bookmarks") {
                 BookmarkItems(model: model, shortcuts: true)
-                    .disabled(window.anySheetOpen || model.presenting)
+                    .disabled(window.anySheetOpen || model.presenting || away)
             }
             CommandMenu("Actions") {
-                // Not during a slideshow or the tour: the selection is in the
-                // hidden grid, not what's on screen.
-                Button("New Folder") { model.beginNewFolder() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.newFolder))
-                    .disabled(!model.canCreateFolder)
-                Button("Rename…") { model.beginRename() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.gridRename))
-                    .disabled(model.presenting || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
-                // The Inspector, as the Finder's ⌘I (also I without ⌘)
-                Button("Get Info") { model.showInspector.toggle() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.info))
-                    .disabled(model.folderURL == nil || window.anySheetOpen)
-                Button("Reveal in Finder") { model.revealInFinder() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.reveal))
-                    .disabled(model.presenting || window.anySheetOpen)
-                Button("Open with Default App") { model.openInDefaultApp() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.openDefault))
-                    .disabled(model.presenting || window.anySheetOpen || !model.selectionIsChangeable)
-                Divider()
-                // The dual pane (D): the marked items into the other pane's folder
-                // (also F5 / F6, as in Norton Commander)
-                Button("Copy to Other Pane") { _ = window.sendToOtherPane(how: .copy) }
-                    .keyboardShortcut(shortcuts.menuShortcut(.copyToOther))
-                    .disabled(!window.dual || model.presenting || window.anySheetOpen)
-                Button("Move to Other Pane") { _ = window.sendToOtherPane(how: .move) }
-                    .keyboardShortcut(shortcuts.menuShortcut(.moveToOther))
-                    .disabled(!window.dual || model.presenting || window.anySheetOpen)
-                Divider()
-                Button("Move to Trash…") { model.moveSelectionToTrash() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.trash))
-                    .disabled(!model.canTrash || window.anySheetOpen)
+                Group {
+                    // Not during a slideshow or the tour: the selection is in the
+                    // hidden grid, not what's on screen.
+                    Button("New Folder") { model.beginNewFolder() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.newFolder))
+                        .disabled(!model.canCreateFolder)
+                    Button("Rename…") { model.beginRename() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.gridRename))
+                        .disabled(model.presenting || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
+                    // The Inspector, as the Finder's ⌘I (also I without ⌘)
+                    Button("Get Info") { model.showInspector.toggle() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.info))
+                        .disabled(model.folderURL == nil || window.anySheetOpen)
+                    Button("Reveal in Finder") { model.revealInFinder() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.reveal))
+                        .disabled(model.presenting || window.anySheetOpen)
+                    Button("Open with Default App") { model.openInDefaultApp() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.openDefault))
+                        .disabled(model.presenting || window.anySheetOpen || !model.selectionIsChangeable)
+                    Divider()
+                    // The dual pane (D): the marked items into the other pane's folder
+                    // (also F5 / F6, as in Norton Commander)
+                    Button("Copy to Other Pane") { _ = window.sendToOtherPane(how: .copy) }
+                        .keyboardShortcut(shortcuts.menuShortcut(.copyToOther))
+                        .disabled(!window.dual || model.presenting || window.anySheetOpen)
+                    Button("Move to Other Pane") { _ = window.sendToOtherPane(how: .move) }
+                        .keyboardShortcut(shortcuts.menuShortcut(.moveToOther))
+                        .disabled(!window.dual || model.presenting || window.anySheetOpen)
+                    Divider()
+                    Button("Move to Trash…") { model.moveSelectionToTrash() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.trash))
+                        .disabled(!model.canTrash || window.anySheetOpen)
+                }
+                .disabled(away)
             }
             CommandGroup(after: .toolbar) {
-                // The folder read again: changes outside the app show by
-                // themselves where the system reports them (not on every share)
-                Button("Reload") { model.reload() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.reload))
-                    .disabled(model.folderURL == nil || model.isLoading || model.presenting || window.anySheetOpen)
-                Divider()
-                Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
-                Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
-                Toggle("as Atlas", isOn: Binding(get: { model.viewMode == .atlas }, set: { if $0 { model.viewMode = .atlas } }))
-                    .disabled(model.folderURL == nil)
-                Button("Play Tour") { model.startTour() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.startTour))
-                    .disabled(model.folderURL == nil || model.mode != .grid || model.presenting || window.anySheetOpen)
-                Divider()
-                Toggle("Dual Pane", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
-                    // As the key: not during a slideshow, not over a sheet (of either pane)
-                    .disabled(window.panes.contains { $0.slideshow != nil || $0.anySheetOpen })
-                Toggle("Mini Keyboard", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
-                // As in the Finder (⇧⌘.); also in Settings → General
+                Group {
+                    // The folder read again: changes outside the app show by
+                    // themselves where the system reports them (not on every share)
+                    Button("Reload") { model.reload() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.reload))
+                        .disabled(model.folderURL == nil || model.isLoading || model.presenting || window.anySheetOpen)
+                    Divider()
+                    Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
+                    Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
+                    Toggle("as Atlas", isOn: Binding(get: { model.viewMode == .atlas }, set: { if $0 { model.viewMode = .atlas } }))
+                        .disabled(model.folderURL == nil)
+                    Button("Play Tour") { model.startTour() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.startTour))
+                        .disabled(model.folderURL == nil || model.mode != .grid || model.presenting || window.anySheetOpen)
+                    Divider()
+                    Toggle("Dual Pane", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
+                        // As the key: not during a slideshow, not over a sheet (of either pane)
+                        .disabled(window.panes.contains { $0.slideshow != nil || $0.anySheetOpen })
+                    Toggle("Mini Keyboard", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
+                }
+                .disabled(away)
+                // As in the Finder (⇧⌘.); also in Settings → General: app-wide
                 Toggle("Show Hidden Files", isOn: Binding(get: { window.showHiddenFiles }, set: { window.showHiddenFiles = $0 }))
                     .keyboardShortcut(shortcuts.menuShortcut(.hiddenFiles))
                     .disabled(window.anySheetOpen)
                 Divider()
-                // (the key monitor takes ⌘+ / ⌘− first: in the full view they zoom)
-                Button("Larger Thumbnails") { model.growThumbnails() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.largerThumbnails))
-                Button("Smaller Thumbnails") { model.shrinkThumbnails() }
-                    .keyboardShortcut(shortcuts.menuShortcut(.smallerThumbnails))
-                Divider()
-                SortChoices(model: model, shortcuts: true)
-                    .disabled(model.presenting)
+                Group {
+                    // (the key monitor takes ⌘+ / ⌘− first: in the full view they zoom)
+                    Button("Larger Thumbnails") { model.growThumbnails() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.largerThumbnails))
+                    Button("Smaller Thumbnails") { model.shrinkThumbnails() }
+                        .keyboardShortcut(shortcuts.menuShortcut(.smallerThumbnails))
+                    Divider()
+                    SortChoices(model: model, shortcuts: true)
+                        .disabled(model.presenting)
+                }
+                .disabled(away)
             }
             CommandGroup(replacing: .help) {
                 Button("Schnellbild Help") { window.openHelp() }
                     .keyboardShortcut(shortcuts.menuShortcut(.help))
-                    .disabled(window.anySheetOpen)
+                    .disabled(window.anySheetOpen || away)
                 if KeyGlyphsTestMenu.shown {
                     Divider()
                     KeyGlyphsTestMenu()

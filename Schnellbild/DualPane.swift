@@ -88,6 +88,21 @@ final class WindowModel: ObservableObject {
         of(NSApp.keyWindow) ?? of(NSApp.mainWindow) ?? all.first { $0.nsWindow?.isVisible == true }
     }
 
+    /// The browser window that has the keys, which the menus act on: the key
+    /// window's, or the one a sheet or popover with the keys belongs to; nil
+    /// while another window of the app (Settings, About) has them, so ⌘⌫ or
+    /// ⌘↑ typed there never trashes or leaves a folder in a window behind it.
+    static var inFront: WindowModel? {
+        guard let key = NSApp.keyWindow else { return of(NSApp.mainWindow) }
+        var window: NSWindow? = key
+        while let shown = window {
+            if let model = of(shown) { return model }
+            window = shown.sheetParent ?? shown.parent
+        }
+        // The Adjustments popover's window
+        return NSStringFromClass(type(of: key)).contains("Popover") ? of(NSApp.mainWindow) : nil
+    }
+
     /// The model for a window opening: the first one while no window shows
     /// it, else a new one with the lowest number no open window has.
     static func claim(_ first: WindowModel, defaults: UserDefaults) -> WindowModel {
@@ -368,6 +383,9 @@ enum NortonMenus {
 final class WindowFocus: ObservableObject {
     static let shared = WindowFocus()
     @Published private(set) var current: WindowModel?
+    /// Whether a browser window has the keys (`WindowModel.inFront`): the
+    /// menu items that act on one are disabled while Settings or About has them.
+    @Published private(set) var browserInFront = true
     private var forwarding: AnyCancellable?
     private var observers: [NSObjectProtocol] = []
 
@@ -380,6 +398,8 @@ final class WindowFocus: ObservableObject {
     }
 
     func update() {
+        let front = WindowModel.inFront != nil
+        if front != browserInFront { browserInFront = front }
         let now = WindowModel.current
         guard now !== current else { return }
         current = now
