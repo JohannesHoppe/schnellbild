@@ -747,14 +747,28 @@ final class OpenFolderTests: XCTestCase {
         await openAndWait(BrowserModel(defaults: defaults), tree.root)
         let m = BrowserModel(defaults: defaults)
         m.restoreConfirmDelay = .zero
-        m.restoreLastFolder()
-        var confirmedEarly = false
-        await waitUntil {
-            if defaults.string(forKey: BrowserModel.restoreUnconfirmedKey) == nil, !m.isAt(tree.root) { confirmedEarly = true }
-            return m.isAt(tree.root)
+        // Looked at the moment the mark is removed (on the main thread), not by polling
+        final class Watch: NSObject {
+            let key: String
+            var shownWhenConfirmed: [Bool] = []
+            init(key: String) { self.key = key }
+            var shown: () -> Bool = { false }
+            override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?,
+                                       context: UnsafeMutableRawPointer?) {
+                guard (object as? UserDefaults)?.string(forKey: key) == nil else { return }
+                XCTAssertTrue(Thread.isMainThread)
+                shownWhenConfirmed.append(shown())
+            }
         }
-        XCTAssertFalse(confirmedEarly, "confirmed before the folder was shown")
+        let watch = Watch(key: BrowserModel.restoreUnconfirmedKey)
+        watch.shown = { MainActor.assumeIsolated { m.isAt(tree.root) } }
+        defaults.addObserver(watch, forKeyPath: BrowserModel.restoreUnconfirmedKey, options: [.new], context: nil)
+        defer { defaults.removeObserver(watch, forKeyPath: BrowserModel.restoreUnconfirmedKey) }
+        m.restoreLastFolder()
+        XCTAssertNotNil(defaults.string(forKey: BrowserModel.restoreUnconfirmedKey), "marked while it opens")
+        await waitUntil { m.isAt(tree.root) }
         await waitUntil { defaults.string(forKey: BrowserModel.restoreUnconfirmedKey) == nil }
+        XCTAssertEqual(watch.shownWhenConfirmed, [true], "confirmed only once the folder was shown")
     }
 
     /// A normal quit confirms the folders of every window's panes, not only the first window's.
