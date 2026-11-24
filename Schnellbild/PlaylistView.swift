@@ -239,7 +239,7 @@ struct PlaylistRow: View {
 
     private var content: some View {
         HStack(spacing: 8) {
-            ThumbnailView(url: item.url, side: side, isSelected: false, isVideo: false, modified: item.modDate)
+            ThumbnailView(url: item.url, side: side, isSelected: false, isVideo: false, modified: item.previewDate)
                 .frame(width: side, height: side)
             names
             Spacer(minLength: 0)
