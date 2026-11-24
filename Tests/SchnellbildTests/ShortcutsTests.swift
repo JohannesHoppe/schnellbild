@@ -370,6 +370,8 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertEqual(helpKeys("Larger / smaller thumbnails"), "+ / − · ⌘ + + / ⌘ + −")
         XCTAssertEqual(helpKeys("Previous / next item"), "\(glyphs.left) / \(glyphs.right)")
         XCTAssertEqual(helpKeys("First / last item"), "⤒ (fn + ◀) / ⤓ (fn + ▶)")
+        let atlasMoves = "Atlas: to the nearest item on the map that way; down into the strip of items without a location"
+        XCTAssertEqual(helpKeys(atlasMoves), "\(glyphs.left) / \(glyphs.right) / \(glyphs.up) / \(glyphs.down)")
         XCTAssertEqual(helpKeys("Sort by name, kind, date modified, date taken, size, distance (again: reverse)"), "⌘ + 1 … ⌘ + 6")
         XCTAssertEqual(helpKeys("Copy / move the marked items into the other pane's folder"), "⇧ + ⌘ + C / ⇧ + ⌘ + M · F5 / F6")
         XCTAssertEqual(helpKeys("Undo / redo renaming, trashing, moving, copying, a new folder"), "⌘ + Z / ⇧ + ⌘ + Z")
@@ -390,6 +392,7 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertNil(next.cap(s), "no key: left out")
         s.assign(chord("n"), to: .gridNext)
         XCTAssertEqual(next.cap(s), chord("n"))
+        XCTAssertEqual(helpKeys(atlasMoves), "\(glyphs.left) / N / \(glyphs.up) / \(glyphs.down)", "the Atlas moves with the grid's keys")
         let search = grid.first { $0.action == .search }!
         XCTAssertEqual(search.cap(s), chord("@f"))
         XCTAssertEqual(search.cap(s)?.caps.parts, [.cap("⌘"), .plus, .cap("F")], "a cap per key")

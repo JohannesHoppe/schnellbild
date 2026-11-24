@@ -591,7 +591,6 @@
 "Atlas: on items taken at one place, the next one (%@ too)" = "アトラス：同じ場所の項目では次の項目（%@ でも）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "ドラッグするかハンドルを動かす：その期間だけを地図に表示。クリック：その時刻に最も近い項目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅：撮影順に場所を巡り、フルスクリーンで表示し、ルートを地図に描く";
-"arrows" = "矢印";
 "double-click" = "ダブルクリック";
 "click" = "クリック";
 "timeline" = "タイムライン";

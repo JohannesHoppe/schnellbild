@@ -591,7 +591,6 @@
 "Atlas: on items taken at one place, the next one (%@ too)" = "Atlas: sobre elementos tomados en un mismo lugar, el siguiente (también %@)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Arrastrar por encima o mover un tirador: solo ese periodo en el mapa; clic: el elemento tomado más cerca de ese momento";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Viaje: los lugares por orden de tiempo, a pantalla completa, con la ruta dibujada en el mapa";
-"arrows" = "flechas";
 "double-click" = "doble clic";
 "click" = "clic";
 "timeline" = "línea de tiempo";

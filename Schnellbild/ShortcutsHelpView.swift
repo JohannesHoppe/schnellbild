@@ -106,8 +106,8 @@ struct ShortcutsHelpView: View {
     static func groups(_ s: Shortcuts) -> [HelpGroup] {
         // The keys that end the slideshow; all but S close the playlist first
         let closers = s.keys(.endSlideshow).filter { $0 != KeyChord(.char("s")) }.map(\.text).joined(separator: " / ")
-        // The Atlas's arrows (`atlasKey`), which can't be changed
-        let atlasArrows = KeyCaps.either([KeyChord(.right).caps, KeyChord(.left).caps]).text
+        // The Atlas moves with the grid's keys (`atlasKey` takes what they carry out)
+        let atlasArrows = HelpKeys.pair(.gridNext, .gridPrevious).text(s) ?? ""
         let rows: [(LocalizedStringKey, [Row])] = [
             ("Grid", [
                 Row(.pair(.gridPrevious, .gridNext), action: "Previous / next item"),
@@ -162,7 +162,8 @@ struct ShortcutsHelpView: View {
             ]),
             ("Atlas", [
                 Row(.action(.toggleList), action: "From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid"),
-                Row(.words("arrows"), action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
+                Row(.pair(.gridPrevious, .gridNext), .pair(.gridRowUp, .gridRowDown),
+                    action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails), action: "Atlas: zoom the map in / out"),
                 Row(.pair(.gridFirst, .gridLast), action: "Atlas: the first / last item in time"),
                 Row(.words("double-click"), action: "Atlas: on several items, zoom in until they part; on one, open it"),
