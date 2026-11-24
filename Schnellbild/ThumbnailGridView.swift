@@ -678,7 +678,14 @@ struct EntryInteractions: ViewModifier {
     @EnvironmentObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
 
-    private var key: ModifierClicks.Key { ModifierClicks.Key(pane: ObjectIdentifier(model), path: entry.canonicalPath) }
+    /// This tile's or row's own: a grid tile and the list row of the same
+    /// item are on screen together while the view switches (SwiftUI places
+    /// the new rows before the old tiles go), and one going must not take
+    /// the other's frame or hover with it.
+    @State private var instance = UUID()
+    private var key: ModifierClicks.Key {
+        ModifierClicks.Key(pane: ObjectIdentifier(model), path: entry.canonicalPath, instance: instance)
+    }
 
     private func hover() {
         let entry = entry, model = model
@@ -914,10 +921,12 @@ struct Clicks: ViewModifier {
 /// (`cover`); a click on a bar or the header is left to it.
 @MainActor
 enum ModifierClicks {
-    /// A tile or row on screen: its pane and its item (canonical path).
+    /// A tile or row on screen: its pane, its item (canonical path) and the
+    /// view showing it (a tile and a row of the same item are two).
     struct Key: Hashable {
         let pane: ObjectIdentifier
         let path: String
+        var instance: UUID? = nil
     }
 
     private static var hovered: (key: Key, action: (NSEvent.ModifierFlags) -> Void)?
@@ -943,7 +952,7 @@ enum ModifierClicks {
         if hovered?.key == key { hovered = nil }
     }
     /// Told on every move of the tile (scrolling): the action is made only
-    /// for a tile not placed yet (the same key is the same item in the same pane).
+    /// for a tile not placed yet (the same key is the same item in the same view).
     static func place(_ key: Key, frame: CGRect, in window: WindowModel,
                       action: @autoclosure () -> (NSEvent.ModifierFlags) -> Void) {
         if frames[key] != nil { frames[key]?.frame = frame; return }
