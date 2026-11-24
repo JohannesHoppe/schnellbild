@@ -317,7 +317,8 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
                 : presentationTimeStamp.isNegativeInfinity ? Int64.min
                 : CMTimeConvertScale(presentationTimeStamp, timescale: timescale, method: .default).value
             // Quick Look asks for its thumbnail at 10 s: a video that ends before
-            // (its last frame, not only its stated duration) gives a picture a quarter in
+            // (its last frame, not only its stated duration) gives a picture a quarter in.
+            // Who asks isn't known here, so any other time past the end gets it too.
             if source.duration > 0, target > source.duration, target != .max, let last = lastFrameTime(), target > last {
                 target = source.duration / 4
             }
