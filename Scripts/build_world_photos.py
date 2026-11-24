@@ -83,7 +83,9 @@ def main():
             sys.exit(f"!! {title}: SHA-1 {got}, Commons says {sha1}")
         subprocess.run(["swift", tag, original, os.path.join(OUT, name), str(lat), str(lon), taken], check=True)
         notice += [f"{name}", f"  {title} by {author}, {licence}", f"  {page(title)}", ""]
-    open(os.path.join(OUT, "LICENSES.txt"), "w").write("\n".join(notice))
+    # UTF-8 whatever the locale: the names are not all ASCII, and the file's SHA-256 is pinned
+    with open(os.path.join(OUT, "LICENSES.txt"), "w", encoding="utf-8") as f:
+        f.write("\n".join(notice))
     for name in sorted(os.listdir(OUT)):
         p = os.path.join(OUT, name)
         print(hashlib.sha256(open(p, "rb").read()).hexdigest(), name)

@@ -43,7 +43,7 @@ import argparse, gzip, hashlib, io, json, math, multiprocessing as mp, os, re, s
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # python3 -I leaves Scripts/ off the path
 sys.dont_write_bytecode = True
-from _build_common import RELEASES, read_env, sha256_file  # noqa: E402
+from _build_common import RELEASES, download, read_env, sha256_file  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = "Schnellbild-map-pipeline (github.com/JohannesHoppe/schnellbild)"
@@ -105,41 +105,7 @@ def fetch_archived(env, name, sha, path):
     """Downloads the archive's file <name> to <path> (resuming a .part left behind), checked
     against <sha>. False when the archive can't be reached; a file that arrives with another
     SHA-256 stops the build."""
-    url = archive_url(env, name)
-    part = path + ".part"
-    print(f"==> {url}", file=sys.stderr)
-    for attempt in range(4):
-        have = os.path.getsize(part) if os.path.exists(part) else 0
-        headers = {"User-Agent": UA}
-        if have:
-            headers["Range"] = f"bytes={have}-"
-        try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=120) as r:
-                mode = "ab" if have and r.status == 206 else "wb"
-                with open(part, mode) as f:
-                    while True:
-                        chunk = r.read(1 << 20)
-                        if not chunk:
-                            break
-                        f.write(chunk)
-            break
-        except urllib.error.HTTPError as e:
-            if e.code == 416:  # the .part is whole already
-                break
-            print(f"   archive: {e}", file=sys.stderr)
-            if e.code in (403, 404, 410):
-                return False
-        except Exception as e:  # transient network errors: try again a few times
-            print(f"   archive: {e}", file=sys.stderr)
-        time.sleep(3 + attempt * 5)
-    else:
-        return False
-    digest = sha256_file(part)
-    if digest != sha:
-        os.remove(part)
-        sys.exit(f"!! {name} from the archive has SHA-256 {digest}, map_data.env pins {sha}")
-    os.replace(part, path)
-    return True
+    return download(archive_url(env, name), path, sha, "map_data.env", user_agent=UA)
 
 
 # --- PMTiles v3 -----------------------------------------------------------------------------
@@ -410,7 +376,7 @@ class Source:
                 self.verified[path] = True
         elif not os.path.exists(path):
             self.read_directory(max_zoom, path)
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             cached = json.load(f)
         return cached["header"], [tuple(e) for e in cached["entries"]]
 
@@ -430,7 +396,7 @@ class Source:
                 print(f"   leaf directory at tile {tile_id}: {len(out)} entries so far", file=sys.stderr)
             else:
                 out.append((tile_id, run, length, offset))
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump({"url": self.url, "header": h, "entries": out}, f)
 
     def chunks(self):
@@ -823,14 +789,12 @@ def thin_layer(name, body, tile=(0, 0, 0)):
             parts = decode_lines(geometry)
             kept = split_border(parts, kind, tile, extent)
             if kept != parts:
-                _borders_changed[0] = True
                 pieces = [(attrs, encode_lines(kept))] if kept else []
         for piece_attrs, piece_geometry in pieces:
             add_feature([(k, val) for k, val in piece_attrs if k in keep], gtype, piece_geometry)
     if name == "boundaries" and _added_borders:
         added = added_border_parts(tile, extent)
         if added:
-            _borders_changed[0] = True
             attrs = [("kind", string_value("country")), ("kind_detail", varint_bytes((4 << 3) | 0) + varint_bytes(2)),
                      ("disputed", varint_bytes((7 << 3) | 0) + varint_bytes(1))]
             add_feature(attrs, 2, encode_lines(added))
@@ -873,17 +837,9 @@ def _init_worker(chunks):
     _reader = TileReader(chunks)
 
 
-_borders_changed = [False]
-
-
 def map_work(batch):
-    """(offset, thinned tile, whether a border of it was changed) for each (offset, tile id, length)."""
-    out = []
-    for offset, tile_id, length in batch:
-        _borders_changed[0] = False
-        raw = thin_tile(_reader.read(offset, length), id_to_zxy(tile_id))
-        out.append((offset, raw, _borders_changed[0]))
-    return out
+    """(tile id, thinned tile) for each (offset, tile id, length)."""
+    return [(tile_id, thin_tile(_reader.read(offset, length), id_to_zxy(tile_id))) for offset, tile_id, length in batch]
 
 
 def places_work(batch):
@@ -1549,31 +1505,24 @@ def main():
     load_politics(countries_zip, disputed_zip)
 
     ctx = mp.get_context("fork")
-    # Map tiles: every addressed tile up to max_zoom, thinned (the same source bytes thinned once)
+    # Map tiles: every addressed tile up to max_zoom, thinned where it shows. A border is
+    # changed by where the tile lies (split_border, ADDED_BORDERS), so a tile the source stores
+    # once for many places (the open sea, a desert) can come out differently in one of them;
+    # write_pmtiles stores identical results once again
     print(f"==> Map tiles, zoom 0 to {max_zoom}", file=sys.stderr)
     limit = first_id(max_zoom + 1)
-    # Each stored tile once, thinned at the first tile that shows it; a border is changed by where
-    # the tile lies, so a tile whose border was changed may show in that one place only
-    first_tile, uses = {}, {}
-    for tile_id, run, length, offset in entries:
-        if tile_id < limit:
-            first_tile.setdefault(offset, (tile_id, length))
-            uses[offset] = uses.get(offset, 0) + min(run, limit - tile_id)
-    unique = sorted((offset, tile_id, length) for offset, (tile_id, length) in first_tile.items())
-    batches = [unique[i:i + 200] for i in range(0, len(unique), 200)]
-    thinned = {}  # by the source offset
-    with ctx.Pool(args.jobs, initializer=_init_worker, initargs=(chunks,)) as pool:
-        for part in pool.imap_unordered(map_work, batches):
-            for offset, raw, changed in part:
-                if changed and uses[offset] > 1:
-                    sys.exit(f"!! a tile shown in {uses[offset]} places had a border changed by its place")
-                thinned[offset] = raw
-    tiles = []
+    shown = []
     for tile_id, run, length, offset in entries:
         if tile_id >= limit:
             break
-        for t in range(tile_id, min(tile_id + run, limit)):
-            tiles.append((t, thinned[offset]))
+        shown += [(offset, t, length) for t in range(tile_id, min(tile_id + run, limit))]
+    shown.sort()   # the source's order: each batch reads one stretch of it
+    batches = [shown[i:i + 200] for i in range(0, len(shown), 200)]
+    thinned = {}  # by the tile id
+    with ctx.Pool(args.jobs, initializer=_init_worker, initargs=(chunks,)) as pool:
+        for part in pool.imap_unordered(map_work, batches):
+            thinned.update(part)
+    tiles = sorted(thinned.items())
     build = env["PROTOMAPS_BUILD"]
     metadata = {
         "name": f"Schnellbild offline map {build}",
@@ -1607,8 +1556,6 @@ def main():
     notice = notice_text(env, map_stats, count)
     with open(os.path.join(args.out, env["NOTICE_FILE"]), "w", encoding="utf-8") as f:
         f.write(notice)
-    with open(os.path.join(ROOT, "Resources", "Licenses", "OpenStreetMap-data.txt"), "w", encoding="utf-8") as f:
-        f.write(notice)
 
     ok = True
     for key, path in (("MAP_SHA256", map_path), ("PLACES_SHA256", places_path)):
@@ -1620,6 +1567,9 @@ def main():
               f"{'' if same else f' (map_data.env {key}: {env[key]})'}")
     if args.check and not ok:
         sys.exit("!! the files differ from the ones pinned in map_data.env")
+    # The committed notice describes the pinned files: a failed check leaves it alone
+    with open(os.path.join(ROOT, "Resources", "Licenses", "OpenStreetMap-data.txt"), "w", encoding="utf-8") as f:
+        f.write(notice)
 
 
 def self_test():
