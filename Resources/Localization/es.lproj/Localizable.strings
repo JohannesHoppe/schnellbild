@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Conservar ambos: el nuevo recibe un número. Omitir: se queda donde está. Cancelar: no se traslada ni se copia nada.";
 "Apply to all" = "Aplicar a todos";
 "Copied, but the original couldn't be removed: %@" = "Copiado, pero no se ha podido eliminar el original: %@";
+"Copied, but only part of the original could be removed: %@" = "Copiado, pero solo se ha podido eliminar una parte del original: %@";
 "Not everything was moved or copied." = "No se ha trasladado ni copiado todo.";
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» ya no es el ítem que Schnellbild puso ahí, así que se queda como está.";

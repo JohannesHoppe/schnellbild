@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Оставить оба: новый объект получит номер. Пропустить: он останется на месте. Отменить: ничего не будет перемещено или скопировано.";
 "Apply to all" = "Применить ко всем";
 "Copied, but the original couldn't be removed: %@" = "Скопировано, но оригинал не удалось удалить: %@";
+"Copied, but only part of the original could be removed: %@" = "Скопировано, но оригинал удалось удалить лишь частично: %@";
 "Not everything was moved or copied." = "Не все объекты были перемещены или скопированы.";
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» уже не тот объект, который туда поместил Schnellbild, поэтому он остается как есть.";

@@ -214,9 +214,10 @@ extension BrowserModel {
                         done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(original)))
                     case (.trashed(let original, _, let identity), false):
                         try check(original, identity)
-                        guard let inTrash = try trash(original) else { throw CocoaError(.fileWriteUnknown) }
+                        // (in the Trash; a volume that doesn't say where gives no Undo, as the Trash itself)
+                        let inTrash = try trash(original)
                         changes.append(.removed(original))
-                        done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(inTrash)))
+                        if let inTrash { done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(inTrash))) }
                     }
                 } catch {
                     return (done, changes, folders, error)

@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Behold begge: det nye får et nummer. Hopp over: det blir der det er. Avbryt: ingenting flyttes eller kopieres.";
 "Apply to all" = "Bruk for alle";
 "Copied, but the original couldn't be removed: %@" = "Kopiert, men originalen kunne ikke fjernes: %@";
+"Copied, but only part of the original could be removed: %@" = "Kopiert, men bare en del av originalen kunne fjernes: %@";
 "Not everything was moved or copied." = "Ikke alt ble flyttet eller kopiert.";
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» er ikke lenger objektet Schnellbild la der, så det blir som det er.";

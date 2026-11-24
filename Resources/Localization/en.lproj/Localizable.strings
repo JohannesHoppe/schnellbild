@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied.";
 "Apply to all" = "Apply to all";
 "Copied, but the original couldn't be removed: %@" = "Copied, but the original couldn't be removed: %@";
+"Copied, but only part of the original could be removed: %@" = "Copied, but only part of the original could be removed: %@";
 "Not everything was moved or copied." = "Not everything was moved or copied.";
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” is no longer the item Schnellbild put there, so it stays as it is.";

@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "両方を残す：新しい項目に番号が付きます。スキップ：元の場所に残ります。キャンセル：何も移動もコピーもされません。";
 "Apply to all" = "すべてに適用";
 "Copied, but the original couldn't be removed: %@" = "コピーしましたが、元の項目を削除できませんでした：%@";
+"Copied, but only part of the original could be removed: %@" = "コピーしましたが、元の項目は一部しか削除できませんでした：%@";
 "Not everything was moved or copied." = "一部の項目は移動またはコピーされませんでした。";
 "“%@”: %@" = "“%@”：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”は Schnellbild がそこに置いた項目ではなくなっているため、そのままにします。";

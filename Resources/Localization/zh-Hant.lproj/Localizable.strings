@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "保留兩者：新項目會加上編號。略過：它留在原處。取消：不搬移也不拷貝任何內容。";
 "Apply to all" = "全部套用";
 "Copied, but the original couldn't be removed: %@" = "已拷貝，但無法移除原件：%@";
+"Copied, but only part of the original could be removed: %@" = "已拷貝，但原件只移除了一部分：%@";
 "Not everything was moved or copied." = "並非所有項目都已搬移或拷貝。";
 "“%@”: %@" = "「%@」：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "「%@」已不是 Schnellbild 放在那裡的項目，因此保持不變。";

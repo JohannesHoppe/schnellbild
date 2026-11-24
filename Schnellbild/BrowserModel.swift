@@ -230,6 +230,12 @@ struct FileActions {
                 outcome.done.append(TransferredFile(from: file, to: to, moved: false, identity: ItemIdentity.of(to, withContents: true)))
                 outcome.failed = (file.lastPathComponent, TransferError.originalKept(reason))
                 break files
+            } catch TransferError.originalPartlyRemoved(let reason) {
+                // Copied to another volume, the original partly gone: the
+                // copy stays, without an Undo that would trash it
+                outcome.done.append(TransferredFile(from: file, to: to, moved: false, identity: nil, originalDamaged: true))
+                outcome.failed = (file.lastPathComponent, TransferError.originalPartlyRemoved(reason))
+                break files
             } catch {
                 outcome.failed = (file.lastPathComponent, error)
                 break files
@@ -292,6 +298,9 @@ struct TransferredFile: Sendable {
     let to: URL
     let moved: Bool
     let identity: ItemIdentity?
+    /// Copied for a move to another volume, and only part of the original
+    /// could be removed: the copy is the only whole one.
+    var originalDamaged = false
 }
 
 /// What one item of a move did: its files carried out (a split archive's
@@ -304,10 +313,16 @@ struct TransferOutcome: Sendable {
 enum TransferError: LocalizedError {
     /// Copied to another volume for a move; the original couldn't be removed.
     case originalKept(String)
+    /// Copied to another volume for a move; removing the original stopped
+    /// part way (a locked file, a folder without write permission), so what
+    /// is left of it isn't whole.
+    case originalPartlyRemoved(String)
 
     var errorDescription: String? {
         switch self {
         case .originalKept(let reason): return String(localized: "Copied, but the original couldn't be removed: \(reason)")
+        case .originalPartlyRemoved(let reason):
+            return String(localized: "Copied, but only part of the original could be removed: \(reason)")
         }
     }
 }
@@ -479,7 +494,17 @@ enum LiveFiles {
         if from.deletingLastPathComponent().path != to.deletingLastPathComponent().path,
            sameVolume(from, to.deletingLastPathComponent()) == false {
             try copy(from, to)
-            do { try fm.removeItem(at: from) } catch { throw TransferError.originalKept(error.localizedDescription) }
+            // FileManager removes a folder item by item: one that can't go
+            // stops it with those before it gone. Whether anything went is
+            // told by the folder's contents before and after.
+            let original = ItemIdentity.of(from, withContents: true)
+            do {
+                try fm.removeItem(at: from)
+            } catch {
+                let whole = original.map { $0.matches(ItemIdentity.of(from, withContents: true)) } ?? false
+                throw whole ? TransferError.originalKept(error.localizedDescription)
+                            : TransferError.originalPartlyRemoved(error.localizedDescription)
+            }
             return
         }
         if from.path != to.path, from.path.lowercased() == to.path.lowercased() {
@@ -5422,10 +5447,17 @@ final class BrowserModel: ObservableObject {
         var failures: [(name: String, reason: String)] = []
         var undoParts: [UndoStep.Part] = []
         var copied = false
+        var damaged: [URL] = []
         for outcome in outcomes {
             for file in outcome.done {
-                undoParts.append(file.moved ? .moved(file.from, to: file.to, identity: file.identity)
-                                            : .copied(file.from, to: file.to, identity: file.identity))
+                // A copy whose original was partly removed is the only whole
+                // one: no Undo, which would move it to the Trash
+                if file.originalDamaged {
+                    damaged.append(file.from)
+                } else {
+                    undoParts.append(file.moved ? .moved(file.from, to: file.to, identity: file.identity)
+                                                : .copied(file.from, to: file.to, identity: file.identity))
+                }
                 if file.moved { moves.append(.moved(file.from, to: file.to)) } else { copied = true }
             }
             if let failed = outcome.failed { failures.append((failed.name, failed.error.localizedDescription)) }
@@ -5433,6 +5465,13 @@ final class BrowserModel: ObservableObject {
         if copied {
             // A copy: the target and every folder around it hold more now
             foldersChanged(FileChange.removed(folder).affectedFolders)
+        }
+        if !damaged.isEmpty {
+            // What is left of the originals: their folders read again
+            foldersChanged(damaged.flatMap { FileChange.removed($0).affectedFolders })
+            let holders = damaged.map { $0.deletingLastPathComponent() }
+            notifyFolderChanges(holders)
+            if shows(any: holders) { refresh(changed: holders) }
         }
         if !failures.isEmpty { fileActions.report(TransferFailure(failures: failures)) }
         Self.testLog("\(Date().timeIntervalSince1970) moved \(undoParts.count) into \(folder.lastPathComponent): \(outcomes.flatMap(\.done).map(\.from.lastPathComponent))")

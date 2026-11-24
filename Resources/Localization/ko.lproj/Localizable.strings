@@ -285,6 +285,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "모두 유지: 새 항목에 번호가 붙습니다. 건너뛰기: 원래 위치에 그대로 있습니다. 취소: 아무것도 이동하거나 복사하지 않습니다.";
 "Apply to all" = "모두에 적용";
 "Copied, but the original couldn't be removed: %@" = "복사했지만 원본을 제거할 수 없습니다: %@";
+"Copied, but only part of the original could be removed: %@" = "복사했지만 원본의 일부만 제거할 수 있었습니다: %@";
 "Not everything was moved or copied." = "일부 항목이 이동되거나 복사되지 않았습니다.";
 "“%@”: %@" = "‘%@’: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "‘%@’은(는) 더 이상 Schnellbild가 그곳에 둔 항목이 아니므로 그대로 둡니다.";

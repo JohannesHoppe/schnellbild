@@ -61,6 +61,8 @@ final class FileActionsSpy {
     /// Moves, transfers and copies of files with these names fail.
     var failOn: Set<String> = []
     var trashError: Error?
+    /// The Trash takes items without saying where they lie (a volume that doesn't).
+    var trashGivesNoPlace = false
     /// Runs while an item is being trashed (a second ⌘⌫ meanwhile).
     var duringTrash: (() -> Void)?
     /// Runs once an item was moved or renamed on disk, before the app
@@ -89,7 +91,7 @@ final class FileActionsSpy {
                 try FileManager.default.createDirectory(at: bin, withIntermediateDirectories: true)
                 let inTrash = bin.appendingPathComponent(url.lastPathComponent)
                 try FileManager.default.moveItem(at: url, to: inTrash)
-                return inTrash
+                return self.trashGivesNoPlace ? nil : inTrash
             },
             move: { from, to in
                 if let error = self.moveError { throw error }
@@ -3766,6 +3768,49 @@ final class UndoTests: XCTestCase {
         XCTAssertTrue(m.beginRename())
         try await m.rename(try XCTUnwrap(m.renameTarget), to: "d.jpg")
         XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
+    }
+
+    /// A move to another volume whose original could be removed only in
+    /// part: the copy is the only whole one, so there is no Undo Copy that
+    /// would move it to the Trash; what happened is reported.
+    func testACopyWhoseOriginalWasPartlyRemovedGetsNoUndo() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        let target = try tree.folder("Elsewhere")
+        let spy = FileActionsSpy()
+        spy.moveError = TransferError.originalPartlyRemoved("“a.jpg” is locked.")
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.move([tree.root.appendingPathComponent("Trip")], into: target, how: .move)
+        await waitUntil { m.transfersRunning == 0 && !spy.reported.isEmpty }
+        XCTAssertTrue(m.undoHistory.undoSteps.isEmpty, "no Undo for it")
+        let reasons = (spy.reported.first as? TransferFailure)?.failures.map(\.reason) ?? []
+        XCTAssertEqual(reasons, [TransferError.originalPartlyRemoved("“a.jpg” is locked.").localizedDescription])
+        XCTAssertTrue(m.names.contains("Trip"), "what is left of the original stays listed")
+    }
+
+    /// Redo of a Move to Trash on a volume that doesn't say where the item
+    /// went: it is in the Trash, it leaves the list, no error; it has no
+    /// Undo then, as when trashed the first time.
+    func testRedoOfATrashWithoutItsPlaceInTheTrash() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "b.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { !m.names.contains("b.jpg") }
+        m.undo()
+        await waitUntil { m.names.contains("b.jpg") && !m.undoHistory.running }
+        spy.trashGivesNoPlace = true
+        m.redo()
+        await waitUntil { !m.names.contains("b.jpg") && !m.undoHistory.running }
+        XCTAssertTrue(spy.reported.isEmpty, "\(spy.reported)")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("b.jpg").path))
+        XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
+        XCTAssertTrue(m.undoHistory.undoSteps.isEmpty)
     }
 
     /// The name was taken meanwhile: nothing is overwritten, it is reported.
