@@ -154,20 +154,33 @@ final class VLCPlaybackTests: XCTestCase {
         XCTAssertEqual(control.player.media?.url?.lastPathComponent, "b.mkv")
     }
 
+    /// A video played to its length: ended, the bar full.
+    func testAVideoPlayedToItsLengthEndsAtOne() async throws {
+        let url = fixture("grey.mp4")
+        let control = VLCPlaybackControl(source: .file(url, head: VLCSafety.head(of: url)), subtitles: false, onStateChange: { _, _ in })
+        defer { control.stop() }
+        control.play()
+        await waitUntil("played to its end", timeout: 30) { control.hasEnded && !control.isPlaying }
+        XCTAssertEqual(control.progress, 1)
+        let length = try XCTUnwrap(control.lengthSeconds)
+        XCTAssertEqual(try XCTUnwrap(control.playedSeconds), length, accuracy: 0.001)
+    }
+
     /// A download whose data ends before the length its header states
-    /// (`film.mkv.part`: 10 s, data to 5.8 s): at its end `progress` says
-    /// 1, `playedSeconds` where the data ended (where a grown download
-    /// opens again).
+    /// (`film.mkv.part`: 10 s, data to 5.8 s): at its end it has ended,
+    /// and `playedSeconds` and `progress` say where the data ended (where a
+    /// grown download opens again, where ← goes back from).
     func testADownloadEndedShortOfItsLengthSaysWhereItStood() async throws {
         let url = fixture("partial/film.mkv.part")
         let control = VLCPlaybackControl(source: .file(url, head: VLCSafety.head(of: url)), subtitles: false, onStateChange: { _, _ in })
         defer { control.stop() }
         control.play()
-        await waitUntil("played to the end of its data", timeout: 30) { control.progress == 1 && !control.isPlaying }
+        await waitUntil("played to the end of its data", timeout: 30) { control.hasEnded && !control.isPlaying }
         let length = try XCTUnwrap(control.lengthSeconds)
         XCTAssertEqual(length, 10, accuracy: 0.5)
         let stood = try XCTUnwrap(control.playedSeconds)
         XCTAssertGreaterThan(stood, 4)
         XCTAssertLessThan(stood, length - 1, "where its data ended, not its length")
+        XCTAssertEqual(try XCTUnwrap(control.progress), stood / length, accuracy: 0.001, "the bar stands there too")
     }
 }

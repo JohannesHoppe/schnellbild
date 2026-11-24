@@ -823,23 +823,33 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return ms > 0 ? Double(ms) / 1000 : nil
     }
 
+    var hasEnded: Bool { reachedEnd || player.state == .ended }
+
+    /// Where it ended, when that was more than a second before its length
+    /// (a download whose data ends there: its header states the whole
+    /// length): VLC's last time reported, in seconds. nil for an end at
+    /// its length and while it hasn't ended.
+    private var endedShortAt: Double? {
+        guard hasEnded, let length = lengthSeconds, let ms = endedAtMs, ms > 0, Double(ms) / 1000 < length - 1 else { return nil }
+        return Double(ms) / 1000
+    }
+
     /// Where it stands, as `progress` has it (a seek made while paused, the
-    /// place it was opened at); before the length is known, the place it
-    /// was opened at or VLC's time. Ended more than a second before its
-    /// length (a download whose data ends there: its header states the
-    /// whole length), where VLC last reported it, while `progress` says 1.
+    /// place it was opened at, where it ended short of its length); before
+    /// the length is known, the place it was opened at or VLC's time.
     var playedSeconds: Double? {
-        if let length = lengthSeconds, reachedEnd || player.state == .ended,
-           let ms = endedAtMs, ms > 0, Double(ms) / 1000 < length - 1 {
-            return Double(ms) / 1000
-        }
+        if let endedShortAt { return endedShortAt }
         if let length = lengthSeconds, let progress { return progress * length }
         if resumeMs > 0 { return Double(resumeMs) / 1000 }
         return timeReported == nil ? nil : Double(max(timeNow, 0)) / 1000
     }
 
+    /// Ended: 1, or where it ended short of its length.
     var progress: Double? {
-        if reachedEnd || player.state == .ended { return 1 }
+        if hasEnded {
+            guard let endedShortAt, let length = lengthSeconds else { return 1 }
+            return endedShortAt / length
+        }
         let length = player.media?.length.intValue ?? 0
         guard length > 0 else { return nil }
         // Opened where the user left it: VLC reports nothing while paused

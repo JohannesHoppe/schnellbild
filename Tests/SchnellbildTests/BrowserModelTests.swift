@@ -139,6 +139,10 @@ final class PlayerSpy: PlaybackControl {
     var playsWithoutLength = false
     var lengthSeconds: Double?
     var playedSeconds: Double?
+    /// Ended where its data ends, short of its length (a download), as VLC
+    /// reports it: `progress` stands there.
+    var endedShort = false
+    var hasEnded: Bool { endedShort || (!isPlaying && (progress ?? 0) >= 0.99) }
     func play()  { calls.append("play"); isPlaying = true }
     func pause() { calls.append("pause"); isPlaying = false }
     func seek(toProgress progress: Double) {
@@ -1983,6 +1987,27 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
     }
 
+    /// A download that ends where its data ends, short of its length: the
+    /// show moves on; paused there by the user, it stays.
+    func testSlideshowMovesOnFromADownloadEndedShortOfItsLength() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.mkv", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.slideshowInterval = .seconds(60)
+        m.startSlideshow(startingAt: tree.root.appendingPathComponent("b.mkv"))
+        await waitUntil { m.shownMediaEntry?.name == "b.mkv" }
+        let player = PlayerSpy()
+        m.activePlayer = player
+        player.progress = 0.58
+        player.isPlaying = false
+        m.playbackStateChanged(player, isPlaying: false)
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.mkv", "paused, not ended")
+        player.endedShort = true
+        m.playbackStateChanged(player, isPlaying: false)
+        XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
+    }
+
     func testSlideshowOfAFolderWithoutMediaDoesNotStart() async throws {
         let tree = try TempTree(self)
         try tree.file("notes.txt")
@@ -2257,6 +2282,20 @@ final class PlaybackTests: XCTestCase {
         m.handleKey(.right, command: false)
         XCTAssertEqual(m.selectedEntry?.name, "z.jpg", "past the end: the next item")
         XCTAssertEqual(m.mode, .detail)
+    }
+
+    /// A download played to where its data ends, short of its length: →
+    /// moves on as at its end, ← goes back a tenth from where it stands.
+    func testArrowsAtTheEndOfADownloadsData() async throws {
+        let (m, player) = try await openOnVideo()
+        player.progress = 0.58
+        player.isPlaying = false
+        player.endedShort = true
+        m.handleKey(.left, command: false)
+        XCTAssertEqual(player.calls.last, "seek 48 %", "a tenth back from where its data ended")
+        player.progress = 0.58
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg", "ended: on to the next item")
     }
 
     /// ⇧←/⇧→: a hundredth of the length, staying in the video at its ends.

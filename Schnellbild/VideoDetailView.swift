@@ -332,7 +332,7 @@ struct VideoDetailView: View {
                 // At its end (where its data ended), or never started (no
                 // place); one paused by the user stays, also without a
                 // length (a WebM a browser records)
-                let stopped = player.map { !$0.isPlaying && ($0.progress.map { $0 >= 0.97 } ?? ($0.playedSeconds == nil)) } ?? false
+                let stopped = player.map { !$0.isPlaying && ($0.hasEnded || ($0.progress.map { $0 >= 0.97 } ?? ($0.playedSeconds == nil))) } ?? false
                 guard unplayable != nil || stopped else { return true }
                 // Where it stood: where its data ended, not the length its header states
                 if let seconds = player?.playedSeconds, seconds > 0 { resumeAt = seconds }

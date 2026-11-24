@@ -109,6 +109,10 @@ protocol PlaybackControl: AnyObject {
     /// Position in the video, 0 (start) … 1 (end); nil while the length
     /// isn't known yet.
     var progress: Double? { get }
+    /// Played to its end: also where its data ends short of the length its
+    /// header states (a download), with `progress` and `playedSeconds` at
+    /// that place.
+    var hasEnded: Bool { get }
     func play()
     func pause()
     /// Jump to a position (0 … 1). From the end, playing resumes.
@@ -148,6 +152,8 @@ protocol PlaybackControl: AnyObject {
 }
 
 extension PlaybackControl {
+    /// Stopped at its length.
+    var hasEnded: Bool { !isPlaying && (progress ?? 0) >= 0.99 }
     var playerVolume: Double? { nil }
     var playerSpeed: Double? { nil }
     var playsWithoutLength: Bool { false }
@@ -6352,7 +6358,7 @@ final class BrowserModel: ObservableObject {
         let asked = pausedByKey
         pausedByKey = false
         // In a slideshow a video that played to its end hands over to the next item.
-        if slideshow != nil, !isPlaying, !asked, (player.progress ?? 0) >= 0.99 {
+        if slideshow != nil, !isPlaying, !asked, player.hasEnded {
             slideshowStep(+1)
         }
     }
@@ -6401,8 +6407,9 @@ final class BrowserModel: ObservableObject {
         }
         if direction > 0 {
             let target = progress + Self.videoJump
-            // At the end: on to the next item, but not with a key held down
-            if target >= 0.999 { if !keyRepeating { page(+1) } } else { player.seek(toProgress: target) }
+            // At the end (also where a download's data ends): on to the
+            // next item, but not with a key held down
+            if target >= 0.999 || player.hasEnded { if !keyRepeating { page(+1) } } else { player.seek(toProgress: target) }
         } else {
             // Close to the start counts as the start, so a playing video
             // doesn't keep catching the key.
