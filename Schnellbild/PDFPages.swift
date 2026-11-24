@@ -42,9 +42,41 @@ final class PDFPages: @unchecked Sendable {
         return ext == "pdf" || ext == "ai"
     }
 
+    /// The documents open now, by file (path, size and date; inside an
+    /// archive the archive's), held weakly: the tile, the full view and the
+    /// Inspector share one while any of them holds it, and none is kept
+    /// longer (a document can take 256 MB).
+    private final class Shared: @unchecked Sendable {
+        private struct Held { let stamp: String; weak var pages: PDFPages? }
+        private let lock = NSLock()
+        private var held: [String: Held] = [:]
+
+        func find(_ path: String, stamp: String) -> PDFPages? {
+            lock.withLock { held[path].flatMap { $0.stamp == stamp ? $0.pages : nil } }
+        }
+
+        func keep(_ pages: PDFPages, _ path: String, stamp: String) {
+            lock.withLock {
+                held = held.filter { $0.value.pages != nil }
+                held[path] = Held(stamp: stamp, pages: pages)
+            }
+        }
+    }
+    private static let shared = Shared()
+
     /// nil for a file that isn't a readable PDF, has no pages, or is locked
     /// with a password (an Illustrator file: that has no preview either).
+    /// A file open already (`Shared`) and unchanged gives that document.
     static func open(_ url: URL) async -> PDFPages? {
+        let stamp = await Blocking.run(.userInitiated) { PictureDecoders.Kept.stamp(of: url) }
+        let path = BrowserModel.canonicalPath(url)
+        if !stamp.isEmpty, let open = shared.find(path, stamp: stamp) { return open }
+        let pages = await read(url)
+        if let pages, !stamp.isEmpty { shared.keep(pages, path, stamp: stamp) }
+        return pages
+    }
+
+    private static func read(_ url: URL) async -> PDFPages? {
         guard let data = try? await MediaData.read(url), !Task.isCancelled else { return nil }
         let document = PDFDocument(data: data).flatMap { !$0.isLocked && $0.pageCount > 0 ? $0 : nil }
         guard BrowserModel.shownExtension(of: url) == "ai" else { return document.map { PDFPages(url: url, document: $0) } }

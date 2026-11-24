@@ -78,6 +78,46 @@ final class PDFPagesTests: XCTestCase {
         XCTAssertEqual(tile?.0.height, 200)
     }
 
+    /// The tile, the full view and the Inspector opening one PDF share the
+    /// document while one of them holds it: read once. A file rewritten
+    /// is read again; one no longer held by anyone too.
+    func testAPDFOpenAlreadyIsSharedWhileItIsHeld() async throws {
+        let tree = try TempTree(self)
+        let url = tree.root.appendingPathComponent("doc.pdf")
+        try makePDF(at: url)
+        let reads = Counter()
+        let saved = MediaData.fileReader
+        MediaData.fileReader = { url in reads.add(); return try MediaData.readFile(url) }
+        defer { MediaData.fileReader = saved }
+        var first = await PDFPages.open(url)
+        let second = await PDFPages.open(url)
+        XCTAssertNotNil(first)
+        XCTAssertTrue(first === second, "the document open already")
+        XCTAssertEqual(reads.value, 1)
+
+        // Rewritten: another size and date
+        try FileManager.default.removeItem(at: url)
+        var media = CGRect(x: 0, y: 0, width: 100, height: 100)
+        let context = try XCTUnwrap(CGContext(url as CFURL, mediaBox: &media, nil))
+        context.beginPDFPage(nil)
+        context.endPDFPage()
+        context.closePDF()
+        weak var gone: PDFPages?
+        do {
+            let rewritten = await PDFPages.open(url)
+            XCTAssertFalse(rewritten === first, "read again")
+            XCTAssertEqual(rewritten?.count, 1)
+            XCTAssertEqual(reads.value, 2)
+            gone = rewritten
+        }
+        first = nil
+        _ = first
+        if gone == nil {
+            _ = await PDFPages.open(url)
+            XCTAssertEqual(reads.value, 3, "held by no one: read again")
+        }
+    }
+
     func testAFileThatIsNoPDFOpensAsNothing() async throws {
         let tree = try TempTree(self)
         let fake = tree.root.appendingPathComponent("fake.pdf")
