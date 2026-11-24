@@ -188,6 +188,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         drawnOrder = []
         shownSize = CGSize(width: w, height: h)
         decodedSize = proposed
+        hardwareSource = source.hasPrefix("CVP")
         formatPending = false
         // VLC's earlier output has closed: nothing draws into the old scratch
         let oldScratch = scratch
@@ -572,6 +573,20 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         defer { lock.unlock() }
         return !formatPending
+    }
+
+    /// The output's pictures come from VideoToolbox (its chromas `CVPN`,
+    /// `CVPP` …), set when VLC opens it.
+    private var hardwareSource = false
+    /// A media opened again in software gets an output of its own: none is
+    /// open yet, or the open one takes VideoToolbox's pictures. Otherwise
+    /// (FFmpeg decoded it already: VP8, Theora, VC-1 …) VLC may hand the
+    /// open output on to the new media without opening it again, and only
+    /// `use(newFormat:)`'s two seconds would end the wait for it.
+    var opensAnewInSoftware: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return shownSize == nil || hardwareSource
     }
 
     /// `logging`: the next pictures with it are logged (UI tests).

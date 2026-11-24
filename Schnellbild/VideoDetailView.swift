@@ -163,6 +163,7 @@ struct VideoDetailView: View {
                 if same {
                     self.playing = (url, file)
                     model.activePlayerURL = url
+                    vlcControl?.follow(renamedTo: url)
                     return
                 }
             }
@@ -320,11 +321,13 @@ struct VideoDetailView: View {
                 guard now != before, now != nil else { return true }
                 size = now
                 let player = model.activePlayer
-                let stopped = player.map { !$0.isPlaying && ($0.progress ?? 1) >= 0.97 } ?? false
+                // At its end (where its data ended), or never started (no
+                // place); one paused by the user stays, also without a
+                // length (a WebM a browser records)
+                let stopped = player.map { !$0.isPlaying && ($0.progress.map { $0 >= 0.97 } ?? ($0.playedSeconds == nil)) } ?? false
                 guard unplayable != nil || stopped else { return true }
-                if let player, let length = player.lengthSeconds, let progress = player.progress {
-                    resumeAt = length * progress
-                }
+                // Where it stood: where its data ended, not the length its header states
+                if let seconds = player?.playedSeconds, seconds > 0 { resumeAt = seconds }
                 BrowserModel.testLog("video: grew, opened again | \(url.lastPathComponent)")
                 opening += 1
                 return true
