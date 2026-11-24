@@ -62,6 +62,11 @@ struct SBRar {
     bool encrypted = false;
     uint32_t crc = 0;
     uint64_t received = 0;
+    // The current entry's whole name: UnRAR's header struct holds only
+    // its first 1023 characters, its FileNameEx all of it (up to
+    // MAXPATHSIZE)
+    std::wstring nameW = std::wstring(MAXPATHSIZE, L'\0');
+    std::string name;
 };
 
 // UTF-8 ⇄ the wide strings UnRAR takes, with UnRAR's own converters
@@ -140,6 +145,10 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
     header->RedirName = entry->redirect;
     header->RedirNameSize = sizeof(entry->redirect) / sizeof(wchar_t);
     entry->redirect[0] = 0;
+    rar->nameW[0] = 0;
+    header->FileNameEx = &rar->nameW[0];
+    header->FileNameExSize = (unsigned int)rar->nameW.size();
+    rar->name.clear();
     int r;
     {
         ErrHandler.Clean();
@@ -150,7 +159,8 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
     if (r != ERAR_SUCCESS && r != ERAR_END_ARCHIVE && header->FileNameW[0] != 0
         && r == rar->lastProcessed && !(passwordError && rar->headersEncrypted)) r = ERAR_SUCCESS;
     if (r == ERAR_SUCCESS) {
-        toUTF8(header->FileNameW, entry->name, sizeof(entry->name));
+        rar->name.clear();
+        WideToUtf(std::wstring(rar->nameW.c_str()), rar->name);
         entry->size = ((uint64_t)header->UnpSizeHigh << 32) | header->UnpSize;
         uint64_t filetime = ((uint64_t)header->MtimeHigh << 32) | header->MtimeLow;   // 100 ns since 1601
         entry->modified = filetime ? (int64_t)(filetime / 10000000ULL) - 11644473600LL : 0;
@@ -223,6 +233,10 @@ extern "C" int sb_rar_password_asked(const SBRar *rar) { return rar->passwordAsk
 extern "C" int sb_rar_headers_encrypted(const SBRar *rar) { return rar->headersEncrypted; }
 extern "C" int sb_rar_solid(const SBRar *rar) { return rar->solid; }
 extern "C" int sb_rar_volume(const SBRar *rar) { return rar->volume; }
+
+extern "C" const char *sb_rar_name(const SBRar *rar) {
+    return rar->name.c_str();
+}
 
 extern "C" void sb_rar_redirect_utf8(const SBRarEntry *entry, char *out, size_t size) {
     toUTF8(entry->redirect, out, size);

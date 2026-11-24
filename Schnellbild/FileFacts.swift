@@ -26,13 +26,8 @@ struct FileFacts: Equatable, Sendable {
         let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any] ?? [:]
         facts.depth = (props[kCGImagePropertyDepth] as? NSNumber)?.intValue
         facts.profile = props[kCGImagePropertyProfileName] as? String
-        let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any] ?? [:]
-        let make = (tiff[kCGImagePropertyTIFFMake] as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
-        let model = (tiff[kCGImagePropertyTIFFModel] as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
-        // Models often name their make already ("Canon EOS R6")
-        let camera = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
-        facts.camera = camera.isEmpty ? nil : camera
-        if let decoded = PictureDecoders.facts(of: url),
+        facts.camera = PictureMetadata.camera(props[kCGImagePropertyTIFFDictionary] as? [CFString: Any] ?? [:])
+        if let decoded = PictureDecoders.facts(of: url, source: source),
            PictureDecoders.decodes(url) || RawDecoder.imageIOExtensions.contains(BrowserModel.shownExtension(of: url)) {
             // Decoded by the app (QOI, PCX, LibRaw): the format and depth of
             // the file, not of the picture handed to ImageIO

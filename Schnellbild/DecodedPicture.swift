@@ -30,12 +30,19 @@ struct DecodedPicture {
         pixels = [UInt8](repeating: 0, count: width * height * 4)
     }
 
-    func image() -> CGImage? {
-        guard let space = CGColorSpace(name: linear ? CGColorSpace.linearSRGB : CGColorSpace.sRGB),
-              let provider = CGDataProvider(data: Data(pixels) as CFData) else { return nil }
+    /// `body` with the picture as a CGImage drawn straight from `pixels`
+    /// (no copy of them: at 64 Mpx that would be another 256 MB); the image
+    /// is valid only inside `body`, which must not keep it.
+    func withImage<T>(_ body: (CGImage) -> T?) -> T? {
+        guard let space = CGColorSpace(name: linear ? CGColorSpace.linearSRGB : CGColorSpace.sRGB) else { return nil }
         let alpha: CGImageAlphaInfo = hasAlpha ? .last : .noneSkipLast
-        return CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
-                       space: space, bitmapInfo: CGBitmapInfo(rawValue: alpha.rawValue), provider: provider,
-                       decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+        return pixels.withUnsafeBytes { bytes -> T? in
+            guard let base = bytes.baseAddress,
+                  let provider = CGDataProvider(dataInfo: nil, data: base, size: bytes.count, releaseData: { _, _, _ in }),
+                  let image = CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: width * 4,
+                                      space: space, bitmapInfo: CGBitmapInfo(rawValue: alpha.rawValue), provider: provider,
+                                      decode: nil, shouldInterpolate: true, intent: .defaultIntent) else { return nil }
+            return body(image)
+        }
     }
 }

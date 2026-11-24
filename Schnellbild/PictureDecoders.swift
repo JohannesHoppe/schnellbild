@@ -64,15 +64,20 @@ enum PictureDecoders {
         case .raw:
             decoded = await RawDecoder.developed(data, named: url, half: false)
         }
-        guard let decoded, !Task.isCancelled else { return nil }
+        guard let decoded else { return nil }
+        // Kept even when its task was given up meanwhile: paging back or
+        // the Inspector finds it decoded
         Kept.shared.keep(url, stamp: stamp, decoded)
+        guard !Task.isCancelled else { return nil }
         return (decoded.source, decoded.bytes)
     }
 
-    /// The decoder's facts of a file decoded lately (the Inspector reads
-    /// them after the picture).
-    nonisolated static func facts(of url: URL) -> Facts? {
-        Kept.shared.facts(of: url)
+    /// The decoder's facts of `source`, when it is the picture the app
+    /// decoded of this file lately (the Inspector reads them after the
+    /// picture): not those of another source of the file (ImageIO's, a
+    /// version of the file read since).
+    nonisolated static func facts(of url: URL, source: CGImageSource) -> Facts? {
+        Kept.shared.facts(of: url, source: source)
     }
 
     /// A picture decoded and its facts.
@@ -83,8 +88,8 @@ enum PictureDecoders {
     }
 
     private static func ownDecoded(_ picture: DecodedPicture?, format: String, depth: Int) -> Decoded? {
-        guard let picture, let image = picture.image(),
-              let wrapped = source(of: image, properties: [:]) else { return nil }
+        // Encoded into the TIFF while the picture's own pixels are drawn from
+        guard let picture, let wrapped = picture.withImage({ source(of: $0, properties: [:]) }) else { return nil }
         return Decoded(source: wrapped.source, bytes: wrapped.bytes, facts: Facts(format: format, depth: depth))
     }
 
@@ -101,7 +106,7 @@ enum PictureDecoders {
 
     /// The last pictures decoded, by file (path, size and date; inside an
     /// archive the archive's), at most `limit` of them and `largestBytes`
-    /// in all.
+    /// in all: the newest always, each older one while it fits.
     final class Kept: @unchecked Sendable {
         static let shared = Kept()
         private let lock = NSLock()
@@ -121,9 +126,9 @@ enum PictureDecoders {
             return lock.withLock { items.first { $0.path == path && $0.stamp == stamp }?.decoded }
         }
 
-        func facts(of url: URL) -> Facts? {
+        func facts(of url: URL, source: CGImageSource) -> Facts? {
             let path = BrowserModel.canonicalPath(url)
-            return lock.withLock { items.first { $0.path == path }?.decoded.facts }
+            return lock.withLock { items.first { $0.path == path && $0.decoded.source === source }?.decoded.facts }
         }
 
         func keep(_ url: URL, stamp: String, _ decoded: Decoded) {
@@ -131,10 +136,12 @@ enum PictureDecoders {
             lock.withLock {
                 items.removeAll { $0.path == path }
                 items.insert((path, stamp, decoded), at: 0)
+                // The newest first, each older one while it still fits
                 var total = 0
                 items = Array(items.prefix(limit)).filter { item in
+                    guard total + item.decoded.bytes <= largestBytes || item.path == path else { return false }
                     total += item.decoded.bytes
-                    return total <= largestBytes || item.path == path
+                    return true
                 }
             }
         }
@@ -189,11 +196,16 @@ enum RawDecoder {
         deinit { flag.deallocate() }
     }
 
-    private static func onQueue<T: Sendable>(_ work: @escaping @Sendable (UnsafePointer<Int32>) -> T) async -> T {
+    /// `work` on the LibRaw queue; nil without running it when its task
+    /// was cancelled while it waited there (tiles scrolled away leave the
+    /// line, the newly visible ones don't wait behind them).
+    private static func onQueue<T: Sendable>(_ work: @escaping @Sendable (UnsafePointer<Int32>) -> T?) async -> T? {
         let cancel = Cancel()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { answer in
-                developing.addOperation { answer.resume(returning: work(UnsafePointer(cancel.flag))) }
+                developing.addOperation {
+                    answer.resume(returning: cancel.flag.pointee != 0 ? nil : work(UnsafePointer(cancel.flag)))
+                }
             }
         } onCancel: {
             cancel.flag.pointee = 1
@@ -212,11 +224,10 @@ enum RawDecoder {
     /// file's facts (camera, exposure, time, place) written in.
     static func developed(_ data: Data, named url: URL, half: Bool) async -> PictureDecoders.Decoded? {
         await onQueue { cancel -> PictureDecoders.Decoded? in
-            guard let info = facts(data) else { return nil }
-            let pixels = Int64(info.width) * Int64(info.height)
-            let halfSize = half || pixels > limits.max_pixels
+            // The headers read once: their facts come with the development
+            var info = SBRawFacts()
             var picture = SBRawPicture()
-            let status = data.withUnsafeBytes { sb_raw_develop($0.baseAddress, $0.count, limits, halfSize ? 1 : 0, cancel, &picture) }
+            let status = data.withUnsafeBytes { sb_raw_develop($0.baseAddress, $0.count, limits, half ? 1 : 0, cancel, &picture, &info) }
             guard status == 0 else { return nil }
             defer { sb_raw_free(&picture) }
             // Developed upright: no orientation of its own
@@ -235,9 +246,9 @@ enum RawDecoder {
     /// is the picture rendered, as the DNG specification has it).
     static func preview(_ data: Data, maxPixel: Int, allowBitmap: Bool) async -> CGImage? {
         await onQueue { _ -> CGImage? in
-            guard let info = facts(data) else { return nil }
+            var info = SBRawFacts()
             var picture = SBRawPicture()
-            let status = data.withUnsafeBytes { sb_raw_thumbnail($0.baseAddress, $0.count, limits, 0, &picture) }
+            let status = data.withUnsafeBytes { sb_raw_thumbnail($0.baseAddress, $0.count, limits, 0, &picture, &info) }
             guard status == 0 else { return nil }
             defer { sb_raw_free(&picture) }
             let image: CGImage?
@@ -265,15 +276,22 @@ enum RawDecoder {
     }
 
     /// For a file of ImageIO's RAW formats: the raw data developed by
-    /// LibRaw (nil for other files), kept like the app's own decodes.
-    static func fallback(_ url: URL) async -> (source: CGImageSource, inMemory: Int)? {
+    /// LibRaw (nil for other files), the one kept when it was shown before.
+    /// `keep()` keeps it like the app's own decodes, once it is shown.
+    static func fallback(_ url: URL) async -> (source: CGImageSource, inMemory: Int, keep: @Sendable () -> Void)? {
         guard imageIOExtensions.contains(BrowserModel.shownExtension(of: url)) else { return nil }
         let stamp = await Blocking.run(.userInitiated) { PictureDecoders.Kept.stamp(of: url) }
-        if let kept = PictureDecoders.Kept.shared.find(url, stamp: stamp) { return (kept.source, kept.bytes) }
+        if let kept = PictureDecoders.Kept.shared.find(url, stamp: stamp) { return (kept.source, kept.bytes, {}) }
         guard let data = try? await MediaData.read(url), !Task.isCancelled,
               let developed = await developed(data, named: url, half: false) else { return nil }
-        PictureDecoders.Kept.shared.keep(url, stamp: stamp, developed)
-        return (developed.source, developed.bytes)
+        return (developed.source, developed.bytes, { PictureDecoders.Kept.shared.keep(url, stamp: stamp, developed) })
+    }
+
+    /// LibRaw's development of one of ImageIO's RAW formats, when it was
+    /// shown in ImageIO's place (`replacement`) for this version of the file.
+    static func kept(_ url: URL) -> CGImageSource? {
+        guard imageIOExtensions.contains(BrowserModel.shownExtension(of: url)) else { return nil }
+        return PictureDecoders.Kept.shared.find(url, stamp: PictureDecoders.Kept.stamp(of: url))?.source
     }
 
     /// Whether the file is one of ImageIO's RAW formats (by its name or content).
@@ -319,20 +337,24 @@ enum RawDecoder {
     }
 
     /// For one of ImageIO's RAW formats whose picture by ImageIO is missing,
-    /// black or blown out: LibRaw's development at up to `maxPixel`, when it
-    /// comes out fine itself (a picture really that dark stays ImageIO's).
+    /// black or blown out: LibRaw's development at up to `maxPixel`, kept
+    /// (`PictureDecoders.Kept`) once it is taken. Without ImageIO's picture
+    /// LibRaw's is taken as it comes out (a bright scene is a picture);
+    /// against ImageIO's, only when it comes out fine itself (a picture
+    /// really that dark stays ImageIO's).
     static func replacement(of image: CGImage?, for url: URL, maxPixel: Int) async -> (source: CGImageSource, inMemory: Int, image: CGImage)? {
         guard isImageIORaw(url), image.map({ exposure(of: $0) != .fine }) ?? true,
               let developed = await fallback(url), !Task.isCancelled,
               let picture = MediaInfo.scaledDown(developed.source, at: 0, maxPixel: maxPixel, now: true),
-              exposure(of: picture) == .fine else { return nil }
+              image == nil || exposure(of: picture) == .fine else { return nil }
+        developed.keep()
         return (developed.source, developed.inMemory, picture)
     }
 
     /// The same for a tile (QuickLook's or ImageIO's): LibRaw's tile.
     static func thumbnailReplacement(of image: CGImage?, for url: URL, maxPixel: Int) async -> CGImage? {
         guard isImageIORaw(url), image.map({ exposure(of: $0) != .fine }) ?? true, !Task.isCancelled,
-              let tile = await thumbnail(of: url, maxPixel: maxPixel), exposure(of: tile) == .fine else { return nil }
+              let tile = await thumbnail(of: url, maxPixel: maxPixel), image == nil || exposure(of: tile) == .fine else { return nil }
         return tile
     }
 

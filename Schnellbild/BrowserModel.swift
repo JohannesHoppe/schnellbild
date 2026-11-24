@@ -428,10 +428,8 @@ enum LiveFiles {
     /// The http(s) address a .webloc (a property list) or .url (Windows'
     /// INI form) holds; nil for anything else.
     static func webAddress(in url: URL) -> URL? {
-        guard isWebLocation(url),
-              let values = try? url.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]),
-              values.isRegularFile == true, (values.fileSize ?? .max) < 64 * 1024,
-              let data = try? Data(contentsOf: url) else { return nil }
+        guard isWebLocation(url), let file = try? RegularFile.open(url), file.size < 64 * 1024,
+              let data = try? file.handle.read(upToCount: 64 * 1024) else { return nil }
         var address: String?
         if url.pathExtension.lowercased() == "webloc" {
             let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
@@ -2984,7 +2982,7 @@ final class BrowserModel: ObservableObject {
     /// The same for a file whose modification date is known (as listed).
     nonisolated static func captureDate(of url: URL, modified: Date?) async -> Date? {
         guard !ArchivePath.isInside(url) else { return nil }
-        return await LocationCache.shared.facts(of: url, modified: modified).time?.date
+        return await LocationCache.shared.facts(of: url, modified: modified, track: false).time?.date
     }
 
     private func sorted(_ list: [GridEntry]) -> [GridEntry] {

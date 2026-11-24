@@ -190,6 +190,14 @@ struct VideoDetailView: View {
                 archiveStream = stream
             }
             let loader = stream.map { ArchiveResourceLoader(stream: $0, fileName: url.lastPathComponent) }
+            // Only a regular file (`RegularFile`): AVFoundation and VLC would
+            // wait for ever for the writer of a FIFO named like a video
+            if stream == nil, !(await Blocking.run(.userInitiated, { RegularFile.canRead(url) })) {
+                guard !Task.isCancelled else { return }
+                checking = false
+                unplayable = String(localized: "The file can't be read.")
+                return
+            }
             // An MP4 whose download stopped before its index: nothing can
             // play it yet, which is said instead of a black view
             if stream == nil, await Blocking.run(.userInitiated, { FileBytes(url).map(MP4Boxes.indexCutOff) ?? false }) {

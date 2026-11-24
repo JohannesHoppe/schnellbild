@@ -1,4 +1,5 @@
 import Foundation
+import VLCFrames
 
 /// The files that belong to a file the App Sandbox opened alone (dropped
 /// from a folder outside every grant): its XMP sidecar, a DJI drone's flight
@@ -60,14 +61,10 @@ enum RelatedFiles {
     }
 
     /// Whether the process may open the file for reading (the sandbox's
-    /// answer, not only the permissions'), and it is a regular file.
-    /// Opened without blocking: a FIFO would otherwise wait for a writer.
+    /// answer, not only the permissions'), and it is a regular file
+    /// (`RegularFile`: a FIFO is refused, not waited on).
     static func canRead(_ url: URL) -> Bool {
-        let fd = Darwin.open(url.path, O_RDONLY | O_NONBLOCK)
-        guard fd >= 0 else { return false }
-        defer { close(fd) }
-        var info = stat()
-        return fstat(fd, &info) == 0 && (info.st_mode & S_IFMT) == S_IFREG
+        RegularFile.canRead(url)
     }
 
     private static let presenters = Locked<[RelatedPresenter]>([])

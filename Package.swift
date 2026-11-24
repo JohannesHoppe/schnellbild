@@ -60,7 +60,8 @@ let package = Package(
             path: "OfflineMap"
         ),
         // What the app and its thumbnail extension share of VLC: one frame of
-        // a video, and what VLC may do with a file someone else made.
+        // a video, what VLC may do with a file someone else made, and how
+        // such a file is opened (`RegularFile`).
         .target(
             name: "VLCFrames",
             dependencies: ["VLCKit"],

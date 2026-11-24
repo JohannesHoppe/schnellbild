@@ -51,13 +51,19 @@ typedef struct {
 int sb_raw_facts(const void *bytes, size_t size, SBRawLimits limits, SBRawFacts *facts);
 
 /// The picture the file carries for previews (JPEG, JPEG XL or a bitmap),
-/// the largest one no wider than `max_side` (0: any). Returns 0 or an error.
-int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limits, int max_side, SBRawPicture *out);
+/// the largest one no wider than `max_side` (0: any), and the headers'
+/// facts (`facts` may be NULL; filled once the headers are read, also when
+/// there is no preview). Returns 0 or an error.
+int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limits, int max_side, SBRawPicture *out, SBRawFacts *facts);
 
 /// The raw data developed (camera white balance, sRGB, 8 bits per sample,
-/// turned upright); `half` develops at half the size (four times faster).
-/// `cancel`: polled during the work (another thread sets it), nonzero stops it. Returns 0 or an error.
-int sb_raw_develop(const void *bytes, size_t size, SBRawLimits limits, int half, const int *cancel, SBRawPicture *out);
+/// turned upright); `half` develops at half the size (four times faster),
+/// as does a picture of more pixels than `limits.max_pixels`. `facts` (may
+/// be NULL) as for sb_raw_thumbnail. `cancel`: watched during the work
+/// (another thread sets it), nonzero stops it, also inside LibRaw's raw
+/// decoders. Returns 0 or an error.
+int sb_raw_develop(const void *bytes, size_t size, SBRawLimits limits, int half, const int *cancel, SBRawPicture *out,
+                   SBRawFacts *facts);
 
 void sb_raw_free(SBRawPicture *picture);
 

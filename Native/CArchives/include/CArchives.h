@@ -21,7 +21,6 @@ extern "C" {
 typedef struct SBRar SBRar;
 
 typedef struct {
-    char name[4096];          // UTF-8, '/'-separated
     uint64_t size;            // unpacked
     int64_t modified;         // Unix time, 0 when unknown
     int is_directory;
@@ -44,6 +43,9 @@ typedef int (*SBRarData)(void *context, const uint8_t *bytes, size_t count);
 SBRar *sb_rar_open(const char *path, const char *password, int list_only, int *result, int *password_asked);
 /// The next entry: 0, 10 at the end, or an UnRAR error code.
 int sb_rar_next(SBRar *rar, SBRarEntry *entry);
+/// The current entry's name, whole (UTF-8, '/'-separated); valid until
+/// the next sb_rar_next or sb_rar_close.
+const char *sb_rar_name(const SBRar *rar);
 /// The current entry's data through `data`; 0 or an UnRAR error code.
 int sb_rar_read(SBRar *rar, SBRarData data, void *context);
 /// Past the current entry without unpacking it (where the format allows).

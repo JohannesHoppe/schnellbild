@@ -201,11 +201,50 @@ extension LibVLCVideo {
         return nil
     }
 
+    /// A video track's pixel size and pixel shape (width / height of one pixel).
+    public struct Track: Equatable {
+        public var width: Int
+        public var height: Int
+        public var sampleAspect: Double
+
+        public init(width: Int, height: Int, sampleAspect: Double) {
+            self.width = width
+            self.height = height
+            self.sampleAspect = sampleAspect
+        }
+    }
+
+    /// The size a picture is shown at, by the full view and the tiles alike:
+    /// the track's visible size when it fits in what VLC decodes (else VLC's
+    /// own size), turned as VLC turns the picture, with non-square pixels
+    /// widened (or made taller); even sides, as NV12 needs. `visibleHeight`:
+    /// before the pixels are made square (it decides BT.601 or BT.709,
+    /// `VideoColour.isHD`).
+    public static func shownSize(track: Track?, decoded: (width: Int, height: Int)) -> (width: Int, height: Int, visibleHeight: Int) {
+        var w = decoded.width, h = decoded.height
+        var aspect = 1.0
+        if var track {
+            // VLC hands over an upright picture of a video stored turned
+            if (track.width > track.height) != (w > h), track.width != track.height, w != h {
+                swap(&track.width, &track.height)
+                track.sampleAspect = 1 / track.sampleAspect
+            }
+            if track.width <= w, track.height <= h { w = track.width; h = track.height }
+            if track.sampleAspect.isFinite, abs(track.sampleAspect - 1) > 0.01 {
+                aspect = min(max(track.sampleAspect, 0.25), 4)
+            }
+        }
+        let visibleHeight = h
+        if aspect > 1 { w = Int((Double(w) * aspect).rounded()) } else if aspect < 1 { h = Int((Double(h) / aspect).rounded()) }
+        func even(_ side: Int) -> Int { max(2, side + side % 2) }
+        return (even(w), even(h), visibleHeight)
+    }
+
     /// The video track's visible size and the shape of its pixels: from the
     /// media's tracks (what the container states), else from VLC's stream
     /// information (an elementary stream such as MPEG-1 video states its
     /// size only in the stream), square pixels then. nil: not known yet.
-    public static func visibleTrack(of media: VLCMedia) -> (width: Int, height: Int, sampleAspect: Double)? {
+    public static func visibleTrack(of media: VLCMedia) -> Track? {
         if let tracks = media.tracksInformation as? [[String: Any]] {
             for track in tracks where track[VLCMediaTracksInformationType] as? String == VLCMediaTracksInformationTypeVideo {
                 let number = { (key: String) in (track[key] as? NSNumber)?.intValue ?? 0 }
@@ -213,13 +252,13 @@ extension LibVLCVideo {
                 guard width > 0, height > 0 else { continue }
                 let num = number(VLCMediaTracksInformationSourceAspectRatio)
                 let den = number(VLCMediaTracksInformationSourceAspectRatioDenominator)
-                return (width, height, num > 0 && den > 0 ? Double(num) / Double(den) : 1)
+                return Track(width: width, height: height, sampleAspect: num > 0 && den > 0 ? Double(num) / Double(den) : 1)
             }
         }
-        if let stated = resolution(of: media) { return (stated.visible.width, stated.visible.height, 1) }
+        if let stated = resolution(of: media) { return Track(width: stated.visible.width, height: stated.visible.height, sampleAspect: 1) }
         // An MPEG-1 or MPEG-2 elementary stream (".m1v", ".m2v"): VLC states
         // its size only once its decoder has run, after its output opened
-        return media.url.flatMap(mpegSequenceSize(of:))
+        return media.url.flatMap(mpegSequenceSize(of:)).map { Track(width: $0.width, height: $0.height, sampleAspect: $0.sampleAspect) }
     }
 
     /// The size and pixel shape in an MPEG-1 / MPEG-2 video sequence header
@@ -228,9 +267,7 @@ extension LibVLCVideo {
     /// Square pixels unless MPEG-2 (an extension start code, 00 00 01 B5,
     /// follows) states a display aspect of 4:3, 16:9 or 2.21:1.
     static func mpegSequenceSize(of url: URL) -> (width: Int, height: Int, sampleAspect: Double)? {
-        guard url.isFileURL, let handle = try? FileHandle(forReadingFrom: url) else { return nil }
-        defer { try? handle.close() }
-        guard let head = try? handle.read(upToCount: 4096) else { return nil }
+        guard let head = RegularFile.head(of: url, count: 4096) else { return nil }
         let bytes = [UInt8](head)
         guard bytes.count >= 8 else { return nil }
         for at in 0..<(bytes.count - 7) where bytes[at] == 0 && bytes[at + 1] == 0 && bytes[at + 2] == 1 && bytes[at + 3] == 0xB3 {

@@ -1,4 +1,5 @@
 import Foundation
+import VLCFrames
 import AVFoundation
 import ImageIO
 
@@ -351,7 +352,7 @@ final class TrackFiles: @unchecked Sendable {
 ///   DateTimeOriginal with OffsetTimeOriginal, then DateTimeDigitized,
 ///   DateTime; QuickTime's creation date with its offset), Sony's clip XML,
 ///   XMP inside the file, GoPro's GPS time, a DJI flight log's clock, the
-///   movie header (UTC);
+///   movie header (UTC; a GoPro's holds the camera's clock, without zone);
 /// - place: an XMP sidecar, the file's own (EXIF GPS, QuickTime ISO 6709,
 ///   `©xyz`), GoPro's first good fix, a DJI flight log's first fix, Sony's
 ///   clip XML, XMP inside the file, and for anything still without a place,
@@ -363,17 +364,24 @@ enum CaptureReader {
     static let fixSamples = 120
     static let trackSamples = 300
 
-    static func facts(of url: URL, companions: Companions? = nil) async -> CaptureFacts {
+    /// `track`: a GoPro's route read too (hundreds of reads spread over the
+    /// video); sorting needs only the time and the place.
+    static func facts(of url: URL, companions: Companions? = nil, track wantsTrack: Bool = true) async -> CaptureFacts {
         guard !ArchivePath.isInside(url) else { return CaptureFacts() }
         // The folder and the files beside it: off Swift's threads, they wait on the disk
         let given = companions
-        let (companions, sidecar) = await Blocking.run(.utility) { () -> (Companions, (String, XMPMetadata.Facts)?) in
+        let around = await Blocking.run(.utility) { () -> (Companions, (String, XMPMetadata.Facts)?)? in
+            // Only a regular file (`RegularFile`): ImageIO and AVFoundation
+            // would wait for ever (uncancellable) for the writer of a FIFO
+            // named like a picture or video
+            guard RegularFile.canRead(url) else { return nil }
             let companions = given ?? Companions.of(url)
             let sidecar = companions.xmp.lazy.compactMap { file in
                 SidecarFile.read(file.url, limit: XMPMetadata.largest).flatMap(XMPMetadata.read).map { (file.name, $0) }
             }.first
             return (companions, sidecar)
         }
+        guard let (companions, sidecar) = around else { return CaptureFacts() }
         var times: [CaptureTime?] = []
         var places: [CapturePlace?] = []
         var track: GeoTrack?
@@ -387,7 +395,7 @@ enum CaptureReader {
             times.append(own.time)
             places.append(own.place)
         case .video:
-            let own = await video(url, companions: companions)
+            let own = await video(url, companions: companions, track: wantsTrack)
             times += own.times
             places += own.places
             track = own.track
@@ -416,11 +424,18 @@ enum CaptureReader {
 
     // MARK: Pictures
 
+    /// ImageIO's properties; for a RAW format only LibRaw reads (where
+    /// ImageIO gives none) LibRaw's, as the picture shown has them
+    /// (`RawDecoder.properties`). Waits on the disk.
     static func picture(_ url: URL) -> (time: CaptureTime?, place: CapturePlace?) {
         let options = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, options),
-              let props = CGImageSourceCopyPropertiesAtIndex(source, 0, options) as? [CFString: Any] else { return (nil, nil) }
-        return picture(props)
+        if let source = CGImageSourceCreateWithURL(url as CFURL, options),
+           let props = CGImageSourceCopyPropertiesAtIndex(source, 0, options) as? [CFString: Any] {
+            return picture(props)
+        }
+        guard PictureDecoders.format(of: url) == .raw, let data = try? MediaData.readFile(url),
+              let facts = RawDecoder.facts(data) else { return (nil, nil) }
+        return picture(RawDecoder.properties(facts, orientation: 1))
     }
 
     static func picture(_ props: [CFString: Any]) -> (time: CaptureTime?, place: CapturePlace?) {
@@ -459,7 +474,7 @@ enum CaptureReader {
         var track: GeoTrack?
     }
 
-    static func video(_ url: URL, companions: Companions) async -> VideoFacts {
+    static func video(_ url: URL, companions: Companions, track wantsTrack: Bool = true) async -> VideoFacts {
         var result = VideoFacts()
         // QuickTime metadata through AVFoundation (also the `mdta` keys iPhones write)
         let asset = AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
@@ -480,15 +495,16 @@ enum CaptureReader {
                                                        dji: DJIFlightLog.Log?, clip: SonyClipXML.Facts?, xmp: XMPMetadata.Facts?) in
             let file = FileBytes(url)
             let movie = file.flatMap(MP4Boxes.read)
-            let goPro = file.flatMap { file in movie.flatMap { telemetry(file, $0.telemetry, starts: $0.telemetryStarts) } }
+            let goPro = file.flatMap { file in movie.flatMap { telemetry(file, $0.telemetry, starts: $0.telemetryStarts, track: wantsTrack) } }
             let dji = companions.flightLog.flatMap { SidecarFile.read($0.url, limit: DJIFlightLog.largest) }.flatMap(DJIFlightLog.read)
             let clip = companions.clipXML.flatMap { SidecarFile.read($0.url, limit: SonyClipXML.largest) }.flatMap(SonyClipXML.read)
             let xmp = movie?.xmp.flatMap { XMPMetadata.read(Data($0)) }
             return (movie, goPro, dji, clip, xmp)
         }
         // A date AVFoundation reports that is the movie header's own moment
-        // ranks as the header (a GoPro writes its local clock there)
-        if let time = ownTime, time.offset == nil, let created = rest.movie?.created, abs(time.date.timeIntervalSince(created)) < 1 {
+        // (without zone, or as UTC) ranks as the header (a GoPro writes its
+        // local clock there)
+        if let time = ownTime, (time.offset ?? 0) == 0, let created = rest.movie?.created, abs(time.date.timeIntervalSince(created)) < 1 {
             ownTime = nil
         }
         let djiName = companions.flightLog?.name ?? ""
@@ -499,7 +515,14 @@ enum CaptureReader {
             rest.xmp?.time.map { CaptureTime($0, source: .embeddedXMP) },
             rest.goPro?.time.map { CaptureTime(utc: $0, source: .goPro) },
             rest.dji?.start.map { CaptureTime($0, source: .djiLog(djiName)) },
-            rest.movie?.created.map { CaptureTime(utc: $0, source: .movieHeader) },
+            rest.movie.flatMap { movie in
+                movie.created.map { created in
+                    // A GoPro (a telemetry track tells it) writes its own
+                    // clock there, without zone, like EXIF; other cameras UTC
+                    movie.telemetry.isEmpty ? CaptureTime(utc: created, source: .movieHeader)
+                        : CaptureTime(ClockReading(floating: created, offset: nil), source: .file)
+                }
+            },
         ]
         result.places = [
             ownPlace,
@@ -530,8 +553,9 @@ enum CaptureReader {
     /// locked fix's time less its place in the video: its payload's start, and its share of the
     /// payload's length by its place among the payload's samples), and a track of one
     /// fix per payload read, at most `trackSamples` payloads spread over the
-    /// video. Nil when the telemetry has no GPS.
-    static func telemetry(_ file: ByteSource, _ samples: [Range<UInt64>], starts: [Double] = []) -> (fix: GPMF.Fix?, time: Date?, track: [GeoTrack.Point])? {
+    /// video (none without `track`). Nil when the telemetry has no GPS.
+    static func telemetry(_ file: ByteSource, _ samples: [Range<UInt64>], starts: [Double] = [],
+                          track wantsTrack: Bool = true) -> (fix: GPMF.Fix?, time: Date?, track: [GeoTrack.Point])? {
         guard !samples.isEmpty else { return nil }
         func fixes(_ index: Int) -> [GPMF.Fix] {
             let range = samples[index]
@@ -550,7 +574,8 @@ enum CaptureReader {
             // start, and the sample's share of the payload (GPS9 times each
             // sample, and a locked one may come after unlocked ones)
             if time == nil, let timed = found.first(where: { $0.time != nil }), let fixTime = timed.time {
-                let start = index < starts.count ? starts[index] : 0
+                // Without the payloads' times: one second each, as `payloadLength` takes it
+                let start = index < starts.count ? starts[index] : Double(index)
                 let within = Double(timed.sample) / Double(max(1, timed.samples)) * payloadLength(index, starts: starts)
                 time = fixTime.addingTimeInterval(-(start + within))
             }
@@ -559,7 +584,7 @@ enum CaptureReader {
         first = first ?? locked
         var track: [GeoTrack.Point] = []
         let step = max(1, samples.count / trackSamples)
-        for index in stride(from: 0, to: samples.count, by: step) {
+        for index in stride(from: 0, to: wantsTrack ? samples.count : 0, by: step) {
             if let fix = fixes(index).first(where: \.isLocked) {
                 track.append(GeoTrack.Point(point: fix.point, altitude: fix.altitude, time: fix.time))
             }
@@ -596,14 +621,16 @@ extension ClockReading {
 /// The capture facts read so far, by file: its path, its modification date
 /// and its companions' (an XMP sidecar or a GPX track edited reads it again),
 /// so sorting again (another origin, the same folder later, search results)
-/// reads no header twice. Thread-safe.
+/// reads no header twice. A GoPro's route is read only when asked for
+/// (the Inspector, the Atlas), not for sorting. Thread-safe.
 final class LocationCache: @unchecked Sendable {
     static let shared = LocationCache()
 
-    private struct Known { let stamp: String; let facts: CaptureFacts }
+    private struct Known { let stamp: String; let facts: CaptureFacts; let withTrack: Bool }
     private var known: [String: Known] = [:]
     private let lock = NSLock()
-    private let read: @Sendable (URL, Companions) async -> CaptureFacts
+    /// The file, its companions, whether its route is wanted.
+    private let read: @Sendable (URL, Companions, Bool) async -> CaptureFacts
     private let companions: @Sendable (URL) -> Companions
     /// More files than this and the oldest knowledge goes (all of it: the
     /// entries are small, a folder read again is quick).
@@ -611,7 +638,9 @@ final class LocationCache: @unchecked Sendable {
 
     init(limit: Int = 500_000,
          companions: @escaping @Sendable (URL) -> Companions = { Companions.of($0) },
-         read: @escaping @Sendable (URL, Companions) async -> CaptureFacts = { await CaptureReader.facts(of: $0, companions: $1) }) {
+         read: @escaping @Sendable (URL, Companions, Bool) async -> CaptureFacts = {
+             await CaptureReader.facts(of: $0, companions: $1, track: $2)
+         }) {
         self.limit = limit
         self.companions = companions
         self.read = read
@@ -621,45 +650,34 @@ final class LocationCache: @unchecked Sendable {
         "\(modified?.timeIntervalSince1970 ?? -1)|\(companions.stamp)"
     }
 
-    /// The facts known for this version of the file and its companions; nil
-    /// when they haven't been read. Looks up the companions: waits on the disk.
-    func cachedFacts(_ url: URL, modified: Date?) -> CaptureFacts? {
-        cachedFacts(url, stamp: stamp(modified, companions(url)))
-    }
-
-    private func cachedFacts(_ url: URL, stamp: String) -> CaptureFacts? {
+    private func cachedFacts(_ url: URL, stamp: String, track: Bool) -> CaptureFacts? {
         lock.lock(); defer { lock.unlock() }
-        guard let entry = known[BrowserModel.canonicalPath(url)], entry.stamp == stamp else { return nil }
+        guard let entry = known[BrowserModel.canonicalPath(url)], entry.stamp == stamp, entry.withTrack || !track else { return nil }
         return entry.facts
     }
 
-    /// The place known: `.some(nil)` when the file was read and has none,
-    /// nil when it hasn't been read.
-    func cached(_ url: URL, modified: Date?) -> GeoPoint?? {
-        cachedFacts(url, modified: modified).map { $0.place?.location.point }
-    }
-
-    /// One file's facts, from the cache or the file and its companions.
+    /// One file's facts, from the cache or the file and its companions;
+    /// `track`: with a GoPro's route (read then if the facts known lack it).
     /// The companions are looked up off Swift's threads (they wait on the
     /// disk; eight at a time on a stalled share would hold the pool).
-    func facts(of url: URL, modified: Date?) async -> CaptureFacts {
+    func facts(of url: URL, modified: Date?, track: Bool = true) async -> CaptureFacts {
         let companions = companions
         let around = await Blocking.run(.utility) { companions(url) }
         let stamp = stamp(modified, around)
-        if let cached = cachedFacts(url, stamp: stamp) { return cached }
-        let facts = await read(url, around)
-        if !Task.isCancelled { store(facts, for: url, stamp: stamp) }
+        if let cached = cachedFacts(url, stamp: stamp, track: track) { return cached }
+        let facts = await read(url, around, track)
+        if !Task.isCancelled { store(facts, for: url, stamp: stamp, withTrack: track) }
         return facts
     }
 
-    private func store(_ facts: CaptureFacts, for url: URL, stamp: String) {
+    private func store(_ facts: CaptureFacts, for url: URL, stamp: String, withTrack: Bool) {
         lock.lock(); defer { lock.unlock() }
         if known.count >= limit { known.removeAll(keepingCapacity: true) }
-        known[BrowserModel.canonicalPath(url)] = Known(stamp: stamp, facts: facts)
+        known[BrowserModel.canonicalPath(url)] = Known(stamp: stamp, facts: facts, withTrack: withTrack)
     }
 
     func point(of url: URL, modified: Date?) async -> GeoPoint? {
-        await facts(of: url, modified: modified).place?.location.point
+        await facts(of: url, modified: modified, track: false).place?.location.point
     }
 
     /// The places of many files, eight read at a time; stops early when
@@ -682,10 +700,3 @@ final class LocationCache: @unchecked Sendable {
     }
 }
 
-extension MediaLocation {
-    /// A file's place, from its header and its companions (`CaptureReader`).
-    /// Waits on the disk: call it off the main thread.
-    static func read(_ url: URL) async -> GeoPoint? {
-        await CaptureReader.facts(of: url).place?.location.point
-    }
-}

@@ -11,11 +11,12 @@ protocol ByteReading: AnyObject, Sendable {
 /// What a format reader needs to know about a Matroska / WebM file, read in
 /// parts: the time scale and duration, the video tracks with their codec
 /// setup, the clusters (blocks of frames) with their start time and place,
-/// and each cluster's frames when first asked. Frame data itself is never
-/// read here; macOS reads it where `Frame.offset` says. Every size and
-/// offset is checked against the file, so a broken or hostile file ends
-/// with an error, never a read out of bounds; no element may be larger than
-/// `MatroskaIndex.largestRead`.
+/// and each cluster's frames when first asked, from the headers of its
+/// elements (`Window`: small reads, however large the cluster). Frame data
+/// itself is never read here; macOS reads it where `Frame.offset` says.
+/// Every size and offset is checked against the file, so a broken or
+/// hostile file ends with an error, never a read out of bounds; no header
+/// element (Info, Tracks) may be larger than `MatroskaIndex.largestRead`.
 final class MatroskaIndex: @unchecked Sendable {
     struct Track {
         var number: UInt64 = 0
@@ -55,7 +56,7 @@ final class MatroskaIndex: @unchecked Sendable {
     private(set) var tracks: [Track] = []
     private(set) var clusters: [Cluster] = []
 
-    /// The most read in one go: a header element, or one cluster's frame list.
+    /// The most read in one go: a header element (Info, Tracks).
     static let largestRead = 64 << 20
     /// Times and durations are held within this many timestamp units either
     /// way, so the sums and differences the reader works out never overflow.
@@ -116,13 +117,14 @@ final class MatroskaIndex: @unchecked Sendable {
         guard let segment = try header(at: &position), segment.id == 0x18538067 else { throw ParseError.notMatroska }
         let segmentEnd = segment.size.map { min(position + Int64($0), source.length) } ?? source.length
         // The top level of the segment: Info and Tracks read whole, clusters only by their head
-        while position < segmentEnd, let element = try header(at: &position) {
+        while position < segmentEnd, let (element, after) = try headerAndAfter(at: &position) {
             let start = position
             switch element.id {
             case 0x1549A966: try parseInfo(try body(element, at: start))
             case 0x1654AE6B: try parseTracks(try body(element, at: start))
             case 0x1F43B675:
-                let time = try clusterTime(at: start)
+                // Its Timestamp from the bytes read with its header: one read a cluster
+                let time = try clusterTime(at: start, read: after)
                 guard let size = element.size else {
                     // Written live, size unknown: it runs to the next cluster
                     let next = try nextCluster(after: start, before: segmentEnd)
@@ -142,39 +144,36 @@ final class MatroskaIndex: @unchecked Sendable {
     // MARK: Frames
 
     /// The frames of one track in a cluster, in file (decode) order; the
-    /// cluster is read on first use.
+    /// cluster's element headers are read on first use (its frames' data
+    /// passed over), so a cluster of any size gives its frames.
     func frames(inCluster index: Int, track: UInt64) throws -> [Frame] {
         if let known = lock.withLock({ framesByCluster[index] }) { return known[track] ?? [] }
         let cluster = clusters[index]
-        let length = cluster.end - cluster.offset
-        guard length >= 0, length <= Int64(Self.largestRead) else { throw ParseError.tooLarge }
-        let data = try source.read(at: cluster.offset, count: Int(length))
+        guard cluster.end >= cluster.offset else { throw ParseError.damaged }
+        var window = Window(source: source, end: cluster.end)
         var frames: [UInt64: [Frame]] = [:]
-        var reader = DataReader(data: data)
-        while let element = reader.element() {
+        var position = cluster.offset
+        while position < cluster.end, let (element, start, end) = try window.element(at: position) {
+            position = end
             switch element.id {
             case 0xA3:
-                if let frame = try reader.block(element, base: cluster.offset, clusterTime: cluster.time, keyframe: nil) {
+                if let frame = try window.block(from: start, to: end, clusterTime: cluster.time, keyframe: nil) {
                     frames[frame.track, default: []].append(frame.frame)
                 }
             case 0xA0:
                 // A BlockGroup: its Block is a keyframe unless it refers to another
-                let end = try reader.end(of: element)
-                var block: (DataReader.Element, Int)?
+                var block: (start: Int64, end: Int64)?
                 var references = false
-                while reader.position < end, let child = reader.element() {
-                    if child.id == 0xA1 { block = (child, reader.position) }
-                    if child.id == 0xFB { references = true }
-                    try reader.skip(child)
+                var child = start
+                while child < end, let (element, childStart, childEnd) = try window.element(at: child, within: end) {
+                    if element.id == 0xA1 { block = (childStart, childEnd) }
+                    if element.id == 0xFB { references = true }
+                    child = childEnd
                 }
-                if let (child, start) = block {
-                    var sub = reader
-                    sub.position = start
-                    if let frame = try sub.block(child, base: cluster.offset, clusterTime: cluster.time, keyframe: !references) {
-                        frames[frame.track, default: []].append(frame.frame)
-                    }
+                if let block, let frame = try window.block(from: block.start, to: block.end, clusterTime: cluster.time, keyframe: !references) {
+                    frames[frame.track, default: []].append(frame.frame)
                 }
-            default: try reader.skip(element)
+            default: break
             }
         }
         lock.withLock {
@@ -182,6 +181,67 @@ final class MatroskaIndex: @unchecked Sendable {
             framesByCluster[index] = frames
         }
         return frames[track] ?? []
+    }
+
+    /// Reads a cluster's element headers through a small window of the file,
+    /// read again only where a header lies outside it: a frame's data is
+    /// passed over, not read.
+    private struct Window {
+        let source: ByteReading
+        /// Where the cluster ends: nothing at or after it is read.
+        let end: Int64
+        static let size = 16 << 10
+        private var start: Int64 = 0
+        private var data = Data()
+
+        init(source: ByteReading, end: Int64) {
+            self.source = source
+            self.end = end
+        }
+
+        /// Up to `count` bytes from `offset`, within the cluster.
+        mutating func bytes(at offset: Int64, count: Int) throws -> Data {
+            let wanted = min(Int64(count), end - offset)
+            guard wanted > 0 else { return Data() }
+            if offset < start || offset + wanted > start + Int64(data.count) {
+                start = offset
+                data = try source.read(at: offset, count: Int(min(Int64(Self.size), end - offset)))
+            }
+            let from = Int(offset - start)
+            let to = min(data.count, from + Int(wanted))
+            guard from <= to else { return Data() }
+            return data.subdata(in: (data.startIndex + from)..<(data.startIndex + to))
+        }
+
+        /// The element whose header is at `offset`: its header, where its
+        /// contents start and end; nil at garbage, an unknown size, or an
+        /// element running past `limit` (the cluster's end by default).
+        mutating func element(at offset: Int64, within limit: Int64? = nil) throws -> (DataReader.Element, Int64, Int64)? {
+            var reader = DataReader(data: try bytes(at: offset, count: 12))
+            guard let element = reader.element(checkingSize: false), let size = element.size else { return nil }
+            let contents = offset + Int64(reader.position)
+            guard size <= UInt64(min(limit ?? end, end) - contents) else { return nil }
+            return (element, contents, contents + Int64(size))
+        }
+
+        /// A SimpleBlock or Block from its header: its track and frame.
+        /// Laced blocks (several frames in one, audio in practice) are left out.
+        mutating func block(from start: Int64, to end: Int64, clusterTime: Int64,
+                            keyframe: Bool?) throws -> (track: UInt64, frame: Frame)? {
+            let head = try bytes(at: start, count: 11)
+            let reader = DataReader(data: head)
+            guard let (track, numberLength) = reader.vint(at: 0), start + Int64(numberLength) + 3 <= end,
+                  numberLength + 3 <= head.count else {
+                throw ParseError.damaged
+            }
+            let at = head.startIndex + numberLength
+            let relative = Int16(bitPattern: UInt16(head[at]) << 8 | UInt16(head[at + 1]))
+            let flags = head[at + 2]
+            guard flags & 0x06 == 0 else { return nil }
+            let headerEnd = start + Int64(numberLength) + 3
+            return (track, Frame(offset: headerEnd, length: Int(end - headerEnd), time: clusterTime.saturatingAdd(Int64(relative)),
+                                 keyframe: keyframe ?? (flags & 0x80 != 0)))
+        }
     }
 
     /// Whether the track has a frame in the first `clusterLimit` clusters
@@ -214,12 +274,18 @@ final class MatroskaIndex: @unchecked Sendable {
 
     /// The element header at `position`, which then points at its contents.
     private func header(at position: inout Int64) throws -> Header? {
+        try headerAndAfter(at: &position)?.header
+    }
+
+    /// The same, with the bytes read after the header (a cluster's
+    /// Timestamp, its first child, is among them).
+    private func headerAndAfter(at position: inout Int64) throws -> (header: Header, after: Data)? {
         guard position < source.length else { return nil }
-        let bytes = try source.read(at: position, count: 12)
+        let bytes = try source.read(at: position, count: 44)
         var reader = DataReader(data: bytes)
         guard let element = reader.element(checkingSize: false) else { return nil }
         position += Int64(reader.position)
-        return Header(id: element.id, size: element.size)
+        return (Header(id: element.id, size: element.size), bytes.subdata(in: (bytes.startIndex + reader.position)..<bytes.endIndex))
     }
 
     private func body(_ header: Header, at start: Int64) throws -> Data {
@@ -229,24 +295,34 @@ final class MatroskaIndex: @unchecked Sendable {
         return data
     }
 
-    /// A cluster's Timestamp, its first child in every muxer seen.
-    private func clusterTime(at start: Int64) throws -> Int64 {
-        var reader = DataReader(data: try source.read(at: start, count: 32))
+    /// A cluster's Timestamp, its first child in every muxer seen: from
+    /// `read` (the bytes at `start` read already), else read from the file.
+    private func clusterTime(at start: Int64, read: Data) throws -> Int64 {
+        if let time = Self.timestamp(in: read) { return time }
+        return Self.timestamp(in: try source.read(at: start, count: 32)) ?? clusters.last?.time ?? 0
+    }
+
+    private static func timestamp(in data: Data) -> Int64? {
+        var reader = DataReader(data: data)
         while let element = reader.element(checkingSize: false) {
-            if element.id == 0xE7, let size = element.size, size <= 8, reader.position + Int(size) <= reader.data.count {
-                return min(Int64(clamping: try reader.uint(element)), Self.largestTime)
+            if element.id == 0xE7, let size = element.size, size <= 8, reader.position + Int(size) <= reader.data.count,
+               let value = try? reader.uint(element) {
+                return min(Int64(clamping: value), Self.largestTime)
             }
-            guard let size = element.size, reader.position + Int(size) <= reader.data.count else { break }
+            guard let size = element.size, size <= UInt64(reader.data.count - reader.position) else { break }
             reader.position += Int(size)
         }
-        return clusters.last?.time ?? 0
+        return nil
     }
 
     /// For a cluster of unknown size: where the next one starts.
     private func nextCluster(after start: Int64, before end: Int64) throws -> Int64 {
         var offset = start
+        // Small first (a cluster written live is short), larger as it goes on
+        var step = 64 << 10
         while offset < end {
-            let chunk = try source.read(at: offset, count: 1 << 20)
+            let chunk = try source.read(at: offset, count: step)
+            step = min(step * 4, 1 << 20)
             guard chunk.count >= 4 else { return end }
             for i in 0..<(chunk.count - 3) where chunk[chunk.startIndex + i] == 0x1F
                 && chunk[chunk.startIndex + i + 1] == 0x43 && chunk[chunk.startIndex + i + 2] == 0xB6 && chunk[chunk.startIndex + i + 3] == 0x75 {
@@ -370,27 +446,6 @@ struct DataReader {
 
     mutating func string(_ element: Element) throws -> String {
         String(decoding: try bytes(element).prefix { $0 != 0 }, as: UTF8.self)
-    }
-
-    /// A SimpleBlock or Block: its track and frame, the frame's place in the
-    /// file (`base` is where this data starts). Laced blocks (several frames
-    /// in one, audio in practice) are left out.
-    mutating func block(_ element: Element, base: Int64, clusterTime: Int64,
-                        keyframe: Bool?) throws -> (track: UInt64, frame: MatroskaIndex.Frame)? {
-        let start = position
-        let end = try end(of: element)
-        position = end
-        guard let (track, numberLength) = vint(at: start), start + numberLength + 3 <= end else {
-            throw MatroskaIndex.ParseError.damaged
-        }
-        let at = data.startIndex + start + numberLength
-        let relative = Int16(bitPattern: UInt16(data[at]) << 8 | UInt16(data[at + 1]))
-        let flags = data[at + 2]
-        guard flags & 0x06 == 0 else { return nil }
-        let headerEnd = start + numberLength + 3
-        return (track, MatroskaIndex.Frame(offset: base + Int64(headerEnd), length: end - headerEnd,
-                                           time: clusterTime.saturatingAdd(Int64(relative)),
-                                           keyframe: keyframe ?? (flags & 0x80 != 0)))
     }
 }
 

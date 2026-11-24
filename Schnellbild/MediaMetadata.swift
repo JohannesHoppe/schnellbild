@@ -117,7 +117,7 @@ enum PictureMetadata {
         var props = CGImageSourceCopyPropertiesAtIndex(source, 0, options) as? [CFString: Any] ?? [:]
         // A picture the app decoded (QOI, PCX, LibRaw): the file's own
         // bits, not those of the picture handed to ImageIO
-        if let url, PictureDecoders.decodes(url), let decoded = PictureDecoders.facts(of: url) {
+        if let url, PictureDecoders.decodes(url), let decoded = PictureDecoders.facts(of: url, source: source) {
             props[kCGImagePropertyDepth] = decoded.depth
         }
         var report = MediaReport()
@@ -139,10 +139,9 @@ enum PictureMetadata {
         var rows: [InfoRow] = []
         if let taken = takenText(exif: exif, tiff: tiff) { rows.append(InfoRow(label: String(localized: "Date Taken"), value: taken)) }
         if let camera = camera(tiff) { rows.append(InfoRow(label: String(localized: "Camera"), value: camera)) }
-        let lensModel = (exif[kCGImagePropertyExifLensModel] as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
-        let lensMake = (exif[kCGImagePropertyExifLensMake] as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
-        let lens = lensModel.lowercased().hasPrefix(lensMake.lowercased()) ? lensModel : [lensMake, lensModel].filter { !$0.isEmpty }.joined(separator: " ")
-        if !lens.isEmpty { rows.append(InfoRow(label: String(localized: "Lens"), value: lens)) }
+        if let lens = name(make: exif[kCGImagePropertyExifLensMake] as? String, model: exif[kCGImagePropertyExifLensModel] as? String) {
+            rows.append(InfoRow(label: String(localized: "Lens"), value: lens))
+        }
         if let f = number(kCGImagePropertyExifFNumber), f > 0 {
             rows.append(InfoRow(label: String(localized: "Aperture"), value: "ƒ/" + f.formatted(.number.precision(.fractionLength(0...1)))))
         }
@@ -182,10 +181,15 @@ enum PictureMetadata {
 
     /// The camera's own name ("Canon EOS R6"): models often name the make already.
     static func camera(_ tiff: [CFString: Any]) -> String? {
-        let make = (tiff[kCGImagePropertyTIFFMake] as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
-        let model = (tiff[kCGImagePropertyTIFFModel] as? String)?.trimmingCharacters(in: .whitespaces) ?? ""
-        let camera = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
-        return camera.isEmpty ? nil : camera
+        name(make: tiff[kCGImagePropertyTIFFMake] as? String, model: tiff[kCGImagePropertyTIFFModel] as? String)
+    }
+
+    /// A camera's or lens's name from its make and model: the model alone
+    /// when it names the make already ("Canon EOS R6"), else both.
+    static func name(make: String?, model: String?) -> String? {
+        let make = make?.trimmingCharacters(in: .whitespaces) ?? "", model = model?.trimmingCharacters(in: .whitespaces) ?? ""
+        let name = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
+        return name.isEmpty ? nil : name
     }
 
     /// The capture time as the camera's clock showed it, with its offset
@@ -197,20 +201,13 @@ enum PictureMetadata {
         return nil
     }
 
-    /// "2024:06:18 22:31:09" and "+02:00" as the user's locale writes a date.
+    /// "2024:06:18 22:31:09" and "+02:00" as the user's locale writes a
+    /// date, read as sorting and the Atlas read it (`ClockReading`): a
+    /// date that doesn't exist is none.
     static func wallClock(_ text: String, offset: String?) -> String? {
-        let parser = DateFormatter()
-        parser.locale = Locale(identifier: "en_US_POSIX")
-        parser.timeZone = TimeZone(identifier: "UTC")
-        parser.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        parser.isLenient = true
-        guard let date = parser.date(from: String(text.prefix(19))),
-              Calendar(identifier: .gregorian).component(.year, from: date) >= 1900 else { return nil }
-        var style = Date.FormatStyle(date: .abbreviated, time: .standard)
-        style.timeZone = TimeZone(identifier: "UTC")!
-        let shown = date.formatted(style)
-        guard let offset = offset?.trimmingCharacters(in: .whitespaces), offset.range(of: #"^[+-]\d\d:\d\d$"#, options: .regularExpression) != nil else { return shown }
-        return "\(shown) (UTC\(offset))"
+        guard var reading = ClockReading.parse(text) else { return nil }
+        if let offset { reading.offset = ClockReading.offset(offset) }
+        return CaptureTime(reading, source: .file).text
     }
 
     /// "1/250 s", "0.5 s", "30 s".
@@ -421,26 +418,16 @@ enum VideoMetadata {
             }
             return nil
         }
-        let make = await text([.quickTimeMetadataMake, .commonIdentifierMake]) ?? ""
-        let model = await text([.quickTimeMetadataModel, .commonIdentifierModel]) ?? ""
-        let camera = model.lowercased().hasPrefix(make.lowercased()) ? model : [make, model].filter { !$0.isEmpty }.joined(separator: " ")
-        if !camera.isEmpty { rows.append(InfoRow(label: String(localized: "Camera"), value: camera)) }
+        let make = await text([.quickTimeMetadataMake, .commonIdentifierMake])
+        let model = await text([.quickTimeMetadataModel, .commonIdentifierModel])
+        if let camera = PictureMetadata.name(make: make, model: model) { rows.append(InfoRow(label: String(localized: "Camera"), value: camera)) }
         return rows
     }
 
     /// QuickTime's "2024-06-18T22:31:09+0200": the time as the camera's
-    /// clock showed it, with its offset.
+    /// clock showed it, with its offset (`ClockReading`, as for sorting).
     static func takenText(_ text: String) -> String? {
-        let pattern = #"^(\d{4})-(\d\d)-(\d\d)[T ](\d\d):(\d\d)(?::(\d\d))?(?:\.\d+)?(Z|[+-]\d\d:?\d\d)?"#
-        guard let regex = try? NSRegularExpression(pattern: pattern),
-              let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) else { return nil }
-        func group(_ i: Int) -> String? { Range(match.range(at: i), in: text).map { String(text[$0]) } }
-        guard let y = group(1), let mo = group(2), let d = group(3), let h = group(4), let mi = group(5) else { return nil }
-        let wall = "\(y):\(mo):\(d) \(h):\(mi):\(group(6) ?? "00")"
-        var offset = group(7)
-        if offset == "Z" { offset = "+00:00" }
-        if let o = offset, o.count == 5 { offset = String(o.prefix(3)) + ":" + String(o.suffix(2)) }
-        return PictureMetadata.wallClock(wall, offset: offset)
+        ClockReading.parse(text).map { CaptureTime($0, source: .file).text }
     }
 
     static func videoRows(_ tracks: [AVAssetTrack], duration: CMTime) async -> [InfoRow] {

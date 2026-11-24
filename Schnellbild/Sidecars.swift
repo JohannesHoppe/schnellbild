@@ -1,4 +1,5 @@
 import Foundation
+import VLCFrames
 
 // MARK: - Times as files write them
 
@@ -32,7 +33,7 @@ struct ClockReading: Equatable, Sendable {
         if let digits = group(7) { fraction = Double("0." + digits) ?? 0 }
         var offset: Int?
         if let zone = group(8) {
-            if zone == "Z" {
+            if zone == "Z" || zone == "z" {
                 offset = 0
             } else {
                 let sign = zone.hasPrefix("-") ? -1 : 1
@@ -46,9 +47,10 @@ struct ClockReading: Equatable, Sendable {
     }
 
     /// Compiled once: a GPX track parses one time per point. Matching is
-    /// thread-safe (NSRegularExpression is immutable).
+    /// thread-safe (NSRegularExpression is immutable). RFC 3339 allows "t"
+    /// and "z" in lower case, and any number of digits of a second.
     private static let pattern = try! NSRegularExpression(
-        pattern: #"^\s*(\d{4})[-:](\d\d)[-:](\d\d)[T ](\d\d):(\d\d)(?::(\d\d)(?:[.,](\d{1,9}))?)?\s*(Z|[+-]\d\d(?::?\d\d)?)?"#)
+        pattern: #"^\s*(\d{4})[-:](\d\d)[-:](\d\d)[Tt ](\d\d):(\d\d)(?::(\d\d)(?:[.,](\d+))?)?\s*([Zz]|[+-]\d\d(?::?\d\d)?)?"#)
 
     /// A wall clock's date (read as UTC), nil for one that doesn't exist.
     static func floatingDate(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> Date? {
@@ -113,17 +115,13 @@ enum SafeXML {
 /// log, a clip XML), read only when it is a regular file of at most `limit`
 /// bytes: never a FIFO (a read would wait for a writer), a device (a link
 /// to /dev/zero never ends) or a folder, nor a file larger than its format
-/// allows. Checked on the opened file, opened without waiting.
+/// allows. Checked on the opened file, opened without waiting (`RegularFile`).
 enum SidecarFile {
     static func read(_ url: URL, limit: Int) -> Data? {
-        let descriptor = open(url.path, O_RDONLY | O_NONBLOCK | O_CLOEXEC)
-        guard descriptor >= 0 else { return nil }
-        let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
-        var info = stat()
-        guard fstat(descriptor, &info) == 0, info.st_mode & S_IFMT == S_IFREG, info.st_size <= limit else { return nil }
+        guard let file = try? RegularFile.open(url), file.size <= limit else { return nil }
         do {
             // At most one byte more than allowed: a file grown meanwhile is refused
-            let data = try handle.read(upToCount: limit + 1) ?? Data()
+            let data = try file.handle.read(upToCount: limit + 1) ?? Data()
             return data.count <= limit ? data : nil
         } catch {
             return nil
@@ -401,10 +399,21 @@ enum DJIFlightLog {
         }
         let stride = max(1, blocks.count / trackBlocks)
         var index = 0
+        var firstTracked: Int?
         while index < blocks.count {
             let record = parse(blocks[index])
-            if record.point != nil { log.track.append(record) }
+            if record.point != nil {
+                log.track.append(record)
+                if firstTracked == nil { firstTracked = index }
+            }
             index += stride
+        }
+        // A fix found only later (GPS locked after the blocks searched from
+        // the start): the first one lies between the track's first point
+        // and the block looked at before it
+        if log.first == nil, let tracked = firstTracked {
+            let from = max(min(2_000, blocks.count), tracked - stride + 1)
+            log.first = blocks[from..<tracked].lazy.map(parse).first { $0.point != nil } ?? log.track.first
         }
         return log.first == nil && log.start == nil ? nil : log
     }

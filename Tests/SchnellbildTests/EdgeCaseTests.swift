@@ -2,6 +2,7 @@ import XCTest
 import AVFoundation
 import ImageIO
 @testable import Schnellbild
+import VLCFrames
 
 // MARK: - Date taken from real files
 
@@ -401,6 +402,63 @@ final class MediaDataTests: XCTestCase {
         }
         XCTAssertEqual(ran, .success, "other async work waited behind the reads")
         XCTAssertEqual(done.wait(timeout: .now()), .success)
+    }
+
+    /// FIFOs named like videos, archives and PostScript: every reader that
+    /// opens a file someone else made (`RegularFile`) refuses them at once
+    /// instead of waiting for a writer: the capture facts, the Inspector's
+    /// first bytes, VLC's thumbnail, the archive index, the box reader.
+    func testFIFOsNamedLikeVideosAndArchivesAreRefusedAtOnce() throws {
+        let tree = try TempTree(self)
+        let fifos = try ["clip.mp4", "clip.mkv", "Photos.zip", "Comic.rar", "figure.eps", "plain"].map { name -> URL in
+            let url = tree.root.appendingPathComponent(name)
+            XCTAssertEqual(mkfifo(url.path, 0o600), 0)
+            return url
+        }
+        let (mp4, mkv, zip, rar, eps, plain) = (fifos[0], fifos[1], fifos[2], fifos[3], fifos[4], fifos[5])
+        let regular = try tree.file("real.mp4", bytes: 600)
+        final class Results: @unchecked Sendable {
+            private let lock = NSLock()
+            private var values: [String: String] = [:]
+            func set(_ key: String, _ value: String) { lock.withLock { values[key] = value } }
+            var all: [String: String] { lock.withLock { values } }
+        }
+        let results = Results()
+        let done = DispatchGroup()
+        func check(_ key: String, _ work: @escaping @Sendable () async -> String) {
+            done.enter()
+            Task.detached { results.set(key, await work()); done.leave() }
+        }
+        check("open") {
+            do { _ = try RegularFile.open(plain); return "opened" } catch let error as POSIXError { return "\(error.code == .EFTYPE)" } catch { return "\(error)" }
+        }
+        check("head") { "\(VLCSafety.head(of: mkv) == nil)" }
+        check("canRead") { "\(!RegularFile.canRead(mp4) && !RelatedFiles.canRead(mp4))" }
+        check("bytes") { "\(FileBytes(mp4) == nil)" }
+        check("sniff") { "\(ArchiveStore.sniffedFormat(zip) == nil && ArchiveStore.sniffedFormat(rar) == nil)" }
+        check("index") {
+            do { _ = try await ArchiveStore.shared.index(of: zip); return "indexed" } catch { return "threw" }
+        }
+        check("preview") { "\(EmbeddedPreview.content(of: eps, ext: "eps", size: 0) == nil)" }
+        check("capture") { "\(await CaptureReader.facts(of: mp4).isEmpty)" }
+        check("grab") { "\(await VLCFrameGrab.grab(of: mkv, width: 64, timeout: 30))" }
+        let finished = done.wait(timeout: .now() + 20)
+        // Whatever still waits for a writer is let go (an end of file), so nothing outlives the test
+        let deadline = Date() + 60
+        while done.wait(timeout: .now() + 0.05) == .timedOut, Date() < deadline {
+            for fifo in fifos {
+                let writer = open(fifo.path, O_WRONLY | O_NONBLOCK)
+                if writer >= 0 { close(writer) }
+            }
+        }
+        XCTAssertEqual(finished, .success, "a reader waited for a FIFO's writer: \(results.all)")
+        XCTAssertEqual(results.all, ["open": "true", "head": "true", "canRead": "true", "bytes": "true", "sniff": "true",
+                                     "index": "threw", "preview": "true", "capture": "true", "grab": "refused"])
+        // A regular file still reads
+        XCTAssertTrue(RegularFile.canRead(regular))
+        XCTAssertEqual(RegularFile.head(of: regular, count: 512)?.count, 512)
+        XCTAssertEqual(FileBytes(regular)?.size, 600)
+        XCTAssertEqual(FileBytes(regular)?.read(at: 600, count: 0), [], "no bytes are no bytes, not none")
     }
 
     /// A disk that stalls (each read waits until let go) under more reads
