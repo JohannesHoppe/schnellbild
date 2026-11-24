@@ -782,7 +782,7 @@ struct PaneView: View {
             if entry.kind == .video {
                 VideoDetailView(url: entry.url)
             } else {
-                FullImageView(url: entry.url)
+                FullImageView(url: entry.url, modified: entry.previewDate)
             }
         }
         // Videos keep the bottom edge free for the player's own controls.

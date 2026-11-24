@@ -1,5 +1,6 @@
 import SwiftUI
 import ImageIO
+import UniformTypeIdentifiers
 import CoreImage
 import AppKit
 import OfflineMap
@@ -14,6 +15,9 @@ import OfflineMap
 /// and zoomed, panned and turned on its own like a picture.
 struct FullImageView: View {
     let url: URL
+    /// The file's date as listed: a picture another app rewrote in place is
+    /// decoded again (its source opened afresh).
+    var modified: Date? = nil
 
     @EnvironmentObject var model: BrowserModel
     @State private var image: NSImage?
@@ -33,6 +37,9 @@ struct FullImageView: View {
     @State private var decodedSide = 0
     /// The animation's frame on screen (with the look), and which one.
     @State private var frame: (image: NSImage, index: Int, count: Int)?
+    /// The animation's frames as decoded, kept while the look changes (a
+    /// slider moved applies it to each frame anew, nothing is read again).
+    @State private var animation: (url: URL, frames: AnimationFrames)?
     /// The PDF shown, opened once and kept while its pages are turned.
     @State private var pdf: PDFPages?
     /// The picture's image source, opened once for its sharper decodes and
@@ -44,11 +51,15 @@ struct FullImageView: View {
     @State private var drawn: Shown?
     @GestureState private var dragTranslation: CGSize = .zero
     @GestureState private var pinch: CGFloat = 1
+    /// The pixels per point of the display this view's window is on (100 %
+    /// is one picture pixel per pixel there, whichever window has the keys).
+    @Environment(\.displayScale) private var displayScale
 
     /// The tile's thumbnail from the cache shows, scaled up, from the view's
     /// first frame until the picture is decoded (black only without one).
-    init(url: URL) {
+    init(url: URL, modified: Date? = nil) {
         self.url = url
+        self.modified = modified
         _image = State(initialValue: ThumbnailCache.shared.image(for: url))
     }
 
@@ -96,15 +107,14 @@ struct FullImageView: View {
             .accessibilityLabel(test: accessibilityState, spoken: spokenLabel)
             .task(id: shown) {
                 // Never the previous file's picture: the cached tile, or nothing
-                // yet. Another page of the same PDF: the page shown stays until
-                // the next one is drawn.
-                if pdf?.url != url { image = ThumbnailCache.shared.image(for: url) }
+                // yet. Another page of the same PDF, the same file rewritten:
+                // what is shown stays until the new one is drawn.
+                if pdf?.url != url, drawn?.url != url { image = ThumbnailCache.shared.image(for: url) }
                 MainThreadWatch.log("full view \(url.lastPathComponent): \(image == nil ? "black" : "the tile") until decoded")
                 failed = false
                 failure = nil
                 decodedSide = 0
-                let scale = NSScreen.windowBackingScale
-                let maxPixel = max(Int(max(geo.size.width, geo.size.height) * scale), 1)
+                let maxPixel = max(Int(max(geo.size.width, geo.size.height) * displayScale), 1)
                 await load(maxPixel: maxPixel, sharper: false)
                 MainThreadWatch.log("full view \(url.lastPathComponent): decoded at \(decodedSide) px")
                 updateActualSizeFactor(in: geo.size)
@@ -121,6 +131,9 @@ struct FullImageView: View {
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
             }
+            // Moved to a display of another scale, turned a quarter: 100 % is another zoom
+            .onChange(of: displayScale) { updateActualSizeFactor(in: geo.size) }
+            .onChange(of: model.rotation) { updateActualSizeFactor(in: geo.size) }
             // ↑ / ↓ zoomed in: a fifth of the view further up / down
             .onChange(of: model.panRequest) { _, request in
                 guard let request, model.zoom > 1.01 else { return }
@@ -138,25 +151,29 @@ struct FullImageView: View {
         .onChange(of: model.zoom) { old, new in
             panOffset = BrowserModel.panOffset(panOffset, zoomedFrom: old, to: new)
         }
-        .onChange(of: shown) { _, new in
-            if pdf?.url != new.url { pdf = nil }
-            if opened?.url != new.url { opened = nil }
+        .onChange(of: shown) { old, new in
+            let rewritten = old.url == new.url && old.modified != new.modified
+            if pdf?.url != new.url || rewritten { pdf = nil }
+            if opened?.url != new.url || rewritten { opened = nil }
             panOffset = .zero
             nativeSize = nil
             picture = nil
             autoLook = nil
             enhanced = nil
             frame = nil
+            animation = nil
         }
     }
 
-    /// The file and, for a PDF, the page on screen (0 for every other file).
+    /// The file, its date and, for a PDF, the page on screen (0 for every
+    /// other file).
     private var shown: Shown {
-        Shown(url: url, page: PDFPages.isPDF(url) ? model.pdfPage(of: url) : 0)
+        Shown(url: url, modified: modified, page: PDFPages.isPDF(url) ? model.pdfPage(of: url) : 0)
     }
 
     struct Shown: Hashable {
         let url: URL
+        let modified: Date?
         let page: Int
     }
 
@@ -221,14 +238,15 @@ struct FullImageView: View {
             }
     }
 
-    /// Compute the factor at which `zoom` corresponds to 100 % actual pixels.
+    /// Compute the factor at which `zoom` corresponds to 100 % actual pixels:
+    /// the picture is drawn at its fitted width times the zoom times
+    /// `rotationFitScale`, which a quarter turn adds.
     private func updateActualSizeFactor(in container: CGSize) {
         guard let ns = nativeSize, ns.width > 0, ns.height > 0,
               container.width > 0, container.height > 0 else { return }
-        let scale = NSScreen.windowBackingScale
         let fitScale = min(container.width / ns.width, container.height / ns.height)
-        let fitWidth = ns.width * fitScale
-        let actualWidth = ns.width / scale          // 100 % in points
+        let fitWidth = ns.width * fitScale * rotationFitScale(in: container)
+        let actualWidth = ns.width / displayScale          // 100 % in points
         model.actualSizeFactor = max(actualWidth / max(fitWidth, 1), 0.01)
     }
 
@@ -285,7 +303,7 @@ struct FullImageView: View {
             return
         }
         image = result.0
-        drawn = Shown(url: url, page: page)
+        drawn = Shown(url: url, modified: modified, page: page)
         nativeSize = result.1
         decodedSide = max(result.2.width, result.2.height)
         if !sharper {
@@ -321,8 +339,10 @@ struct FullImageView: View {
         var cg = failure == nil ? MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) : nil
         // One of ImageIO's RAW formats that ImageIO gives no picture of (a
         // camera newer than this macOS) or one all black or blown out (a
-        // Blackmagic DNG): LibRaw's development, where it isn't so itself
-        if kept == nil, !Task.isCancelled, let developed = await RawDecoder.replacement(of: cg, for: url, maxPixel: maxPixel) {
+        // Blackmagic DNG): LibRaw's development, where it isn't so itself.
+        // Asked whenever the file was opened again, also for a sharper
+        // decode of a development too large to be held (`largestHeld`)
+        if kept?.source == nil, !Task.isCancelled, let developed = await RawDecoder.replacement(of: cg, for: url, maxPixel: maxPixel) {
             src = developed.source
             picture = (developed.source, developed.inMemory)
             failure = nil
@@ -379,7 +399,7 @@ struct FullImageView: View {
     /// size, zoomed in at the zoomed size.
     private func wantedSide(in container: CGSize) -> Int {
         guard let native = nativeSize, native.width > 0, native.height > 0 else { return 0 }
-        let view = CGFloat(max(container.width, container.height) * NSScreen.windowBackingScale)
+        let view = CGFloat(max(container.width, container.height) * displayScale)
         if VectorPicture.isVector(url) {
             return min(Int(view * max(model.zoom, 1)), VectorPicture.largestSide)
         }
@@ -443,12 +463,19 @@ extension FullImageView {
     private func animate() async {
         guard picture != nil, decodedSide > 0, !VectorPicture.isVector(url) else { return }
         let side = decodedSide, look = shownLook, url = self.url
-        guard let opened, opened.url == url, opened.frames > 1 else { frame = nil; return }
-        guard let frames = await detachedCancellable(priority: .userInitiated, { () -> AnimationFrames? in
-            var source = opened.source
-            if source == nil { source = await MediaData.imageSource(url) }
-            return source.flatMap { AnimationFrames.of($0, side: side) }
-        }) else { frame = nil; return }
+        guard let opened, opened.url == url, opened.animated else { frame = nil; animation = nil; return }
+        let frames: AnimationFrames
+        if let animation, animation.url == url, animation.frames.side == side {
+            frames = animation.frames
+        } else {
+            guard let made = await detachedCancellable(priority: .userInitiated, { () -> AnimationFrames? in
+                var source = opened.source
+                if source == nil { source = await MediaData.imageSource(url) }
+                return source.flatMap { AnimationFrames.of($0, side: side) }
+            }) else { frame = nil; animation = nil; return }
+            frames = made
+            animation = (url, made)
+        }
         var index = frame?.count == frames.count ? frame?.index ?? 0 : 0
         while !Task.isCancelled {
             let started = ContinuousClock.now
@@ -476,24 +503,28 @@ final class OpenedPicture: @unchecked Sendable {
     static let largestHeld = 32 << 20
     let url: URL
     let source: CGImageSource?
-    /// Its frames (more than one: an animation).
+    /// Its images (more than one: an animation, or a TIFF's pages, an icon's sizes …).
     let frames: Int
+    /// Its images are an animation's frames (`AnimationFrames.isAnimation`).
+    let animated: Bool
     init(url: URL, source: CGImageSource, inMemory: Int) {
         self.url = url
         frames = CGImageSourceGetCount(source)
+        animated = AnimationFrames.isAnimation(source)
         self.source = inMemory > Self.largestHeld ? nil : source
     }
 }
 
-/// The frames of an animated picture (GIF, also animated PNG and WebP):
-/// decoded at a given size, kept while they fit in `budget`, else decoded
-/// again each round.
+/// The frames of an animated picture (GIF, animated PNG and WebP, HEIC and
+/// AVIF sequences): decoded at a given size, kept while they fit in
+/// `budget`, else decoded again each round.
 final class AnimationFrames: @unchecked Sendable {
     let count: Int
     /// Seconds per frame, as browsers show them (under 20 ms counts as 100 ms).
     let delays: [Double]
     private let source: CGImageSource
-    private let side: Int
+    /// The longest side its frames are decoded at.
+    let side: Int
     private let keeps: Bool
     private let lock = NSLock()
     private var kept: [Int: CGImage] = [:]
@@ -508,26 +539,47 @@ final class AnimationFrames: @unchecked Sendable {
         keeps = count * side * side * 4 <= Self.budget
     }
 
-    /// nil for a picture of one frame.
+    /// nil for a picture of one frame, and for one whose images aren't the
+    /// frames of an animation: a TIFF's pages, an icon's sizes (ICO, ICNS),
+    /// the two pictures of an MPO or a spatial photo.
     static func of(_ source: CGImageSource, side: Int) -> AnimationFrames? {
-        let count = CGImageSourceGetCount(source)
-        guard count > 1 else { return nil }
-        return AnimationFrames(source: source, count: count, side: side)
+        guard isAnimation(source) else { return nil }
+        return AnimationFrames(source: source, count: CGImageSourceGetCount(source), side: side)
     }
 
+    /// More than one image, and those are an animation's frames: a GIF (its
+    /// frames may state no time), else a frame that states its time in
+    /// one of the animated formats' dictionaries.
+    static func isAnimation(_ source: CGImageSource) -> Bool {
+        guard CGImageSourceGetCount(source) > 1 else { return false }
+        if (CGImageSourceGetType(source) as String?) == UTType.gif.identifier { return true }
+        return statedDelay(of: source, at: 0) != nil
+    }
+
+    /// The dictionaries an animation's frames state their times in: GIF,
+    /// animated PNG, WebP, HEIC sequence, AVIF sequence.
+    private static let timed = [kCGImagePropertyGIFDictionary, kCGImagePropertyPNGDictionary, kCGImagePropertyWebPDictionary,
+                                kCGImagePropertyHEICSDictionary, kCGImagePropertyAVISDictionary]
+
     static func delay(of source: CGImageSource, at index: Int) -> Double {
+        guard let seconds = statedDelay(of: source, at: index) else { return 0.1 }
+        return seconds < 0.02 ? 0.1 : seconds
+    }
+
+    /// The time frame `index` states, unclamped where it says so.
+    private static func statedDelay(of source: CGImageSource, at index: Int) -> Double? {
         let props = CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [CFString: Any]
-        let dictionaries = [kCGImagePropertyGIFDictionary, kCGImagePropertyPNGDictionary, kCGImagePropertyWebPDictionary]
-        for key in dictionaries {
+        for key in timed {
             guard let info = props?[key] as? [CFString: Any] else { continue }
+            // The formats share the keys' names ("UnclampedDelayTime",
+            // "DelayTime"); AVIF's have no constants of their own
             let unclamped = info[kCGImagePropertyGIFUnclampedDelayTime] ?? info[kCGImagePropertyAPNGUnclampedDelayTime]
-                ?? info[kCGImagePropertyWebPUnclampedDelayTime]
-            let clamped = info[kCGImagePropertyGIFDelayTime] ?? info[kCGImagePropertyAPNGDelayTime] ?? info[kCGImagePropertyWebPDelayTime]
-            if let seconds = ((unclamped ?? clamped) as? NSNumber)?.doubleValue {
-                return seconds < 0.02 ? 0.1 : seconds
-            }
+                ?? info[kCGImagePropertyWebPUnclampedDelayTime] ?? info[kCGImagePropertyHEICSUnclampedDelayTime]
+            let clamped = info[kCGImagePropertyGIFDelayTime] ?? info[kCGImagePropertyAPNGDelayTime]
+                ?? info[kCGImagePropertyWebPDelayTime] ?? info[kCGImagePropertyHEICSDelayTime]
+            if let seconds = ((unclamped ?? clamped) as? NSNumber)?.doubleValue { return seconds }
         }
-        return 0.1
+        return nil
     }
 
     /// Frame `index`, with `look` when it changes anything.
