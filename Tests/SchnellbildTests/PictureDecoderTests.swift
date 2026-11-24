@@ -279,6 +279,55 @@ final class PictureDecoderTests: XCTestCase {
         XCTAssertEqual(tiff[kCGImagePropertyTIFFMake] as? String, "Schnellbild")
     }
 
+    /// LibRaw's development turns the picture upright by the file's
+    /// orientation and applies the camera's white balance: compared with
+    /// the reference picture itself, not with another development.
+    func testLibRawDevelopsUprightWithTheCamerasWhiteBalance() async throws {
+        let reference = DecoderFixtures.reference(width: 96, height: 64)
+        func developed(_ data: Data) async throws -> DecodedPictureCheck {
+            let decoded = await RawDecoder.developed(data, named: URL(fileURLWithPath: "/x/a.dng"), half: true)
+            let image = try XCTUnwrap(decoded.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 4096, now: true) })
+            return DecodedPictureCheck(width: image.width, height: image.height,
+                                       rgba: DecoderFixtures.RGBA.of(image, width: image.width, height: image.height))
+        }
+        let plain = try await developed(DecoderFixtures.dng(reference, preview: false))
+        XCTAssertEqual([plain.width, plain.height], [96, 64])
+        let base = plain.rgba.difference(to: reference).mean
+        print("decoders: LibRaw's development against the reference: mean \(base)")
+        XCTAssertLessThan(base, 8)
+        // White as the camera saw it: red at half, blue at 80 %
+        let balanced = try await developed(DecoderFixtures.dng(reference, preview: false, asShotNeutral: [0.5, 1, 0.8]))
+        XCTAssertLessThan(balanced.rgba.difference(to: reference).mean, base + 2, "the camera's white balance")
+        // Turned: EXIF 6 (90° clockwise), 3 (180°), 8 (90° anticlockwise)
+        func turned(_ picture: DecoderFixtures.RGBA, _ orientation: Int) -> DecoderFixtures.RGBA {
+            let (w, h) = (picture.width, picture.height)
+            var out = DecoderFixtures.RGBA(width: orientation == 3 ? w : h, height: orientation == 3 ? h : w)
+            for y in 0..<h {
+                for x in 0..<w {
+                    switch orientation {
+                    case 6: out[h - 1 - y, x] = picture[x, y]
+                    case 8: out[y, w - 1 - x] = picture[x, y]
+                    default: out[w - 1 - x, h - 1 - y] = picture[x, y]
+                    }
+                }
+            }
+            return out
+        }
+        for orientation in [6, 3, 8] {
+            let upright = try await developed(DecoderFixtures.dng(reference, preview: false, orientation: orientation))
+            let expected = turned(reference, orientation)
+            XCTAssertEqual([upright.width, upright.height], [expected.width, expected.height], "orientation \(orientation)")
+            guard upright.width == expected.width else { continue }
+            XCTAssertLessThan(upright.rgba.difference(to: expected).mean, base + 2, "orientation \(orientation)")
+        }
+        XCTAssertEqual([0, 3, 5, 6].map { RawDecoder.orientation(flip: $0) }, [1, 3, 8, 6])
+    }
+
+    private struct DecodedPictureCheck {
+        let width: Int, height: Int
+        let rgba: DecoderFixtures.RGBA
+    }
+
     /// The cheap look at a picture's exposure: black, blown out or fine; a
     /// dark scene, snow and the reference stay fine.
     func testBlackAndBlownOutPicturesAreTold() {
