@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "La cartella e tutto il suo contenuto, compresi i file che Schnellbild non mostra, verranno spostati nel Cestino.";
 "All parts of this archive will be moved to the Trash." = "Tutte le parti di questo archivio verranno spostate nel Cestino.";
 "The file will be moved to the Trash." = "Il file verrà spostato nel Cestino.";
+"Undo Copy moves what was copied to the Trash." = "«Annulla copia» sposta nel Cestino ciò che è stato copiato.";
+"Undo New Folder moves the new folder to the Trash." = "«Annulla nuova cartella» sposta la nuova cartella nel Cestino.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "«Ripeti spostamento nel Cestino» rimette nel Cestino ciò che ne era stato tolto.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Cerca nomi di cartelle, archivi, immagini e video (sottocartelle comprese)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Nessuna cartella, archivio, immagine o video il cui nome contiene «%@», in questa cartella o nelle sue sottocartelle.";
 "Search stopped. No matches so far." = "Ricerca interrotta. Finora nessun risultato.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Mantieni entrambi: il nuovo riceve un numero. Salta: rimane dov’è. Annulla: non viene spostato né copiato nulla.";
 "Apply to all" = "Applica a tutti";
 "Copied, but the original couldn't be removed: %@" = "Copiato, ma non è stato possibile rimuovere l’originale: %@";
+"Copied, but only part of the original could be removed: %@" = "Copiato, ma è stato possibile rimuovere solo una parte dell’originale: %@";
 "Not everything was moved or copied." = "Non tutto è stato spostato o copiato.";
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» non è più l’elemento che Schnellbild ha messo lì, quindi resta com’è.";

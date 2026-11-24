@@ -148,6 +148,77 @@ final class OutsideChangesTests: XCTestCase {
 
     /// The pane stays at `folder` for a while (a wrong move would come
     /// within milliseconds: one look at the disk).
+    /// An item renamed outside the app (the Finder) is the same item under
+    /// its new name: it stays selected and marked, as after a rename in
+    /// the app.
+    func testAnItemRenamedOutsideStaysSelectedAndMarked() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "a.jpg" }), command: false, shift: false)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "b.jpg" }), command: true, shift: false)
+        XCTAssertEqual(m.marked.count, 2)
+        try FileManager.default.moveItem(at: tree.root.appendingPathComponent("b.jpg"), to: tree.root.appendingPathComponent("z.jpg"))
+        m.relist(force: true)
+        await waitUntil { m.names == ["..", "a.jpg", "c.jpg", "z.jpg"] }
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
+        XCTAssertEqual(Set(m.marked.map { ($0 as NSString).lastPathComponent }), ["a.jpg", "z.jpg"])
+    }
+
+    /// A folder moved into the folder shown whole (FSEvents names only the
+    /// folder shown): what it holds joins the search shown.
+    func testAFolderMovedInWholeJoinsTheSearch() async throws {
+        let tree = try TempTree(self)
+        try tree.file("IMG_1.jpg")
+        let elsewhere = try TempTree(self)
+        try elsewhere.file("Trip/Day1/IMG_2.jpg")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "IMG")
+        XCTAssertEqual(m.names, ["IMG_1.jpg"])
+        try FileManager.default.moveItem(at: elsewhere.root.appendingPathComponent("Trip"), to: tree.root.appendingPathComponent("Trip"))
+        m.changedOutside([BrowserModel.canonicalPath(tree.root)], rootChanged: false)
+        await waitUntil { m.names == ["IMG_1.jpg", "IMG_2.jpg"] }
+    }
+
+    /// Changes inside hidden folders and packages, which the search never
+    /// walks into, bring no results from there.
+    func testChangesInsideHiddenFoldersAndPackagesBringNoResults() async throws {
+        let tree = try TempTree(self)
+        try tree.file("IMG_1.jpg")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "IMG")
+        XCTAssertEqual(m.names, ["IMG_1.jpg"])
+        try tree.file(".thumbnails/IMG_2.jpg")
+        try tree.file("Tool.app/Contents/Resources/IMG_3.jpg")
+        try tree.file("Visible/IMG_4.jpg")
+        let paths = [".thumbnails", "Tool.app/Contents/Resources", "Visible"].map {
+            BrowserModel.canonicalPath(tree.root.appendingPathComponent($0))
+        }
+        m.changedOutside(paths, rootChanged: false)
+        await waitUntil { m.names.contains("IMG_4.jpg") }
+        try await Task.sleep(for: .milliseconds(300))
+        XCTAssertEqual(m.names, ["IMG_1.jpg", "IMG_4.jpg"])
+    }
+
+    /// The folder shown replaced by another under the same path (FSEvents
+    /// says only that its root changed): the new one's items show.
+    func testTheFolderShownReplacedInPlaceIsReadAgain() async throws {
+        let tree = try TempTree(self)
+        try tree.file("p/old.jpg")
+        try tree.file("pnew/new.jpg")
+        let p = tree.root.appendingPathComponent("p")
+        let m = makeModel()
+        await openAndWait(m, p)
+        try FileManager.default.moveItem(at: p, to: tree.root.appendingPathComponent("pold"))
+        try FileManager.default.moveItem(at: tree.root.appendingPathComponent("pnew"), to: p)
+        m.changedOutside(nil, rootChanged: true)
+        await waitUntil { m.names == ["..", "new.jpg"] }
+        XCTAssertTrue(m.isAt(p))
+    }
+
     private func stays(_ m: BrowserModel, _ folder: URL, file: StaticString = #filePath, line: UInt = #line) async {
         for _ in 0..<50 {
             guard m.isAt(folder) else { XCTFail("left \(folder.lastPathComponent): \(m.folderURL?.path ?? "none")", file: file, line: line); return }

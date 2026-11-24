@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Složka a vše v ní, včetně souborů, které Schnellbild nezobrazuje, bude přesunuta do koše.";
 "All parts of this archive will be moved to the Trash." = "Všechny části tohoto archivu budou přesunuty do koše.";
 "The file will be moved to the Trash." = "Soubor bude přesunut do koše.";
+"Undo Copy moves what was copied to the Trash." = "„Odvolat kopírování“ přesune zkopírované položky do koše.";
+"Undo New Folder moves the new folder to the Trash." = "„Odvolat novou složku“ přesune novou složku do koše.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "„Znovu přesunout do koše“ vrátí do koše to, co z něj bylo vyjmuto.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Hledat názvy složek, archivů, obrázků a videí (vč. podsložek)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "V této složce ani v jejích podsložkách není složka, archiv, obrázek ani video, jehož název obsahuje „%@“.";
 "Search stopped. No matches so far." = "Hledání zastaveno. Zatím žádné výsledky.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Ponechat obě: nová položka dostane číslo. Přeskočit: zůstane, kde je. Zrušit: nic se nepřesune ani nezkopíruje.";
 "Apply to all" = "Použít pro všechny";
 "Copied, but the original couldn't be removed: %@" = "Zkopírováno, ale originál nebylo možné odstranit: %@";
+"Copied, but only part of the original could be removed: %@" = "Zkopírováno, ale originál bylo možné odstranit jen zčásti: %@";
 "Not everything was moved or copied." = "Ne vše bylo přesunuto nebo zkopírováno.";
 "“%@”: %@" = "„%@“: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@“ už není položka, kterou tam Schnellbild umístil, a proto zůstane, jak je.";

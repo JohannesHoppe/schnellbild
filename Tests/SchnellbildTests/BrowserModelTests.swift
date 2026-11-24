@@ -61,6 +61,8 @@ final class FileActionsSpy {
     /// Moves, transfers and copies of files with these names fail.
     var failOn: Set<String> = []
     var trashError: Error?
+    /// The Trash takes items without saying where they lie (a volume that doesn't).
+    var trashGivesNoPlace = false
     /// Runs while an item is being trashed (a second ⌘⌫ meanwhile).
     var duringTrash: (() -> Void)?
     /// Runs once an item was moved or renamed on disk, before the app
@@ -80,7 +82,7 @@ final class FileActionsSpy {
                 self.confirmDetails.append(detail)
                 return self.confirm
             },
-            trash: { url in
+            trash: { url, _ in
                 if let error = self.trashError { throw error }
                 if let during = self.duringTrash { self.duringTrash = nil; during() }
                 self.trashed.append(url)
@@ -89,7 +91,7 @@ final class FileActionsSpy {
                 try FileManager.default.createDirectory(at: bin, withIntermediateDirectories: true)
                 let inTrash = bin.appendingPathComponent(url.lastPathComponent)
                 try FileManager.default.moveItem(at: url, to: inTrash)
-                return inTrash
+                return self.trashGivesNoPlace ? nil : inTrash
             },
             move: { from, to in
                 if let error = self.moveError { throw error }
@@ -3768,6 +3770,111 @@ final class UndoTests: XCTestCase {
         XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
     }
 
+    /// A move to another volume whose original could be removed only in
+    /// part: the copy is the only whole one, so there is no Undo Copy that
+    /// would move it to the Trash; what happened is reported.
+    func testACopyWhoseOriginalWasPartlyRemovedGetsNoUndo() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        let target = try tree.folder("Elsewhere")
+        let spy = FileActionsSpy()
+        spy.moveError = TransferError.originalPartlyRemoved("“a.jpg” is locked.")
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.move([tree.root.appendingPathComponent("Trip")], into: target, how: .move)
+        await waitUntil { m.transfersRunning == 0 && !spy.reported.isEmpty }
+        XCTAssertTrue(m.undoHistory.undoSteps.isEmpty, "no Undo for it")
+        let reasons = (spy.reported.first as? TransferFailure)?.failures.map(\.reason) ?? []
+        XCTAssertEqual(reasons, [TransferError.originalPartlyRemoved("“a.jpg” is locked.").localizedDescription])
+        XCTAssertTrue(m.names.contains("Trip"), "what is left of the original stays listed")
+    }
+
+    /// Redo of a Move to Trash on a volume that doesn't say where the item
+    /// went: it is in the Trash, it leaves the list, no error; it has no
+    /// Undo then, as when trashed the first time.
+    func testRedoOfATrashWithoutItsPlaceInTheTrash() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "b.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { !m.names.contains("b.jpg") }
+        m.undo()
+        await waitUntil { m.names.contains("b.jpg") && !m.undoHistory.running }
+        spy.trashGivesNoPlace = true
+        m.redo()
+        await waitUntil { !m.names.contains("b.jpg") && !m.undoHistory.running }
+        XCTAssertTrue(spy.reported.isEmpty, "\(spy.reported)")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("b.jpg").path))
+        XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
+        XCTAssertTrue(m.undoHistory.undoSteps.isEmpty)
+    }
+
+    /// Every way to the Trash asks first: ⌘⌫ on one item and on marked
+    /// ones, an other file's Move to Trash, Undo Copy, Undo New Folder and
+    /// Redo Move to Trash. A no trashes nothing, and an Undo or Redo asked
+    /// for stays where it was.
+    func testEveryWayToTheTrashAsksFirst() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "notes.txt"] { try tree.file(n) }
+        let target = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        func exists(_ path: String) -> Bool { FileManager.default.fileExists(atPath: tree.root.appendingPathComponent(path).path) }
+
+        // The steps to undo: a copy, a new folder, a trash undone (to redo)
+        m.move([tree.root.appendingPathComponent("a.jpg")], into: target, how: .copy)
+        await waitUntil { m.transfersRunning == 0 && exists("Sorted/a.jpg") }
+        m.newFolderRequested = true
+        _ = try await m.createFolder(named: "New")
+        m.selectEntry(named: "b.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { !exists("b.jpg") }
+        XCTAssertEqual(spy.confirmNames.last, ["b.jpg"])
+        m.undo()
+        await waitUntil { exists("b.jpg") && !m.undoHistory.running }
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.copy, .newFolder])
+        XCTAssertEqual(m.undoHistory.redoSteps.map(\.kind), [.trash])
+        spy.trashed = []
+        spy.confirmNames = []
+
+        // No to every question
+        spy.confirm = false
+        m.redo()
+        XCTAssertEqual(spy.confirmNames.last, ["b.jpg"], "Redo Move to Trash asks")
+        m.undo()
+        XCTAssertEqual(spy.confirmNames.last, ["New"], "Undo New Folder asks")
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.copy, .newFolder], "a no leaves the step where it was")
+        XCTAssertEqual(m.undoHistory.redoSteps.map(\.kind), [.trash])
+        await waitUntil { !m.isLoading && m.names.contains("c.jpg") }
+        m.selectEntry(named: "c.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { spy.confirmNames.last == ["c.jpg"] }
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "a.jpg" }), command: true, shift: false)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "b.jpg" }), command: true, shift: false)
+        m.moveSelectionToTrash()
+        XCTAssertEqual(Set(spy.confirmNames.last ?? []), ["a.jpg", "b.jpg", "c.jpg"], "the marked ones, asked together")
+        m.moveToTrash(try XCTUnwrap(m.otherFiles.first { $0.name == "notes.txt" }))
+        XCTAssertEqual(spy.confirmNames.last, ["notes.txt"])
+        XCTAssertEqual(spy.trashed, [], "nothing trashed")
+        for path in ["a.jpg", "b.jpg", "c.jpg", "notes.txt", "New", "Sorted/a.jpg"] { XCTAssertTrue(exists(path), path) }
+
+        // Yes: Undo New Folder and Undo Copy ask, then trash
+        spy.confirm = true
+        m.undo()
+        await waitUntil { !exists("New") && !m.undoHistory.running }
+        XCTAssertEqual(spy.confirmNames.last, ["New"])
+        m.undo()
+        await waitUntil { !exists("Sorted/a.jpg") && !m.undoHistory.running }
+        XCTAssertEqual(spy.confirmNames.last, ["a.jpg"], "Undo Copy names the copy")
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["New", "a.jpg"])
+        XCTAssertTrue(exists("a.jpg"), "the original stays")
+    }
+
     /// The name was taken meanwhile: nothing is overwritten, it is reported.
     func testUndoNeverOverwrites() async throws {
         let tree = try TempTree(self)
@@ -4321,5 +4428,116 @@ final class ListLookupTests: XCTestCase {
         let moved = tree.root.deletingLastPathComponent().appendingPathComponent("moved-\(UUID().uuidString)", isDirectory: true)
         m.adopt([.moved(tree.root, to: moved)])
         XCTAssertTrue(BrowserModel.samePath(m.folderURL!, moved), "the folder shown follows its own move")
+    }
+}
+
+// MARK: - What was read meanwhile (`ChangeLog`)
+
+@MainActor
+final class ChangeLogTests: XCTestCase {
+    /// A change that moves what another moved: applied in order, not looked
+    /// up as if independent.
+    func testChangesBuildingOnEachOtherApplyInOrder() {
+        let b = URL(fileURLWithPath: "/r/b", isDirectory: true)
+        let c = URL(fileURLWithPath: "/r/c", isDirectory: true)
+        let changes = FileChanges([.moved(b, to: c), .moved(c.appendingPathComponent("x"), to: URL(fileURLWithPath: "/r/d"))])
+        XCTAssertEqual(changes.path("/r/b/x/f.jpg"), "/r/d/f.jpg")
+        XCTAssertEqual(changes.path("/r/b/y.jpg"), "/r/c/y.jpg")
+        XCTAssertEqual(changes.path("/r/c/x/g.jpg"), "/r/d/g.jpg")
+    }
+
+    /// What was read before changes gets them carried out; what was read
+    /// after none; when the changes since aren't all kept, nothing of it.
+    func testReplayCarriesOutTheChangesSinceTheReading() {
+        let log = ChangeLog()
+        let a = GridEntry(url: URL(fileURLWithPath: "/r/Trip/a.jpg"), kind: .image)
+        let b = GridEntry(url: URL(fileURLWithPath: "/r/Old/b.jpg"), kind: .image)
+        let before = log.now
+        log.record([.moved(URL(fileURLWithPath: "/r/Trip"), to: URL(fileURLWithPath: "/r/Iceland")),
+                    .removed(URL(fileURLWithPath: "/r/Old"))])
+        XCTAssertEqual(log.replay([a, b], since: before).map(\.url.path), ["/r/Iceland/a.jpg"])
+        XCTAssertEqual(log.replay([a, b], since: log.now).map(\.url.path), ["/r/Trip/a.jpg", "/r/Old/b.jpg"])
+        log.noteAdded()
+        XCTAssertEqual(log.now, before + 3, "something added counts")
+        XCTAssertEqual(log.since(before)?.count, 2, "but replays nothing")
+        log.record((0..<ChangeLog.keptLimit).map { .removed(URL(fileURLWithPath: "/elsewhere/\($0)")) })
+        XCTAssertNil(log.since(before))
+        XCTAssertEqual(log.replay([a], since: before), [], "not known for sure: left out")
+    }
+
+    /// A walk's batch read while changes were made: what is still on disk
+    /// is at its place now, what is gone was read before a change.
+    func testAWalksBatchIsStampedByWhatIsStillThere() throws {
+        let tree = try TempTree(self)
+        let here = GridEntry(url: try tree.file("here.jpg"), kind: .image)
+        let gone = GridEntry(url: tree.root.appendingPathComponent("gone.jpg"), kind: .image)
+        let clock = ChangeClock()
+        let unchanged = clock.stamped([here, gone], since: 0)
+        XCTAssertEqual(unchanged.map(\.stamp), [0], "no change since: all from the start")
+        clock.set(3)
+        let parts = clock.stamped([here, gone], since: 0)
+        XCTAssertEqual(parts.map(\.stamp), [3, 0])
+        XCTAssertEqual(parts.map { $0.entries.map(\.name) }, [["here.jpg"], ["gone.jpg"]])
+    }
+
+    /// A search whose walk is through still takes what a change below it
+    /// brings (the other pane copied into it): read before a rename made
+    /// meanwhile, it comes under the new path.
+    func testAFinishedSearchReplaysChangesOnWhatArrivesLate() async throws {
+        let tree = try TempTree(self)
+        try tree.file("photos/IMG_1.jpg")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "IMG")
+        XCTAssertEqual(m.names, ["IMG_1.jpg"])
+        let read = m.changeLog.now
+        m.selectEntry(named: "IMG_1.jpg")
+        await searchAndWait(m, "")
+        m.selectEntry(named: "photos")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Pics")
+        await searchAndWait(m, "IMG")
+        m.appendSearchBatch([GridEntry(url: tree.root.appendingPathComponent("photos/IMG_2.jpg"), kind: .image)], stamp: read)
+        XCTAssertEqual(Set(m.entries.map { m.relativeLocation(of: $0) }), ["Pics"], "no result under the old path")
+    }
+
+    /// The case as typed: a name stored decomposed ("u" and a combining
+    /// mark, as the file system writes it) matches a query typed precomposed.
+    func testNamesMatchWhetherComposedOrNot() {
+        let stored = "Su\u{0308}d 2024.jpg"
+        for mode in NameMatcher.Mode.allCases {
+            XCTAssertTrue(NameMatcher("Süd", mode: mode).matches(stored), "\(mode)")
+            XCTAssertTrue(NameMatcher("Su\u{0308}d", mode: mode).matches("Süd.jpg"), "\(mode)")
+        }
+        XCTAssertFalse(NameMatcher("süd", mode: .matchingCase).matches(stored))
+    }
+
+    /// A found folder holding only archives holds media for its tile (as
+    /// the tile itself counts it): not learnt as empty, no previews learnt
+    /// (the tile looks into the archive).
+    func testAFolderOfArchivesIsntLearntEmpty() {
+        let root = URL(fileURLWithPath: "/r", isDirectory: true)
+        let comics = root.appendingPathComponent("Comics", isDirectory: true)
+        var facts = FolderFacts(root: root)
+        facts.found(folder: comics)
+        facts.met(archive: comics.appendingPathComponent("issue1.cbz"))
+        let learnt = facts.finish()
+        XCTAssertEqual(learnt.withMedia, [comics])
+        XCTAssertEqual(learnt.withoutMedia, [])
+        XCTAssertNil(learnt.previews[comics])
+    }
+
+    /// The selected item trashed with others before it: the one after it
+    /// is selected, as in the Finder, not the one at its old place.
+    func testTheSelectionGoesToTheNeighbourOfWhatWent() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg"] { try tree.file(n) }
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "a.jpg" }), command: false, shift: false)
+        m.click(try XCTUnwrap(m.entries.first { $0.name == "c.jpg" }), command: true, shift: false)
+        XCTAssertEqual(m.marked.count, 2)
+        m.moveSelectionToTrash()
+        await waitUntil { m.names == ["..", "b.jpg", "d.jpg", "e.jpg"] }
+        XCTAssertEqual(m.selectedEntry?.name, "d.jpg")
     }
 }

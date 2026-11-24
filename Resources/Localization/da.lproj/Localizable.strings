@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Mappen og alt i den, også filer, som Schnellbild ikke viser, flyttes til papirkurven.";
 "All parts of this archive will be moved to the Trash." = "Alle dele af dette arkiv flyttes til papirkurven.";
 "The file will be moved to the Trash." = "Filen flyttes til papirkurven.";
+"Undo Copy moves what was copied to the Trash." = "“Fortryd kopiering” flytter det kopierede til papirkurven.";
+"Undo New Folder moves the new folder to the Trash." = "“Fortryd ny mappe” flytter den nye mappe til papirkurven.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "“Gentag flyt til papirkurv” flytter det, der blev taget ud af papirkurven, tilbage i den.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Søg i navne på mapper, arkiver, billeder og videoer (inkl. undermapper)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Ingen mappe, intet arkiv, billede eller video, hvis navn indeholder “%@”, i denne mappe eller dens undermapper.";
 "Search stopped. No matches so far." = "Søgningen er stoppet. Ingen resultater indtil nu.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Behold begge: det nye får et nummer. Spring over: det bliver, hvor det er. Annuller: intet flyttes eller kopieres.";
 "Apply to all" = "Anvend på alle";
 "Copied, but the original couldn't be removed: %@" = "Kopieret, men originalen kunne ikke fjernes: %@";
+"Copied, but only part of the original could be removed: %@" = "Kopieret, men kun en del af originalen kunne fjernes: %@";
 "Not everything was moved or copied." = "Ikke alt blev flyttet eller kopieret.";
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” er ikke længere det emne, Schnellbild lagde der, så det bliver, som det er.";

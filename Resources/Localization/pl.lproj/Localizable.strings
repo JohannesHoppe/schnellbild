@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Folder i cała jego zawartość, w tym pliki, których Schnellbild nie wyświetla, zostaną przeniesione do kosza.";
 "All parts of this archive will be moved to the Trash." = "Wszystkie części tego archiwum zostaną przeniesione do kosza.";
 "The file will be moved to the Trash." = "Plik zostanie przeniesiony do kosza.";
+"Undo Copy moves what was copied to the Trash." = "„Cofnij kopiowanie” przenosi skopiowane rzeczy do kosza.";
+"Undo New Folder moves the new folder to the Trash." = "„Cofnij nowy folder” przenosi nowy folder do kosza.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "„Przywróć przeniesienie do kosza” przenosi z powrotem do kosza to, co z niego wyjęto.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Szukaj nazw folderów, archiwów, obrazów i wideo (z podfolderami)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Brak folderu, archiwum, obrazu lub wideo, którego nazwa zawiera „%@”, w tym folderze ani w jego podfolderach.";
 "Search stopped. No matches so far." = "Wyszukiwanie zatrzymane. Na razie brak wyników.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Zachowaj oba: nowy element otrzyma numer. Pomiń: zostanie tam, gdzie jest. Anuluj: nic nie zostanie przeniesione ani skopiowane.";
 "Apply to all" = "Zastosuj do wszystkich";
 "Copied, but the original couldn't be removed: %@" = "Skopiowano, ale nie można usunąć oryginału: %@";
+"Copied, but only part of the original could be removed: %@" = "Skopiowano, ale oryginał udało się usunąć tylko częściowo: %@";
 "Not everything was moved or copied." = "Nie wszystko zostało przeniesione lub skopiowane.";
 "“%@”: %@" = "„%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@” nie jest już elementem, który Schnellbild tam umieścił, więc pozostaje bez zmian.";

@@ -65,6 +65,12 @@ final class FolderAccess {
         /// Whether the process may open a URL now (`canOpen`); waits on the
         /// disk, so asked off the main thread.
         var canOpen: @Sendable (URL) -> Bool = { FolderAccess.canOpen($0) }
+        /// The mount point of the volume a bookmark's item lay on, as the
+        /// bookmark recorded it (canonical): a share mounted anywhere, not
+        /// only under /Volumes.
+        var volume: @Sendable (Data) -> String? = { data in
+            URL.resourceValues(forKeys: [.volumeURLKey], fromBookmarkData: data)?.volume.map(BrowserModel.canonicalPath)
+        }
 
         static let live = System(
             bookmark: { try? $0.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) },
@@ -229,7 +235,7 @@ final class FolderAccess {
                 // No path at all: no bookmark (damaged data), nothing it could ever open
                 guard let path = system.path(data) else { return .gone }
                 if mounted == nil { mounted = system.mountedVolumes() }
-                return mounted!.contains(volume(of: path)) ? .gone : .waiting(path: path)
+                return mounted!.contains(system.volume(data) ?? volume(of: path)) ? .gone : .waiting(path: path)
             }
             let path = BrowserModel.canonicalPath(url)
             guard !isInTrash(path) else { return .gone }
@@ -241,8 +247,8 @@ final class FolderAccess {
         }
     }
 
-    /// The mount point of the volume a path lies on: "/Volumes/<name>", or
-    /// "/" for the startup disk.
+    /// The mount point of the volume a path lies on, by the path alone (a
+    /// bookmark that doesn't say): "/Volumes/<name>", or "/" for the startup disk.
     nonisolated static func volume(of path: String) -> String {
         let parts = path.split(separator: "/", omittingEmptySubsequences: true)
         guard parts.count >= 2, parts[0] == "Volumes" else { return "/" }

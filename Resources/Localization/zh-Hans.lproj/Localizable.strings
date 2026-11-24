@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "该文件夹及其中的所有内容（包括 Schnellbild 不显示的文件）将被移到废纸篓。";
 "All parts of this archive will be moved to the Trash." = "此归档的所有部分将被移到废纸篓。";
 "The file will be moved to the Trash." = "该文件将被移到废纸篓。";
+"Undo Copy moves what was copied to the Trash." = "“撤销拷贝”会将拷贝的项目移到废纸篓。";
+"Undo New Folder moves the new folder to the Trash." = "“撤销新建文件夹”会将新文件夹移到废纸篓。";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "“重做移到废纸篓”会将从废纸篓中取出的项目再次移到废纸篓。";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "搜索文件夹、归档、图像和视频的名称（包括子文件夹）";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "此文件夹及其子文件夹中没有名称包含“%@”的文件夹、归档、图像或视频。";
 "Search stopped. No matches so far." = "搜索已停止。目前没有匹配项。";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "保留两者：新项目会加上编号。跳过：它留在原处。取消：不移动也不拷贝任何内容。";
 "Apply to all" = "全部应用";
 "Copied, but the original couldn't be removed: %@" = "已拷贝，但无法移除原件：%@";
+"Copied, but only part of the original could be removed: %@" = "已拷贝，但原件只移除了一部分：%@";
 "Not everything was moved or copied." = "并非所有项目都已移动或拷贝。";
 "“%@”: %@" = "“%@”：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”已不是 Schnellbild 放在那里的项目，因此保持不变。";

@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Klasör ve içindeki her şey, Schnellbild’in göstermediği dosyalar dahil, Çöp Sepetine taşınacak.";
 "All parts of this archive will be moved to the Trash." = "Bu arşivin tüm parçaları Çöp Sepetine taşınacak.";
 "The file will be moved to the Trash." = "Dosya Çöp Sepetine taşınacak.";
+"Undo Copy moves what was copied to the Trash." = "“Kopyalamayı Geri Al”, kopyalananları Çöp Sepeti’ne taşır.";
+"Undo New Folder moves the new folder to the Trash." = "“Yeni Klasörü Geri Al”, yeni klasörü Çöp Sepeti’ne taşır.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "“Çöp Sepeti’ne Taşımayı Yinele”, Çöp Sepeti’nden çıkarılanları yeniden oraya taşır.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Klasör, arşiv, resim ve video adlarını ara (alt klasörler dahil)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Bu klasörde veya alt klasörlerinde adı “%@” içeren klasör, arşiv, resim ya da video yok.";
 "Search stopped. No matches so far." = "Arama durduruldu. Şimdiye kadar eşleşme yok.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "İkisini de koru: yenisi bir numara alır. Atla: olduğu yerde kalır. Vazgeç: hiçbir şey taşınmaz veya kopyalanmaz.";
 "Apply to all" = "Tümüne uygula";
 "Copied, but the original couldn't be removed: %@" = "Kopyalandı, ancak özgün öğe kaldırılamadı: %@";
+"Copied, but only part of the original could be removed: %@" = "Kopyalandı, ancak özgün öğenin yalnızca bir kısmı kaldırılabildi: %@";
 "Not everything was moved or copied." = "Her şey taşınmadı veya kopyalanmadı.";
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” artık Schnellbild’in oraya koyduğu öğe değil, bu yüzden olduğu gibi kalır.";

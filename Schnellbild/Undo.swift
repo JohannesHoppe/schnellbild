@@ -137,9 +137,23 @@ extension BrowserModel {
     }
 
     private func run(_ step: UndoStep, undoing: Bool) {
+        let parts = undoing ? Array(step.parts.reversed()) : step.parts
+        // What goes to the Trash (a copy, a new folder undone; a trash done
+        // again) is asked for first, as every Move to Trash is; a no leaves
+        // the step where it was
+        let trashed = parts.compactMap { $0.trashedBy(undoing: undoing) }
+        let consent: TrashConsent?
+        if trashed.isEmpty {
+            consent = nil
+        } else {
+            guard let given = fileActions.askTrash(trashed.map(\.lastPathComponent), Self.trashDetail(step.kind, undoing: undoing)) else {
+                if undoing { undoHistory.pushUndo(step) } else { undoHistory.pushRedo(step) }
+                return
+            }
+            consent = given
+        }
         undoHistory.running = true
         let spy = fileActions.runsOffMain ? nil : fileActions
-        let parts = undoing ? Array(step.parts.reversed()) : step.parts
         let work: @Sendable () -> (done: [UndoStep.Part], changes: [FileChange], folders: [URL], error: Error?) = {
             var done: [UndoStep.Part] = []
             var changes: [FileChange] = []
@@ -163,8 +177,10 @@ extension BrowserModel {
                 if let spy { try MainActor.assumeIsolated { try spy.move(a, b) } } else { try LiveFiles.move(a, b) }
             }
             func trash(_ url: URL) throws -> URL? {
-                if let spy { return try MainActor.assumeIsolated { try spy.trash(url) } }
-                return try LiveFiles.trash(url)
+                // (asked above for every part that trashes)
+                guard let consent else { throw CocoaError(.userCancelled) }
+                if let spy { return try MainActor.assumeIsolated { try spy.trash(url, consent) } }
+                return try LiveFiles.trash(url, consent)
             }
             for part in parts {
                 do {
@@ -214,9 +230,10 @@ extension BrowserModel {
                         done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(original)))
                     case (.trashed(let original, _, let identity), false):
                         try check(original, identity)
-                        guard let inTrash = try trash(original) else { throw CocoaError(.fileWriteUnknown) }
+                        // (in the Trash; a volume that doesn't say where gives no Undo, as the Trash itself)
+                        let inTrash = try trash(original)
                         changes.append(.removed(original))
-                        done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(inTrash)))
+                        if let inTrash { done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(inTrash))) }
                     }
                 } catch {
                     return (done, changes, folders, error)
@@ -252,8 +269,10 @@ extension BrowserModel {
             }
             if !folders.isEmpty {
                 notifyFolderChanges(folders)
-                // Read again only when the folder shown (or a search over it) got something
-                if let shown = folderURL, isFiltering || folders.contains(where: { BrowserModel.samePath($0, shown) }) {
+                // Read again only when the folder shown (or a search or the
+                // Atlas's subfolders over it) got something
+                if let shown = folderURL, isFiltering || folders.contains(where: { BrowserModel.samePath($0, shown) })
+                    || showsDeep && folders.contains(where: { BrowserModel.isSameOrInside(BrowserModel.canonicalPath($0), BrowserModel.canonicalPath(shown)) }) {
                     refresh(changed: folders)
                 }
             }
@@ -261,7 +280,29 @@ extension BrowserModel {
     }
 }
 
+extension BrowserModel {
+    /// What the Trash prompt of an Undo or Redo says goes with it.
+    fileprivate static func trashDetail(_ kind: UndoStep.Kind, undoing: Bool) -> String {
+        switch (kind, undoing) {
+        case (.copy, true): return String(localized: "Undo Copy moves what was copied to the Trash.")
+        case (.newFolder, true): return String(localized: "Undo New Folder moves the new folder to the Trash.")
+        default: return String(localized: "Redo Move to Trash moves what was taken out of the Trash back into it.")
+        }
+    }
+}
+
 extension UndoStep.Part {
+    /// The item this part moves to the Trash when undone (`undoing`) or
+    /// redone: a copy or a new folder undone, a trashed item trashed again.
+    func trashedBy(undoing: Bool) -> URL? {
+        switch (self, undoing) {
+        case (.copied(_, let copy, _), true): return copy
+        case (.created(let folder, _), true): return folder
+        case (.trashed(let original, _, _), false): return original
+        default: return nil
+        }
+    }
+
     /// The item's place before the action (to tell parts apart).
     var source: String {
         switch self {

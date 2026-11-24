@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "폴더와 그 안의 모든 항목(Schnellbild에서 보여 주지 않는 파일 포함)이 휴지통으로 이동됩니다.";
 "All parts of this archive will be moved to the Trash." = "이 아카이브의 모든 부분이 휴지통으로 이동됩니다.";
 "The file will be moved to the Trash." = "파일이 휴지통으로 이동됩니다.";
+"Undo Copy moves what was copied to the Trash." = "‘복사 실행 취소’는 복사한 항목을 휴지통으로 이동합니다.";
+"Undo New Folder moves the new folder to the Trash." = "‘새로운 폴더 실행 취소’는 새 폴더를 휴지통으로 이동합니다.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "‘휴지통으로 이동 실행 복귀’는 휴지통에서 꺼낸 항목을 다시 휴지통으로 이동합니다.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "폴더, 아카이브, 이미지 및 비디오 이름 검색(하위 폴더 포함)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "이 폴더와 하위 폴더에 이름에 ‘%@’이(가) 포함된 폴더, 아카이브, 이미지 또는 비디오가 없습니다.";
 "Search stopped. No matches so far." = "검색이 중단되었습니다. 지금까지 일치하는 항목이 없습니다.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "모두 유지: 새 항목에 번호가 붙습니다. 건너뛰기: 원래 위치에 그대로 있습니다. 취소: 아무것도 이동하거나 복사하지 않습니다.";
 "Apply to all" = "모두에 적용";
 "Copied, but the original couldn't be removed: %@" = "복사했지만 원본을 제거할 수 없습니다: %@";
+"Copied, but only part of the original could be removed: %@" = "복사했지만 원본의 일부만 제거할 수 있었습니다: %@";
 "Not everything was moved or copied." = "일부 항목이 이동되거나 복사되지 않았습니다.";
 "“%@”: %@" = "‘%@’: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "‘%@’은(는) 더 이상 Schnellbild가 그곳에 둔 항목이 아니므로 그대로 둡니다.";

@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Kansio ja kaikki sen sisältö, myös tiedostot, joita Schnellbild ei näytä, siirretään roskakoriin.";
 "All parts of this archive will be moved to the Trash." = "Tämän arkiston kaikki osat siirretään roskakoriin.";
 "The file will be moved to the Trash." = "Tiedosto siirretään roskakoriin.";
+"Undo Copy moves what was copied to the Trash." = "”Kumoa kopiointi” siirtää kopioidut kohteet roskakoriin.";
+"Undo New Folder moves the new folder to the Trash." = "”Kumoa uusi kansio” siirtää uuden kansion roskakoriin.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "”Tee siirto roskakoriin uudelleen” siirtää roskakorista palautetut kohteet takaisin sinne.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Etsi kansioiden, arkistojen, kuvien ja videoiden nimiä (myös alikansioista)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Tässä kansiossa tai sen alikansioissa ei ole kansiota, arkistoa, kuvaa tai videota, jonka nimessä on ”%@”.";
 "Search stopped. No matches so far." = "Haku pysäytetty. Ei osumia toistaiseksi.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Säilytä molemmat: uusi saa numeron. Ohita: se jää paikalleen. Kumoa: mitään ei siirretä eikä kopioida.";
 "Apply to all" = "Käytä kaikkiin";
 "Copied, but the original couldn't be removed: %@" = "Kopioitu, mutta alkuperäistä ei voitu poistaa: %@";
+"Copied, but only part of the original could be removed: %@" = "Kopioitu, mutta alkuperäisestä voitiin poistaa vain osa: %@";
 "Not everything was moved or copied." = "Kaikkea ei siirretty tai kopioitu.";
 "“%@”: %@" = "”%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "”%@” ei ole enää kohde, jonka Schnellbild sijoitti sinne, joten se jää ennalleen.";

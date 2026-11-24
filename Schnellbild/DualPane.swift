@@ -138,16 +138,19 @@ final class WindowModel: ObservableObject {
         for pane in allPanes { pane.leaveWindow() }
     }
 
-    /// Its window is closed: none of the app's changes reach it.
+    /// Its window is closed: the app's changes are kept for it
+    /// (`BrowserModel.missed`), not applied.
     private(set) var closed = false
 
     /// A new window takes the model kept from a closed one: its panes listen
-    /// again and read their folders afresh (they missed what changed meanwhile).
+    /// again, follow the app's changes made meanwhile (a folder shown
+    /// renamed, its history) and read their folders afresh (for what else
+    /// changed).
     private func reopen() {
         closed = false
         for pane in allPanes {
             pane.enterWindow()
-            pane.refresh()
+            if !pane.adoptMissed() { pane.refresh() }
         }
     }
 
@@ -223,6 +226,7 @@ final class WindowModel: ObservableObject {
         pane.onFileChange = { [weak pane] changes in
             guard let pane else { return }
             for other in Self.everyPane where other !== pane { other.adopt(changes) }
+            for window in Self.all where window.closed { for other in window.allPanes { other.missed(changes) } }
         }
         pane.onFoldersChanged = { [weak pane] folders in
             guard let pane else { return }

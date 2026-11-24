@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "フォルダとその中のすべて（Schnellbild で表示されないファイルを含む）がゴミ箱に入れられます。";
 "All parts of this archive will be moved to the Trash." = "このアーカイブのすべてのパートがゴミ箱に入れられます。";
 "The file will be moved to the Trash." = "ファイルはゴミ箱に入れられます。";
+"Undo Copy moves what was copied to the Trash." = "「コピーを取り消す」を実行すると、コピーした項目がゴミ箱に入れられます。";
+"Undo New Folder moves the new folder to the Trash." = "「新規フォルダを取り消す」を実行すると、新しいフォルダがゴミ箱に入れられます。";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "「ゴミ箱に入れる操作をやり直す」を実行すると、ゴミ箱から戻した項目が再びゴミ箱に入れられます。";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "フォルダ、アーカイブ、画像、ビデオの名前を検索（サブフォルダを含む）";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "このフォルダとサブフォルダに、名前に“%@”を含むフォルダ、アーカイブ、画像、ビデオはありません。";
 "Search stopped. No matches so far." = "検索を停止しました。これまでに一致するものはありません。";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "両方を残す：新しい項目に番号が付きます。スキップ：元の場所に残ります。キャンセル：何も移動もコピーもされません。";
 "Apply to all" = "すべてに適用";
 "Copied, but the original couldn't be removed: %@" = "コピーしましたが、元の項目を削除できませんでした：%@";
+"Copied, but only part of the original could be removed: %@" = "コピーしましたが、元の項目は一部しか削除できませんでした：%@";
 "Not everything was moved or copied." = "一部の項目は移動またはコピーされませんでした。";
 "“%@”: %@" = "“%@”：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”は Schnellbild がそこに置いた項目ではなくなっているため、そのままにします。";

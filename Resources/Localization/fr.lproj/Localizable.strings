@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "Le dossier et tout son contenu, y compris les fichiers que Schnellbild n’affiche pas, seront placés dans la corbeille.";
 "All parts of this archive will be moved to the Trash." = "Toutes les parties de cette archive seront placées dans la corbeille.";
 "The file will be moved to the Trash." = "Le fichier sera placé dans la corbeille.";
+"Undo Copy moves what was copied to the Trash." = "« Annuler la copie » place ce qui a été copié dans la corbeille.";
+"Undo New Folder moves the new folder to the Trash." = "« Annuler le nouveau dossier » place le nouveau dossier dans la corbeille.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "« Rétablir le placement dans la corbeille » remet dans la corbeille ce qui en a été sorti.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Rechercher des noms de dossiers, d’archives, d’images et de vidéos (sous-dossiers compris)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Aucun dossier, archive, image ou vidéo dont le nom contient « %@ », dans ce dossier ou ses sous-dossiers.";
 "Search stopped. No matches so far." = "Recherche arrêtée. Aucun résultat pour l’instant.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Garder les deux : le nouvel élément reçoit un numéro. Ignorer : il reste où il est. Annuler : rien n’est déplacé ni copié.";
 "Apply to all" = "Appliquer à tous";
 "Copied, but the original couldn't be removed: %@" = "Copié, mais l’original n’a pas pu être supprimé : %@";
+"Copied, but only part of the original could be removed: %@" = "Copié, mais l’original n’a pu être supprimé qu’en partie : %@";
 "Not everything was moved or copied." = "Tout n’a pas été déplacé ou copié.";
 "“%@”: %@" = "« %@ » : %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "« %@ » n’est plus l’élément que Schnellbild y a placé ; il reste tel quel.";

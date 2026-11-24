@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "A pasta e tudo o que ela contém, incluindo arquivos que o Schnellbild não mostra, serão movidos para o Lixo.";
 "All parts of this archive will be moved to the Trash." = "Todas as partes deste arquivo compactado serão movidas para o Lixo.";
 "The file will be moved to the Trash." = "O arquivo será movido para o Lixo.";
+"Undo Copy moves what was copied to the Trash." = "“Desfazer cópia” move o que foi copiado para o Lixo.";
+"Undo New Folder moves the new folder to the Trash." = "“Desfazer nova pasta” move a pasta nova para o Lixo.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "“Refazer mover para o Lixo” devolve ao Lixo o que foi tirado dele.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Buscar nomes de pastas, arquivos compactados, imagens e vídeos (incl. subpastas)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Nenhuma pasta, arquivo compactado, imagem ou vídeo cujo nome contenha “%@”, nesta pasta ou em suas subpastas.";
 "Search stopped. No matches so far." = "Busca interrompida. Nenhum resultado até agora.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Manter ambos: o novo recebe um número. Ignorar: fica onde está. Cancelar: nada é movido nem copiado.";
 "Apply to all" = "Aplicar a todos";
 "Copied, but the original couldn't be removed: %@" = "Copiado, mas não foi possível remover o original: %@";
+"Copied, but only part of the original could be removed: %@" = "Copiado, mas só foi possível remover parte do original: %@";
 "Not everything was moved or copied." = "Nem tudo foi movido ou copiado.";
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” não é mais o item que o Schnellbild colocou ali, então fica como está.";

@@ -92,6 +92,9 @@
 "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash." = "De map en alles erin, inclusief bestanden die Schnellbild niet toont, wordt naar de prullenmand verplaatst.";
 "All parts of this archive will be moved to the Trash." = "Alle delen van dit archief worden naar de prullenmand verplaatst.";
 "The file will be moved to the Trash." = "Het bestand wordt naar de prullenmand verplaatst.";
+"Undo Copy moves what was copied to the Trash." = "‘Kopiëren herstellen’ verplaatst wat gekopieerd is naar de prullenmand.";
+"Undo New Folder moves the new folder to the Trash." = "‘Nieuwe map herstellen’ verplaatst de nieuwe map naar de prullenmand.";
+"Redo Move to Trash moves what was taken out of the Trash back into it." = "‘Verplaatsen naar prullenmand opnieuw’ zet wat uit de prullenmand is gehaald er weer in.";
 "Search names of folders, archives, pictures and videos (incl. subfolders)" = "Zoek namen van mappen, archieven, afbeeldingen en video’s (incl. submappen)";
 "No folder, archive, picture or video whose name contains “%@”, in this folder or its subfolders." = "Geen map, archief, afbeelding of video waarvan de naam ‘%@’ bevat, in deze map of de submappen.";
 "Search stopped. No matches so far." = "Zoeken gestopt. Nog geen resultaten.";
@@ -285,6 +288,7 @@
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Bewaar beide: het nieuwe krijgt een nummer. Sla over: het blijft waar het is. Annuleer: er wordt niets verplaatst of gekopieerd.";
 "Apply to all" = "Pas toe op alle";
 "Copied, but the original couldn't be removed: %@" = "Gekopieerd, maar het origineel kon niet worden verwijderd: %@";
+"Copied, but only part of the original could be removed: %@" = "Gekopieerd, maar het origineel kon maar gedeeltelijk worden verwijderd: %@";
 "Not everything was moved or copied." = "Niet alles is verplaatst of gekopieerd.";
 "“%@”: %@" = "‘%@’: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "‘%@’ is niet meer het onderdeel dat Schnellbild daar heeft neergezet en blijft daarom zoals het is.";

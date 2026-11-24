@@ -542,10 +542,19 @@ struct OtherFilesList: View {
 struct OtherFileInteractions: ViewModifier {
     let file: OtherFile
     @EnvironmentObject var model: BrowserModel
+    /// Whether "Open" opens it (`LiveFiles.canOpenOtherFile`), looked up off
+    /// the main thread when the row comes up: an alias leads to another
+    /// volume, a web location is read.
+    @State private var openable = false
 
     func body(content: Content) -> some View {
         let changeable = !ArchivePath.isInside(file.url)
         content
+            .task(id: file.url) {
+                guard changeable else { return }
+                let url = file.url
+                openable = await Blocking.run(.utility) { LiveFiles.canOpenOtherFile(url) }
+            }
             .onDrag { TileDrag.provider(file: file.url, paths: changeable ? [file.url.path] : nil) }
             // Opened like a document in the Finder, but only documents (no apps, no scripts)
             .modifier(Clicks(single: {}, double: { model.open(file) }))
@@ -553,7 +562,7 @@ struct OtherFileInteractions: ViewModifier {
                 UndoMenuItems(history: model.undoHistory, model: model)
                 if changeable {
                     Button("Open") { model.open(file) }
-                        .disabled(!LiveFiles.canOpenOtherFile(file.url))
+                        .disabled(!openable)
                     Divider()
                     Button("Rename…") { model.beginRename(file) }
                 }
