@@ -20,14 +20,23 @@ func rgb(_ r: CGFloat, _ g: CGFloat, _ b: CGFloat, _ a: CGFloat = 1) -> CGColor 
 ctx.setShouldAntialias(true)
 ctx.interpolationQuality = .high
 
-// MARK: Background squircle, one flat colour (no gradients in anything designed):
-// between the blue and the purple of the mountains
+// MARK: Background squircle + gradient
 let corner = S * 0.2237
 let bg = CGPath(roundedRect: CGRect(x: 0, y: 0, width: S, height: S),
                 cornerWidth: corner, cornerHeight: corner, transform: nil)
+ctx.saveGState()
 ctx.addPath(bg)
-ctx.setFillColor(rgb(92, 109, 255))
-ctx.fillPath()
+ctx.clip()
+let grad = CGGradient(colorsSpace: cs,
+                      colors: [rgb(46, 139, 255), rgb(138, 79, 255)] as CFArray,
+                      locations: [0, 1])!
+ctx.drawLinearGradient(grad, start: CGPoint(x: 0, y: S), end: CGPoint(x: S, y: 0), options: [])
+// soft top highlight
+let hl = CGGradient(colorsSpace: cs,
+                    colors: [rgb(255, 255, 255, 0.22), rgb(255, 255, 255, 0)] as CFArray,
+                    locations: [0, 1])!
+ctx.drawLinearGradient(hl, start: CGPoint(x: 0, y: S), end: CGPoint(x: 0, y: S * 0.45), options: [])
+ctx.restoreGState()
 
 // MARK: Photo card
 let inset = S * 0.215
