@@ -221,6 +221,7 @@ def icons():
         sips("-z", 256, 256, ICON, "--out", tmp / "256.png")
         webp(tmp / "256.png", DOCS / "icon.webp")
         (ROOT / "Resources" / "icon-256.png").write_bytes((tmp / "256.png").read_bytes())
+        (DOCS / "icon.png").write_bytes((tmp / "256.png").read_bytes())
         for size in (16, 32):
             (DOCS / f"favicon-{size}.png").write_bytes((tmp / f"{size}.png").read_bytes())
         for size in (192, 512):
@@ -320,7 +321,7 @@ def check():
         if path.stat().st_size > OG_LIMIT:
             problems.append(f"{path.relative_to(ROOT)} has {path.stat().st_size} bytes, more than {OG_LIMIT}")
     for name, size in [("apple-touch-icon.png", 180), ("favicon-16.png", 16), ("favicon-32.png", 32),
-                       ("icon-64.png", 64), ("icon-192.png", 192), ("icon-512.png", 512)]:
+                       ("icon-64.png", 64), ("icon.png", 256), ("icon-192.png", 192), ("icon-512.png", 512)]:
         path = DOCS / name
         if not path.exists() or png_size(path) != (size, size):
             problems.append(f"docs/{name} is missing or not {size} px")
