@@ -1519,6 +1519,8 @@ final class BrowserModel: ObservableObject {
         if slideshow != nil { stopSlideshow() }
         if mode == .detail { closeDetail() }
         if isSearching { stopSearch() }
+        // The history's searches too: searched again when gone back to
+        for run in allSearches where !run.finished { run.stop(incomplete: true) }
         atlasIfMade?.leaveWindow()
         bossKeyObserver = nil
         inWindow = false
@@ -5721,6 +5723,24 @@ final class BrowserModel: ObservableObject {
         let keep = selectedEntry?.url
         applyHere(changes)
         followOrDrop(changes, keeping: keep)
+    }
+
+    /// Changes made while the pane's window was closed: kept, and adopted
+    /// when a window takes it again (`adoptMissed`), before its folders are
+    /// read anew.
+    private var missedChanges: [FileChange] = []
+
+    func missed(_ changes: [FileChange]) { missedChanges += changes }
+
+    /// The changes made while the window was closed, adopted: lists and
+    /// history follow them, the folder shown too. Returns whether the folder
+    /// shown was opened anew by that (followed or left).
+    func adoptMissed() -> Bool {
+        let changes = missedChanges
+        missedChanges = []
+        guard !changes.isEmpty else { return false }
+        applyHere(changes)
+        return followFolder(through: changes)
     }
 
     /// After changes that may have moved items out of the folder shown (or

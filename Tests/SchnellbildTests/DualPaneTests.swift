@@ -193,6 +193,36 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(first.left.names, ["..", "b.jpg"])
     }
 
+    /// The app's changes made while a window was closed reach it when a
+    /// window takes it again: the folder shown renamed meanwhile is shown
+    /// under its new name, and the history follows.
+    func testAWindowTakenAgainFollowsWhatTheAppChangedMeanwhile() async throws {
+        let tree = try TempTree(self)
+        try tree.file("A/Trip/a.jpg")
+        let a = tree.root.appendingPathComponent("A")
+        let trip = a.appendingPathComponent("Trip")
+        let spy = FileActionsSpy()
+        let first = window(spy)
+        XCTAssertTrue(WindowModel.claim(first, defaults: makeTestDefaults()) === first)
+        await openAndWait(first.left, trip)
+        await openAndWait(first.left, a)
+        first.windowClosed()
+
+        let other = window(spy)
+        await openAndWait(other.left, a)
+        other.left.selectEntry(named: "Trip")
+        try await other.left.rename(try XCTUnwrap(other.left.selectedEntry), to: "Trip 2024")
+        XCTAssertEqual(first.left.names, ["..", "Trip"], "closed: left alone")
+
+        XCTAssertTrue(WindowModel.claim(first, defaults: makeTestDefaults()) === first)
+        let renamed = a.appendingPathComponent("Trip 2024")
+        await waitUntil { first.left.isAt(a) && first.left.names == ["..", "Trip 2024"] }
+        first.left.navigateBack()
+        await waitUntil { first.left.isAt(renamed) }
+        XCTAssertNil(first.left.loadError, "the history went along")
+        XCTAssertEqual(first.left.names, ["..", "a.jpg"])
+    }
+
     /// A slideshow whose items the other pane trashed, all of them, ends.
     func testASlideshowLeftWithNothingEnds() async throws {
         let tree = try TempTree(self)
