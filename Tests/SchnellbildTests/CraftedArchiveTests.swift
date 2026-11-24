@@ -464,10 +464,14 @@ final class CraftedArchiveTests: XCTestCase {
         zipping.currentDirectoryURL = src
         try zipping.run(); zipping.waitUntilExit()
         let bomb = tree.root.appendingPathComponent("bomb.zip")
+        let store = ArchiveStore()
+        let unpacked = Paths()
+        store.unpacked = { unpacked.add($0) }
         do {
-            _ = try await ArchiveStore.shared.data(of: bomb.appendingPathComponent("cover.jpg"))
+            _ = try await store.data(of: bomb.appendingPathComponent("cover.jpg"))
             XCTFail("unpacked")
         } catch ArchiveError.tooLarge {}
+        XCTAssertEqual(unpacked.all, [], "refused by its stated size, before any of it is unpacked")
 
         // Without its central directory (still downloading) the ZIP is read
         // front to back, and an entry written with a data descriptor has
@@ -481,13 +485,14 @@ final class CraftedArchiveTests: XCTestCase {
         try piping.run(); piping.waitUntilExit()
         let whole = try Data(contentsOf: streamed)
         try whole.prefix(whole.count - 120).write(to: streamed)
-        let index = try await ArchiveStore.shared.index(of: streamed)
+        let index = try await store.index(of: streamed)
         let item = try XCTUnwrap(index.byPath["-"])
         XCTAssertEqual(item.size, -1, "no size stated")
         do {
-            _ = try await ArchiveStore.shared.data(of: streamed.appendingPathComponent("-"))
+            _ = try await store.data(of: streamed.appendingPathComponent("-"))
             XCTFail("unpacked")
         } catch ArchiveError.tooLarge {}
+        XCTAssertEqual(unpacked.all, ["-"], "no size stated: stopped at the limit")
     }
 
     /// Requests for entries a pass has already gone by (asked again after
