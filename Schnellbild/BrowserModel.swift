@@ -1466,19 +1466,26 @@ final class BrowserModel: ObservableObject {
 
     /// The window this pane is in (set by it, `WindowModel.watch`).
     weak var owner: WindowModel?
-    /// The AppKit window showing this pane.
-    var hostWindow: NSWindow? { owner?.nsWindow ?? Self.appWindow }
+    /// The AppKit window showing this pane; none once its window closed
+    /// (never another window, which full screen would then act on).
+    var hostWindow: NSWindow? {
+        if let owner, owner.closed { return nil }
+        return owner?.nsWindow ?? Self.appWindow
+    }
 
     /// The browser window keys and menus act on: the key window's (the key
     /// window can be the Adjustments popover's: then the main one).
     static var appWindow: NSWindow? { WindowModel.current?.nsWindow ?? NSApp.mainWindow ?? NSApp.keyWindow }
 
     /// The window showing this pane closed: nothing goes on playing in it,
-    /// and it stops listening (a model kept for the next window). The tour
-    /// ends there without leaving full screen (`hostWindow` would be another
-    /// window by then), and the Atlas stops reading.
+    /// and it stops listening (a model kept for the next window). The
+    /// slideshow and the tour end there without leaving full screen (the
+    /// window is gone), and the Atlas stops reading.
     func leaveWindow() {
-        if slideshow != nil { stopSlideshow() }
+        if slideshow != nil {
+            slideshowEnteredFullScreen = false
+            stopSlideshow()
+        }
         if mode == .detail { closeDetail() }
         if isSearching { stopSearch() }
         atlasIfMade?.leaveWindow()

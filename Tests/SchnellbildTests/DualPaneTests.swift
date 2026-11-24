@@ -193,6 +193,25 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(first.left.names, ["..", "b.jpg"])
     }
 
+    /// The window closed during a slideshow that put it into full screen:
+    /// the show ends there, without taking another window out of full screen.
+    func testClosingTheWindowEndsTheSlideshowWithoutLeavingFullScreen() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        let w = window(FileActionsSpy())
+        var fullScreen: [Bool] = []
+        w.left.setFullScreen = { on in fullScreen.append(on); return true }
+        w.left.slideshowInterval = .seconds(60)
+        await openAndWait(w.left, tree.root)
+        w.left.startSlideshow()
+        await waitUntil { w.left.slideshow?.loading == false && w.left.shownMediaEntry?.name == "a.jpg" }
+        XCTAssertEqual(fullScreen, [true])
+        w.windowClosed()
+        XCTAssertNil(w.left.slideshow, "the slideshow ended with its window")
+        XCTAssertEqual(fullScreen, [true], "no window taken out of full screen")
+        XCTAssertNil(w.left.hostWindow, "a closed window's pane has no window to act on")
+    }
+
     /// A slideshow whose items the other pane trashed, all of them, ends.
     func testASlideshowLeftWithNothingEnds() async throws {
         let tree = try TempTree(self)
