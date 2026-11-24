@@ -49,6 +49,28 @@ public struct LibVLCVideo {
         return chroma.hasPrefix("GB") && "9ACF".contains(c[2]) && "LB".contains(c[3])
     }
 
+    /// Turns VLC's on-screen messages (a snapshot's file name, what a
+    /// hotkey did) off for `player`: libVLC's player is the object its
+    /// video outputs take their settings from, while a media's options
+    /// (":no-osd") reach only its input, so the setting goes onto the
+    /// player. Whether it was set.
+    @discardableResult
+    public static func hideMessages(of player: VLCMediaPlayer) -> Bool { set("osd", false, on: player) }
+
+    /// Sets libVLC's boolean setting `name` on the player (`var_Create` /
+    /// `var_SetChecked` of libvlccore), for what it opens from then on.
+    @discardableResult
+    public static func set(_ name: String, _ value: Bool, on player: VLCMediaPlayer) -> Bool {
+        typealias Create = @convention(c) (OpaquePointer, UnsafePointer<CChar>, Int32) -> Int32
+        typealias SetValue = @convention(c) (OpaquePointer, UnsafePointer<CChar>, Int32, UInt64) -> Int32
+        let handle = dlopen(nil, RTLD_NOW)
+        guard let native = nativePlayer(of: player), let create = dlsym(handle, "var_Create"),
+              let set = dlsym(handle, "var_SetChecked") else { return false }
+        let bool: Int32 = 0x0020   // VLC_VAR_BOOL; a vlc_value_t's b_bool in its first byte
+        guard unsafeBitCast(create, to: Create.self)(native, name, bool) == 0 else { return false }
+        return unsafeBitCast(set, to: SetValue.self)(native, name, bool, value ? 1 : 0) == 0
+    }
+
     /// The `libvlc_media_player_t` inside a VLCMediaPlayer.
     public static func nativePlayer(of player: VLCMediaPlayer) -> OpaquePointer? {
         let selector = NSSelectorFromString("libVLCMediaPlayer")
@@ -173,7 +195,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         VLCSafety.restrict(media, for: url, head: head)
         // `:no-play-and-pause`: at its end the player ends (VLCKit's default
         // would pause it there), which ends a grab without a picture at once
-        for option in [":no-audio", ":no-spu", ":no-osd", ":no-play-and-pause", ":avcodec-threads=1", ":avcodec-skip-idct=4",
+        for option in [":no-audio", ":no-spu", ":no-play-and-pause", ":avcodec-threads=1", ":avcodec-skip-idct=4",
                        ":avcodec-skiploopfilter=3", ":deinterlace=-1", ":avi-index=3"] {
             media.addOption(option)
         }
@@ -182,6 +204,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         let length = media.lengthWait(until: Date().addingTimeInterval(3)).intValue
         if length > 0 { media.addOption(":start-time=\(Double(length) / 1000 * Self.position)") }
         let player = VLCMediaPlayer()
+        LibVLCVideo.hideMessages(of: player)
         player.media = media
         guard let native = LibVLCVideo.nativePlayer(of: player) else { return finish(with: .failed("no native player")) }
         lock.lock()

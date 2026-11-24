@@ -3,10 +3,11 @@ import VLCKit
 import VLCFrames
 @testable import Schnellbild
 
-/// VLC shows no messages over the video: the options every media of the
-/// app's player gets (`VLCPlaybackControl.mediaOptions`) keep its
-/// on-screen messages out of the pictures. A snapshot is what makes VLC
-/// announce something there (its file's name) without its own interface.
+/// VLC shows no messages over the video: its on-screen messages are off on
+/// the player (`LibVLCVideo.hideMessages`), where its video output reads
+/// the setting (a media's ":no-osd" doesn't reach it). A snapshot is what
+/// makes VLC announce something there (its file's name) without its own
+/// interface.
 /// `grey.mp4` is even, so a message shows as text (`VLCFrameOutput.probe`);
 /// decoded in software, as the app plays a video with subtitles (VLC can't
 /// draw into VideoToolbox's pictures).
@@ -21,16 +22,20 @@ final class VLCMessagesTests: XCTestCase {
             .appendingPathComponent("UITests/Fixtures/\(name)")
     }
 
-    /// Plays `grey.mp4` with `options`, takes a snapshot half a second in,
+    /// Plays `grey.mp4` with the player's media options, its messages
+    /// hidden or not, takes a snapshot half a second in,
     /// and tells how many of the pictures handed over in the next 1.5 s
     /// hold text, and how many there were.
-    private func picturesAfterASnapshot(options: [String]) async throws -> (text: Int, all: Int) {
+    private func picturesAfterASnapshot(hidden: Bool) async throws -> (text: Int, all: Int) {
+        let options = VLCPlaybackControl.mediaOptions
         let url = fixture("grey.mp4")
         let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: VLCSafety.head(of: url))
-        // (no picture of the snapshot in the corner: only the message counts)
-        for option in options + [":no-audio", ":codec=avcodec,all", ":no-snapshot-preview"] { media.addOption(option) }
+        for option in options + [":no-audio", ":codec=avcodec,all"] { media.addOption(option) }
         let held = Held()
+        // No picture of the snapshot in the corner: only the message counts
+        XCTAssertTrue(LibVLCVideo.set("snapshot-preview", false, on: held.player))
+        if hidden { XCTAssertTrue(LibVLCVideo.hideMessages(of: held.player), "set on the player") }
         held.player.media = media
         let output = VLCFrameOutput()
         output.attach(to: held.player)
@@ -49,7 +54,7 @@ final class VLCMessagesTests: XCTestCase {
             seen = picture
             before.append(VLCFrameOutput.probe(picture, shown: picture).map(String.init(describing:)) ?? "none")
         }
-        print("VLCMessagesTests \(options): before the snapshot: \(before.joined(separator: "; "))")
+        print("VLCMessagesTests hidden \(hidden): before the snapshot: \(before.joined(separator: "; "))")
         let tree = try TempTree(self)
         held.player.saveVideoSnapshot(at: tree.root.appendingPathComponent("snapshot.png").path, withWidth: 0, andHeight: 0)
         var text = 0, all = 0
@@ -62,18 +67,18 @@ final class VLCMessagesTests: XCTestCase {
             all += 1
             let probe = VLCFrameOutput.probe(picture, shown: picture)
             if probe?.text == true { text += 1 }
-            print("VLCMessagesTests \(options): after the snapshot: \(probe.map(String.init(describing:)) ?? "none")")
+            print("VLCMessagesTests hidden \(hidden): after the snapshot: \(probe.map(String.init(describing:)) ?? "none")")
         }
         await Task.detached { held.player.stop() }.value
         return (text, all)
     }
 
     func testVLCDrawsNoMessagesIntoThePictures() async throws {
-        let shown = try await picturesAfterASnapshot(options: VLCPlaybackControl.mediaOptions)
+        let shown = try await picturesAfterASnapshot(hidden: true)
         XCTAssertGreaterThan(shown.all, 5, "pictures after the snapshot")
         XCTAssertEqual(shown.text, 0, "a message drawn into \(shown.text) of \(shown.all) pictures")
         // With its messages on, VLC draws the snapshot's: the test sees one
-        let messages = try await picturesAfterASnapshot(options: VLCPlaybackControl.mediaOptions.filter { $0 != ":no-osd" })
+        let messages = try await picturesAfterASnapshot(hidden: false)
         XCTAssertGreaterThan(messages.text, 0, "VLC's message with its messages on (of \(messages.all) pictures)")
     }
 }

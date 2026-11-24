@@ -71,7 +71,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// The player, in the box the control hands to `VLCStops` as it goes.
     private let held: VLCStops.Held = {
         _ = VLCPlaybackControl.testLog
-        return VLCStops.Held(VLCMediaPlayer())
+        let player = VLCMediaPlayer()
+        // No on-screen messages: VLC would draw them into the picture
+        LibVLCVideo.hideMessages(of: player)
+        return VLCStops.Held(player)
     }()
     var player: VLCMediaPlayer { held.player }
 
@@ -236,12 +239,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.play()
     }
 
-    /// What every media the player opens gets. No on-screen messages (VLC
-    /// would draw them into the picture). VLCKit turns on "play-and-pause":
-    /// VLC would pause as soon as it has read the file to its end, before
-    /// the last pictures are shown, and never report the end (the slideshow
-    /// waits for it).
-    static let mediaOptions = [":no-osd", ":no-play-and-pause"]
+    /// What every media the player opens gets. VLCKit turns on
+    /// "play-and-pause": VLC would pause as soon as it has read the file to
+    /// its end, before the last pictures are shown, and never report the
+    /// end (the slideshow waits for it). (VLC's on-screen messages are off
+    /// on the player itself: `LibVLCVideo.hideMessages`.)
+    static let mediaOptions = [":no-play-and-pause"]
 
     private func makeMedia(subtitles: Int? = nil) -> VLCMedia {
         let media: VLCMedia
