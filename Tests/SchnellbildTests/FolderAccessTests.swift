@@ -157,6 +157,23 @@ final class FolderAccessTests: XCTestCase {
         XCTAssertFalse(covered)
     }
 
+    /// A grant on a share mounted outside /Volumes (mount_smbfs to a folder,
+    /// autofs) that isn't mounted at launch waits for its volume, as the
+    /// bookmark names it, instead of being dropped.
+    func testAGrantOnAShareMountedElsewhereWaitsForIt() async throws {
+        let nas = URL(fileURLWithPath: "/Users/someone/mnt/nas/Photos")
+        let fake = FakeSystem()
+        var system = fake.system
+        system.volume = { _ in "/Users/someone/mnt/nas" }
+        let access = FolderAccess(sandboxed: true, system: system)
+        access.defaults = makeTestDefaults()
+        access.defaults.set([Data(nas.path.utf8)], forKey: FolderAccess.key)
+        access.restore()
+        await access.restored()
+        XCTAssertEqual(kept(access), [nas.path], "kept: its volume isn't there")
+        XCTAssertEqual(access.count, 1)
+    }
+
     /// The bookmarks are resolved off the main thread: `restore` returns
     /// at once, a folder is read once they are open.
     func testBookmarksAreResolvedOffTheMainThread() async throws {
