@@ -8,6 +8,9 @@
 #include <math.h>
 #include <memory>
 #include <new>
+#include <atomic>
+#include <chrono>
+#include <thread>
 #include "libraw/libraw/libraw.h"
 #include "include/CRaw.h"
 
@@ -18,6 +21,30 @@ int progress(void *data, enum LibRaw_progress, int, int) {
     const int *cancel = static_cast<const int *>(data);
     return cancel && __atomic_load_n(cancel, __ATOMIC_RELAXED) ? 1 : 0;
 }
+
+/// While it lives, LibRaw's own cancel flag (`setCancelFlag`) is set once
+/// the caller's is: the raw decoders check only LibRaw's (`checkCancel`),
+/// not the progress callback, so a large compressed file (CR3, RAF) stops
+/// during `unpack`, not after it.
+class CancelWatch {
+public:
+    CancelWatch(LibRaw &raw, const int *cancel) {
+        if (!cancel) return;
+        watcher = std::thread([this, &raw, cancel] {
+            while (!done.load()) {
+                if (__atomic_load_n(cancel, __ATOMIC_RELAXED)) { raw.setCancelFlag(); return; }
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            }
+        });
+    }
+    ~CancelWatch() {
+        done = true;
+        if (watcher.joinable()) watcher.join();
+    }
+private:
+    std::atomic<bool> done{false};
+    std::thread watcher;
+};
 
 /// A LibRaw instance with the limits set, the file's headers read and its
 /// size checked against `max_pixels`.
@@ -67,6 +94,37 @@ int handOver(libraw_processed_image_t *image, SBRawPicture *out, int64_t max_pix
     return LIBRAW_SUCCESS;
 }
 
+/// What the headers say, from an instance opened (`open`).
+void fill(LibRaw &raw, SBRawFacts *facts) {
+    memset(facts, 0, sizeof *facts);
+    const libraw_iparams_t &id = raw.imgdata.idata;
+    const libraw_image_sizes_t &s = raw.imgdata.sizes;
+    const libraw_imgother_t &o = raw.imgdata.other;
+    strncpy(facts->make, id.make, sizeof facts->make - 1);
+    strncpy(facts->model, id.model, sizeof facts->model - 1);
+    facts->raw_width = s.raw_width;
+    facts->raw_height = s.raw_height;
+    facts->width = s.width;
+    facts->height = s.height;
+    facts->flip = s.flip;
+    facts->bits = raw.imgdata.color.raw_bps;
+    facts->iso = o.iso_speed;
+    facts->shutter = o.shutter;
+    facts->aperture = o.aperture;
+    facts->focal_length = o.focal_len;
+    facts->timestamp = int64_t(o.timestamp);
+    const libraw_gps_info_t &gps = o.parsed_gps;
+    if (gps.gpsparsed && (gps.latref == 'N' || gps.latref == 'S') && (gps.longref == 'E' || gps.longref == 'W')) {
+        double latitude = degrees(gps.latitude, gps.latref), longitude = degrees(gps.longitude, gps.longref);
+        if (isfinite(latitude) && isfinite(longitude) && fabs(latitude) <= 90 && fabs(longitude) <= 180) {
+            facts->has_gps = 1;
+            facts->latitude = latitude;
+            facts->longitude = longitude;
+            facts->altitude = isfinite(gps.altitude) ? (gps.altref == 1 ? -gps.altitude : gps.altitude) : 0;
+        }
+    }
+}
+
 } // namespace
 
 extern "C" int sb_raw_facts(const void *bytes, size_t size, SBRawLimits limits, SBRawFacts *facts) {
@@ -74,47 +132,20 @@ extern "C" int sb_raw_facts(const void *bytes, size_t size, SBRawLimits limits, 
         std::unique_ptr<LibRaw> raw(new (std::nothrow) LibRaw(0));
         if (!raw) return LIBRAW_UNSUFFICIENT_MEMORY;
         int status = open(*raw, bytes, size, limits);
-        if (status == LIBRAW_SUCCESS) {
-            memset(facts, 0, sizeof *facts);
-            const libraw_iparams_t &id = raw->imgdata.idata;
-            const libraw_image_sizes_t &s = raw->imgdata.sizes;
-            const libraw_imgother_t &o = raw->imgdata.other;
-            strncpy(facts->make, id.make, sizeof facts->make - 1);
-            strncpy(facts->model, id.model, sizeof facts->model - 1);
-            facts->raw_width = s.raw_width;
-            facts->raw_height = s.raw_height;
-            facts->width = s.width;
-            facts->height = s.height;
-            facts->flip = s.flip;
-            facts->bits = raw->imgdata.color.raw_bps;
-            facts->iso = o.iso_speed;
-            facts->shutter = o.shutter;
-            facts->aperture = o.aperture;
-            facts->focal_length = o.focal_len;
-            facts->timestamp = int64_t(o.timestamp);
-            const libraw_gps_info_t &gps = o.parsed_gps;
-            if (gps.gpsparsed && (gps.latref == 'N' || gps.latref == 'S') && (gps.longref == 'E' || gps.longref == 'W')) {
-                double latitude = degrees(gps.latitude, gps.latref), longitude = degrees(gps.longitude, gps.longref);
-                if (isfinite(latitude) && isfinite(longitude) && fabs(latitude) <= 90 && fabs(longitude) <= 180) {
-                    facts->has_gps = 1;
-                    facts->latitude = latitude;
-                    facts->longitude = longitude;
-                    facts->altitude = isfinite(gps.altitude) ? (gps.altref == 1 ? -gps.altitude : gps.altitude) : 0;
-                }
-            }
-        }
+        if (status == LIBRAW_SUCCESS) fill(*raw, facts);
         return status;
     } catch (...) {
         return LIBRAW_UNSPECIFIED_ERROR;
     }
 }
 
-extern "C" int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limits, int max_side, SBRawPicture *out) {
+extern "C" int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limits, int max_side, SBRawPicture *out, SBRawFacts *facts) {
     try {
         std::unique_ptr<LibRaw> raw(new (std::nothrow) LibRaw(0));
         if (!raw) return LIBRAW_UNSUFFICIENT_MEMORY;
         int status = open(*raw, bytes, size, limits);
         if (status == LIBRAW_SUCCESS) {
+            if (facts) fill(*raw, facts);
             // The largest preview within `max_side` that is a JPEG, JPEG XL
             // or bitmap (not an H.265 one: nothing here decodes it alone)
             const libraw_thumbnail_list_t &list = raw->imgdata.thumbs_list;
@@ -152,14 +183,19 @@ extern "C" int sb_raw_thumbnail(const void *bytes, size_t size, SBRawLimits limi
     }
 }
 
-extern "C" int sb_raw_develop(const void *bytes, size_t size, SBRawLimits limits, int half, const int *cancel, SBRawPicture *out) {
+extern "C" int sb_raw_develop(const void *bytes, size_t size, SBRawLimits limits, int half, const int *cancel, SBRawPicture *out,
+                              SBRawFacts *facts) {
     try {
         std::unique_ptr<LibRaw> raw(new (std::nothrow) LibRaw(0));
         if (!raw) return LIBRAW_UNSUFFICIENT_MEMORY;
         raw->set_progress_handler(progress, const_cast<int *>(cancel));
+        CancelWatch watch(*raw, cancel);
         int status = open(*raw, bytes, size, limits);
         if (status == LIBRAW_SUCCESS) {
+            if (facts) fill(*raw, facts);
+            // More pixels than allowed at full size: half size
             const libraw_image_sizes_t &s = raw->imgdata.sizes;
+            if (int64_t(s.width) * s.height > limits.max_pixels) half = 1;
             int64_t pixels = int64_t(s.width) * s.height / (half ? 4 : 1);
             if (pixels > limits.max_pixels) status = LIBRAW_TOO_BIG;
         }

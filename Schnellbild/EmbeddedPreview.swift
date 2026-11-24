@@ -53,8 +53,15 @@ enum EmbeddedPreview {
     /// file itself: PostScript, the ZIP documents, a Netpbm bitmap.
     nonisolated static func showsPreview(_ url: URL) -> Bool {
         let ext = DownloadName.finalExtension(of: url)
-        return (postScriptExtensions.contains(ext) || zipEntries[ext] != nil) || ext == "pbm" || codeStreamExtensions.contains(ext)
+        return (postScriptExtensions.contains(ext) || zipEntries[ext] != nil) || netpbmExtensions.contains(ext)
+            || codeStreamExtensions.contains(ext)
     }
+
+    /// Netpbm's extensions: a binary bitmap (P4) may come under any of them
+    /// (".pnm" names every Netpbm kind, and files are misnamed), so each is
+    /// looked at for one (`netpbmBitmap`); the other kinds go to ImageIO as
+    /// they are.
+    nonisolated static let netpbmExtensions: Set<String> = ["pbm", "pnm", "pgm", "ppm"]
 
     /// JPEG 2000 code streams without the JP2 file around them: macOS 15's
     /// ImageIO reads none (macOS 26's does), so they are wrapped in one.
@@ -77,7 +84,7 @@ enum EmbeddedPreview {
             bytes = await Blocking.run(.userInitiated) { zipEntry(entries, of: url) }
         } else {
             guard let data = try? await MediaData.read(url) else { return nil }
-            if ext == "pbm" {
+            if netpbmExtensions.contains(ext) {
                 bytes = netpbmBitmap(data) ?? data
             } else if codeStreamExtensions.contains(ext) {
                 bytes = jpeg2000File(around: data) ?? data   // a JP2 file under such a name stays as it is
@@ -128,11 +135,17 @@ enum EmbeddedPreview {
     static let largestThumbnail = 16 << 20
 
     /// The first XMP thumbnail (`xmpGImg:image`, as an element or an
-    /// attribute) that ImageIO reads as a picture.
+    /// attribute) that ImageIO reads as a picture. Each byte is looked
+    /// through about once, however many markers a file holds: the end
+    /// searched for a value is remembered as absent up to where it was
+    /// looked for, and a marker inside a value looked at isn't one.
+    /// Stops when its task is cancelled.
     static func xmpThumbnail(in data: Data) -> Data? {
         let marker = Data("xmpGImg:image".utf8)
         var from = data.startIndex
-        while let found = data.range(of: marker, in: from..<data.endIndex) {
+        // Per closing byte (`<`, `"`, `'`): none of it before this index
+        var absentUntil: [UInt8: Int] = [:]
+        while !Task.isCancelled, let found = data.range(of: marker, in: from..<data.endIndex) {
             from = found.upperBound
             // `<xmpGImg:image>…<` or `xmpGImg:image="…"`; the closing tag's
             // own name (`</xmpGImg:image>`) is passed over
@@ -147,7 +160,12 @@ enum EmbeddedPreview {
                 start += 1
             } else { continue }
             let limit = min(data.endIndex, start + largestThumbnail)
-            guard let close = data[start..<limit].firstIndex(of: end) else { continue }
+            let searched = max(start, absentUntil[end] ?? start)
+            guard searched < limit, let close = data[searched..<limit].firstIndex(of: end) else {
+                absentUntil[end] = max(absentUntil[end] ?? limit, limit)
+                continue
+            }
+            from = close
             let text = String(decoding: data[start..<close], as: UTF8.self)
                 .replacingOccurrences(of: "&#xA;", with: "").replacingOccurrences(of: "&#xD;", with: "")
                 .replacingOccurrences(of: "&#10;", with: "").replacingOccurrences(of: "&#13;", with: "")
@@ -335,10 +353,9 @@ enum EmbeddedPreview {
     /// bytes: a picture (an Illustrator file with a PDF inside, a ZIP
     /// document, a PostScript file with a preview) or nil (another file).
     /// Reads the disk: only `ContentSniffer.content(of:)` asks, off the main
-    /// thread.
+    /// thread. Only a regular file (`RegularFile`).
     static func content(of url: URL, ext: String, size: Int) -> FileFacts.Content? {
-        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
-        defer { try? handle.close() }
+        guard let handle = try? RegularFile.open(url).handle else { return nil }
         guard let head = try? handle.read(upToCount: 512), head.count >= 4 else { return nil }
         let picture = FileFacts.Content(kind: .picture, fileExtension: ext, name: FileFacts.formatName(ofExtension: ext))
         if zipEntries[ext] != nil { return head.starts(with: [0x50, 0x4B, 0x03, 0x04]) ? picture : nil }

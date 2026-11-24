@@ -141,6 +141,13 @@ final class ImageFormatTests: XCTestCase {
         XCTAssertNil(EmbeddedPreview.netpbmBitmap(Data("P4\n4 2\n".utf8)), "its bits missing")
         XCTAssertNil(EmbeddedPreview.netpbmBitmap(Data("P4\n99999999 99999999\n\0".utf8)), "too large")
         XCTAssertNil(EmbeddedPreview.netpbmBitmap(FormatFixtures.netpbm("P6")), "not a bitmap")
+        // Under ".pnm" (which names every Netpbm kind) or misnamed: the same
+        for name in ["bits.pnm", "bits.pgm", "bits.ppm"] {
+            let other = try file(name, FormatFixtures.netpbm("P4"))
+            XCTAssertTrue(EmbeddedPreview.showsPreview(other), name)
+            let shown = try await decoded(other)
+            XCTAssertEqual(pixel(shown, x: 0, y: 0), [0, 0, 0], name)
+        }
     }
 
     // MARK: Illustrator
@@ -247,6 +254,22 @@ final class ImageFormatTests: XCTestCase {
         XCTAssertNil(EmbeddedPreview.xmpThumbnail(in: Data("<xmpGImg:image>bm90IGEgcGljdHVyZQ==</xmpGImg:image>".utf8)),
                      "base64 of no picture")
         XCTAssertNil(EmbeddedPreview.xmpThumbnail(in: Data("<xmpGImg:image>".utf8)), "never closed")
+    }
+
+    /// Many thumbnail markers that are never closed, in front of a long
+    /// stretch without the closing byte: each byte is looked through about
+    /// once (not once per marker), and a thumbnail after them is found.
+    func testUnclosedThumbnailMarkersAreLookedThroughOnce() throws {
+        var flood = Data("%!PS-Adobe-3.0\n".utf8)
+        for _ in 0..<3_000 { flood += Data("xmpGImg:image>AAAA xmpGImg:image=\"AAAA ".utf8) }
+        flood += Data(repeating: UInt8(ascii: "A"), count: 8 << 20)
+        let started = Date()
+        XCTAssertNil(EmbeddedPreview.xmpThumbnail(in: flood))
+        XCTAssertLessThan(Date().timeIntervalSince(started), 5, "3 000 markers × 8 MB would take minutes")
+        let jpeg = try XCTUnwrap(FormatFixtures.written(UTType.jpeg.identifier))
+        let after = Data("xmpGImg:image=\"AAAA ".utf8) + Data("<xmpGImg:image>".utf8) + Data(jpeg.base64EncodedString().utf8)
+            + Data("</xmpGImg:image>".utf8)
+        XCTAssertEqual(EmbeddedPreview.xmpThumbnail(in: after), jpeg, "a quote never closed doesn't hide the element after it")
     }
 
     /// Inside an archive the name decides (no first bytes without
