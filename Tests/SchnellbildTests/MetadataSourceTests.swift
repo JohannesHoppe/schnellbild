@@ -408,6 +408,10 @@ final class MetadataSourceTests: XCTestCase {
         XCTAssertEqual(ClockReading.parse("2024-06-18T22:31:09+0200")?.offset, 7200)
         XCTAssertEqual(ClockReading.parse("2024-06-18T22:31Z")?.offset, 0)
         XCTAssertEqual(ClockReading.parse("2024-06-18T22:31:09.25Z").map { $0.floating.timeIntervalSince1970.truncatingRemainder(dividingBy: 1) }, 0.25)
+        // RFC 3339 allows lower case and any number of digits of a second
+        XCTAssertEqual(ClockReading.parse("2024-06-18T22:31:09z")?.offset, 0)
+        XCTAssertEqual(ClockReading.parse("2024-06-18t22:31:09+02:00")?.offset, 7200)
+        XCTAssertEqual(ClockReading.parse("2024-06-18T22:31:09.1234567891+02:00")?.offset, 7200)
         // A wall clock in the hour the clocks skip (Oslo, 31 March 2024, 02:00 → 03:00) still names a moment
         let skipped = try XCTUnwrap(ClockReading.parse("2024-03-31T02:30:00"))
         XCTAssertNotNil(skipped.instant(in: oslo))
@@ -450,16 +454,21 @@ final class MetadataSourceTests: XCTestCase {
         let tree = try TempTree(self)
         let url = try photo(tree.root.appendingPathComponent("p.jpg"))
         let names = FolderNames(recheck: 0)
-        let cache = LocationCache(companions: { Companions.of($0, names: names) })
+        let reads = Counter()
+        let cache = LocationCache(companions: { Companions.of($0, names: names) }) { url, companions, track in
+            reads.add()
+            return await CaptureReader.facts(of: url, companions: companions, track: track)
+        }
         let modified = try url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
         let before = await cache.facts(of: url, modified: modified)
         XCTAssertNil(before.place)
-        XCTAssertEqual(cache.cached(url, modified: modified), GeoPoint??.some(nil))
+        _ = await cache.facts(of: url, modified: modified)
+        XCTAssertEqual(reads.value, 1, "known: from the cache")
         // A sidecar arrives: the cached answer no longer counts
         let sidecar = tree.root.appendingPathComponent("p.xmp")
         try FileManager.default.copyItem(at: try fixture("lightroom.xmp"), to: sidecar)
-        XCTAssertNil(cache.cachedFacts(url, modified: modified))
         let after = await cache.facts(of: url, modified: modified)
+        XCTAssertEqual(reads.value, 2, "read again with its sidecar")
         assertPlace(after.place?.location.point, 64.1460, -21.9360)
         // Edited (another date): read again
         try FileManager.default.removeItem(at: sidecar)
@@ -575,6 +584,114 @@ final class MetadataSourceTests: XCTestCase {
         assertPlace(read?.location?.point, 10, 20)
         let empty = box("\u{A9}xyz", [0x00, 0x00, 0x15, 0xC7])
         XCTAssertNil(MP4Boxes.read(MemoryBytes(ftyp + box("moov", box("udta", empty))))?.location)
+    }
+
+    /// A track's mdhd cut short gives no length (not one read from the box
+    /// after it); an empty XMP box counts as none, the same through a file
+    /// and in memory.
+    func testCraftedMediaHeadersAndXMPBoxes() throws {
+        func box(_ type: String, _ payload: [UInt8]) -> [UInt8] {
+            let size = UInt32(8 + payload.count)
+            return withUnsafeBytes(of: size.bigEndian, Array.init) + type.unicodeScalars.map { UInt8(truncatingIfNeeded: $0.value) } + payload
+        }
+        func be32(_ value: UInt32) -> [UInt8] { withUnsafeBytes(of: value.bigEndian, Array.init) }
+        func be64(_ value: UInt64) -> [UInt8] { withUnsafeBytes(of: value.bigEndian, Array.init) }
+        let hdlr = box("hdlr", [0, 0, 0, 0] + Array("mhlrsbtl".utf8) + [UInt8](repeating: 0x7F, count: 12))
+        func length(_ mdhd: [UInt8]) -> Double? {
+            let trak = box("trak", box("mdia", box("mdhd", mdhd) + hdlr))
+            return MP4Boxes.mediaLength(trak, track: MP4Boxes.Box(type: "trak", payload: 8..<trak.count))
+        }
+        let v1: [UInt8] = [1, 0, 0, 0] + [UInt8](repeating: 0, count: 16) + be32(1_000) + be64(5_000)
+        XCTAssertEqual(length(v1 + [0, 0, 0, 0]), 5)
+        XCTAssertNil(length(Array(v1.prefix(24))), "the duration cut off")
+        let v0: [UInt8] = [0, 0, 0, 0] + [UInt8](repeating: 0, count: 8) + be32(1_000) + be32(2_000)
+        XCTAssertEqual(length(v0 + [0, 0, 0, 0]), 2)
+        XCTAssertNil(length(Array(v0.prefix(16))), "the duration cut off")
+
+        let ftyp = box("ftyp", Array("mp41".utf8) + [0, 0, 0, 0])
+        let packet = Array("<x:xmpmeta xmlns:x=\"adobe:ns:meta/\"/>".utf8)
+        let movie = ftyp + box("uuid", MP4Boxes.xmpUUID) + box("moov", box("udta", box("XMP_", packet)))
+        XCTAssertEqual(MP4Boxes.read(MemoryBytes(movie))?.xmp, packet, "the user data's XMP, in memory")
+        let tree = try TempTree(self)
+        let url = tree.root.appendingPathComponent("movie.mp4")
+        try Data(movie).write(to: url)
+        let file = try XCTUnwrap(FileBytes(url))
+        XCTAssertEqual(file.read(at: 0, count: 0), [], "no bytes are no bytes, as in memory")
+        XCTAssertEqual(MP4Boxes.read(file)?.xmp, packet, "the same through the file")
+    }
+
+    /// A GoPro clip without a GPS time: its movie header holds the camera's
+    /// own clock (no zone), read as such, not as UTC.
+    func testAGoProsMovieHeaderIsItsClock() async throws {
+        func box(_ type: String, _ payload: [UInt8]) -> [UInt8] {
+            let size = UInt32(8 + payload.count)
+            return withUnsafeBytes(of: size.bigEndian, Array.init) + type.unicodeScalars.map { UInt8(truncatingIfNeeded: $0.value) } + payload
+        }
+        func be32(_ value: UInt32) -> [UInt8] { withUnsafeBytes(of: value.bigEndian, Array.init) }
+        let ftyp = box("ftyp", Array("mp41".utf8) + [0, 0, 0, 0])
+        let mdat = box("mdat", [UInt8](repeating: 0, count: 16))   // a telemetry payload without GPS
+        // 2024-06-01 12:00:00 on the camera's clock, as seconds since 1904
+        let created = UInt32(1_717_243_200 + 2_082_844_800)
+        let mvhd = box("mvhd", [0, 0, 0, 0] + be32(created) + be32(created) + be32(1_000) + be32(1_000) + [UInt8](repeating: 0, count: 80))
+        let full: [UInt8] = [0, 0, 0, 0]
+        let stsd = box("stsd", full + be32(1) + box("gpmd", [UInt8](repeating: 0, count: 8)))
+        let table = box("stbl", stsd + box("stsz", full + be32(16) + be32(1)) + box("stco", full + be32(1) + be32(UInt32(ftyp.count + 8)))
+                        + box("stsc", full + be32(1) + be32(1) + be32(1) + be32(1)))
+        let hdlr = box("hdlr", full + Array("mhlrmeta".utf8) + [UInt8](repeating: 0, count: 12))
+        let moov = box("moov", mvhd + box("trak", box("mdia", hdlr + box("minf", table))))
+        let tree = try TempTree(self)
+        let url = tree.root.appendingPathComponent("GX010009.MP4")
+        try Data(ftyp + mdat + moov).write(to: url)
+        let movie = try XCTUnwrap(MP4Boxes.read(try XCTUnwrap(FileBytes(url))))
+        XCTAssertEqual(movie.telemetry.count, 1, "a GoPro's telemetry track")
+        let facts = await CaptureReader.facts(of: url, companions: Companions())
+        let time = try XCTUnwrap(facts.time)
+        XCTAssertTrue(time.isCameraClock)
+        XCTAssertEqual(time.source, .file)
+        let clock = ClockReading(floating: Date(timeIntervalSince1970: 1_717_243_200), offset: nil)
+        XCTAssertEqual(time.date, clock.instant())
+    }
+
+    /// Payloads whose times the sample table doesn't give (it covers fewer
+    /// samples): one second each, as their length is taken, so a fix in the
+    /// third payload puts the start two seconds and its share before it.
+    func testPayloadsWithoutTimesCountASecondEach() throws {
+        func klv(_ key: String, _ type: Character, _ size: UInt8, _ count: UInt16, _ data: [UInt8]) -> [UInt8] {
+            var out = Array(key.utf8) + [type.asciiValue ?? 0, size] + withUnsafeBytes(of: count.bigEndian, Array.init) + data
+            while out.count % 4 != 0 { out.append(0) }
+            return out
+        }
+        func be(_ values: [Int32]) -> [UInt8] { values.flatMap { withUnsafeBytes(of: $0.bigEndian, Array.init) } }
+        func be16(_ values: [UInt16]) -> [UInt8] { values.flatMap { withUnsafeBytes(of: $0.bigEndian, Array.init) } }
+        func payload(locked: Bool) -> [UInt8] {
+            var samples: [UInt8] = []
+            for i in 0..<10 {
+                samples += be([488_738_000, 22_950_000, 35_000, 0, 0, 9_313, 34_200_000 + Int32(i) * 100])
+                samples += be16([120, locked && i >= 3 ? 3 : 0])
+            }
+            return klv("SCAL", "l", 4, 9, be([10_000_000, 10_000_000, 1_000, 1_000, 100, 1, 1_000, 100, 1]))
+                + klv("TYPE", "c", 1, 9, Array("lllllllSS".utf8)) + klv("GPS9", "?", 32, 10, samples)
+        }
+        let unlocked = payload(locked: false), locked = payload(locked: true)
+        let bytes = unlocked + unlocked + locked
+        let a = UInt64(unlocked.count)
+        let found = try XCTUnwrap(CaptureReader.telemetry(MemoryBytes(bytes), [0..<a, a..<2 * a, 2 * a..<UInt64(bytes.count)], starts: []))
+        // The locked sample (its own time 09:30:00.3) is 0.3 into the third payload, which starts at 2 s
+        XCTAssertEqual(try XCTUnwrap(found.time).timeIntervalSince1970, try utc("2025-07-01T09:29:58Z").timeIntervalSince1970, accuracy: 0.01)
+    }
+
+    /// A DJI log whose GPS locks only after the blocks searched from the
+    /// start: its first fix is still found (the video gets its place).
+    func testADJIFixFoundLate() throws {
+        var text = ""
+        for i in 0..<3_000 {
+            let place = i < 2_500 ? "[latitude: 0.000000] [longitude: 0.000000]" : "[latitude: 41.420000] [longitude: 2.230000]"
+            text += "\(i + 1)\n00:00:00,000 --> 00:00:00,033\n2022-08-07 13:40:40,774,808\n\(place) [altitude: \(i).0]\n\n"
+        }
+        let log = try XCTUnwrap(DJIFlightLog.read(Data(text.utf8)))
+        assertPlace(log.first?.point, 41.42, 2.23)
+        XCTAssertEqual(log.first?.altitude, 2_500, "the first block with a fix")
+        XCTAssertFalse(log.track.isEmpty)
     }
 
     func testCraftedGPMF() {

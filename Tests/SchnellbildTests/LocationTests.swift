@@ -64,6 +64,17 @@ final class LocationTests: XCTestCase {
         assertPoint("https://www.openstreetmap.org/#map=14/48.1372/11.5756", 48.1372, 11.5756)
         assertPoint("geo:48.137,11.575", 48.137, 11.575)
         assertPoint("geo:48.137,11.575;u=35", 48.137, 11.575)
+        // RFC 5870's altitude; Android's labelled pin
+        assertPoint("geo:48.137,11.575,520", 48.137, 11.575)
+        assertPoint("geo:48.137,11.575,520;u=35", 48.137, 11.575)
+        assertPoint("geo:0,0?q=48.137,11.575(Marienplatz)", 48.137, 11.575)
+    }
+
+    /// A geo: URI whose query is a search: its 0,0 is a placeholder, no place.
+    func testAGeoSearchIsNoPlace() {
+        XCTAssertNil(GeoPoint.parse("geo:0,0?q=Marienplatz+M%C3%BCnchen"))
+        XCTAssertNil(GeoPoint.parse("geo:0,0?q=Marienplatz(Somewhere)"))
+        XCTAssertNil(GeoPoint.parse("geo:48.137,11.575,high"))
     }
 
     func testWhatIsNoPlace() {
@@ -171,6 +182,8 @@ final class LocationTests: XCTestCase {
         XCTAssertNotNil(PictureMetadata.orientationText(6))
         XCTAssertNil(PictureMetadata.orientationText(9))
         XCTAssertNil(PictureMetadata.wallClock("0000:00:00 00:00:00", offset: nil), "a clock never set")
+        XCTAssertNil(PictureMetadata.wallClock("2024:02:30 10:00:00", offset: nil), "no such day: none, as for sorting")
+        XCTAssertNil(PictureMetadata.wallClock("2024:13:01 10:00:00", offset: nil), "no such month")
         XCTAssertEqual(PictureMetadata.wallClock("2024:06:18 22:31:09", offset: "+02:00")?.hasSuffix("(UTC+02:00)"), true)
         XCTAssertEqual(VideoMetadata.takenText("2024-06-18T22:31:09+0200")?.hasSuffix("(UTC+02:00)"), true)
         XCTAssertEqual(VideoMetadata.takenText("2024-06-18T20:31:09Z")?.hasSuffix("(UTC+00:00)"), true)
@@ -189,7 +202,7 @@ final class LocationTests: XCTestCase {
         XCTAssertTrue(capture[String(localized: "Date Taken")]?.hasSuffix("(UTC+02:00)") == true)
         XCTAssertTrue(report.media.contains { $0.label == String(localized: "Resolution") && $0.value == "64 × 48 px" })
         XCTAssertTrue(report.groups.contains { group in group.entries.contains { $0.key.contains("location.ISO6709") } })
-        let point = await MediaLocation.read(try fixture("geo.mov"))
+        let point = await CaptureReader.facts(of: try fixture("geo.mov")).place?.location.point
         XCTAssertEqual(try XCTUnwrap(point).latitude, 48.1372, accuracy: 1e-4)
     }
 
@@ -218,7 +231,7 @@ final class LocationTests: XCTestCase {
     func testTheCacheReadsAFileOnce() async throws {
         let reads = Counter()
         let paris = try XCTUnwrap(GeoPoint(latitude: 48.858370, longitude: 2.294481))
-        let cache = LocationCache(companions: { _ in Companions() }) { url, _ in
+        let cache = LocationCache(companions: { _ in Companions() }) { url, _, _ in
             reads.add()
             return url.lastPathComponent == "none.jpg" ? CaptureFacts() : CaptureFacts(place: CapturePlace(location: MediaLocation(point: paris), source: .file))
         }
@@ -228,18 +241,31 @@ final class LocationTests: XCTestCase {
         XCTAssertEqual(first, paris)
         _ = await cache.point(of: url, modified: date)
         XCTAssertEqual(reads.value, 1, "the same version: from the cache")
-        XCTAssertEqual(cache.cached(url, modified: date), GeoPoint??.some(paris))
         _ = await cache.point(of: url, modified: date.addingTimeInterval(1))
         XCTAssertEqual(reads.value, 2, "changed since: read again")
         _ = await cache.point(of: none, modified: date)
-        _ = await cache.point(of: none, modified: date)
+        let noPlace = await cache.point(of: none, modified: date)
+        XCTAssertNil(noPlace)
         XCTAssertEqual(reads.value, 3, "no place is known too")
-        XCTAssertEqual(cache.cached(none, modified: date), GeoPoint??.some(nil))
-        XCTAssertTrue(cache.cached(URL(fileURLWithPath: "/tmp/other.jpg"), modified: date) == nil, "never read")
         let many = (0..<50).map { (URL(fileURLWithPath: "/tmp/\($0).jpg"), Optional(date)) }
         let found = await cache.points(of: many)
         XCTAssertEqual(found.count, 50)
         XCTAssertEqual(reads.value, 53)
+
+        // Sorting reads without a GoPro's route; asked for it, the file is
+        // read once more, and then known for both
+        let routes = Counter()
+        let withRoutes = LocationCache(companions: { _ in Companions() }) { _, _, track in
+            if track { routes.add() }
+            return CaptureFacts()
+        }
+        _ = await withRoutes.point(of: url, modified: date)
+        _ = await withRoutes.facts(of: url, modified: date, track: false)
+        XCTAssertEqual(routes.value, 0)
+        _ = await withRoutes.facts(of: url, modified: date)
+        _ = await withRoutes.facts(of: url, modified: date)
+        _ = await withRoutes.point(of: url, modified: date)
+        XCTAssertEqual(routes.value, 1)
     }
 
     // MARK: Sorting by distance
@@ -353,7 +379,8 @@ final class LocationTests: XCTestCase {
 }
 
 /// Counts calls from any thread.
-private final class Counter: @unchecked Sendable {
+/// Counts calls from any thread (read counts of caches).
+final class Counter: @unchecked Sendable {
     private let lock = NSLock()
     private var count = 0
     var value: Int { lock.lock(); defer { lock.unlock() }; return count }

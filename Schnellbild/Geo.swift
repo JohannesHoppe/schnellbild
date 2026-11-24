@@ -78,12 +78,21 @@ extension GeoPoint {
     private static func fromLink(_ text: String) -> GeoPoint? {
         let lower = text.lowercased()
         if lower.hasPrefix("geo:") {
-            // geo:48.137,11.575;u=35 or geo:0,0?q=48.137,11.575
+            // geo:48.137,11.575;u=35, with an altitude geo:48.137,11.575,520
+            // (RFC 5870), or Android's geo:0,0?q=48.137,11.575(Label)
             let body = text.dropFirst(4)
-            if let query = body.split(separator: "?", maxSplits: 1).dropFirst().first,
-               let q = queryItems(String(query))["q"], let point = pair(q) { return point }
             let coordinates = body.split(whereSeparator: { $0 == ";" || $0 == "?" }).first.map(String.init) ?? ""
-            return pair(coordinates)
+            let parts = coordinates.split(separator: ",", omittingEmptySubsequences: false)
+            let own = parts.count == 3 && Double(parts[2].trimmingCharacters(in: .whitespaces)) != nil
+                ? pair(parts.prefix(2).joined(separator: ",")) : pair(coordinates)
+            if let query = body.split(separator: "?", maxSplits: 1).dropFirst().first, let q = queryItems(String(query))["q"] {
+                // The pin's label in parentheses after its coordinates
+                let place = q.split(separator: "(", maxSplits: 1, omittingEmptySubsequences: false).first.map(String.init) ?? q
+                if let point = pair(place) { return point }
+                // geo:0,0?q=Marienplatz: a search, its 0,0 no place
+                if let own, own.latitude == 0, own.longitude == 0 { return nil }
+            }
+            return own
         }
         guard lower.hasPrefix("http://") || lower.hasPrefix("https://") || lower.hasPrefix("maps://") || lower.hasPrefix("comgooglemaps://"),
               let components = URLComponents(string: text) else { return nil }
