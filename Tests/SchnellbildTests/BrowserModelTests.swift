@@ -172,28 +172,68 @@ func makeTestDefaults() -> UserDefaults {
     TestDefaults.make()
 }
 
+/// The preferences suites of the tests. Each name holds the test process's
+/// id ("sb.tests.<pid>.<label>.<UUID>"): the suites are removed when the
+/// process ends, and what a process that didn't end normally (killed,
+/// crashed) left behind is removed by the next test process.
 enum TestDefaults {
+    static let prefix = "sb.tests."
     private static let lock = NSLock()
     private static var names: [String] = []
 
-    static func make() -> UserDefaults {
-        let name = "sb.tests.\(UUID().uuidString)"
-        lock.lock()
-        if names.isEmpty { atexit { TestDefaults.removeAll() } }
-        names.append(name)
-        lock.unlock()
-        return UserDefaults(suiteName: name)!
+    static func make(_ label: String = "") -> UserDefaults {
+        UserDefaults(suiteName: name(label))!
     }
 
+    /// A suite's name, removed with the others (for code that opens the suite itself).
+    static func name(_ label: String = "") -> String {
+        let name = prefix + "\(getpid())." + (label.isEmpty ? "" : label + ".") + UUID().uuidString
+        lock.lock()
+        if names.isEmpty {
+            removeLeftovers()
+            atexit { TestDefaults.removeAll() }
+        }
+        names.append(name)
+        lock.unlock()
+        return name
+    }
+
+    private static var preferences: URL {
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Preferences")
+    }
+
+    private static func file(_ name: String) -> URL { preferences.appendingPathComponent("\(name).plist") }
+
+    /// Emptied, then their files removed. The preferences daemon writes an
+    /// emptied suite's file on its own time, which may be after the file
+    /// was removed (an empty suite's file comes back): removed again until
+    /// none has come back for a moment.
     static func removeAll() {
         lock.lock()
         let made = names
         names = []
         lock.unlock()
-        let preferences = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Preferences")
         for name in made {
             UserDefaults.standard.removePersistentDomain(forName: name)
-            try? FileManager.default.removeItem(at: preferences.appendingPathComponent("\(name).plist"))
+            CFPreferencesAppSynchronize(name as CFString)
+        }
+        let deadline = Date() + 2
+        var quiet = 0
+        while quiet < 3, Date() < deadline {
+            var removed = false
+            for name in made where (try? FileManager.default.removeItem(at: file(name))) != nil { removed = true }
+            quiet = removed ? 0 : quiet + 1
+            usleep(50_000)
+        }
+    }
+
+    /// The files of suites whose test process has ended.
+    private static func removeLeftovers() {
+        let files = (try? FileManager.default.contentsOfDirectory(atPath: preferences.path)) ?? []
+        for file in files where file.hasPrefix(prefix) && file.hasSuffix(".plist") {
+            guard let pid = Int32(file.dropFirst(prefix.count).prefix { $0 != "." }), pid > 0, pid != getpid(),
+                  kill(pid, 0) != 0, errno == ESRCH else { continue }
+            try? FileManager.default.removeItem(at: preferences.appendingPathComponent(file))
         }
     }
 }
@@ -794,8 +834,7 @@ final class OpenFolderTests: XCTestCase {
 
     func testUITestingUsesSeparateResettableDefaults() {
         XCTAssertTrue(BrowserModel.makeDefaults(arguments: ["app"]) === UserDefaults.standard)
-        let name = "sb.tests.reset.\(UUID().uuidString)"
-        defer { UserDefaults.standard.removePersistentDomain(forName: name) }
+        let name = TestDefaults.name("reset")
         let suite = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing"], suite: name)
         XCTAssertFalse(suite === UserDefaults.standard)
         suite.set("x", forKey: BrowserModel.lastFolderKey)
@@ -3043,7 +3082,7 @@ final class ReviewFixTests: XCTestCase {
 
         XCTAssertTrue(FolderAccess(sandboxed: false).covers(URL(fileURLWithPath: "/anywhere")))
         let sandboxed = FolderAccess(sandboxed: true)
-        sandboxed.defaults = UserDefaults(suiteName: "access-\(UUID().uuidString)")!
+        sandboxed.defaults = TestDefaults.make("access")
         sandboxed.restore()
         await sandboxed.restored()
         XCTAssertFalse(sandboxed.covers(URL(fileURLWithPath: "/anywhere")), "nothing granted yet")
@@ -3052,7 +3091,7 @@ final class ReviewFixTests: XCTestCase {
 
     /// Light or dark: as the system's until chosen, then kept.
     func testTheAppearanceIsKept() throws {
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "appearance-\(UUID().uuidString)"))
+        let defaults = TestDefaults.make("appearance")
         XCTAssertEqual(AppAppearance.stored(in: defaults), .system)
         XCTAssertNil(AppAppearance.system.appearanceName)
         defaults.set(AppAppearance.dark.rawValue, forKey: AppAppearance.key)

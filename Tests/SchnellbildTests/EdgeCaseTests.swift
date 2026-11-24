@@ -294,11 +294,10 @@ final class UnreadableFolderTests: XCTestCase {
     func testResetStateKeepsTheGrantsUnlessAskedNotTo() throws {
         let grants = [Data("grant".utf8)]
         func suite(_ name: String) throws -> String {
-            let suite = "reset-\(name)-\(UUID().uuidString)"
+            let suite = TestDefaults.name("reset-\(name)")
             let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
             defaults.set(grants, forKey: FolderAccess.key)
             defaults.set("/somewhere", forKey: "lastFolder-test")
-            addTeardownBlock { UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite) }
             return suite
         }
         let kept = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state"], suite: try suite("kept"))
