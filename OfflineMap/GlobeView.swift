@@ -9,7 +9,9 @@ import SwiftUI
 /// so by themselves). Buttons: + / −, the tilted view (also ⌥-drag, ⌥ with
 /// two fingers, two fingers turning), day and night by the Sun's place at
 /// `sunDate` (now when nil), the clouds, and the relief exaggerated or at
-/// true scale. Needs Metal; without it the flat map shows.
+/// true scale. Needs Metal; without it the flat map shows at every zoom
+/// (the proxy then places on it, and `onFlatOnly` tells the owner of the
+/// camera, whose limits are the flat map's then: `GlobeProjection.flatOnly`).
 public struct GlobeView<Overlay: View>: View {
     @Binding var camera: MapCamera
     let markers: [MapMarker]
@@ -20,11 +22,15 @@ public struct GlobeView<Overlay: View>: View {
     @State private var exaggerated: Bool
     @State private var showsClouds: Bool
     let sunDate: Date?
+    let onFlatOnly: (() -> Void)?
     @State private var link = MapLink()
+    /// No globe can be drawn: the flat map alone
+    @State private var flatOnly = false
 
     public init(camera: Binding<MapCamera>, markers: [MapMarker] = [], interactive: Bool = true,
                 lighting: Bool = false, exaggerated: Bool = true, clouds: Bool = true, sunDate: Date? = nil,
-                renderer: MapRenderer? = .shared, @ViewBuilder overlay: @escaping (MapProxy) -> Overlay) {
+                renderer: MapRenderer? = .shared, onFlatOnly: (() -> Void)? = nil,
+                @ViewBuilder overlay: @escaping (MapProxy) -> Overlay) {
         _camera = camera
         self.markers = markers
         self.interactive = interactive
@@ -34,16 +40,21 @@ public struct GlobeView<Overlay: View>: View {
         _exaggerated = .init(initialValue: exaggerated)
         _showsClouds = .init(initialValue: clouds)
         self.sunDate = sunDate
+        self.onFlatOnly = onFlatOnly
     }
 
     public var body: some View {
-        MapChrome(camera: camera, markers: markers, interactive: interactive, link: link, onGlobe: true, buttonsHeight: 150,
+        MapChrome(camera: camera, markers: markers, interactive: interactive, link: link, onGlobe: !flatOnly, buttonsHeight: 150,
                   surface: { keepFree, onInteraction in
                       GlobeSurface(camera: $camera, interactive: interactive, lighting: lighting, exaggerated: exaggerated,
                                    clouds: showsClouds ? 0.65 : 0, sunDate: sunDate, renderer: renderer, link: link,
-                                   keepFree: keepFree, onInteraction: onInteraction)
+                                   keepFree: keepFree, onInteraction: onInteraction,
+                                   onFlatOnly: {
+                                       flatOnly = true
+                                       onFlatOnly?()
+                                   })
                   },
-                  buttons: { buttons }, overlay: overlay)
+                  buttons: { if !flatOnly { buttons } }, overlay: overlay)
     }
 
     /// Below + / −: the tilt, day and night, the clouds, the relief.
@@ -86,10 +97,12 @@ struct GlobeSurface: NSViewRepresentable {
     let link: MapLink
     let keepFree: [CGRect]
     let onInteraction: () -> Void
+    let onFlatOnly: () -> Void
 
     func makeNSView(context: Context) -> GlobeSurfaceView {
         let view = GlobeSurfaceView(map: renderer)
         view.camera = camera
+        view.onFlatOnly = onFlatOnly
         link.globe = view
         return view
     }
@@ -104,7 +117,9 @@ struct GlobeSurface: NSViewRepresentable {
         view.onCameraChange = { next in if camera != next { camera = next } }
         view.ownerCamera = { camera }
         view.onInteraction = onInteraction
-        if view.camera != camera { view.camera = camera }
+        view.onFlatOnly = onFlatOnly
+        // A camera its owner set stops the view's own glide or throw
+        if view.camera != camera { view.take(camera) }
         link.globe = view
     }
 }

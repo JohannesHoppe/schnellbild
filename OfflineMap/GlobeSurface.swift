@@ -125,6 +125,8 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     nonisolated(unsafe) private var texturesObserver: NSObjectProtocol?
     /// No Metal: the flat map alone
     private(set) var flatOnly = false
+    /// Told once the view shows the flat map alone (no globe can be drawn)
+    var onFlatOnly: (() -> Void)?
 
     /// The map it shows (the key of its renderer).
     private let map: MapRenderer?
@@ -179,6 +181,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
             flatOnly = true
             camera = held(camera)
             updateMode()
+            onFlatOnly?()
             return
         }
         self.renderer = renderer
@@ -205,10 +208,12 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     override var isFlipped: Bool { false }
 
     private var isDark: Bool { effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua }
-    var projection: GlobeProjection { GlobeProjection(camera: camera, size: bounds.size) }
+    var projection: GlobeProjection { GlobeProjection(camera: camera, size: bounds.size, flatOnly: flatOnly) }
     var scene: GlobeScene {
-        GlobeScene(camera: camera, size: bounds.size, dark: isDark, lighting: lighting, exaggerated: exaggerated, date: date ?? Date(),
-                   clouds: clouds)
+        var scene = GlobeScene(camera: camera, size: bounds.size, dark: isDark, lighting: lighting, exaggerated: exaggerated,
+                               date: date ?? Date(), clouds: clouds)
+        scene.scale = Double(window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2)
+        return scene
     }
 
     /// Every gesture is the globe's, over the flat map too.
@@ -226,6 +231,12 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
 
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
+        redraw()
+    }
+
+    /// Another screen's scale: the tiles are planned for its pixels (`GlobeScene.scale`).
+    override func viewDidChangeBackingProperties() {
+        super.viewDidChangeBackingProperties()
         redraw()
     }
 
@@ -250,14 +261,18 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
         }
     }
 
-    /// The camera within the globe's zoom limits; on the flat map with the world filling the view vertically.
+    /// The camera within the view's limits (`GlobeProjection.held`).
     func held(_ c: MapCamera) -> MapCamera {
         guard bounds.width > 0, bounds.height > 0 else { return c }
-        if flatOnly { return MapViewport(camera: c, size: bounds.size).clamped() }
-        var next = GlobeProjection.held(c, size: bounds.size)
-        let p = GlobeProjection(camera: next, size: bounds.size)
-        if p.isFlat { next = MapViewport(camera: next, size: bounds.size).panned(by: 0, 0) }
-        return next
+        return GlobeProjection.held(c, size: bounds.size, flatOnly: flatOnly)
+    }
+
+    /// A camera its owner set (the Atlas's keys, the timeline, the tour):
+    /// it takes the place of a glide or a throw under way, which would
+    /// otherwise move on from where it was.
+    func take(_ next: MapCamera) {
+        stopMotion()
+        camera = next
     }
 
     private func cameraChanged() {
@@ -267,7 +282,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     /// Which view shows the camera: the globe (Metal) or the flat map, handing over once its tiles are there.
     func updateMode() {
         guard bounds.width > 0, bounds.height > 0 else { return }
-        let isFlat = projection.isFlat || flatOnly
+        let isFlat = projection.isFlat
         if isFlat {
             if revealPending, let metal {
                 // Back on the flat map before the globe showed: it stays the flat map
@@ -520,9 +535,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     }
 
     /// The camera moved by a drag of (dx, dy) points: the globe turns, the flat map pans.
-    func pan(by dx: Double, _ dy: Double) -> MapCamera {
-        flatOnly ? MapViewport(camera: camera, size: bounds.size).panned(by: dx, dy) : projection.rotated(by: dx, dy)
-    }
+    func pan(by dx: Double, _ dy: Double) -> MapCamera { projection.rotated(by: dx, dy) }
 
     /// Glides to the camera (at once with Reduce motion).
     func move(to target: MapCamera, animated: Bool = true) {
@@ -542,15 +555,12 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     func zoom(by steps: Double, at point: CGPoint? = nil) {
         let anchor = point ?? CGPoint(x: bounds.midX, y: bounds.midY)
         let from = glide?.to ?? camera
-        let target = flatOnly ? MapViewport(camera: from, size: bounds.size).zoomed(to: from.zoom + steps, keeping: anchor)
-            : GlobeProjection(camera: from, size: bounds.size).zoomed(to: from.zoom + steps, keeping: anchor)
-        move(to: target)
+        move(to: GlobeProjection(camera: from, size: bounds.size, flatOnly: flatOnly).zoomed(to: from.zoom + steps, keeping: anchor))
     }
 
     private func zoomNow(by steps: Double, at point: CGPoint) {
         stopMotion()
-        moved(to: flatOnly ? MapViewport(camera: camera, size: bounds.size).zoomed(to: camera.zoom + steps, keeping: point)
-              : projection.zoomed(to: camera.zoom + steps, keeping: point))
+        moved(to: projection.zoomed(to: camera.zoom + steps, keeping: point))
     }
 
     override func mouseDown(with event: NSEvent) {
@@ -601,9 +611,11 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     override func scrollWheel(with event: NSEvent) {
         guard interactive else { return super.scrollWheel(with: event) }
         if event.modifierFlags.contains(.option), !flatOnly {
-            // ⌥ with two fingers: up and down tilt, left and right turn
+            // ⌥ with two fingers: up and down tilt, left and right turn, the
+            // same way as ⌥-drag (the scroll's deltas have the drag's signs,
+            // as the plain scroll's pan shows)
             let k = event.hasPreciseScrollingDeltas ? 0.3 : 3.0
-            tilt(by: Double(event.scrollingDeltaY) * k, turn: -Double(event.scrollingDeltaX) * k)
+            tilt(by: -Double(event.scrollingDeltaY) * k, turn: Double(event.scrollingDeltaX) * k)
             return
         }
         scroll(dx: Double(event.scrollingDeltaX), dy: Double(event.scrollingDeltaY), precise: event.hasPreciseScrollingDeltas,
@@ -617,8 +629,10 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
 
     override func rotate(with event: NSEvent) {
         guard interactive, !flatOnly else { return super.rotate(with: event) }
-        // Two fingers turning turn the view, as in Apple's Maps
-        tilt(by: 0, turn: -Double(event.rotation))
+        // Two fingers turning turn the view with them, as in Apple's Maps:
+        // AppKit's rotation is counter-clockwise when positive, and so is a
+        // growing heading on screen (north turns to the left)
+        tilt(by: 0, turn: Double(event.rotation))
     }
 
     /// Tilts the view by `degrees` (towards the horizon when positive) and
