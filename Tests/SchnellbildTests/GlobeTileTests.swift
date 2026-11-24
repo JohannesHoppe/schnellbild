@@ -20,12 +20,12 @@ final class GlobeTileTests: XCTestCase {
     final class Counting: @unchecked Sendable {
         let lock = NSLock()
         var made: [TileAtlas.Key] = []
-        func make(_ key: TileAtlas.Key) -> CGContext? {
+        func make(_ key: TileAtlas.Key) -> TileAtlas.Made {
             lock.withLock { made.append(key) }
-            let ctx = MapRenderer.context(width: 16, height: 16)
-            ctx?.setFillColor(CGColor(red: CGFloat(key.x) / 16, green: CGFloat(key.y) / 16, blue: 0.5, alpha: 1))
-            ctx?.fill(CGRect(x: 0, y: 0, width: 16, height: 16))
-            return ctx
+            guard let ctx = MapRenderer.context(width: 16, height: 16) else { return .failed }
+            ctx.setFillColor(CGColor(red: CGFloat(key.x) / 16, green: CGFloat(key.y) / 16, blue: 0.5, alpha: 1))
+            ctx.fill(CGRect(x: 0, y: 0, width: 16, height: 16))
+            return .tile(ctx)
         }
     }
 
@@ -103,6 +103,36 @@ final class GlobeTileTests: XCTestCase {
         XCTAssertEqual(entry(key(0, 0)), 0, "none where no tile is")
     }
 
+    /// A tile that couldn't be drawn for want of memory is asked for again;
+    /// one the data lacks is never.
+    func testATileThatFailedIsMadeWhenWantedAgain() throws {
+        final class Flaky: @unchecked Sendable {
+            let lock = NSLock()
+            var asked: [TileAtlas.Key] = []
+            func make(_ key: TileAtlas.Key) -> TileAtlas.Made {
+                let first = lock.withLock { () -> Bool in
+                    asked.append(key)
+                    return asked.filter { $0 == key }.count == 1
+                }
+                if key.x == 9 { return .none }
+                if first { return .failed }
+                guard let ctx = MapRenderer.context(width: 16, height: 16) else { return .failed }
+                return .tile(ctx)
+            }
+        }
+        let flaky = Flaky()
+        let device = try device()
+        let atlas = try XCTUnwrap(TileAtlas(device: device, queue: try XCTUnwrap(device.makeCommandQueue()), side: 16, capacity: 4,
+                                            columns: 16, rows: 8, levels: 2, concurrency: 1, name: "test", make: flaky.make, changed: {}))
+        let end = Date().addingTimeInterval(10)
+        while !atlas.has([key(1)]), Date() < end {
+            atlas.request([key(1), key(9)])
+            Thread.sleep(forTimeInterval: 0.01)
+        }
+        XCTAssertTrue(atlas.kept.contains(key(1)), "made on a later request")
+        XCTAssertEqual(flaky.lock.withLock { flaky.asked.filter { $0 == key(9) }.count }, 1, "not in the data: asked once")
+    }
+
     // MARK: Plans
 
     let size = CGSize(width: 1200, height: 800)
@@ -111,6 +141,46 @@ final class GlobeTileTests: XCTestCase {
         let scene = GlobeScene(camera: camera, size: size)
         return GlobeTilePlan.plan(for: scene, ahead: ahead, satellite: true, map: GlobeTextures.needsMap(scene, satellite: true),
                                   satelliteCapacity: GlobeTextures.satelliteCapacity, mapCapacity: GlobeTextures.mapCapacity)
+    }
+
+    /// A large view whose sharp tiles are more than the atlas holds gets
+    /// coarser ones, so all of it is on tiles; on a screen of 1 pixel per
+    /// point fewer tiles are sharp enough than at 2.
+    func testALargeViewFitsItsTilesIntoTheAtlas() {
+        let size = CGSize(width: 2560, height: 1440)
+        let camera = MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: 4.6)
+        func plan(scale: Double, size: CGSize = size) -> GlobeTilePlan.Plan {
+            var scene = GlobeScene(camera: camera, size: size)
+            scene.scale = scale
+            return GlobeTilePlan.plan(for: scene, satellite: false, map: true, satelliteCapacity: GlobeTextures.satelliteCapacity,
+                                      mapCapacity: GlobeTextures.mapCapacity)
+        }
+        let retina = plan(scale: 2)
+        XCTAssertLessThanOrEqual(retina.mapRequired.count, GlobeTextures.mapCapacity)
+        // Every point of the view that needs a map tile has one planned (at some zoom)
+        let projection = GlobeScene(camera: camera, size: size).projection
+        let planned = Set(retina.mapRequired)
+        for sample in GlobeTilePlan.samples(of: projection, scale: 2, margin: 0) where sample.inView {
+            guard GlobeTilePlan.mapTile(sample, finest: GlobeTilePlan.mapFinest) != nil else { continue }
+            let u = WebMercator.unitPoint(sample.coordinate.normalized)
+            let covered = (0..<GlobeTilePlan.mapLevels).contains { level in
+                let n = 1 << (GlobeTilePlan.mapFinest - level)
+                return planned.contains(TileAtlas.Key(level: level, x: GlobeTilePlan.column(Double(u.x), n),
+                                                      y: min(n - 1, Int(Double(u.y) * Double(n)))))
+            }
+            XCTAssertTrue(covered, "\(sample.coordinate)")
+        }
+        let smaller = CGSize(width: 1440, height: 900)
+        XCTAssertLessThan(plan(scale: 1, size: smaller).mapRequired.count, plan(scale: 2, size: smaller).mapRequired.count, "a 1x screen needs fewer")
+    }
+
+    /// A point just past the antimeridian (a longitude below −180 from the
+    /// flattening's solver) needs the tile at the row's east end.
+    func testATilePastTheAntimeridianWraps() {
+        let past = GlobeTilePlan.Sample(coordinate: Coordinate(latitude: -72, longitude: -190.4), degrees: 0.001, mercator: 1e-5,
+                                        distance: 0, inView: true)
+        XCTAssertEqual(GlobeTilePlan.mapTile(past, finest: 5)?.x, 31)
+        XCTAssertEqual(GlobeTilePlan.satelliteTile(past)?.x, 15)
     }
 
     func testTurningALittleNeedsFewNewTiles() {

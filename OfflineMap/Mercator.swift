@@ -13,9 +13,7 @@ public struct Coordinate: Hashable, Sendable, Codable {
 
     /// The same place with the longitude in -180 ..< 180.
     public var normalized: Coordinate {
-        var lon = (longitude + 180).truncatingRemainder(dividingBy: 360)
-        if lon < 0 { lon += 360 }
-        return Coordinate(latitude: min(90, max(-90, latitude)), longitude: lon - 180)
+        Coordinate(latitude: min(90, max(-90, latitude)), longitude: longitude.wrappedLongitude)
     }
 
     /// Great-circle distance in metres (haversine, mean Earth radius).
@@ -26,6 +24,22 @@ public struct Coordinate: Hashable, Sendable, Codable {
         let a = sin(dp / 2) * sin(dp / 2) + cos(p1) * cos(p2) * sin(dl / 2) * sin(dl / 2)
         return 2 * r * atan2(sqrt(a), sqrt(max(0, 1 - a)))
     }
+}
+
+extension Double {
+    /// The value taken the shortest way round a circle of `period`, in
+    /// -period/2 ..< period/2: a longitude or a difference of longitudes
+    /// (period 360), a difference of x in the Mercator square (period 1).
+    /// The one wrap of the antimeridian, for every place that crosses it.
+    public func wrapped(period: Double) -> Double {
+        let half = period / 2
+        var r = (self + half).truncatingRemainder(dividingBy: period)
+        if r < 0 { r += period }
+        return r - half
+    }
+
+    /// A longitude (or a difference of longitudes, an angle in degrees) in -180 ..< 180.
+    public var wrappedLongitude: Double { wrapped(period: 360) }
 }
 
 /// Web Mercator (EPSG:3857) as map tiles use it: the world as a square from

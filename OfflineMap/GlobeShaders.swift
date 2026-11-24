@@ -156,8 +156,11 @@ float4 mapTileColor(float ux, float texY, float2 gx, float2 gy, constant Uniform
     found = false;
     if (u.mapTiles.x <= 0) return float4(0);
     int finest = int(u.mapTiles.y), levels = int(u.mapTiles.z), coarsest = finest - levels + 1;
-    // Tiles of 512 px: the zoom at which a texel is no larger than the pixel
-    float footprint = max(max(length(gx), length(gy)), 1e-9);
+    // Tiles of 512 px: the zoom at which a texel is no larger than the pixel,
+    // the pixel's ground taken the shorter way as the anisotropic filtering
+    // (8 : 1) samples it (GlobeTilePlan.footprint: the tiles planned are those wanted here)
+    float lx = length(gx), ly = length(gy);
+    float footprint = max(max(min(lx, ly), max(lx, ly) / 8.0), 1e-9);
     int want = clamp(int(ceil(log2(1.0 / (512.0 * footprint)) - 0.05)), coarsest, finest);
     float x = fract(ux), y = clamp(texY, 0.0, 0.99999);
     for (int i = 0; i < levels; i++) {

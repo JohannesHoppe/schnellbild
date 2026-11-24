@@ -19,6 +19,18 @@ final class TileAtlas: @unchecked Sendable {
         var x, y: Int
     }
 
+    /// What `make` gives for a tile.
+    enum Made {
+        /// The tile drawn into a context of `side` × `side` pixels (BGRA,
+        /// premultiplied, the first row the tile's top)
+        case tile(CGContext)
+        /// The data has no such tile: it is never asked for again
+        case none
+        /// It couldn't be drawn now (no memory for its pixels): asked for
+        /// again when it is next wanted
+        case failed
+    }
+
     let side: Int
     let capacity: Int
     /// The index's size at level 0 (tiles across, down)
@@ -31,7 +43,7 @@ final class TileAtlas: @unchecked Sendable {
 
     private let device: MTLDevice
     private let queue: MTLCommandQueue
-    private let make: (Key) -> CGContext?
+    private let make: (Key) -> Made
     private let changed: () -> Void
     private let lock = NSLock()
     private let work: OperationQueue
@@ -45,16 +57,11 @@ final class TileAtlas: @unchecked Sendable {
     private var running: Set<Key> = []
     /// Tiles that can't be made (not in the data): never asked for again
     private var missing: Set<Key> = []
-    /// How many tiles were made (tests)
-    private(set) var madeCount = 0
-    private(set) var madeKeys: [Key] = []
 
-    /// `make` draws a tile into a context of `side` × `side` pixels (BGRA,
-    /// premultiplied, the first row the tile's top), nil when there is none;
-    /// it runs on up to `concurrency` threads at once. `changed` reports a
-    /// tile that came into the index.
+    /// `make` draws a tile (`Made`); it runs on up to `concurrency` threads
+    /// at once. `changed` reports a tile that came into the index.
     init?(device: MTLDevice, queue: MTLCommandQueue, side: Int, capacity: Int, columns: Int, rows: Int, levels: Int, concurrency: Int,
-          name: String, make: @escaping (Key) -> CGContext?, changed: @escaping () -> Void) {
+          name: String, make: @escaping (Key) -> Made, changed: @escaping () -> Void) {
         let d = MTLTextureDescriptor()
         d.textureType = .type2DArray
         d.pixelFormat = GlobeRenderer.colorFormat
@@ -133,9 +140,6 @@ final class TileAtlas: @unchecked Sendable {
     /// The tiles kept now (tests).
     var kept: Set<Key> { lock.withLock { Set(resident.keys) } }
 
-    /// Waits until no tile is being made (tests).
-    func waitUntilIdle() { work.waitUntilAllOperationsAreFinished() }
-
     private func makeTile(_ key: Key, _ op: Operation) {
         // A slice: a free one, else the one whose tile was wanted longest ago and isn't wanted now
         let slot: Int? = lock.withLock {
@@ -160,12 +164,14 @@ final class TileAtlas: @unchecked Sendable {
             return slot
         }
         guard let slot else { return }
-        guard let ctx = make(key), let data = ctx.data, let staging = staging(), let buffer = queue.makeCommandBuffer(),
+        let made = make(key)
+        guard case .tile(let ctx) = made, let data = ctx.data, let staging = staging(), let buffer = queue.makeCommandBuffer(),
               let blit = buffer.makeBlitCommandEncoder() else {
             lock.withLock {
                 running.remove(key)
                 if slotKey[slot] == key { slotKey[slot] = nil }
-                missing.insert(key)
+                // Only a tile the data lacks is given up; one that failed (memory) is asked for again
+                if case .none = made { missing.insert(key) }
             }
             return
         }
@@ -181,8 +187,6 @@ final class TileAtlas: @unchecked Sendable {
                 guard self.slotKey[slot] == key else { return false }
                 self.resident[key] = slot
                 self.setIndex(key, UInt16(slot + 1))
-                self.madeCount += 1
-                self.madeKeys.append(key)
                 return true
             }
             if shown { self.changed() }
@@ -207,14 +211,17 @@ final class TileAtlas: @unchecked Sendable {
 /// Which tiles a view of the globe needs, worked out from the view itself:
 /// points a few dozen apart over the view (and a margin around it) are
 /// placed on the Earth through the projection, and how much ground lies
-/// under one pixel there (on the screen's pixels, 2 per point; the shorter
-/// way, as the GPU's anisotropic filtering samples, at most 8 : 1) says the
+/// under one pixel there (on the drawable's pixels, `GlobeScene.scale` per
+/// point; `footprint`, the rule the shader picks its tiles by too) says the
 /// coarsest tiles that are still sharp: the satellite picture's whole-Earth
 /// texture, its level 1 (45° tiles) or level 2 (22.5° tiles); the map's
 /// world texture (zoom 3) or its tiles at zoom 4 … 6. The view's own tiles
 /// come first (the coarser before the finer, then by the distance from the
 /// view's middle), then the margin's, then those of the cameras ahead
-/// (where a throw or a drag is carrying the view).
+/// (where a throw or a drag is carrying the view). A view whose own tiles
+/// at that sharpness are more than an atlas holds gets coarser ones, a
+/// level at a time, until they fit: the whole view on tiles a little less
+/// sharp, none of it left to the whole-Earth texture.
 enum GlobeTilePlan {
     struct Plan: Sendable {
         /// The view's own tiles (all of them shown: the scene is ready)
@@ -249,8 +256,14 @@ enum GlobeTilePlan {
         var inView: Bool
     }
 
-    /// The view's points on the Earth with the ground under a pixel there.
-    static func samples(of projection: GlobeProjection, margin: Double, offset: Double = 0) -> [Sample] {
+    /// The ground under a pixel from the ground between two pixels across
+    /// and down: the shorter way, as the GPU's anisotropic filtering (at most
+    /// 8 : 1) samples. The shader's `mapTileColor` picks its zoom by the same rule.
+    static func footprint(_ p: Double, _ q: Double) -> Double { max(min(p, q), max(p, q) / 8) }
+
+    /// The view's points on the Earth with the ground under a pixel there
+    /// (`scale`: the drawable's pixels per point).
+    static func samples(of projection: GlobeProjection, scale: Double = 2, margin: Double, offset: Double = 0) -> [Sample] {
         let w = Double(projection.size.width), h = Double(projection.size.height)
         guard w > 0, h > 0 else { return [] }
         // About 2 500 points; 1 200 while the globe flattens, where each is found by Newton's method
@@ -265,7 +278,7 @@ enum GlobeTilePlan {
                 grid[j * (cols + 1) + i] = projection.coordinate(at: CGPoint(x: x0 + Double(i) * step, y: y0 + Double(j) * step))
             }
         }
-        let pixels = step * 2
+        let pixels = step * max(1, scale)
         func apart(_ a: Coordinate, _ b: Coordinate) -> (Double, Double) {
             let dLon = Astronomy.wrap180(b.longitude - a.longitude), dLat = b.latitude - a.latitude
             let ua = WebMercator.unitPoint(a), ub = WebMercator.unitPoint(b)
@@ -284,7 +297,6 @@ enum GlobeTilePlan {
                 }
                 guard let across = at(i + 1, j) ?? at(i - 1, j), let down = at(i, j + 1) ?? at(i, j - 1) else { continue }
                 let a = apart(c, across), d = apart(c, down)
-                func footprint(_ p: Double, _ q: Double) -> Double { max(min(p, q), max(p, q) / 8) }
                 let x = x0 + Double(i) * step, y = y0 + Double(j) * step
                 out.append(Sample(coordinate: c, degrees: footprint(a.0, d.0), mercator: footprint(a.1, d.1),
                                   distance: hypot(x - w / 2, y - h / 2) + offset, inView: x >= 0 && x <= w && y >= 0 && y <= h))
@@ -293,17 +305,24 @@ enum GlobeTilePlan {
         return out
     }
 
+    /// The column of a tile in a row of `n` (the longitude wrapped: a
+    /// sample just past the antimeridian is in the row's other end).
+    static func column(_ u: Double, _ n: Int) -> Int {
+        let x = Int((u * Double(n)).rounded(.down))
+        return ((x % n) + n) % n
+    }
+
     /// The satellite tile a sample needs (nil: the whole-Earth texture is
-    /// sharp enough there). While the globe flattens the map's colours take
+    /// sharp enough there), at least `coarser` levels coarser (level 1 the
+    /// coarsest tiles). While the globe flattens the map's colours take
     /// over: past half way level 1 is enough, and from `satelliteFlatness` none.
-    static func satelliteTile(_ s: Sample, flatness: Double = 0) -> TileAtlas.Key? {
+    static func satelliteTile(_ s: Sample, flatness: Double = 0, coarser: Int = 0) -> TileAtlas.Key? {
         let t = satelliteTexels
-        guard s.degrees < t.base, flatness < satelliteFlatness else { return nil }
-        let level = s.degrees < t.level1 && flatness <= 0.5 ? 0 : 1
+        guard s.degrees < t.base, flatness < satelliteFlatness, coarser < satelliteLevels else { return nil }
+        let level = max(coarser, s.degrees < t.level1 && flatness <= 0.5 ? 0 : 1)
         let cols = satelliteColumns >> level, rows = satelliteRows >> level
-        let u = (s.coordinate.longitude + 180) / 360, v = (90 - s.coordinate.latitude) / 180
-        let x = min(cols - 1, max(0, Int(u * Double(cols)))), y = min(rows - 1, max(0, Int(v * Double(rows))))
-        return TileAtlas.Key(level: level, x: x, y: y)
+        let u = (s.coordinate.longitude.wrappedLongitude + 180) / 360, v = (90 - s.coordinate.latitude) / 180
+        return TileAtlas.Key(level: level, x: column(u, cols), y: min(rows - 1, max(0, Int(v * Double(rows)))))
     }
 
     /// The map tile a sample needs at most at zoom `finest` (nil: the world texture is sharp enough there).
@@ -312,9 +331,8 @@ enum GlobeTilePlan {
         guard zoom > GlobeTextures.baseZoom else { return nil }
         let z = max(mapFinest - mapLevels + 1, zoom)
         let n = 1 << z
-        let u = WebMercator.unitPoint(s.coordinate)
-        let x = min(n - 1, max(0, Int(Double(u.x) * Double(n)))), y = min(n - 1, max(0, Int(Double(u.y) * Double(n))))
-        return TileAtlas.Key(level: mapFinest - z, x: x, y: y)
+        let u = WebMercator.unitPoint(s.coordinate.normalized)
+        return TileAtlas.Key(level: mapFinest - z, x: column(Double(u.x), n), y: min(n - 1, max(0, Int(Double(u.y) * Double(n)))))
     }
 
     /// The map's finest zoom for a view: the zoom shown rounded up, at most
@@ -336,41 +354,55 @@ enum GlobeTilePlan {
         let wantsSatellite = satellite && flatness < satelliteFlatness
         guard wantsSatellite || map else { return plan }
         // Each view's points with its flatness and its finest map zoom
-        var views = [(samples: samples(of: projection, margin: margin), flatness: flatness, finest: finestMapZoom(for: projection))]
+        let scale = scene.scale
+        var views = [(samples: samples(of: projection, scale: scale, margin: margin), flatness: flatness, finest: finestMapZoom(for: projection))]
         for (k, camera) in ahead.enumerated() {
             var s = scene
             s.camera = camera
             let p = s.projection
             // After every sample of the view itself
-            views.append((Self.samples(of: p, margin: 0, offset: 1e6 * Double(k + 1)).map { var a = $0; a.inView = false; return a },
+            views.append((Self.samples(of: p, scale: scale, margin: 0, offset: 1e6 * Double(k + 1)).map { var a = $0; a.inView = false; return a },
                           p.flatness, finestMapZoom(for: p)))
         }
-        func ordered(_ tile: (Sample, Double, Int) -> TileAtlas.Key?, capacity: Int) -> (required: [TileAtlas.Key], all: [TileAtlas.Key]) {
-            var best: [TileAtlas.Key: (inView: Bool, distance: Double)] = [:]
-            for view in views {
-                for s in view.samples {
-                    guard let key = tile(s, view.flatness, view.finest) else { continue }
-                    let rank = (inView: s.inView, distance: s.inView ? s.distance : s.distance + 1e5)
-                    if let have = best[key], have.distance <= rank.distance { continue }
-                    best[key] = rank
+        /// The tiles, `coarser` levels coarser than sharp where the view's own don't fit otherwise
+        func ordered(_ tile: (Sample, Double, Int, Int) -> TileAtlas.Key?, capacity: Int, canCoarsen: (Int) -> Bool)
+            -> (required: [TileAtlas.Key], all: [TileAtlas.Key]) {
+            var coarser = 0
+            while true {
+                var best: [TileAtlas.Key: (inView: Bool, distance: Double)] = [:]
+                for view in views {
+                    for s in view.samples {
+                        guard let key = tile(s, view.flatness, view.finest, coarser) else { continue }
+                        let rank = (inView: s.inView, distance: s.inView ? s.distance : s.distance + 1e5)
+                        if let have = best[key], have.distance <= rank.distance { continue }
+                        best[key] = rank
+                    }
                 }
+                if best.values.filter(\.inView).count > capacity, canCoarsen(coarser + 1) {
+                    coarser += 1
+                    continue
+                }
+                // The view's own tiles first, the coarser before the finer, then by the distance from the middle
+                let sorted = best.sorted { a, b in
+                    if a.value.inView != b.value.inView { return a.value.inView }
+                    if a.value.inView, a.key.level != b.key.level { return a.key.level > b.key.level }
+                    return a.value.distance < b.value.distance
+                }
+                let all = Array(sorted.prefix(capacity))
+                return (all.filter { best[$0.key]!.inView }.map(\.key), all.map(\.key))
             }
-            // The view's own tiles first, the coarser before the finer, then by the distance from the middle
-            let sorted = best.sorted { a, b in
-                if a.value.inView != b.value.inView { return a.value.inView }
-                if a.value.inView, a.key.level != b.key.level { return a.key.level > b.key.level }
-                return a.value.distance < b.value.distance
-            }
-            let all = Array(sorted.prefix(capacity))
-            return (all.filter { best[$0.key]!.inView }.map(\.key), all.map(\.key))
         }
         if wantsSatellite {
-            let s = ordered({ s, flatness, _ in satelliteTile(s, flatness: flatness) }, capacity: satelliteCapacity)
+            let s = ordered({ s, flatness, _, coarser in satelliteTile(s, flatness: flatness, coarser: coarser) },
+                            capacity: satelliteCapacity, canCoarsen: { $0 < satelliteLevels })
             plan.satelliteRequired = s.required
             plan.satellite = s.all
         }
         if map {
-            let m = ordered({ s, _, finest in mapTile(s, finest: finest) }, capacity: mapCapacity)
+            // (never coarser than the atlas's coarsest zoom: below it only the world texture is left)
+            let coarsest = mapFinest - mapLevels + 1
+            let m = ordered({ s, _, finest, coarser in mapTile(s, finest: max(coarsest, finest - coarser)) }, capacity: mapCapacity,
+                            canCoarsen: { coarser in views.contains { $0.finest - coarser >= coarsest } })
             plan.mapRequired = m.required
             plan.map = m.all
         }

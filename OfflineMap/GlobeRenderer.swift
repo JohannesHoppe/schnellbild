@@ -24,6 +24,9 @@ public struct GlobeScene: Equatable, Sendable {
     public var transparent = false
     /// The camera's tilt and heading as given at every zoom (`GlobeProjection.freeTilt`: rendered pictures)
     public var freeTilt = false
+    /// The drawable's pixels per point (the screen's backing scale): how
+    /// fine the tiles must be to be sharp there (`GlobeTilePlan`)
+    public var scale = 2.0
 
     public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date(),
                 clouds: Double = 0) {
@@ -448,17 +451,19 @@ public final class GlobeTextures: @unchecked Sendable {
         var camera: MapCamera
         var size: CGSize
         var lens: Double
+        var scale: Double
         var dark: Bool
         var ahead: [MapCamera]
         init(_ scene: GlobeScene, ahead: [MapCamera]) {
             camera = scene.camera
             size = scene.size
             lens = scene.lens
+            scale = scene.scale
             dark = scene.dark
             self.ahead = ahead
         }
         func isSameView(_ other: PlanKey) -> Bool {
-            camera == other.camera && size == other.size && lens == other.lens && dark == other.dark
+            camera == other.camera && size == other.size && lens == other.lens && scale == other.scale && dark == other.dark
         }
     }
     private let planQueue = DispatchQueue(label: "Globe tile plans", qos: .userInitiated)
@@ -487,7 +492,7 @@ public final class GlobeTextures: @unchecked Sendable {
         blankIndex = device.makeTexture(descriptor: i)!
         blankIndex.replace(region: MTLRegionMake2D(0, 0, 1, 1), mipmapLevel: 0, withBytes: &zero, bytesPerRow: 2)
         if let heightmap = data.heightmap { heights = Self.texture(device: device, heightmap: heightmap) }
-        if let image = data.cityLights { lights = Self.texture(device: device, grey: image) }
+        if let image = data.cityLights { lights = Self.texture(device: device, queue: queue, grey: image) }
         if let image = data.sky { skyMap = Self.texture(device: device, queue: queue, colour: image) }
         if let image = data.clouds { cloudMap = Self.texture(device: device, queue: queue, colour: image) }
         satellite = data.satellite
@@ -519,12 +524,6 @@ public final class GlobeTextures: @unchecked Sendable {
             placeholders[dark] = t
             return t
         }
-    }
-
-    /// The plan made for the view (nil while it is being made).
-    func plan(for scene: GlobeScene) -> GlobeTilePlan.Plan? {
-        let key = PlanKey(scene, ahead: [])
-        return lock.withLock { plans.last { $0.key.isSameView(key) }?.plan }
     }
 
     /// Whether everything the scene needs is made: the world textures, and
@@ -606,8 +605,11 @@ public final class GlobeTextures: @unchecked Sendable {
                 return planWaiting.removeFirst()
             }
             guard let (key, scene) = next else { return }
-            let mapWanted = map != nil && Self.needsMap(scene, satellite: satelliteBase != nil)
-            let plan = GlobeTilePlan.plan(for: scene, ahead: key.ahead, satellite: satellite != nil, map: mapWanted,
+            let (showsSatellite, mapWanted) = lock.withLock {
+                (satelliteBase != nil, map != nil && Self.needsMap(scene, satellite: satelliteBase != nil))
+            }
+            // (the shader shows the satellite tiles only over the satellite picture's whole-Earth texture)
+            let plan = GlobeTilePlan.plan(for: scene, ahead: key.ahead, satellite: satellite != nil && showsSatellite, map: mapWanted,
                                           satelliteCapacity: Self.satelliteCapacity, mapCapacity: Self.mapCapacity)
             lock.withLock {
                 plans.removeAll { $0.key == key }
@@ -620,32 +622,36 @@ public final class GlobeTextures: @unchecked Sendable {
         }
     }
 
+    /// Makes the atlases one at a time, outside `lock` (which every frame
+    /// takes): an atlas's textures (up to 233 MB) take a moment to allocate.
+    private let atlasMaking = NSLock()
+
     /// Hands the plan's tiles to the atlases (made when first needed).
     private func request(_ plan: GlobeTilePlan.Plan, dark: Bool) {
         var sat: TileAtlas?, mapTiles: TileAtlas?
         if !plan.satellite.isEmpty, let satellite {
-            sat = lock.withLock {
-                if satelliteAtlas == nil {
-                    satelliteAtlas = TileAtlas(device: device, queue: queue, side: 1350, capacity: Self.satelliteCapacity,
-                                               columns: GlobeTilePlan.satelliteColumns, rows: GlobeTilePlan.satelliteRows,
-                                               levels: GlobeTilePlan.satelliteLevels, concurrency: 4, name: "Globe satellite tiles",
-                                               make: { key in Self.drawSatelliteTile(key, from: satellite) },
-                                               changed: { [weak self] in self?.changed() })
-                }
-                return satelliteAtlas
+            sat = atlasMaking.withLock {
+                if let made = lock.withLock({ satelliteAtlas }) { return made }
+                let made = TileAtlas(device: device, queue: queue, side: 1350, capacity: Self.satelliteCapacity,
+                                     columns: GlobeTilePlan.satelliteColumns, rows: GlobeTilePlan.satelliteRows,
+                                     levels: GlobeTilePlan.satelliteLevels, concurrency: 4, name: "Globe satellite tiles",
+                                     make: { key in Self.drawSatelliteTile(key, from: satellite) },
+                                     changed: { [weak self] in self?.changed() })
+                lock.withLock { satelliteAtlas = made }
+                return made
             }
         }
         if !plan.map.isEmpty, let map {
-            mapTiles = lock.withLock {
-                if mapAtlases[dark] == nil {
-                    let palette = MapPalette.appearance(dark: dark)
-                    mapAtlases[dark] = TileAtlas(device: device, queue: queue, side: GlobeTilePlan.mapTileSide, capacity: Self.mapCapacity,
-                                                 columns: 1 << GlobeTilePlan.mapFinest, rows: 1 << GlobeTilePlan.mapFinest,
-                                                 levels: GlobeTilePlan.mapLevels, concurrency: max(2, ProcessInfo.processInfo.activeProcessorCount - 2),
-                                                 name: "Globe map tiles", make: { key in Self.drawMapTile(key, map: map, palette: palette) },
-                                                 changed: { [weak self] in self?.changed() })
-                }
-                return mapAtlases[dark]
+            mapTiles = atlasMaking.withLock {
+                if let made = lock.withLock({ mapAtlases[dark] }) { return made }
+                let palette = MapPalette.appearance(dark: dark)
+                let made = TileAtlas(device: device, queue: queue, side: GlobeTilePlan.mapTileSide, capacity: Self.mapCapacity,
+                                     columns: 1 << GlobeTilePlan.mapFinest, rows: 1 << GlobeTilePlan.mapFinest,
+                                     levels: GlobeTilePlan.mapLevels, concurrency: max(2, ProcessInfo.processInfo.activeProcessorCount - 2),
+                                     name: "Globe map tiles", make: { key in Self.drawMapTile(key, map: map, palette: palette) },
+                                     changed: { [weak self] in self?.changed() })
+                lock.withLock { mapAtlases[dark] = made }
+                return made
             }
         }
         sat?.request(plan.satellite)
@@ -653,23 +659,24 @@ public final class GlobeTextures: @unchecked Sendable {
     }
 
     /// A satellite tile (level 1 or 2 of the tile pack) as the atlas keeps it.
-    static func drawSatelliteTile(_ key: TileAtlas.Key, from satellite: SatelliteTiles) -> CGContext? {
+    static func drawSatelliteTile(_ key: TileAtlas.Key, from satellite: SatelliteTiles) -> TileAtlas.Made {
         let level = GlobeTilePlan.satelliteLevels - key.level
-        guard let tile = satellite.image(named: "\(level)-\(key.y)-\(key.x)"), let ctx = MapRenderer.context(width: 1350, height: 1350) else { return nil }
+        guard let tile = satellite.image(named: "\(level)-\(key.y)-\(key.x)") else { return .none }
+        guard let ctx = MapRenderer.context(width: 1350, height: 1350) else { return .failed }
         ctx.interpolationQuality = .high
         ctx.draw(tile, in: CGRect(x: 0, y: 0, width: 1350, height: 1350))
-        return ctx
+        return .tile(ctx)
     }
 
     /// A map tile (zoom `mapFinest` − level) at 2×.
-    static func drawMapTile(_ key: TileAtlas.Key, map: MapRenderer, palette: MapPalette) -> CGContext? {
+    static func drawMapTile(_ key: TileAtlas.Key, map: MapRenderer, palette: MapPalette) -> TileAtlas.Made {
         let side = GlobeTilePlan.mapTileSide, scale = side / 256
-        guard let ctx = MapRenderer.context(width: side, height: side) else { return nil }
+        guard let ctx = MapRenderer.context(width: side, height: side) else { return .failed }
         ctx.scaleBy(x: CGFloat(scale), y: CGFloat(scale))
         ctx.translateBy(x: 0, y: 256)
         ctx.scaleBy(x: 1, y: -1)
         map.drawTile(TileKey(z: GlobeTilePlan.mapFinest - key.level, x: key.x, y: key.y), in: ctx, palette: palette, tolerance: 0.5 / Double(scale))
-        return ctx
+        return .tile(ctx)
     }
 
     /// Makes everything the scene needs and waits for it (tests, snapshots).
@@ -747,17 +754,25 @@ public final class GlobeTextures: @unchecked Sendable {
         return texture
     }
 
-    /// A grey picture (city lights) as a single-channel texture.
-    static func texture(device: MTLDevice, grey image: CGImage) -> MTLTexture? {
+    /// A grey picture (city lights) as a single-channel texture with
+    /// mipmaps: far out a pixel covers several of its texels (the lights
+    /// would flicker as the globe turns, sampled from the full size alone).
+    static func texture(device: MTLDevice, queue: MTLCommandQueue, grey image: CGImage) -> MTLTexture? {
         let w = image.width, h = image.height
         guard w > 0, h > 0, w <= 16_384, h <= 16_384,
               let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w, space: CGColorSpaceCreateDeviceGray(),
                                   bitmapInfo: CGImageAlphaInfo.none.rawValue) else { return nil }
         ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
-        let d = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: w, height: h, mipmapped: false)
+        let d = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Unorm, width: w, height: h, mipmapped: true)
         d.usage = .shaderRead
         guard let texture = device.makeTexture(descriptor: d), let data = ctx.data else { return nil }
-        texture.replace(region: MTLRegionMake2D(0, 0, w, h), mipmapLevel: 0, withBytes: data, bytesPerRow: w)
+        texture.replace(region: MTLRegionMake2D(0, 0, w, h), mipmapLevel: 0, withBytes: data, bytesPerRow: ctx.bytesPerRow)
+        if let buffer = queue.makeCommandBuffer(), let blit = buffer.makeBlitCommandEncoder() {
+            blit.generateMipmaps(for: texture)
+            blit.endEncoding()
+            buffer.commit()
+            buffer.waitUntilCompleted()
+        }
         return texture
     }
 }

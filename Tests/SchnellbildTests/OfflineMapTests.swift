@@ -419,6 +419,10 @@ final class OfflineMapTests: XCTestCase {
         XCTAssertEqual(tokyo.place.label(in: english), "Tokyo")
         XCTAssertEqual(tokyo.place.label(in: .preferring(["de"])), "Tokio")
         XCTAssertEqual(tokyo.place.label(in: .preferring(["ja"])), "東京都")
+        // Several languages: a first language whose name is the local one (not stored twice) keeps it
+        XCTAssertEqual(munich.place.label(in: .preferring(["de-DE", "en-US"])), "München")
+        XCTAssertEqual(tokyo.place.label(in: .preferring(["ja", "en"])), "東京都")
+        XCTAssertEqual(munich.place.label(in: .preferring(["en-US", "de-DE"])), "Munich")
 
         // A town next to a city keeps its own name
         XCTAssertEqual(try nearby(48.249, 11.651)?.place.localName, "Garching bei München")
@@ -439,6 +443,24 @@ final class OfflineMapTests: XCTestCase {
         XCTAssertEqual(try nearby(78.22, 15.65)?.place.localName, "Longyearbyen")
     }
 
+    /// A view all but the world's width (zoomed out to a hair above the
+    /// smallest zoom) labels the whole world, not a strip of it.
+    func testAViewNearlyTheWorldsWidthLabelsAllOfIt() throws {
+        let renderer = try bundledRenderer()
+        for width in [767.0, 845, 871] {
+            let size = CGSize(width: width, height: 220)
+            let zoom = MapViewport.minZoom(for: size) + 1e-13
+            for longitude in [0.0, 179, -100] {
+                let viewport = MapViewport(camera: MapCamera(center: Coordinate(latitude: 0, longitude: longitude), zoom: zoom), size: size)
+                XCTAssertLessThanOrEqual(viewport.unitBounds.width, 1)
+                let texts = Set(renderer.labelCandidates(viewport, languages: .preferring(["en"])).map(\.text))
+                for country in ["Brazil", "Indonesia", "Colombia", "Kenya"] {
+                    XCTAssertTrue(texts.contains(country), "\(country) at \(width) pt, \(longitude)°")
+                }
+            }
+        }
+    }
+
     func testLookupsAreFast() throws {
         let places = try XCTUnwrap(bundledRenderer().places)
         _ = places.nearby(Coordinate(latitude: 48, longitude: 11))
@@ -447,6 +469,34 @@ final class OfflineMapTests: XCTestCase {
                 _ = places.nearby(Coordinate(latitude: 40 + Double(i % 20) * 0.5, longitude: Double(i % 30) * 0.7))
             }
         }
+    }
+
+    /// A place has no entry for a language whose name is the local one: a
+    /// reader of that language's script gets the local name, never the next
+    /// language's.
+    func testTheLocalNameStandsForALanguageWithoutItsOwn() {
+        func place(_ local: String, _ names: [String: String]) -> Place {
+            Place(coordinate: Coordinate(latitude: 0, longitude: 0), kind: .country, minZoom: 0, populationRank: 0,
+                  isCountryCapital: false, isRegionCapital: false, countryCode: nil, localName: local, names: names)
+        }
+        let us = place("United States", ["de": "Vereinigte Staaten", "ja": "アメリカ合衆国"])
+        XCTAssertEqual(us.label(in: .preferring(["en-US", "de-DE"])), "United States")
+        XCTAssertEqual(us.label(in: .preferring(["de-DE", "en-US"])), "Vereinigte Staaten")
+        XCTAssertEqual(us.label(in: .preferring(["ja", "en"])), "アメリカ合衆国")
+        let moscow = place("Москва", ["en": "Moscow", "de": "Moskau"])
+        XCTAssertEqual(moscow.label(in: .preferring(["uk", "en"])), "Москва", "Ukrainian writes it as Russian does")
+        XCTAssertEqual(moscow.label(in: .preferring(["ru"])), "Москва")
+        XCTAssertEqual(moscow.label(in: .preferring(["fr", "de"])), "Moskau", "a Latin reader doesn't take Cyrillic for French")
+        XCTAssertEqual(moscow.label(in: .preferring(["fr"])), "Moscow", "English before another script")
+        let tokyo = place("東京都", ["en": "Tokyo", "de": "Tokio", "zh-Hans": "东京都"])
+        XCTAssertEqual(tokyo.label(in: .preferring(["ja", "en"])), "東京都")
+        XCTAssertEqual(tokyo.label(in: .preferring(["zh-Hant", "en"])), "東京都")
+        XCTAssertEqual(tokyo.label(in: .preferring(["ko", "de"])), "Tokio", "Korean writes no kanji")
+        let osaka = place("おおさか", ["en": "Osaka"])
+        XCTAssertEqual(osaka.label(in: .preferring(["zh-Hans", "en"])), "Osaka", "kana isn't Chinese")
+        let seoul = place("서울", ["en": "Seoul"])
+        XCTAssertEqual(seoul.label(in: .preferring(["ko", "en"])), "서울")
+        XCTAssertEqual(seoul.label(in: .preferring(["ja", "en"])), "Seoul")
     }
 
     func testLanguageCodes() {

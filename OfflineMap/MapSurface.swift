@@ -129,6 +129,8 @@ final class MapSurfaceView: NSView, CameraHolding {
     private var tileLayers: [TileKey: CALayer] = [:]
     private var labelCamera: MapCamera?
     private var labelSize: CGSize = .zero
+    /// Everything the label image drawn last was drawn for
+    private var labelInputs: LabelInputs?
     private var labelsRunning = false
     private var labelsWanted = false
     private var dragStart: NSPoint?
@@ -289,17 +291,35 @@ final class MapSurfaceView: NSView, CameraHolding {
         scheduleLabels()
     }
 
+    /// What a label image is drawn for: a change of any of them (the camera,
+    /// the size, light or dark, the screen's scale, the boxes kept free, the
+    /// languages) draws it again.
+    private struct LabelInputs: Equatable {
+        var camera: MapCamera
+        var size: CGSize
+        var dark: Bool
+        var scale: CGFloat
+        var keepFree: [CGRect]
+        var languages: MapLanguages
+    }
+
+    private var currentLabelInputs: LabelInputs {
+        LabelInputs(camera: camera, size: bounds.size, dark: isDark, scale: scale, keepFree: keepFree, languages: .system)
+    }
+
     /// Draws the labels for the current camera off the main thread, one
-    /// drawing at a time; a camera that changed meanwhile gets the next.
+    /// drawing at a time; inputs that changed meanwhile get the next.
     func scheduleLabels() {
         guard let renderer = store?.renderer, bounds.width > 0 else { return }
-        if labelCamera == camera && labelSize == bounds.size { return }
+        let inputs = currentLabelInputs
+        if labelInputs == inputs { return }
         guard !labelsRunning else { labelsWanted = true; return }
         labelsRunning = true
         labelsWanted = false
-        let viewport = viewport, palette = palette, scale = scale, keepFree = keepFree
+        let viewport = viewport, palette = MapPalette.appearance(dark: inputs.dark)
         labelQueue.async { [weak self] in
-            let image = renderer.labelImage(of: viewport, scale: scale, palette: palette, languages: .system, avoiding: keepFree)
+            let image = renderer.labelImage(of: viewport, scale: inputs.scale, palette: palette, languages: inputs.languages,
+                                            avoiding: inputs.keepFree)
             DispatchQueue.main.async {
                 MainActor.assumeIsolated {
                     guard let self else { return }
@@ -309,9 +329,10 @@ final class MapSurfaceView: NSView, CameraHolding {
                     self.labelLayer.contents = image
                     self.labelCamera = viewport.camera
                     self.labelSize = viewport.size
+                    self.labelInputs = inputs
                     self.placeLabels()
                     CATransaction.commit()
-                    if self.labelsWanted || self.labelCamera != self.camera { self.scheduleLabels() }
+                    if self.labelsWanted || self.labelInputs != self.currentLabelInputs { self.scheduleLabels() }
                 }
             }
         }
@@ -343,7 +364,8 @@ final class MapSurfaceView: NSView, CameraHolding {
         let start = camera, began = Date(), duration = 0.25
         var startWorld = WebMercator.unitPoint(start.center)
         let endWorld = WebMercator.unitPoint(target.center)
-        if endWorld.x - startWorld.x > 0.5 { startWorld.x += 1 } else if startWorld.x - endWorld.x > 0.5 { startWorld.x -= 1 }
+        // The short way, across the antimeridian where that is shorter
+        startWorld.x = endWorld.x - Double(endWorld.x - startWorld.x).wrapped(period: 1)
         onInteraction?()
         animation = Timer.scheduledTimer(withTimeInterval: 1 / 60, repeats: true) { [weak self] timer in
             MainActor.assumeIsolated {

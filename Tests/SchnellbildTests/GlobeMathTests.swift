@@ -345,6 +345,106 @@ final class GlobeMathTests: XCTestCase {
         }
     }
 
+    /// A heading straight down holds the flattening back as a tilt does:
+    /// the flat map is north up, so a turned globe flattens only as its
+    /// heading eases out, and zooming through never collapses the picture.
+    func testATurnedGlobeFlattensOnlyOnceNorthIsUp() {
+        let place = Coordinate(latitude: 41, longitude: 16)
+        let flatZoom = GlobeProjection.flatZoom(for: size)
+        for heading in [180.0, 90, -30] {
+            func p(_ zoom: Double) -> GlobeProjection {
+                GlobeProjection(camera: MapCamera(center: place, zoom: zoom, pitch: 0, heading: heading), size: size)
+            }
+            XCTAssertEqual(p(flatZoom - 0.5).flatness, 0, accuracy: 1e-9, "\(heading)° shown: a sphere")
+            XCTAssertEqual(p(flatZoom).globeZoom, GlobeProjection.straightZoom)
+            XCTAssertTrue(p(GlobeProjection.straightZoom).isFlat)
+            // A box of a degree around the centre keeps its size and moves a little each step
+            let corners = [Coordinate(latitude: 41.5, longitude: 16.5), Coordinate(latitude: 40.5, longitude: 15.5)]
+            var last: [CGPoint]?
+            for zoom in stride(from: 3.5, through: 8.7, by: 0.002) {
+                let q = p(zoom)
+                let points = corners.map { q.point(for: $0) }
+                let width = hypot(Double(points[0].x - points[1].x), Double(points[0].y - points[1].y))
+                XCTAssertGreaterThan(width, 0.5 * Double(q.radius) * 0.0174 * 1.4, "\(heading)° at zoom \(zoom): no collapse")
+                if let last {
+                    for (a, b) in zip(last, points) {
+                        XCTAssertLessThan(hypot(Double(b.x - a.x), Double(b.y - a.y)), 3, "\(heading)° at zoom \(zoom)")
+                    }
+                }
+                last = points
+            }
+        }
+        // North up: as ever
+        XCTAssertEqual(GlobeProjection(camera: MapCamera(center: place, zoom: flatZoom), size: size).globeZoom, flatZoom)
+    }
+
+    /// What a ⌥-drag back to its start leaves (1e-16 of tilt) is no tilt.
+    func testATiltResidueIsNone() {
+        let held = GlobeProjection.held(MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: 6, pitch: 1.11e-16, heading: -1e-12),
+                                        size: size)
+        XCTAssertEqual(held.pitch, 0)
+        XCTAssertEqual(held.heading, 0)
+        XCTAssertEqual(GlobeProjection(camera: held, size: size).globeZoom, GlobeProjection.flatZoom(for: size))
+    }
+
+    /// Near a pole the centre comes down to the flat map's own limit as the
+    /// map flattens, step by step, and the flat map takes over without a jump.
+    func testZoomingInNearAPoleHandsOverWithoutAJump() {
+        let size = CGSize(width: 1440, height: 900)
+        let flatZoom = GlobeProjection.flatZoom(for: size)
+        for latitude in [89.99, -89.99, 85.0] {
+            var last: Double?
+            for zoom in stride(from: flatZoom - 1.6, through: flatZoom + 0.3, by: 0.005) {
+                let held = GlobeProjection.held(MapCamera(center: Coordinate(latitude: latitude, longitude: 20), zoom: zoom), size: size)
+                XCTAssertLessThanOrEqual(abs(held.center.latitude), GlobeProjection.maxCenterLatitude)
+                if let last { XCTAssertLessThan(abs(held.center.latitude - last), 0.1, "\(latitude)° at zoom \(zoom)") }
+                last = held.center.latitude
+                let p = GlobeProjection(camera: held, size: size)
+                XCTAssertTrue(p.radius.isFinite)
+                XCTAssertLessThan(p.radius, 2 * WebMercator.worldSize(zoom: zoom), "the Mercator stretch of a held latitude, not of a pole")
+            }
+            // At the flat zoom the globe's centre is the flat map's
+            let atFlat = GlobeProjection.held(MapCamera(center: Coordinate(latitude: latitude, longitude: 20), zoom: flatZoom), size: size)
+            let flat = MapViewport(camera: atFlat, size: size).panned(by: 0, 0)
+            XCTAssertEqual(atFlat.center.latitude, flat.center.latitude, accuracy: 1e-9)
+        }
+        // The globe's own limit far out
+        let far = GlobeProjection.held(MapCamera(center: Coordinate(latitude: -89.99, longitude: 20), zoom: 3), size: size)
+        XCTAssertEqual(far.center.latitude, -GlobeProjection.maxCenterLatitude, accuracy: 1e-9)
+    }
+
+    /// While the map flattens a coordinate found under a point has its
+    /// longitude in -180 ..< 180, also just past the antimeridian.
+    func testCoordinatesUnderPointsAreWrapped() {
+        let size = CGSize(width: 1440, height: 900)
+        let p = GlobeProjection(camera: MapCamera(center: Coordinate(latitude: -60, longitude: 160), zoom: 4.5), size: size)
+        XCTAssertGreaterThan(p.flatness, 0)
+        XCTAssertLessThan(p.flatness, 1)
+        var seen = 0
+        for x in stride(from: 0.0, through: 1440, by: 24) {
+            for y in stride(from: 0.0, through: 900, by: 24) {
+                guard let c = p.coordinate(at: CGPoint(x: x, y: y)) else { continue }
+                seen += 1
+                XCTAssertGreaterThanOrEqual(c.longitude, -180)
+                XCTAssertLessThan(c.longitude, 180)
+            }
+        }
+        XCTAssertGreaterThan(seen, 100)
+    }
+
+    /// Without a globe (no Metal) the projection is the flat map's at every zoom.
+    func testFlatOnlyIsTheFlatMap() {
+        let camera = MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: 2)
+        let p = GlobeProjection(camera: camera, size: size, flatOnly: true)
+        XCTAssertTrue(p.isFlat)
+        let flat = MapViewport(camera: camera, size: size)
+        let c = Coordinate(latitude: -40, longitude: 175)
+        XCTAssertTrue(p.isVisible(c), "no far side")
+        XCTAssertEqual(p.point(for: c).x, flat.point(for: c).x, accuracy: 1e-6)
+        XCTAssertEqual(GlobeProjection.held(MapCamera(center: camera.center, zoom: 0), size: size, flatOnly: true).zoom,
+                       MapViewport.minZoom(for: size), accuracy: 1e-9)
+    }
+
     func testDraggingATiltedGlobeFollowsTheHeading() {
         // Heading east: a drag down brings the ground ahead (east) nearer, so the centre moves east
         let p = GlobeProjection(camera: MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 4, pitch: 50, heading: 90), size: size)

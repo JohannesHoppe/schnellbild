@@ -217,13 +217,16 @@ struct DistanceOriginView: View {
     }
 }
 
-/// Over the sheet's map: a click (the mouse moved less than 4 points) picks
-/// the place, a drag moves the map.
+/// Over the sheet's map: a click (the mouse moved less than 4 points from
+/// where it went down, all the way) picks the place, a drag moves the map
+/// (also one that comes back to where it began).
 private struct MapPickLayer: View {
     @Binding var camera: MapCamera
     let size: CGSize
     let picked: (CGPoint) -> Void
     @State private var dragStart: MapCamera?
+    /// The mouse went 4 points or more from where it went down
+    @State private var dragging = false
 
     var body: some View {
         Color.clear
@@ -232,12 +235,15 @@ private struct MapPickLayer: View {
                 .onChanged { drag in
                     let start = dragStart ?? camera
                     dragStart = start
-                    guard hypot(drag.translation.width, drag.translation.height) >= 4 else { return }
+                    if hypot(drag.translation.width, drag.translation.height) >= 4 { dragging = true }
+                    guard dragging else { return }
                     camera = OriginPicker.dragged(start, by: drag.translation, size: size)
                 }
                 .onEnded { drag in
+                    let click = !dragging && hypot(drag.translation.width, drag.translation.height) < 4
                     dragStart = nil
-                    if hypot(drag.translation.width, drag.translation.height) < 4 { picked(drag.location) }
+                    dragging = false
+                    if click { picked(drag.location) }
                 })
     }
 }

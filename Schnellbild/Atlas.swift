@@ -126,12 +126,14 @@ enum AtlasClustering {
     /// time), each item joins the cluster whose first item lies nearest
     /// within `spacing`, else starts one. On the flat map distances are
     /// measured in the map's world points at that zoom, so moving the map
-    /// changes nothing and only a zoom asks again. A grid of `spacing` cells finds the
+    /// changes nothing and only a zoom asks again; the world repeats to the
+    /// left and right, so items on either side of the antimeridian are as
+    /// close as the map draws them. A grid of `spacing` cells finds the
     /// neighbours, so thousands of items take milliseconds.
     static func clusters(of points: [(id: URL, coordinate: Coordinate)], zoom: Double,
                          spacing: Double = spacing) -> [AtlasCluster] {
         let world = WebMercator.worldSize(zoom: zoom)
-        return clusters(of: points, spacing: spacing) { coordinate in
+        return clusters(of: points, spacing: spacing, period: world) { coordinate in
             let unit = WebMercator.unitPoint(coordinate)
             return CGPoint(x: unit.x * world, y: unit.y * world)
         }
@@ -141,32 +143,46 @@ enum AtlasClustering {
     /// it gives no point (the far side) is in no cluster. A tile's place is
     /// the middle of its items in the unit square, each taken on the side of
     /// the antimeridian its first item lies on (Fiji and Samoa side by side
-    /// on the globe stand in the Pacific, not at longitude 0).
-    static func clusters(of points: [(id: URL, coordinate: Coordinate)], spacing: Double = spacing,
+    /// on the globe stand in the Pacific, not at longitude 0). `period`: x
+    /// repeats every so many points (the flat map's world), distances taken
+    /// the short way round.
+    static func clusters(of points: [(id: URL, coordinate: Coordinate)], spacing: Double = spacing, period: Double? = nil,
                          project: (Coordinate) -> CGPoint?) -> [AtlasCluster] {
         struct Building { var ids: [URL]; var leader: CGPoint; var leaderUnit: CGPoint; var sum: CGPoint; var together: Bool }
         // Closer than this in the unit square: one tile even at the largest zoom
         let apart = spacing / WebMercator.worldSize(zoom: MapViewport.maxZoom)
+        // Repeating: a whole number of cells (at least `spacing` wide) round the world
+        let columns = period.map { Int64(max(1, ($0 / spacing).rounded(.down))) }
+        let cellWidth = period.map { $0 / Double(columns!) } ?? spacing
         var built: [Building] = []
         var cells: [Int64: [Int]] = [:]
-        func key(_ x: Int64, _ y: Int64) -> Int64 { x &* 1_000_003 &+ y }
+        func key(_ x: Int64, _ y: Int64) -> Int64 {
+            let x = columns.map { ((x % $0) + $0) % $0 } ?? x
+            return x &* 1_000_003 &+ y
+        }
+        func dx(_ a: CGPoint, _ b: CGPoint) -> Double {
+            let d = Double(a.x - b.x)
+            return period.map { d.wrapped(period: $0) } ?? d
+        }
         for point in points {
             guard let p = project(point.coordinate) else { continue }
             var unit = WebMercator.unitPoint(point.coordinate)
-            let cx = Int64((Double(p.x) / spacing).rounded(.down)), cy = Int64((Double(p.y) / spacing).rounded(.down))
+            let cx = Int64((Double(p.x) / cellWidth).rounded(.down)), cy = Int64((Double(p.y) / spacing).rounded(.down))
             var best: (index: Int, distance: Double)?
-            for dx in -1...1 {
-                for dy in -1...1 {
-                    for index in cells[key(cx + Int64(dx), cy + Int64(dy))] ?? [] {
+            // The columns either side (a world of fewer than three: each of its columns once)
+            let xs = columns.map { $0 < 3 ? 0...($0 - 1) : (cx - 1)...(cx + 1) } ?? (cx - 1)...(cx + 1)
+            for x in xs {
+                for oy in -1...1 {
+                    for index in cells[key(x, cy + Int64(oy))] ?? [] {
                         let leader = built[index].leader
-                        let d = hypot(Double(leader.x - p.x), Double(leader.y - p.y))
+                        let d = hypot(dx(leader, p), Double(leader.y - p.y))
                         if d < spacing, d < best?.distance ?? .infinity { best = (index, d) }
                     }
                 }
             }
             if let best {
                 let leader = built[best.index].leaderUnit
-                if unit.x - leader.x > 0.5 { unit.x -= 1 } else if leader.x - unit.x > 0.5 { unit.x += 1 }
+                unit.x = leader.x + Double(unit.x - leader.x).wrapped(period: 1)
                 built[best.index].ids.append(point.id)
                 built[best.index].sum.x += unit.x
                 built[best.index].sum.y += unit.y
@@ -182,6 +198,44 @@ enum AtlasClustering {
                                 coordinate: WebMercator.coordinate(unit: CGPoint(x: cluster.sum.x / n, y: cluster.sum.y / n)),
                                 staysTogether: cluster.ids.count > 1 && cluster.together)
         }
+    }
+}
+
+/// The flat map's clusters by cells of the Mercator square, about a tile
+/// (256 points) wide at their zoom: the clusters in a part of the world are
+/// found without placing every one of them (90 000 placed items make tens
+/// of thousands of clusters zoomed in, and the map places its tiles at
+/// every step of a drag).
+struct AtlasClusterGrid: Sendable {
+    /// Cells across (and down) the square
+    let cellsAcross: Int
+    private var cells: [Int: [Int]] = [:]
+
+    init(_ clusters: [AtlasCluster], zoom: Double) {
+        cellsAcross = max(1, min(1 << 20, Int(WebMercator.worldSize(zoom: zoom) / WebMercator.tileSize)))
+        for (i, cluster) in clusters.enumerated() {
+            let u = WebMercator.unitPoint(cluster.coordinate)
+            let n = cellsAcross
+            let x = ((column(Double(u.x)) % n) + n) % n, y = min(n - 1, max(0, column(Double(u.y))))
+            cells[y * n + x, default: []].append(i)
+        }
+    }
+
+    private func column(_ unit: Double) -> Int { Int((unit * Double(cellsAcross)).rounded(.down)) }
+
+    /// The clusters' indices in a rectangle of the unit square (x may run
+    /// beyond 0 ... 1: the world repeats), and a few around it in the cells it touches.
+    func indices(in rect: CGRect) -> [Int] {
+        let n = cellsAcross
+        let x0 = column(Double(rect.minX)), x1 = column(Double(rect.maxX))
+        let y0 = max(0, column(Double(rect.minY))), y1 = min(n - 1, column(Double(rect.maxY)))
+        guard y0 <= y1, x0 <= x1 else { return [] }
+        let xs = x1 - x0 + 1 >= n ? Array(0..<n) : (x0...x1).map { (($0 % n) + n) % n }
+        var out: [Int] = []
+        for y in y0...y1 {
+            for x in xs { out += cells[y * n + x] ?? [] }
+        }
+        return out
     }
 }
 
@@ -306,10 +360,17 @@ enum AtlasTimeline {
             return [slots / 2: items[start]]
         }
         var firsts: [Int: AtlasItem] = [:]
+        // The slots as `bin` gives them (the search by its own rounding: an
+        // item on a slot's edge is the slot's first, not left out)
+        let start = firstIndex(atOrAfter: span.lowerBound, in: items)
         for slot in 0..<slots {
-            let i = firstIndex(atOrAfter: span.lowerBound.addingTimeInterval(length * Double(slot) / Double(slots)), in: items)
-            guard i < items.count, AtlasTimeline.bin(of: items[i].date, span: span, bins: slots) == slot else { continue }
-            firsts[slot] = items[i]
+            var low = start, high = items.count
+            while low < high {
+                let mid = (low + high) / 2
+                if bin(of: items[mid].date, span: span, bins: slots) < slot { low = mid + 1 } else { high = mid }
+            }
+            guard low < items.count, items[low].date <= span.upperBound, bin(of: items[low].date, span: span, bins: slots) == slot else { continue }
+            firsts[slot] = items[low]
         }
         return firsts
     }
@@ -392,11 +453,7 @@ enum TourPlanner {
             let lat = current.map { $0.coordinate!.latitude }.reduce(0, +) / Double(current.count)
             // Longitudes averaged around the first item's (a station across the antimeridian)
             let base = current[0].coordinate!.longitude
-            let lon = current.map { item -> Double in
-                var d = item.coordinate!.longitude - base
-                if d > 180 { d -= 360 } else if d < -180 { d += 360 }
-                return d
-            }.reduce(0, +) / Double(current.count) + base
+            let lon = current.map { ($0.coordinate!.longitude - base).wrappedLongitude }.reduce(0, +) / Double(current.count) + base
             stations.append(TourStation(items: current, coordinate: Coordinate(latitude: lat, longitude: lon).normalized))
             current = []
         }
@@ -525,7 +582,7 @@ enum TourFlight {
         let s = t * t * (3 - 2 * t)
         var a = WebMercator.unitPoint(start.center)
         let b = WebMercator.unitPoint(end.center)
-        if b.x - a.x > 0.5 { a.x += 1 } else if a.x - b.x > 0.5 { a.x -= 1 }
+        a.x = b.x - Double(b.x - a.x).wrapped(period: 1)
         let unit = CGPoint(x: a.x + (b.x - a.x) * s, y: a.y + (b.y - a.y) * s)
         let distance = hypot(Double(b.x - a.x), Double(b.y - a.y))
         let middle = (start.zoom + end.zoom) / 2

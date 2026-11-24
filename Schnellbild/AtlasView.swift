@@ -79,7 +79,8 @@ private struct AtlasMap: View {
             // Zoomed far out the globe, flattening into the flat map between `GlobeProjection.morphStart` and `flatZoom`
             // In the tour the Sun stands where it stood when the station's first photo was taken
             GlobeView(camera: Binding(get: { camera.camera }, set: { atlas.camera = $0 }), interactive: atlas.tour == nil,
-                      lighting: true, sunDate: atlas.tour?.currentStation?.start ?? AtlasModel.testSunDate) { proxy in
+                      lighting: true, sunDate: atlas.tour?.currentStation?.start ?? AtlasModel.testSunDate,
+                      onFlatOnly: { atlas.flatOnly = true }) { proxy in
                 if atlas.tour != nil {
                     TourRoute(atlas: atlas, proxy: proxy, palette: palette)
                 } else {
@@ -132,7 +133,8 @@ private struct AtlasTiles: View {
 
     private var visible: [(cluster: AtlasCluster, point: CGPoint)] {
         let bounds = CGRect(origin: .zero, size: proxy.size).insetBy(dx: -AtlasTile.side, dy: -AtlasTile.side)
-        return atlas.clusters.compactMap { cluster in
+        // (on the flat map only those in its part of the world are placed)
+        return atlas.clusters(near: proxy.camera, size: proxy.size, margin: AtlasTile.side).compactMap { cluster in
             // On the globe: not what lies on its far side
             guard proxy.isVisible(cluster.coordinate) else { return nil }
             let p = proxy.point(for: cluster.coordinate)
@@ -221,20 +223,32 @@ private struct AtlasTile: View {
 
 /// A thumbnail from the grid's cache (made by QuickLook or VLC as there).
 /// One in the cache shows in the tile's first frame (the Atlas shown again,
-/// the tour ended), not the grey square first.
+/// the tour ended), not the grey square first. A file changed on disk (its
+/// modification date) is loaded again, the old picture standing meanwhile,
+/// as the grid's tiles do.
 struct AtlasThumbnail: View {
     let url: URL
     let modified: Date?
     let side: CGFloat
     var isVideo = false
     @State private var image: NSImage?
+    /// The file `image` shows
+    @State private var imageURL: URL?
+
+    /// What the picture is loaded for.
+    private struct Shown: Hashable {
+        var url: URL
+        var modified: Date?
+    }
 
     init(url: URL, modified: Date?, side: CGFloat, isVideo: Bool = false) {
         self.url = url
         self.modified = modified
         self.side = side
         self.isVideo = isVideo
-        _image = State(initialValue: ThumbnailCache.shared.cached(for: url, side: side, modified: modified))
+        let cached = ThumbnailCache.shared.cached(for: url, side: side, modified: modified)
+        _image = State(initialValue: cached)
+        _imageURL = State(initialValue: cached == nil ? nil : url)
     }
 
     var body: some View {
@@ -256,10 +270,18 @@ struct AtlasThumbnail: View {
                     .padding(3)
             }
         }
-        .task(id: url) {
-            if let cached = ThumbnailCache.shared.cached(for: url, side: side, modified: modified) { image = cached; return }
-            image = nil
-            image = await ThumbnailCache.shared.thumbnail(for: url, side: max(side, 64), modified: modified)
+        .task(id: Shown(url: url, modified: modified)) {
+            if let cached = ThumbnailCache.shared.cached(for: url, side: side, modified: modified) {
+                image = cached
+                imageURL = url
+                return
+            }
+            // Another file: not its picture meanwhile
+            if imageURL != url { image = nil }
+            let made = await ThumbnailCache.shared.thumbnail(for: url, side: max(side, 64), modified: modified)
+            guard !Task.isCancelled else { return }
+            image = made
+            imageURL = url
         }
     }
 }
@@ -399,8 +421,8 @@ private struct AtlasTimelineView: View {
                     }
                 }
                 .fill(Color.secondary.opacity(0.55))
-                // The selected item's time
-                if let selected = model.selectedEntry.flatMap({ atlas.item($0.url) }) {
+                // The selected item's time (one without a time has none on the timeline)
+                if let selected = model.selectedEntry.flatMap({ atlas.item($0.url) }), selected.isDated {
                     Rectangle().fill(Color.accentColor)
                         .frame(width: 2, height: 44)
                         .offset(x: AtlasTimeline.fraction(of: selected.date, span: span) * width - 1)
@@ -526,8 +548,7 @@ private struct TourRoute: View {
         guard let first = route.first else { return [] }
         var out = [first]
         for (a, b) in zip(route, route.dropFirst()) {
-            var dLon = b.longitude - a.longitude
-            if dLon > 180 { dLon -= 360 } else if dLon < -180 { dLon += 360 }
+            let dLon = (b.longitude - a.longitude).wrappedLongitude
             let steps = max(1, min(64, Int(max(abs(b.latitude - a.latitude), abs(dLon)) / 0.5)))
             for i in 1...steps {
                 let t = Double(i) / Double(steps)

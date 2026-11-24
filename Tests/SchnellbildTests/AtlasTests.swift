@@ -860,4 +860,159 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(fullScreen, [true], "no window taken out of full screen")
         XCTAssertNil(m.atlas.progress)
     }
+
+    /// Another view chosen during the tour (View → as Grid in full screen):
+    /// the tour ends with the Atlas, full screen with it.
+    func testAnotherViewEndsTheTour() async throws {
+        let (w, m, _, tree) = try window()
+        var fullScreen: [Bool] = []
+        m.setFullScreen = { on in fullScreen.append(on); return true }
+        await openAndWait(m, tree.root)
+        m.viewMode = .atlas
+        await waitUntil { m.atlas.items.count == 14 && m.atlas.isComplete }
+        m.atlas.mapSize = CGSize(width: 960, height: 600)
+        XCTAssertTrue(w.typeKey(.char("t")))
+        XCTAssertTrue(m.touring)
+        m.viewMode = .grid
+        XCTAssertFalse(m.touring, "no tour behind the grid")
+        XCTAssertFalse(m.presenting)
+        XCTAssertEqual(fullScreen, [true, false], "out of the full screen it entered")
+        XCTAssertEqual(w.shortcutContext, .grid)
+    }
+
+    /// A folder that changed while the Atlas wasn't shown is read once it
+    /// is, also when the taking over of the list that looked at it gives way
+    /// to a newer one.
+    func testAChangedFolderIsReadThoughATakingOverGivesWay() async throws {
+        final class Disk: @unchecked Sendable {
+            let lock = NSLock()
+            var latitude = 60.0
+        }
+        let disk = Disk()
+        let url = URL(fileURLWithPath: "/trip/photo.jpg")
+        let atlas = AtlasModel(browser: nil) { files in
+            disk.lock.withLock {
+                Dictionary(uniqueKeysWithValues: files.map {
+                    ($0.url, CaptureFacts(time: nil, place: CapturePlace(location: MediaLocation(point: GeoPoint(latitude: disk.latitude, longitude: 8)!),
+                                                                         source: .file), track: nil))
+                })
+            }
+        }
+        func latitude() -> Double? { atlas.items.first?.coordinate?.latitude }
+        let entries = [GridEntry(url: url, kind: .image, modDate: Date(timeIntervalSince1970: 1_780_000_000))]
+        atlas.entriesChanged(entries, context: "trip")
+        await waitUntil { atlas.isComplete && latitude() == 60 }
+        atlas.pause()
+        disk.lock.withLock { disk.latitude = 61 }
+        atlas.foldersChanged([BrowserModel.canonicalPath(url.deletingLastPathComponent())])
+        // Shown again: two takings over at once (the first gives way to the second)
+        atlas.entriesChanged(entries, context: "trip")
+        atlas.entriesChanged(entries, context: "trip")
+        await waitUntil { atlas.isComplete && latitude() == 61 }
+        XCTAssertEqual(latitude(), 61)
+    }
+
+    /// On the flat map the world repeats: Taveuni's photos on both sides of
+    /// 180° are one tile, as the map draws them side by side.
+    func testOnTheFlatMapAClusterCrossesTheAntimeridian() {
+        let points = [(URL(fileURLWithPath: "/fiji/east.jpg"), Coordinate(latitude: -16.80, longitude: 179.95)),
+                      (URL(fileURLWithPath: "/fiji/west.jpg"), Coordinate(latitude: -16.85, longitude: -179.95))]
+        for zoom in [0.0, 1, 5, 9] {
+            let clusters = AtlasClustering.clusters(of: points, zoom: zoom)
+            XCTAssertEqual(clusters.count, 1, "zoom \(zoom)")
+            XCTAssertGreaterThan(abs(clusters.first?.coordinate.longitude ?? 0), 179.9, "in the Pacific at zoom \(zoom)")
+        }
+        XCTAssertEqual(AtlasClustering.clusters(of: points, zoom: 11).count, 2, "apart zoomed in")
+        // Points on the other side of the world stay apart however few the columns
+        let far = [(URL(fileURLWithPath: "/a.jpg"), Coordinate(latitude: 0, longitude: 0)),
+                   (URL(fileURLWithPath: "/b.jpg"), Coordinate(latitude: 0, longitude: 180))]
+        XCTAssertEqual(AtlasClustering.clusters(of: far, zoom: 0).count, 2)
+    }
+
+    /// The tiles on screen come from the clusters in the view's part of the
+    /// world (a grid by place), not from placing every cluster.
+    func testTheClustersNearTheViewAreThoseOnScreen() {
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        var items = trip
+        items.append(item("wellington.jpg", "2026-06-19 10:00:00", (-41.29, 174.78)))
+        items.append(item("fiji.jpg", "2026-06-20 10:00:00", (-16.85, -179.95)))
+        atlas.load(items)
+        atlas.mapSize = CGSize(width: 960, height: 600)
+        let bounds = CGRect(origin: .zero, size: atlas.mapSize)
+        for camera in [MapCamera(center: Coordinate(latitude: 61, longitude: 7), zoom: 8),
+                       MapCamera(center: Coordinate(latitude: -17, longitude: 179.9), zoom: 6)] {
+            atlas.moveByUser(to: camera)
+            atlas.clusterNow()
+            XCTAssertFalse(atlas.showsGlobe)
+            let near = Set(atlas.clusters(near: atlas.camera, size: atlas.mapSize, margin: 52).map(\.id))
+            let onScreen = Set(atlas.clusters.filter { atlas.point(for: $0.coordinate).map(bounds.contains) ?? false }.map(\.id))
+            XCTAssertTrue(onScreen.isSubset(of: near), "\(camera.center)")
+            XCTAssertLessThan(near.count, atlas.clusters.count, "not every cluster")
+            XCTAssertFalse(onScreen.isEmpty)
+        }
+    }
+
+    /// A slot's first item lying exactly on its edge is that slot's, by the
+    /// same rounding as the bars.
+    func testAnItemOnASlotsEdgeIsItsThumbnail() throws {
+        let start = Date(timeIntervalSince1970: 1_780_000_000)
+        let items = [0.0, 700, 780, 800, 2760].map { seconds in
+            AtlasItem(url: URL(fileURLWithPath: "/trip/\(Int(seconds)).jpg"), isVideo: false, coordinate: nil,
+                      date: start.addingTimeInterval(seconds), offset: 0, hasCaptureTime: true)
+        }
+        let span = try XCTUnwrap(AtlasTimeline.span(sorted: items))
+        let firsts = AtlasTimeline.firstOfSlots(sorted: items, span: span, slots: 46)
+        for item in items {
+            let slot = AtlasTimeline.bin(of: item.date, span: span, bins: 46)
+            XCTAssertNotNil(firsts[slot], "\(item.name) in slot \(slot)")
+        }
+        XCTAssertEqual(firsts.count, Set(items.map { AtlasTimeline.bin(of: $0.date, span: span, bins: 46) }).count)
+        XCTAssertEqual(firsts[13]?.name, "800.jpg")
+    }
+
+    /// The map moved by the user before the Atlas set a camera (its places
+    /// still read) stays where they put it; the view holding the camera it
+    /// starts with isn't a move. A jump on the timeline (`reveal`) is the user's too.
+    func testTheUsersFirstMoveAndARevealAreKept() {
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        atlas.mapSize = CGSize(width: 960, height: 600)
+        atlas.camera = atlas.held(MapCamera.world)
+        XCTAssertFalse(atlas.userMovedMap, "the view's own hold")
+        atlas.camera = MapCamera(center: Coordinate(latitude: 40, longitude: 100), zoom: 2)
+        XCTAssertTrue(atlas.userMovedMap, "a drag before the first fit")
+        atlas.load(trip)
+        XCTAssertEqual(atlas.camera.center.longitude, 100, accuracy: 1e-9, "not fitted away")
+
+        let other = AtlasModel(browser: nil) { _ in [:] }
+        other.mapSize = CGSize(width: 960, height: 600)
+        other.load(trip)
+        other.fitAll()
+        XCTAssertFalse(other.userMovedMap)
+        other.reveal(Coordinate(latitude: -41.29, longitude: 174.78))
+        XCTAssertTrue(other.userMovedMap, "the fit leaves a place revealed")
+        XCTAssertNotNil(other.point(for: Coordinate(latitude: -41.29, longitude: 174.78)))
+        // Near a pole the centre stays within the globe's limits
+        other.reveal(Coordinate(latitude: -89.99, longitude: 10))
+        XCTAssertGreaterThanOrEqual(other.camera.center.latitude, -GlobeProjection.maxCenterLatitude)
+    }
+
+    /// Without a globe (no Metal) the map view shows the flat map at every
+    /// zoom: the Atlas places, clusters and holds by it.
+    func testWithoutAGlobeTheAtlasIsTheFlatMaps() {
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        var items = trip
+        items.append(item("wellington.jpg", "2026-06-19 10:00:00", (-41.29, 174.78)))
+        atlas.load(items)
+        atlas.mapSize = CGSize(width: 960, height: 600)
+        atlas.flatOnly = true
+        XCTAssertEqual(atlas.held(MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 0)).zoom,
+                       MapViewport.minZoom(for: atlas.mapSize), accuracy: 1e-9, "the flat map's limits")
+        atlas.moveByUser(to: MapCamera(center: Coordinate(latitude: 60, longitude: 8), zoom: 2))
+        XCTAssertFalse(atlas.showsGlobe)
+        let wellington = Coordinate(latitude: -41.29, longitude: 174.78)
+        let flat = MapViewport(camera: atlas.camera, size: atlas.mapSize)
+        XCTAssertEqual(atlas.point(for: wellington)?.x ?? -1, flat.point(for: wellington).x, accuracy: 1e-6, "no far side")
+        atlas.clusterNow()
+        XCTAssertTrue(atlas.clusters.contains { $0.ids.contains { $0.lastPathComponent == "wellington.jpg" } })
+    }
 }
