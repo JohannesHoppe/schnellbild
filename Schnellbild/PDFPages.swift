@@ -42,7 +42,7 @@ final class PDFPages: @unchecked Sendable {
         return ext == "pdf" || ext == "ai"
     }
 
-    /// The documents open now, by file (path, size and date; inside an
+    /// The documents open, by file (path, size and date; inside an
     /// archive the archive's), held weakly: the tile, the full view and the
     /// Inspector share one while any of them holds it, and none is kept
     /// longer (a document can take 256 MB).

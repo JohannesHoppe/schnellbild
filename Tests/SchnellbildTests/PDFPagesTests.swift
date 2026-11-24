@@ -80,7 +80,7 @@ final class PDFPagesTests: XCTestCase {
 
     /// The tile, the full view and the Inspector opening one PDF share the
     /// document while one of them holds it: read once. A file rewritten
-    /// is read again; one no longer held by anyone too.
+    /// is read again; one held by no one too.
     func testAPDFOpenAlreadyIsSharedWhileItIsHeld() async throws {
         let tree = try TempTree(self)
         let url = tree.root.appendingPathComponent("doc.pdf")
