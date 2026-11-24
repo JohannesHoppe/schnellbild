@@ -45,7 +45,7 @@ scroll-stopper), polish (F1) last.
 - Don't let the mouse hunt around; deliberate key moves, hide the cursor where
   possible.
 
-## Honest caveat
+## Caveat
 
 A GIF sells the *feel* ("looks snappy") but doesn't *prove* speed. There's no
 reference. The real proof is a **"Schnellbild vs. Preview over the network"

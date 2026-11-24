@@ -1,6 +1,6 @@
 # Launch material
 
-Honest, low-hype copy for validating demand. Lead with the pain (slow viewers
+Low-hype copy for validating demand. Lead with the pain (slow viewers
 over the network), be upfront about scope (it's a *viewer*, not an editor).
 
 ---
