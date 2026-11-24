@@ -339,12 +339,27 @@ final class PictureDecoderTests: XCTestCase {
                  strip: Data(count: 4096), subIFDs: [])
         let fromHuge = await RawDecoder.developed(huge.data, named: URL(fileURLWithPath: "/x/a.dng"), half: false)
         XCTAssertNil(fromHuge)
+        XCTAssertNil(RawDecoder.facts(huge.data), "refused when its headers are read, before anything else")
 
-        // Cancelled: the task's development stops and gives nothing
+        // Cancelled: the task's development stops and gives nothing (the
+        // flag LibRaw polls is set before it starts, so it stops at its
+        // first step); the same file uncancelled develops
         let big = DecoderFixtures.casioBay(DecoderFixtures.reference())
-        let task = Task { await RawDecoder.developed(big, named: URL(fileURLWithPath: "/x/a.bay"), half: false) }
-        task.cancel()
-        _ = await task.value
+        let name = URL(fileURLWithPath: "/x/a.bay")
+        let task = Task { () -> Bool in
+            withUnsafeCurrentTask { $0?.cancel() }
+            return await RawDecoder.developed(big, named: name, half: false) != nil
+        }
+        let cancelledDeveloped = await task.value
+        XCTAssertFalse(cancelledDeveloped, "cancelled with its task")
+        let uncancelled = await RawDecoder.developed(big, named: name, half: false)
+        XCTAssertNotNil(uncancelled)
+        var stop: Int32 = 1
+        var picture = SBRawPicture()
+        let status = big.withUnsafeBytes { sb_raw_develop($0.baseAddress, $0.count, RawDecoder.limits, 0, &stop, &picture) }
+        XCTAssertNotEqual(status, 0, "LibRaw polls the flag")
+        XCTAssertNil(picture.data)
+        sb_raw_free(&picture)
     }
 
     /// LibRaw's numbers as a crafted file can have them (∞, NaN, far beyond
