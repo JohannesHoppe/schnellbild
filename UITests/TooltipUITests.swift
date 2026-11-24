@@ -111,7 +111,7 @@ final class TooltipUITests: SchnellbildUITestCase {
         // The Atlas: its header, the map's buttons, the timeline
         app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10), "the Atlas")
-        for id in ["tourButton", "atlasSubfolders", "timeline.start", "timeline.end"] {
+        for id in ["tourButton", "atlasSubfolders", "timeline.track", "timeline.start", "timeline.end"] {
             expectTooltip(element(id).firstMatch, id)
         }
         for title in ["Zoom in", "Zoom out", "Tilt the view", "Hide day and night", "Hide the clouds"] {

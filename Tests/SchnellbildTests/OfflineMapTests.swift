@@ -218,6 +218,95 @@ final class OfflineMapTests: XCTestCase {
         if let bounds = far?.layers["far"]?.features.first?.bounds {
             XCTAssertEqual(Double(bounds.width), pow(2, 63), accuracy: pow(2, 40))
         }
+
+        // Tags that name a key or value past the layer's tables
+        for tags: [UInt64] in [[0, 9], [9, 0], [0, 0, 1, 7], [UInt64.max, 0]] {
+            var layer = Proto()
+            layer.uint(15, 2)
+            layer.string(1, "tags")
+            var feature = Proto()
+            feature.bytesField(2, Proto.packed(tags))
+            feature.uint(3, 1)
+            feature.bytesField(4, Proto.packed([9, 2, 2]))
+            layer.bytesField(2, feature.bytes)
+            layer.string(3, "kind"); layer.string(3, "name")
+            var value = Proto(); value.string(1, "lake"); layer.bytesField(4, value.bytes)
+            var tile = Proto()
+            tile.bytesField(3, layer.bytes)
+            XCTAssertThrowsError(try VectorTile(data: Data(tile.bytes)), "\(tags)")
+        }
+    }
+
+    /// A fixed-seed generator, so a failure can be run again.
+    struct SplitMix: RandomNumberGenerator {
+        var state: UInt64
+        mutating func next() -> UInt64 {
+            state &+= 0x9E37_79B9_7F4A_7C15
+            var z = state
+            z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
+            z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
+            return z ^ (z >> 31)
+        }
+    }
+
+    /// Bytes changed at random, from a fixed seed.
+    static func scrambled(_ data: Data, _ random: inout SplitMix, changes: ClosedRange<Int> = 1...6) -> Data {
+        var bytes = [UInt8](data)
+        for _ in 0..<Int.random(in: changes, using: &random) {
+            bytes[Int.random(in: 0..<bytes.count, using: &random)] = UInt8.random(in: 0...255, using: &random)
+        }
+        return Data(bytes)
+    }
+
+    /// Damage inside the layers (each layer's bytes changed, then framed
+    /// again with its true length, so the parsers past the tile's own
+    /// framing see it: layers, values, features, tags, geometry), damaged
+    /// archives, gzip streams and place indexes: an error or less, never a
+    /// crash.
+    func testDamageInsideEveryReaderNeverCrashes() throws {
+        var random = SplitMix(state: 0x0FF1_1E5E_ED00_0004)
+        // The tile's layers (field 3, each a length and its bytes)
+        let whole = [UInt8](Self.sampleTile())
+        var layers: [[UInt8]] = [], at = 0
+        while at < whole.count {
+            XCTAssertEqual(whole[at], 3 << 3 | 2)
+            var length = 0, shift = 0
+            at += 1
+            while true { let b = whole[at]; at += 1; length |= Int(b & 0x7F) << shift; shift += 7; if b < 0x80 { break } }
+            layers.append(Array(whole[at..<at + length]))
+            at += length
+        }
+        XCTAssertEqual(layers.count, 2)
+        var read = 0, features = 0
+        for _ in 0..<3000 {
+            var tile = Proto()
+            for layer in layers {
+                tile.bytesField(3, [UInt8](Self.scrambled(Data(layer), &random)))
+            }
+            guard let decoded = try? VectorTile(data: Data(tile.bytes)) else { continue }
+            read += 1
+            for layer in decoded.layers.values {
+                for feature in layer.features {
+                    features += 1
+                    _ = feature.bounds
+                    for part in feature.partEnds.indices { _ = Array(feature.part(part)) }
+                }
+            }
+        }
+        print("map: \(read) of 3000 tiles damaged inside their layers read, \(features) features")
+        XCTAssertGreaterThan(features, 50, "damage past the layer's head reaches its features")
+
+        let archive = Self.archive([(0, 1, Self.sampleTile()), (1, 4, Data("x".utf8))], leaf: true)
+        let gzip = Self.gzip(Self.sampleTile())
+        for round in 0..<2000 {
+            let damaged = Self.scrambled(archive, &random)
+            if let opened = try? PMTilesArchive(data: damaged) {
+                _ = opened.metadata
+                for (z, x, y) in [(0, 0, 0), (1, 0, 0), (1, 1, 1), (2, 3, 3)] { _ = opened.tile(z: z, x: x, y: y) }
+            }
+            _ = Gzip.decompress(Self.scrambled(gzip, &random))
+            _ = Gzip.decompress(gzip.prefix(round % gzip.count))
+        }
     }
 
     /// A place index whose unpacked block holds fewer bytes than its places
@@ -243,6 +332,15 @@ final class OfflineMapTests: XCTestCase {
         XCTAssertThrowsError(try PlaceIndex(data: index(count: 100, stored: 16, length: 1_600, packed: false)),
                              "100 places in 16 bytes as they are stored")
         XCTAssertNotNil(try? PlaceIndex(data: index(count: 1, stored: 16, length: 16, packed: false)), "one place in its 16 bytes")
+        // Damaged at random: refused, or read within its bytes
+        var random = SplitMix(state: 0x91AC_E1D3_0000_0005)
+        let valid = index(count: 4, stored: 64, length: 64, packed: false)
+        for _ in 0..<300 {
+            guard let damaged = try? PlaceIndex(data: Self.scrambled(valid, &random, changes: 1...4)) else { continue }
+            _ = damaged.places(south: -90, north: 90, west: -180, east: 180, maxMinZoom: .infinity)
+            _ = damaged.places(south: 10, north: 20, west: 170, east: -170, maxMinZoom: 5)
+            _ = damaged.regionCountry(at: Coordinate(latitude: 0, longitude: 0))
+        }
     }
 
     // MARK: Projection

@@ -140,7 +140,7 @@ let package = Package(
             name: "SchnellbildTests",
             dependencies: ["Schnellbild", "VLCFrames", "VideoContainers", "OfflineMap"],
             path: "Tests/SchnellbildTests",
-            resources: [.copy("Archives"), .copy("Videos"), .copy("Locations"), .copy("Metadata")]
+            resources: [.copy("Archives"), .copy("Videos"), .copy("Locations"), .copy("Metadata"), .copy("Pictures")]
         )
     ],
     cxxLanguageStandard: .cxx17

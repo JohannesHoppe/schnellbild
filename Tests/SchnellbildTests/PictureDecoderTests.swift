@@ -76,6 +76,45 @@ final class PictureDecoderTests: XCTestCase {
         XCTAssertEqual(PCXDecoder.decode(page)?.pixels, first.expected.pixels)
     }
 
+    // MARK: The app's path
+
+    /// Through the app's path (the file read, decoded and handed to ImageIO
+    /// as the full view gets it): every pixel as decoded, compared to the
+    /// last row and column (no mean that a defect in a row or column hides
+    /// in); a QOI marked linear is shown as linear light.
+    func testTheAppsPathShowsEveryPixel() async throws {
+        func shown(_ name: String, _ data: Data) async throws -> DecoderFixtures.RGBA {
+            let url = try file(name, data)
+            let picture = await MediaData.picture(url)
+            let source = try XCTUnwrap(picture?.source, name)
+            let image = try XCTUnwrap(CGImageSourceCreateImageAtIndex(source, 0, nil), name)
+            return DecoderFixtures.RGBA.of(image, width: image.width, height: image.height)
+        }
+        func check(_ name: String, _ data: Data, _ expected: CGImage) async throws {
+            let got = try await shown(name, data)
+            XCTAssertEqual([got.width, got.height], [expected.width, expected.height], name)
+            guard got.width == expected.width, got.height == expected.height else { return }
+            let want = DecoderFixtures.RGBA.of(expected, width: expected.width, height: expected.height)
+            XCTAssertLessThanOrEqual(got.difference(to: want).max, 1, name)
+        }
+        let reference = DecoderFixtures.reference(width: 96, height: 60), withAlpha = DecoderFixtures.reference(width: 96, height: 60, alpha: true)
+        try await check("rgb.qoi", DecoderFixtures.qoi(reference, channels: 3), reference.image)
+        try await check("rgba.qoi", DecoderFixtures.qoi(withAlpha, channels: 4), withAlpha.image)
+        for kind in DecoderFixtures.PCXKind.allCases {
+            let pcx = DecoderFixtures.pcx(kind == .rgba ? withAlpha : reference, kind: kind)
+            try await check("\(kind.rawValue).pcx", pcx.data, pcx.expected.image)
+        }
+        let first = DecoderFixtures.pcx(reference, kind: .rgb), second = DecoderFixtures.pcx(reference, kind: .mono)
+        try await check("pages.dcx", DecoderFixtures.dcx([first.data, second.data]), first.expected.image)
+        // Linear light: the same numbers read as linear sRGB
+        let provider = CGDataProvider(data: Data(reference.pixels) as CFData)!
+        let linear = try XCTUnwrap(CGImage(width: reference.width, height: reference.height, bitsPerComponent: 8, bitsPerPixel: 32,
+                                           bytesPerRow: reference.width * 4, space: CGColorSpace(name: CGColorSpace.linearSRGB)!,
+                                           bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue), provider: provider,
+                                           decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+        try await check("linear.qoi", DecoderFixtures.qoi(reference, channels: 3, linear: true), linear)
+    }
+
     // MARK: Everywhere a picture goes
 
     /// The formats are pictures in a listing, in a folder tile's previews,
@@ -158,14 +197,15 @@ final class PictureDecoderTests: XCTestCase {
         return Data(bytes)
     }
 
-    /// Thousands of damaged QOI and PCX files from a fixed seed, files cut
-    /// at every length, and crafted headers: none traps, none decodes to
+    /// Thousands of damaged QOI, PCX and DCX files from a fixed seed, files
+    /// cut at every length, and crafted headers: none traps, none decodes to
     /// more than the limits, a cut file keeps what it had.
     func testDamagedAndCraftedFilesNeverTrap() {
         var random = SplitMix(state: 0x5C11_E11B_11D0_0001)
         let reference = DecoderFixtures.reference(width: 40, height: 24)
+        let pcx = DecoderFixtures.PCXKind.allCases.map { DecoderFixtures.pcx(reference, kind: $0).data }
         let samples = [DecoderFixtures.qoi(reference, channels: 3), DecoderFixtures.qoi(reference, channels: 4)]
-            + DecoderFixtures.PCXKind.allCases.map { DecoderFixtures.pcx(reference, kind: $0).data }
+            + pcx + [DecoderFixtures.dcx(Array(pcx.prefix(2))), DecoderFixtures.dcx([pcx[0]])]
         for round in 0..<4000 {
             let sample = samples[round % samples.count]
             let data = damaged(sample, &random)
@@ -179,6 +219,7 @@ final class PictureDecoderTests: XCTestCase {
             for cut in 0..<sample.count {
                 _ = QOIDecoder.decode(sample.prefix(cut))
                 _ = PCXDecoder.decode(sample.prefix(cut))
+                _ = PCXDecoder.firstDCXPage(sample.prefix(cut)).flatMap(PCXDecoder.decode)
             }
         }
         // A file cut in half keeps its size and the rows it had
@@ -226,6 +267,16 @@ final class PictureDecoderTests: XCTestCase {
         XCTAssertNil(PCXDecoder.firstDCXPage(dcx))
         dcx.replaceSubrange(4..<8, with: [2, 0, 0, 0])
         XCTAssertNil(PCXDecoder.firstDCXPage(dcx))
+        // The first page ends where the second starts; a second offset
+        // past the end or before the first: the page runs to the end
+        let two = DecoderFixtures.dcx(Array(pcx.prefix(2)))
+        XCTAssertEqual(PCXDecoder.firstDCXPage(two), pcx[0])
+        for next: [UInt8] in [[0xFF, 0xFF, 0xFF, 0x7F], [0xFF, 0xFF, 0xFF, 0xFF], [1, 0, 0, 0], [16, 0, 0, 0]] {
+            var crafted = two
+            crafted.replaceSubrange(8..<12, with: next)
+            XCTAssertEqual(PCXDecoder.firstDCXPage(crafted), crafted.suffix(from: 16), "second offset \(next)")
+            XCTAssertNotNil(PCXDecoder.firstDCXPage(crafted).flatMap(PCXDecoder.decode))
+        }
     }
 
     // MARK: LibRaw
@@ -265,6 +316,55 @@ final class PictureDecoderTests: XCTestCase {
         let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(developed.source, 0, nil) as? [CFString: Any])
         let tiff = try XCTUnwrap(props[kCGImagePropertyTIFFDictionary] as? [CFString: Any])
         XCTAssertEqual(tiff[kCGImagePropertyTIFFMake] as? String, "Schnellbild")
+    }
+
+    /// LibRaw's development turns the picture upright by the file's
+    /// orientation and applies the camera's white balance: compared with
+    /// the reference picture itself, not with another development.
+    func testLibRawDevelopsUprightWithTheCamerasWhiteBalance() async throws {
+        let reference = DecoderFixtures.reference(width: 96, height: 64)
+        func developed(_ data: Data) async throws -> DecodedPictureCheck {
+            let decoded = await RawDecoder.developed(data, named: URL(fileURLWithPath: "/x/a.dng"), half: true)
+            let image = try XCTUnwrap(decoded.flatMap { MediaInfo.scaledDown($0.source, at: 0, maxPixel: 4096, now: true) })
+            return DecodedPictureCheck(width: image.width, height: image.height,
+                                       rgba: DecoderFixtures.RGBA.of(image, width: image.width, height: image.height))
+        }
+        let plain = try await developed(DecoderFixtures.dng(reference, preview: false))
+        XCTAssertEqual([plain.width, plain.height], [96, 64])
+        let base = plain.rgba.difference(to: reference).mean
+        print("decoders: LibRaw's development against the reference: mean \(base)")
+        XCTAssertLessThan(base, 8)
+        // White as the camera saw it: red at half, blue at 80 %
+        let balanced = try await developed(DecoderFixtures.dng(reference, preview: false, asShotNeutral: [0.5, 1, 0.8]))
+        XCTAssertLessThan(balanced.rgba.difference(to: reference).mean, base + 2, "the camera's white balance")
+        // Turned: EXIF 6 (90° clockwise), 3 (180°), 8 (90° anticlockwise)
+        func turned(_ picture: DecoderFixtures.RGBA, _ orientation: Int) -> DecoderFixtures.RGBA {
+            let (w, h) = (picture.width, picture.height)
+            var out = DecoderFixtures.RGBA(width: orientation == 3 ? w : h, height: orientation == 3 ? h : w)
+            for y in 0..<h {
+                for x in 0..<w {
+                    switch orientation {
+                    case 6: out[h - 1 - y, x] = picture[x, y]
+                    case 8: out[y, w - 1 - x] = picture[x, y]
+                    default: out[w - 1 - x, h - 1 - y] = picture[x, y]
+                    }
+                }
+            }
+            return out
+        }
+        for orientation in [6, 3, 8] {
+            let upright = try await developed(DecoderFixtures.dng(reference, preview: false, orientation: orientation))
+            let expected = turned(reference, orientation)
+            XCTAssertEqual([upright.width, upright.height], [expected.width, expected.height], "orientation \(orientation)")
+            guard upright.width == expected.width else { continue }
+            XCTAssertLessThan(upright.rgba.difference(to: expected).mean, base + 2, "orientation \(orientation)")
+        }
+        XCTAssertEqual([0, 3, 5, 6].map { RawDecoder.orientation(flip: $0) }, [1, 3, 8, 6])
+    }
+
+    private struct DecodedPictureCheck {
+        let width: Int, height: Int
+        let rgba: DecoderFixtures.RGBA
     }
 
     /// The cheap look at a picture's exposure: black, blown out or fine; a
@@ -327,12 +427,28 @@ final class PictureDecoderTests: XCTestCase {
                  strip: Data(count: 4096), subIFDs: [])
         let fromHuge = await RawDecoder.developed(huge.data, named: URL(fileURLWithPath: "/x/a.dng"), half: false)
         XCTAssertNil(fromHuge)
+        XCTAssertNil(RawDecoder.facts(huge.data), "refused when its headers are read, before anything else")
 
-        // Cancelled: the task's development stops and gives nothing
+        // Cancelled: the task's development stops and gives nothing (the
+        // flag LibRaw polls is set before it starts, so it stops at its
+        // first step); the same file uncancelled develops
         let big = DecoderFixtures.casioBay(DecoderFixtures.reference())
-        let task = Task { await RawDecoder.developed(big, named: URL(fileURLWithPath: "/x/a.bay"), half: false) }
-        task.cancel()
-        _ = await task.value
+        let name = URL(fileURLWithPath: "/x/a.bay")
+        let task = Task { () -> Bool in
+            withUnsafeCurrentTask { $0?.cancel() }
+            return await RawDecoder.developed(big, named: name, half: false) != nil
+        }
+        let cancelledDeveloped = await task.value
+        XCTAssertFalse(cancelledDeveloped, "cancelled with its task")
+        let uncancelled = await RawDecoder.developed(big, named: name, half: false)
+        XCTAssertNotNil(uncancelled)
+        var stop: Int32 = 1
+        var picture = SBRawPicture()
+        var facts = SBRawFacts()
+        let status = big.withUnsafeBytes { sb_raw_develop($0.baseAddress, $0.count, RawDecoder.limits, 0, &stop, &picture, &facts) }
+        XCTAssertNotEqual(status, 0, "LibRaw polls the flag")
+        XCTAssertNil(picture.data)
+        sb_raw_free(&picture)
     }
 
     /// LibRaw's numbers as a crafted file can have them (∞, NaN, far beyond

@@ -451,18 +451,24 @@ final class AtlasTests: XCTestCase {
         m.atlas.mapSize = CGSize(width: 960, height: 600)
         // Only the last day: one station, one photo
         m.atlas.range = time("2026-06-18 00:00:00")...time("2026-06-18 23:59:59")
+        // Each change of the tour, timed the moment it is made (not when a poll sees it)
+        let clock = ContinuousClock()
+        var changes: [(showing: Bool, at: ContinuousClock.Instant)] = []
+        let watch = m.atlas.$tour.sink { tour in changes.append((tour?.phase == .showing && tour?.finished == false, clock.now)) }
+        defer { watch.cancel() }
         XCTAssertTrue(w.typeKey(.char("t")))
         XCTAssertEqual(m.atlas.tour?.stations.count, 1)
         await waitUntil({ m.atlas.tour?.phase == .showing }, timeout: 6)
-        let shown = Date()
         XCTAssertEqual(m.atlas.tour?.currentItem?.name, "norway-14-trollstigen.jpg")
         let target = m.atlas.camera(for: m.atlas.tour!.stations[0])
         XCTAssertEqual(m.atlas.camera.center.latitude, target.center.latitude, accuracy: 0.01, "the camera arrived")
         await waitUntil({ !m.touring }, timeout: 8)
         XCTAssertEqual(m.selectedEntry?.name, "norway-14-trollstigen.jpg", "the item shown last is selected")
         // The photo shown its time on the clock, however long the tour's ticks take
-        let showing = Date().timeIntervalSince(shown)
-        XCTAssertGreaterThan(showing, TourPlayer.photoSeconds - 0.1)
+        let start = try XCTUnwrap(changes.firstIndex { $0.showing }, "never shown")
+        let end = try XCTUnwrap(changes[(start + 1)...].first { !$0.showing }, "never ended")
+        let showing = (end.at - changes[start].at) / .seconds(1)
+        XCTAssertGreaterThanOrEqual(showing, TourPlayer.photoSeconds)
         XCTAssertLessThan(showing, TourPlayer.photoSeconds + 1.5)
     }
 

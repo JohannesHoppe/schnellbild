@@ -86,14 +86,23 @@ final class FullViewUITests: SchnellbildUITestCase {
         eventually("leaving resets rotation") { text(of: fullImage).contains("rotation 0°") }
     }
 
+    /// A turn is only shown: the file stays as it was, also after the app
+    /// has quit (nothing written later or on the way out).
     func testRotationNeverModifiesTheFile() throws {
         let file = tempDir.appendingPathComponent("a.jpg")
         let before = try Data(contentsOf: file)
+        let changed = try file.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
         openA()
         app.typeKey(.rightArrow, modifierFlags: .option)
+        eventually("⌥→ turned it") { text(of: fullImage).contains("rotation 90°") }
         app.typeKey("+", modifierFlags: [])
         app.typeKey(.escape, modifierFlags: [])
+        RunLoop.current.run(until: Date().addingTimeInterval(2))
+        app.typeKey("q", modifierFlags: .command)   // quit as users do: the app's own way out runs
+        eventually("quit", timeout: 15) { self.app.state == .notRunning }
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
         XCTAssertEqual(try Data(contentsOf: file), before)
+        XCTAssertEqual(try file.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate, changed)
     }
 
     func testInspectorShowsFileInfo() {

@@ -30,11 +30,18 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
 
     private func count() -> String { text(of: element("atlasCount")) }
 
+    /// The number in "<n> on the map" (whole: "14 on the map" is not 4).
+    private func onTheMap() -> Int? {
+        let shown = count()
+        guard let found = shown.range(of: #"(?<![0-9])[0-9]+ on the map"#, options: .regularExpression) else { return nil }
+        return Int(shown[found].prefix { $0.isNumber })
+    }
+
     private func openAtlas() {
         launchOnTempDir(waitFor: "Day 3")
         showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
-        eventually("every day's places", timeout: 30) { self.count().contains("14 on the map") }
+        eventually("every day's places", timeout: 30) { self.onTheMap() == 14 }
     }
 
     func testTheSubfoldersAreOnTheMapUnlessTurnedOff() throws {
@@ -42,9 +49,9 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         let toggle = element("atlasSubfolders").firstMatch
         XCTAssertTrue(toggle.exists)
         toggle.click()
-        eventually("only the folder's own", timeout: 15) { self.count().contains("4 on the map") }
+        eventually("only the folder's own", timeout: 15) { self.onTheMap() == 4 }
         toggle.click()
-        eventually("the subfolders again", timeout: 30) { self.count().contains("14 on the map") }
+        eventually("the subfolders again", timeout: 30) { self.onTheMap() == 14 }
     }
 
     func testAnItemOfASubfolderSelectsItsFolderInTheGrid() throws {

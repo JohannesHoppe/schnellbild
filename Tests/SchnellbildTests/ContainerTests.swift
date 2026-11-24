@@ -6,6 +6,19 @@ import XCTest
 /// broken or hostile files end in an error, never a crash or a read out of
 /// bounds.
 final class ContainerTests: XCTestCase {
+    /// A fixed-seed generator, so a failure can be run again: each round of
+    /// a fuzz loop has its own seed (its number), which its messages name.
+    private struct SplitMix: RandomNumberGenerator {
+        var state: UInt64
+        mutating func next() -> UInt64 {
+            state &+= 0x9E37_79B9_7F4A_7C15
+            var z = state
+            z = (z ^ (z >> 30)) &* 0xBF58_476D_1CE4_E5B9
+            z = (z ^ (z >> 27)) &* 0x94D0_49BB_1331_11EB
+            return z ^ (z >> 31)
+        }
+    }
+
     /// Bytes from memory, counting what is read.
     final class MemoryBytes: ByteReading, @unchecked Sendable {
         let data: Data
@@ -80,8 +93,8 @@ final class ContainerTests: XCTestCase {
     /// frame found must still lie inside the file.
     func testScrambledFiles() throws {
         let data = try clip("clip.mkv")
-        var generator = SystemRandomNumberGenerator()
-        for _ in 0..<400 {
+        for round in 0..<400 {
+            var generator = SplitMix(state: UInt64(round))
             var bad = data
             for _ in 0..<Int.random(in: 1...8, using: &generator) {
                 bad[Int.random(in: 0..<bad.count, using: &generator)] = UInt8.random(in: 0...255, using: &generator)
@@ -91,8 +104,8 @@ final class ContainerTests: XCTestCase {
             for c in index.clusters.indices {
                 for track in index.tracks {
                     for frame in (try? index.frames(inCluster: c, track: track.number)) ?? [] {
-                        XCTAssertGreaterThanOrEqual(frame.offset, 0)
-                        XCTAssertLessThanOrEqual(frame.offset + Int64(frame.length), bytes.length)
+                        XCTAssertGreaterThanOrEqual(frame.offset, 0, "round \(round)")
+                        XCTAssertLessThanOrEqual(frame.offset + Int64(frame.length), bytes.length, "round \(round)")
                     }
                 }
             }
@@ -147,12 +160,12 @@ final class ContainerTests: XCTestCase {
     /// frame inside the file, never a crash.
     func testDamagedTransportStreams() throws {
         let data = try clip("clip.m2ts")
-        func exercise(_ bytes: MemoryBytes) {
+        func exercise(_ bytes: MemoryBytes, _ what: String) {
             guard let index = try? TransportIndex(bytes) else { return }
             for chunk in 0..<index.chunkCount {
                 for frame in (try? index.frames(inChunk: chunk)) ?? [] {
-                    XCTAssertGreaterThanOrEqual(frame.offset, 0)
-                    XCTAssertLessThanOrEqual(frame.offset + Int64(frame.length), bytes.length)
+                    XCTAssertGreaterThanOrEqual(frame.offset, 0, what)
+                    XCTAssertLessThanOrEqual(frame.offset + Int64(frame.length), bytes.length, what)
                     if let annexB = try? index.annexB(of: frame) {
                         _ = TransportIndex.lengthPrefixed(annexB, codec: index.codec)
                         _ = TransportIndex.parameterSets(annexB, codec: index.codec)
@@ -161,14 +174,14 @@ final class ContainerTests: XCTestCase {
             }
             _ = index.chunk(at: 90_000)
         }
-        for cut in stride(from: 0, to: data.count, by: 191) { exercise(MemoryBytes(data.prefix(cut))) }
-        var generator = SystemRandomNumberGenerator()
-        for _ in 0..<400 {
+        for cut in stride(from: 0, to: data.count, by: 191) { exercise(MemoryBytes(data.prefix(cut)), "cut at \(cut)") }
+        for round in 0..<400 {
+            var generator = SplitMix(state: UInt64(round))
             var bad = data
             for _ in 0..<Int.random(in: 1...12, using: &generator) {
                 bad[Int.random(in: 0..<bad.count, using: &generator)] = UInt8.random(in: 0...255, using: &generator)
             }
-            exercise(MemoryBytes(bad))
+            exercise(MemoryBytes(bad), "round \(round)")
         }
     }
 
@@ -291,7 +304,7 @@ final class ContainerTests: XCTestCase {
             XCTAssertTrue(index.durationSeconds.isFinite, "\(duration)")
             XCTAssertGreaterThanOrEqual(index.timescale, 1)
             let track = try XCTUnwrap(index.tracks.first)
-            XCTAssertEqual(track.frameDuration(timestampScale: index.timestampScale), 1)
+            XCTAssertEqual(index.frameTicks(of: track), index.ticks(1), "a frame of 2^64 - 1 ns lasts one unit of 2^64 - 1 ns")
             XCTAssertEqual(index.clusters.first?.time, largest)
             let frame = try XCTUnwrap(index.frames(inCluster: 0, track: 1).first)
             XCTAssertEqual(frame.time, largest + Int64(Int16.max))
@@ -304,7 +317,7 @@ final class ContainerTests: XCTestCase {
         XCTAssertEqual(index.durationUnits, 2_000_000_000)
         XCTAssertEqual(index.durationSeconds, 2, accuracy: 1e-9)
         XCTAssertEqual(index.timescale, 1_000_000_000)
-        XCTAssertEqual(index.tracks.first?.frameDuration(timestampScale: index.timestampScale), largest)
+        XCTAssertEqual(index.frameTicks(of: try XCTUnwrap(index.tracks.first)), largest)
         XCTAssertEqual(try index.frames(inCluster: 0, track: 1).first?.time, Int64(Int16.min))
     }
 

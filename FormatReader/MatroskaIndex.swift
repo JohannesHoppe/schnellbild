@@ -29,12 +29,6 @@ final class MatroskaIndex: @unchecked Sendable {
         /// Its frames are compressed or encrypted (ContentEncodings: header
         /// stripping, zlib …): not as the decoder takes them.
         var encoded = false
-
-        /// The time from one frame to the next in timestamp units, within
-        /// 1 ... `largestTime`.
-        func frameDuration(timestampScale: UInt64) -> Int64 {
-            max(1, min(Int64(clamping: defaultDuration / max(1, timestampScale)), MatroskaIndex.largestTime))
-        }
     }
     struct Cluster {
         let offset: Int64       // of its contents (after its header)

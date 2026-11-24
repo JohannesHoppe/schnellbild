@@ -81,6 +81,31 @@ final class ImageFormatTests: XCTestCase {
         }
     }
 
+    /// WebP, which ImageIO reads but doesn't write: committed files
+    /// (`Scripts/make_webp_fixtures.sh`), decoded through the app's path to
+    /// the reference picture exactly; an animated one plays at its own
+    /// frame times.
+    func testWebPIsShownAndAnimatedWebPKeepsItsTimes() async throws {
+        func fixture(_ name: String) throws -> URL {
+            try XCTUnwrap(Bundle.module.url(forResource: name, withExtension: nil, subdirectory: "Pictures"), "missing fixture \(name)")
+        }
+        let reference = DecoderFixtures.reference()
+        let url = try fixture("picture.webp")
+        XCTAssertEqual(kind(of: url), .image)
+        let picture = await MediaData.picture(url)
+        let source = try XCTUnwrap(picture?.source)
+        let image = try XCTUnwrap(MediaInfo.scaledDown(source, at: 0, maxPixel: 4096, now: true))
+        XCTAssertEqual([image.width, image.height], [reference.width, reference.height])
+        XCTAssertEqual(DecoderFixtures.RGBA.of(image, width: reference.width, height: reference.height).difference(to: reference).max, 0,
+                       "lossless")
+        let animated = try fixture("animated.webp")
+        let animatedPicture = await MediaData.picture(animated)
+        let animatedSource = try XCTUnwrap(animatedPicture?.source)
+        let frames = try XCTUnwrap(AnimationFrames.of(animatedSource, side: 256))
+        XCTAssertEqual(frames.count, 2)
+        XCTAssertEqual(frames.delays, [0.25, 0.5])
+    }
+
     /// Formats no test can make (camera RAW, AVC in HEIF, AVIF sequences,
     /// a JPEG 2000 code stream) are listed only where ImageIO names a type
     /// it reads for their extension.

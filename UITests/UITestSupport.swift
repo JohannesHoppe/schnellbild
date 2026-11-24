@@ -341,11 +341,15 @@ class SchnellbildUITestCase: XCTestCase {
     }
 
     /// Text of an element: its `label` or its `value` (a Text shows up as
-    /// either, a search field's text and `accessibilityValue` as value).
+    /// either, a search field's text and `accessibilityValue` as value);
+    /// "" when it isn't there. Read in one go (a snapshot): an element that
+    /// goes between reading whether it exists and reading its attributes
+    /// would fail the test (XCUITest records a failure for an attribute of
+    /// an element it can't find).
     func text(of element: XCUIElement) -> String {
-        guard element.exists else { return "" }
-        let value = (element.value as? String) ?? ""
-        return value.isEmpty ? element.label : value
+        guard let snapshot = try? element.snapshot() else { return "" }
+        let value = (snapshot.value as? String) ?? ""
+        return value.isEmpty ? snapshot.label : value
     }
 
     /// A toolbar button (toolbar items show up more than once in the tree).

@@ -151,6 +151,9 @@ final class LocationTests: XCTestCase {
         XCTAssertNil(MediaLocation.picture([kCGImagePropertyGPSDictionary: [kCGImagePropertyGPSLatitude: 0, kCGImagePropertyGPSLongitude: 0]]))
     }
 
+    /// Numbers are written as the Mac's region writes them (a decimal comma in Germany).
+    private static var decimalSeparator: String { Locale.current.decimalSeparator ?? "." }
+
     func testPictureCaptureFacts() throws {
         let source = try XCTUnwrap(CGImageSourceCreateWithURL(try fixture("geo.jpg") as CFURL, nil))
         let report = PictureMetadata.report(source)
@@ -163,7 +166,7 @@ final class LocationTests: XCTestCase {
         XCTAssertEqual(capture[String(localized: "Flash")], String(localized: "Did not fire"))
         XCTAssertEqual(capture[String(localized: "Exposure Program")], String(localized: "Program"))
         XCTAssertEqual(capture[String(localized: "White Balance")], String(localized: "Auto"))
-        XCTAssertEqual(capture[String(localized: "Exposure Bias")], "+0.7 EV")
+        XCTAssertEqual(capture[String(localized: "Exposure Bias")], "+0.7 EV".replacingOccurrences(of: ".", with: Self.decimalSeparator))
         XCTAssertTrue(capture[String(localized: "Date Taken")]?.hasSuffix("(UTC+02:00)") == true, "with the camera's offset")
         XCTAssertNotNil(capture[String(localized: "Focal Length")])
         let groups = Set(report.groups.map(\.name))
@@ -176,7 +179,7 @@ final class LocationTests: XCTestCase {
     func testCaptureValues() {
         XCTAssertEqual(PictureMetadata.flashText(0x20), String(localized: "No flash"))
         XCTAssertEqual(PictureMetadata.flashText(0x19), String(localized: "Fired"))
-        XCTAssertEqual(PictureMetadata.biasText(-1.33), "−1.3 EV")
+        XCTAssertEqual(PictureMetadata.biasText(-1.33), "−1.3 EV".replacingOccurrences(of: ".", with: Self.decimalSeparator))
         XCTAssertEqual(PictureMetadata.biasText(0), "0 EV")
         XCTAssertNil(PictureMetadata.programText(0))
         XCTAssertNotNil(PictureMetadata.orientationText(6))
