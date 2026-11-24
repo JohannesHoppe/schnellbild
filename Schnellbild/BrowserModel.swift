@@ -372,11 +372,7 @@ enum LiveFiles {
     /// disk images, xip and Apple archives count as archives to the system
     /// too, and opening them installs or mounts something.
     static func openableTarget(_ url: URL) -> URL? {
-        var target = url.resolvingSymlinksInPath()
-        if (try? target.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]))?.isAliasFile == true {
-            guard let resolved = try? URL(resolvingAliasFileAt: target) else { return nil }
-            target = resolved.resolvingSymlinksInPath()
-        }
+        guard let target = resolvedItem(url) else { return nil }
         guard let values = try? target.resourceValues(forKeys: [.contentTypeKey, .isPackageKey, .isDirectoryKey, .isAliasFileKey]),
               values.isPackage != true, values.isAliasFile != true || values.isDirectory == true,
               let type = values.contentType else { return nil }
@@ -422,9 +418,22 @@ enum LiveFiles {
         return true
     }
 
-    /// Whether `openOtherFile` would open it (the context menu's "Open").
+    /// Whether `openOtherFile` would open it (the context menu's "Open"):
+    /// an alias is resolved without mounting a volume or asking. Reads the
+    /// disk; off the main thread.
     static func canOpenOtherFile(_ url: URL) -> Bool {
-        isWebLocation(url) ? webAddress(in: url) != nil : openableDocument(url) != nil
+        isWebLocation(url) ? webAddress(in: url) != nil : openableDocument(url, mounting: false) != nil
+    }
+
+    /// The item behind links and aliases; nil for an alias that doesn't
+    /// resolve. `mounting`: an alias may mount the volume it leads to and
+    /// ask for its password (an item the user opens), else not.
+    static func resolvedItem(_ url: URL, mounting: Bool = true) -> URL? {
+        let target = url.resolvingSymlinksInPath()
+        guard (try? target.resourceValues(forKeys: [.isAliasFileKey]))?.isAliasFile == true else { return target }
+        let options: URL.BookmarkResolutionOptions = mounting ? [] : [.withoutUI, .withoutMounting]
+        guard let resolved = try? URL(resolvingAliasFileAt: target, options: options) else { return nil }
+        return resolved.resolvingSymlinksInPath()
     }
 
     private static let refusedExtensions: Set<String> = [
@@ -463,12 +472,8 @@ enum LiveFiles {
 
     /// The file behind links and aliases when it is a document that holds
     /// no program; nil otherwise.
-    static func openableDocument(_ url: URL) -> URL? {
-        var target = url.resolvingSymlinksInPath()
-        if (try? target.resourceValues(forKeys: [.isAliasFileKey]))?.isAliasFile == true {
-            guard let resolved = try? URL(resolvingAliasFileAt: target) else { return nil }
-            target = resolved.resolvingSymlinksInPath()
-        }
+    static func openableDocument(_ url: URL, mounting: Bool = true) -> URL? {
+        guard let target = resolvedItem(url, mounting: mounting) else { return nil }
         guard let values = try? target.resourceValues(forKeys: [.contentTypeKey, .isPackageKey, .isDirectoryKey, .isRegularFileKey]),
               values.isRegularFile == true, values.isPackage != true, values.isDirectory != true,
               let type = values.contentType else { return nil }
@@ -767,10 +772,13 @@ struct FileChanges {
         all = changes
         var sources: [String: FileChange] = [:]
         for change in changes where sources[change.source] == nil { sources[change.source] = change }
+        let destinations = Set(changes.compactMap(\.destination))
         let independent = sources.count == changes.count && changes.allSatisfy { change in
-            // No source inside another, nothing moved into or under a source
+            // No source inside another, nothing moved into or under a
+            // source, no source at or under where something was moved
             Self.ancestors(of: change.source).dropFirst().allSatisfy { sources[$0] == nil }
                 && (change.destination.map { Self.ancestors(of: $0).allSatisfy { sources[$0] == nil } } ?? true)
+                && (destinations.isEmpty || Self.ancestors(of: change.source).allSatisfy { !destinations.contains($0) })
         }
         bySource = independent ? sources : nil
     }
@@ -949,7 +957,10 @@ struct NameMatcher: Equatable, @unchecked Sendable {
     init(_ query: String, mode: Mode = .ignoringCase) {
         self.query = query
         self.mode = mode
-        expression = mode == .regex ? try? NSRegularExpression(pattern: query) : nil
+        // (names and expression compared precomposed: a name is stored
+        // decomposed on disk, "ü" as "u" and a combining mark, a query typed
+        // precomposed)
+        expression = mode == .regex ? try? NSRegularExpression(pattern: query.precomposedStringWithCanonicalMapping) : nil
     }
 
     /// A regular expression that compiles (the other modes always are).
@@ -962,10 +973,12 @@ struct NameMatcher: Equatable, @unchecked Sendable {
 
     func matches(_ name: String, stop: WalkStop? = nil) -> Bool {
         switch mode {
+        // (both compare canonically equivalent forms as equal: "ü" precomposed or decomposed)
         case .ignoringCase: return name.range(of: query, options: .caseInsensitive, locale: nil) != nil
-        case .matchingCase: return name.range(of: query, options: .literal) != nil
+        case .matchingCase: return name.range(of: query, options: [], locale: nil) != nil
         case .regex:
             guard let expression, stop?.isSet != true else { return false }
+            let name = name.precomposedStringWithCanonicalMapping
             // ICU calls back now and then during a long match (`reportProgress`)
             var found = false
             let deadline = Date(timeIntervalSinceNow: Self.regexTimeLimit)
@@ -3949,14 +3962,13 @@ final class BrowserModel: ObservableObject {
     }
     /// Every pane follows a change of the preference (those of the same preferences).
     static let atlasSubfoldersChanged = Notification.Name("SchnellbildAtlasSubfoldersChanged")
-    private var atlasSubfoldersObserver: NSObjectProtocol?
+    private var atlasSubfoldersObserver: NotificationToken?
 
     func followAtlasSubfolders() {
         atlasSubfolders = defaults.object(forKey: Self.atlasSubfoldersKey) as? Bool ?? true
         guard atlasSubfoldersObserver == nil else { return }
         let defaults = self.defaults
-        atlasSubfoldersObserver = NotificationCenter.default.addObserver(forName: Self.atlasSubfoldersChanged, object: defaults,
-                                                                         queue: .main) { [weak self] _ in
+        atlasSubfoldersObserver = NotificationToken(Self.atlasSubfoldersChanged, object: defaults) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self else { return }
                 let value = self.defaults.object(forKey: Self.atlasSubfoldersKey) as? Bool ?? true
@@ -4730,7 +4742,7 @@ final class BrowserModel: ObservableObject {
             hiddenFilesChanged()
         }
     }
-    private var hiddenFilesObserver: NSObjectProtocol?
+    private var hiddenFilesObserver: NotificationToken?
     /// The preference being read at the start: nothing to read again yet.
     private var readingHiddenFiles = false
 
@@ -4742,8 +4754,7 @@ final class BrowserModel: ObservableObject {
         readingHiddenFiles = false
         HiddenFiles.shown = showHiddenFiles
         guard hiddenFilesObserver == nil else { return }
-        hiddenFilesObserver = NotificationCenter.default.addObserver(forName: HiddenFiles.changed, object: defaults,
-                                                                     queue: .main) { [weak self] _ in
+        hiddenFilesObserver = NotificationToken(HiddenFiles.changed, object: defaults) { [weak self] _ in
             MainActor.assumeIsolated {
                 guard let self else { return }
                 let value = self.defaults.bool(forKey: HiddenFiles.shownKey)
