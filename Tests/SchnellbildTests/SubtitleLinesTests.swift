@@ -52,7 +52,27 @@ final class SubtitleLinesTests: XCTestCase {
 
     func testTextWithoutTags() {
         XCTAssertEqual(SubtitleReader.plainText("<i>Hello</i>\r\n<font color=\"red\">you</font>"), ["Hello", "you"])
-        XCTAssertEqual(SubtitleReader.assText("{\\i1}Hello{\\i0}\\Nyou\\hthere"), ["Hello", "you there"])
+        XCTAssertEqual(ASSText.parse("{\\i1}Hello{\\i0}\\Nyou\\hthere", style: nil, in: script).text, ["Hello", "you\u{00A0}there"])
+    }
+
+    /// SubRip with ASS's override blocks, and `<` that opens no tag.
+    func testSubRipTextWithoutTagsAndBlocks() {
+        XCTAssertEqual(SubtitleReader.plainText("{\\an8}Sign text"), ["Sign text"])
+        XCTAssertEqual(SubtitleReader.plainText("{\\i1}a{\\i0} b"), ["a b"])
+        XCTAssertEqual(SubtitleReader.plainText("I <3 you"), ["I <3 you"])
+        XCTAssertEqual(SubtitleReader.plainText("a < b and c > d"), ["a < b and c > d"])
+        XCTAssertEqual(SubtitleReader.plainText("{not a block} <"), ["{not a block} <"])
+        XCTAssertEqual(SubtitleReader.plainText("<b>bold</b> and <font color=\"#ff0000\">red</font>"), ["bold and red"])
+    }
+
+    /// An ASS line's text is what the overlay draws: one parser for both.
+    func testASSTextIsWhatIsDrawn() {
+        func text(_ event: String) -> [String] { ASSText.parse(event, style: "Default", in: script).text }
+        XCTAssertEqual(text("{unclosed brace"), ["{unclosed brace"])
+        XCTAssertNotEqual(text("Hello {world"), text("Hello {there"))
+        XCTAssertEqual(text("{\\p1}m 0 0 l 100 0 100 100{\\p0}"), [], "a drawing is no text")
+        XCTAssertEqual(text("a\\nb"), ["a b"], "\\n is a space unless WrapStyle 2")
+        XCTAssertEqual(text("{\\q2}a\\nb"), ["a", "b"])
     }
 
     func testASSColours() {
@@ -88,6 +108,56 @@ final class SubtitleLinesTests: XCTestCase {
         // SSA's alignments: 5 top left, 10 middle centre
         XCTAssertEqual(ASSStyles.numpad(ssa: 5), 7)
         XCTAssertEqual(ASSStyles.numpad(ssa: 10), 5)
+    }
+
+    /// A style's Alignment that names none (also Int's smallest) is the
+    /// bottom centre; drawing such a line doesn't trap.
+    func testASSStyleAlignmentOutOfRange() throws {
+        func alignment(_ value: String, section: String = "[V4+ Styles]") -> Int {
+            ASSStyles.parse("""
+                \(section)
+                Format: Name, Fontname, Fontsize, Alignment
+                Style: Default,Arial,20,\(value)
+                """).style("Default").alignment
+        }
+        XCTAssertEqual(alignment("-9223372036854775808"), 2)
+        XCTAssertEqual(alignment("9223372036854775807"), 2)
+        XCTAssertEqual(alignment("0"), 2)
+        XCTAssertEqual(alignment("10"), 2)
+        XCTAssertEqual(alignment("x"), 2)
+        XCTAssertEqual(alignment("9"), 9)
+        XCTAssertEqual(alignment("-9223372036854775808", section: "[V4 Styles]"), 2)
+        XCTAssertEqual(alignment("8", section: "[V4 Styles]"), 2, "SSA's 8 names no alignment")
+        XCTAssertEqual(alignment("6", section: "[V4 Styles]"), 8)
+        let styles = ASSStyles.parse("""
+            [Script Info]
+            PlayResY: 720
+            [V4+ Styles]
+            Format: Name, Fontname, Fontsize, Alignment
+            Style: Default,Arial,40,-9223372036854775808
+            """)
+        let line = SubtitleLine(start: 0, end: 2, text: ["LINE"], style: "Default", ass: ASSEvent(text: "LINE"))
+        XCTAssertNotNil(SubtitleOverlay.image([line], kind: .ass(styles), width: 640, height: 360, decoded: nil))
+    }
+
+    /// A style the script doesn't define: its Default, else the default
+    /// `Style()`, the same on every launch; `\r` with an unknown name goes
+    /// back to the event's style.
+    func testASSUnknownStyles() {
+        let styles = ASSStyles.parse("""
+            [V4+ Styles]
+            Format: Name, Fontname, Fontsize, Alignment
+            Style: Main,Main Font,30,1
+            Style: Signs,Signs Font,40,8
+            Style: Top,Top Font,50,9
+            """)
+        XCTAssertEqual(styles.style("Missing"), ASSStyles.Style())
+        XCTAssertEqual(styles.style(nil), ASSStyles.Style())
+        XCTAssertEqual(styles.style("Signs").font, "Signs Font")
+        XCTAssertEqual(script.style("Missing").font, "Arial", "the script's Default")
+        let text = ASSText.parse("a{\\rFoo}b", style: "Signs", in: styles)
+        XCTAssertEqual(text.lines[0].map(\.style.font), ["Signs Font"], "\\rFoo: the event's own style (one run)")
+        XCTAssertEqual(text.alignment, 8)
     }
 
     func testASSOverrideTags() {
@@ -149,7 +219,7 @@ final class SubtitleLinesTests: XCTestCase {
     }
 
     private func draw(_ events: [String], width: Int = 1280, height: Int = 720) throws -> Drawn {
-        let lines = events.map { SubtitleLine(start: 0, end: 2, text: SubtitleReader.assText($0), style: "Default", ass: ASSEvent(text: $0)) }
+        let lines = events.map { SubtitleLine(start: 0, end: 2, text: ASSText.parse($0, style: "Default", in: script).text, style: "Default", ass: ASSEvent(text: $0)) }
         let image = try XCTUnwrap(SubtitleOverlay.image(lines, kind: .ass(script), width: width, height: height, decoded: nil))
         let cg = try XCTUnwrap(CIContext().createCGImage(image, from: image.extent))
         let bytes = [UInt8](try XCTUnwrap(cg.dataProvider?.data as Data?)), row = cg.bytesPerRow

@@ -54,17 +54,18 @@ enum SubtitleReader {
     /// The lines of the `index`-th subtitle track (in the file's order, as
     /// VLC lists them) that run in `from ... to`; nil when the file or the
     /// track can't be read this way, the read takes longer than `budget`
-    /// seconds or its task is cancelled.
-    static func lines(of url: URL, subtitleIndex index: Int, from: Double, to: Double, budget: Double = budget) -> SubtitleTrackLines? {
+    /// seconds or `cancelled` says so (by default its task is cancelled).
+    static func lines(of url: URL, subtitleIndex index: Int, from: Double, to: Double, budget: Double = budget,
+                      cancelled: @escaping () -> Bool = { Task.isCancelled }) -> SubtitleTrackLines? {
         guard let bytes = FileBytes(url) else { return nil }
-        return lines(in: bytes, subtitleIndex: index, from: from, to: to, budget: budget)
+        return lines(in: bytes, subtitleIndex: index, from: from, to: to, budget: budget, cancelled: cancelled)
     }
 
     static func lines(in bytes: ByteSource, subtitleIndex index: Int, from: Double, to: Double,
-                      budget: Double = budget) -> SubtitleTrackLines? {
+                      budget: Double = budget, cancelled: @escaping () -> Bool = { Task.isCancelled }) -> SubtitleTrackLines? {
         guard let head = bytes.read(at: 0, count: Int(min(400, bytes.size))) else { return nil }
         let deadline = Date().addingTimeInterval(budget)
-        let over = { Task.isCancelled || Date() > deadline }
+        let over = { cancelled() || Date() > deadline }
         switch VLCSafety.container(in: Data(head))?.demux {
         case "mkv": return MatroskaSubtitles.lines(bytes, subtitleIndex: index, from: from, to: to, over: over)
         case "mp4": return MP4Subtitles.lines(bytes, subtitleIndex: index, from: from, to: to, over: over)
@@ -78,32 +79,31 @@ enum SubtitleReader {
         return value < 18_000_000_000_000_000_000 ? UInt64(value) : .max
     }
 
-    /// SubRip's text without its tags (`<i>`, `<font …>`), split into lines.
+    /// SubRip's text, split into lines: its tags (`<i>`, `</font>`,
+    /// `<font …>`) and ASS's override blocks some files carry (`{\an8}`)
+    /// taken out; a `<` or `{` that opens neither (`I <3 you`, `a < b`) is
+    /// text.
     static func plainText(_ text: String) -> [String] {
+        let characters = Array(text)
         var out = ""
-        var inTag = false
-        for character in text {
-            if character == "<" { inTag = true; continue }
-            if inTag { if character == ">" { inTag = false }; continue }
-            out.append(character)
+        var i = 0
+        while i < characters.count {
+            let c = characters[i]
+            if c == "{", i + 1 < characters.count, characters[i + 1] == "\\",
+               let close = characters[(i + 2)...].firstIndex(of: "}") {
+                i = close + 1
+                continue
+            }
+            if c == "<", let close = characters[(i + 1)...].firstIndex(of: ">"),
+               characters[(i + 1)..<close].drop(while: { $0 == "/" }).first?.isLetter == true {
+                i = close + 1
+                continue
+            }
+            out.append(c)
+            i += 1
         }
         return out.replacingOccurrences(of: "\r\n", with: "\n").components(separatedBy: "\n")
             .map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-    }
-
-    /// An ASS event's text without its override blocks (`{\i1}`), `\N` and
-    /// `\n` as new lines, `\h` as a space.
-    static func assText(_ text: String) -> [String] {
-        var out = ""
-        var inBlock = false
-        for character in text {
-            if character == "{" { inBlock = true; continue }
-            if inBlock { if character == "}" { inBlock = false }; continue }
-            out.append(character)
-        }
-        out = out.replacingOccurrences(of: "\\N", with: "\n").replacingOccurrences(of: "\\n", with: "\n")
-            .replacingOccurrences(of: "\\h", with: " ")
-        return out.components(separatedBy: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
     }
 }
 
@@ -139,9 +139,17 @@ struct ASSStyles: Equatable {
     var wrapStyle = 0
     var styles: [String: Style] = [:]
 
+    /// The style an event names; for a name the script doesn't define, its
+    /// "Default", else the default `Style()`: the same on every launch,
+    /// whatever order the dictionary holds the styles in.
     func style(_ name: String?) -> Style {
-        if let name, let style = styles[name] ?? styles[name.trimmingCharacters(in: .whitespaces).lowercased()] { return style }
-        return styles["default"] ?? styles.values.first ?? Style()
+        named(name) ?? styles["default"] ?? Style()
+    }
+
+    /// The style of that name, if the script defines it.
+    func named(_ name: String?) -> Style? {
+        guard let name, !name.isEmpty else { return nil }
+        return styles[name] ?? styles[name.trimmingCharacters(in: .whitespaces).lowercased()]
     }
 
     /// From a script's header (Matroska's CodecPrivate).
@@ -185,9 +193,10 @@ struct ASSStyles: Equatable {
                         case "outline": style.outline = number(v) ?? style.outline
                         case "shadow": style.shadow = number(v) ?? style.shadow
                         case "alignment":
-                            let a = Int(v) ?? 2
-                            // SSA (V4) numbers its alignments otherwise: 1-3 bottom, +4 top, +8 middle
-                            style.alignment = section.contains("v4+") ? a : ASSStyles.numpad(ssa: a)
+                            // SSA (V4) numbers its alignments otherwise: 1-3 bottom, +4 top, +8 middle;
+                            // a number that names no alignment is the bottom centre
+                            let a = Int(v).map { section.contains("v4+") ? $0 : ASSStyles.numpad(ssa: $0) }
+                            style.alignment = a.flatMap { (1...9).contains($0) ? $0 : nil } ?? 2
                         case "marginl": style.marginL = number(v) ?? style.marginL
                         case "marginr": style.marginR = number(v) ?? style.marginR
                         case "marginv": style.marginV = number(v) ?? style.marginV
@@ -287,6 +296,11 @@ struct ASSText: Equatable {
     var position: Point?
     /// The track's WrapStyle, or the event's `\q`.
     var wrapStyle: Int
+
+    /// The text drawn, one string per line (none for a line without text).
+    var text: [String] {
+        lines.map { $0.map(\.text).joined().trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
 
     static func parse(_ text: String, style name: String?, in styles: ASSStyles) -> ASSText {
         let base = styles.style(name)
@@ -429,7 +443,7 @@ struct ASSText: Equatable {
         case "fn": style.font = value.isEmpty || value == "0" ? base.font : value
         case "bord": style.outline = number.map { max($0, 0) } ?? base.outline
         case "shad": style.shadow = number.map { max($0, 0) } ?? base.shadow
-        case "r": style = RunStyle(value.isEmpty ? base : styles.style(value))
+        case "r": style = RunStyle(styles.named(value) ?? base)   // an unknown name: the event's own style
         case "p": drawing = (number ?? 0) > 0
         case "q": wrapStyle = Int(value).flatMap { (0...3).contains($0) ? $0 : nil } ?? styles.wrapStyle
         default: break   // \2c \2a (karaoke), \k, \t, \move, \fad, \fscx, \fsp, \fr, \clip, \blur, \be …
@@ -567,7 +581,15 @@ enum MatroskaSubtitles {
             lines[i].end = min(lines[i].end, lines[i].start + 5)
         }
         let kind: SubtitleTrackLines.Kind = ass ? .ass(ASSStyles.parse(String(decoding: track.privateData, as: UTF8.self))) : .text
-        return SubtitleTrackLines(kind: kind, lines: lines.filter { $0.end > from && $0.start <= to })
+        lines = lines.filter { $0.end > from && $0.start <= to }
+        if case .ass(let styles) = kind {
+            // An event's text as `SubtitleOverlay` draws it (one parser for both)
+            for i in lines.indices {
+                guard let event = lines[i].ass else { continue }
+                lines[i].text = ASSText.parse(event.text, style: lines[i].style, in: styles).text
+            }
+        }
+        return SubtitleTrackLines(kind: kind, lines: lines)
     }
 
     /// The last cluster from `start` on that begins at `time` or before,
@@ -654,7 +676,8 @@ enum MatroskaSubtitles {
             let readOrder = Int(fields[0].trimmingCharacters(in: .whitespaces)) ?? 0
             let event = ASSEvent(text: String(fields[8]), readOrder: readOrder, marginL: number(4), marginR: number(5),
                                  marginV: number(6))
-            return SubtitleLine(start: time, end: end, text: SubtitleReader.assText(String(fields[8])),
+            // (its text comes from the event as drawn, once the styles are read)
+            return SubtitleLine(start: time, end: end, text: [],
                                 style: String(fields[2]).trimmingCharacters(in: .whitespaces), ass: event)
         }
         return SubtitleLine(start: time, end: end, text: SubtitleReader.plainText(text), style: nil)
