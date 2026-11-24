@@ -101,14 +101,19 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("Space resumes VLC playback") { !text(of: badge).contains("Paused") }
     }
 
-    /// The Inspector shows a video's resolution, from either player (VLC
-    /// through `--force-vlc`, so AVFoundation can tell the test the size).
+    /// The Inspector shows a video's resolution: an MP4's from its header
+    /// (AVKit), an MKV's, which AVFoundation doesn't read, from VLC's player
+    /// (`clip.mkv` holds the frames of `clip.mp4`, whose size AVFoundation
+    /// tells the test).
     private func checkInspectorResolution(vlc: Bool) throws {
         try put("clip.mp4", at: "clip.mp4")
-        let url = tempDir.appendingPathComponent("clip.mp4")
-        launch(open: url.path, extra: vlc ? ["--force-vlc"] : [])
+        let fixture = vlc ? "clip.mkv" : "clip.mp4"
+        if vlc { try put(fixture, at: fixture) }
+        let url = tempDir.appendingPathComponent(fixture)
+        launch(open: url.path)
         XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
-        let size = try XCTUnwrap(Self.videoSize(of: url))
+        waitForBadge(containing: fixture)
+        let size = try XCTUnwrap(Self.videoSize(of: tempDir.appendingPathComponent("clip.mp4")))
         let expected = "\(Int(size.width)) × \(Int(size.height)) px"
         app.typeKey("i", modifierFlags: [])
         XCTAssertTrue(app.staticTexts["Resolution"].waitForExistence(timeout: 15))

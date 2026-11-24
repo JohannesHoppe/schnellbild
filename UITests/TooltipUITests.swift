@@ -15,6 +15,8 @@ final class TooltipUITests: SchnellbildUITestCase {
     private var osName: String { "macos\(ProcessInfo.processInfo.operatingSystemVersion.majorVersion)" }
     /// Controls whose tooltip didn't show.
     private var missing: [String] = []
+    /// The text of the help tag each control showed (as XCUITest reads it).
+    private var shownTexts: [String: String] = [:]
 
     /// Rests the pointer on `element` (after moving it off the window, so a
     /// tooltip shown before is gone) and waits for a tooltip; once more if
@@ -39,7 +41,10 @@ final class TooltipUITests: SchnellbildUITestCase {
         func shown(within seconds: TimeInterval) -> Bool {
             let until = Date().addingTimeInterval(seconds)
             repeat {
-                if tags.allElementsBoundByIndex.contains(where: { !before.contains(NSStringFromRect($0.frame)) }) { return true }
+                if let tag = tags.allElementsBoundByIndex.first(where: { !before.contains(NSStringFromRect($0.frame)) }) {
+                    shownTexts[name] = text(of: tag)
+                    return true
+                }
                 RunLoop.current.run(until: Date().addingTimeInterval(0.2))
             } while Date() < until
             return false
@@ -70,8 +75,16 @@ final class TooltipUITests: SchnellbildUITestCase {
         eventually("\(name) photographed", timeout: 30) { pasteboard.string(forType: .string) == "shot-done:\(shot)" }
     }
 
+    /// Every control showed a tooltip, and its own: no two controls the
+    /// same text (a control that lost its tooltip shows the one of the view
+    /// around it, such as the timeline's track under its handles).
     private func assertAllShown(file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(missing.isEmpty, "no tooltip showed on: \(missing.joined(separator: ", "))", file: file, line: line)
+        print("tooltips: \(shownTexts.sorted { $0.key < $1.key }.map { "\($0.key): \($0.value)" }.joined(separator: " | "))")
+        XCTAssertTrue(shownTexts.values.contains { !$0.isEmpty }, "no help tag's text read", file: file, line: line)
+        let shared = Dictionary(grouping: shownTexts.filter { !$0.value.isEmpty }, by: \.value).values.filter { $0.count > 1 }
+            .map { $0.map(\.key).sorted().joined(separator: " = ") }
+        XCTAssertEqual(shared, [], "controls showing the same tooltip", file: file, line: line)
     }
 
     func testTheWindowsControlsShowTooltips() throws {
@@ -111,7 +124,7 @@ final class TooltipUITests: SchnellbildUITestCase {
         // The Atlas: its header, the map's buttons, the timeline
         app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10), "the Atlas")
-        for id in ["tourButton", "atlasSubfolders", "timeline.start", "timeline.end"] {
+        for id in ["tourButton", "atlasSubfolders", "timeline.track", "timeline.start", "timeline.end"] {
             expectTooltip(element(id).firstMatch, id)
         }
         for title in ["Zoom in", "Zoom out", "Tilt the view", "Hide day and night", "Hide the clouds"] {

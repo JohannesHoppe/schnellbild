@@ -277,6 +277,8 @@ final class GridUITests: SchnellbildUITestCase {
     /// alike (why is not known).
     func testBossKeyInFullScreen() {
         launchOnTempDir()
+        let log = testLog("app.log")
+        func logged() -> String { (try? String(contentsOf: log, encoding: .utf8)) ?? "" }
         let window = app.windows.firstMatch
         let before = window.frame.size
         app.typeKey("f", modifierFlags: [])
@@ -286,6 +288,15 @@ final class GridUITests: SchnellbildUITestCase {
         app.typeKey("x", modifierFlags: [])
         // Hidden once out of full screen: its window is gone from the screen
         eventually("hidden", timeout: 10) { !self.app.windows.firstMatch.exists }
+        // Out of full screen first (not hidden in it, leaving its black space),
+        // and hidden, not ended
+        let afterF = logged().components(separatedBy: "full screen: set true").last ?? ""
+        XCTAssertTrue(afterF.contains("boss key engaged"), "app log:\n\(logged())")
+        let leaving = afterF.components(separatedBy: "full screen: set false").dropFirst().joined()
+        XCTAssertTrue(leaving.contains("full screen: ended, wanted nil, is false")
+                      || leaving.contains("full screen: ended, wanted Optional(false), is false"),
+                      "X leaves full screen; app log:\n\(logged())")
+        XCTAssertEqual(app.state, .runningBackground, "hidden, still running")
     }
 
     /// The boss key: X hides the app; brought forward again (as by ⌘-Tab)
