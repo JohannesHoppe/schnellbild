@@ -17,7 +17,7 @@
 "Stop search" = "검색 중단";
 "Searching subfolders…" = "하위 폴더 검색 중…";
 "Empty" = "비어 있음";
-"%@ for “%@”" = "‘%2$@’ 검색 결과 %1$@";
+"%@ for “%@”" = "‘%2$@’ 검색 %1$@";
 "Paused" = "일시 정지됨";
 "Enhanced" = "향상됨";
 "Adjusted" = "조절됨";

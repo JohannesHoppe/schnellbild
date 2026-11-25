@@ -226,6 +226,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertGreaterThanOrEqual(tiles.count, 3, "the places on the map; count: \(text(of: element("atlasCount"))), "
             + "map: \(text(of: element("atlasMapState"))), strip: \(text(of: element("atlasStripTitle"))), empty: \(text(of: element("atlasEmpty"))), "
             + "tiles: \(tiles.allElementsBoundByIndex.map { $0.identifier + " " + self.text(of: $0) })")
+        // The pointer off the timeline, where the grid's click left it: on
+        // the count, a text without a tooltip
+        element("atlasCount").firstMatch.hover()
         shoot("atlas", settle: 4)
         // Zoomed far out: the globe, the trip as one tile
         for _ in 0..<5 { app.typeKey("-", modifierFlags: []) }
