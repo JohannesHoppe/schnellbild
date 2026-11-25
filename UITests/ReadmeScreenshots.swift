@@ -273,6 +273,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         launch(open: tempDir.path)
         XCTAssertTrue(tile("Lofoten").waitForExistence(timeout: 15))
         app.typeKey(",", modifierFlags: .command)
+        // Settings opens on the tab it showed last (the Keyboard tab after
+        // testReadmeScreenshots in the same run)
+        let generalTab = [app.toolbars.buttons[ui("General")], app.radioButtons[ui("General")]].map(\.firstMatch)
+        eventually("the General tab") { generalTab.contains { $0.exists } }
+        generalTab.first { $0.exists }?.click()
         let picker = element("settings.appearance").firstMatch
         XCTAssertTrue(picker.waitForExistence(timeout: 5))
         picker.click()
