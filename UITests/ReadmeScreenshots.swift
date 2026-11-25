@@ -76,11 +76,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     /// paused within the last seconds, so the video isn't resumed there later.
     private func shootVideoTimes() {
         // The bar shows while the mouse moves over the video and stays while
-        // the mouse rests on it: here on the time played, off the slider
+        // the mouse rests on it: here on its ground above the time played,
+        // off the slider and every control, so no tooltip covers the bar
         element("video.avkit").coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.4)).hover()
         let bar = element("videoBar").firstMatch
         XCTAssertTrue(bar.waitForExistence(timeout: 5))
-        let rest = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.13, dy: 0.5))
+        let rest = bar.coordinate(withNormalizedOffset: CGVector(dx: 0.13, dy: 0.08))
         rest.hover()
         // Paused: back to the start first, so it doesn't reach its end (which
         // pauses it too) between the look at the badge and the key
