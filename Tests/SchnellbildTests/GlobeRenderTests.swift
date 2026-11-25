@@ -423,6 +423,52 @@ final class GlobeSurfaceTests: XCTestCase {
         XCTAssertLessThan(surface.camera.center.longitude, before.center.longitude)
     }
 
+    /// A trackpad's rotation as the window server hands it to AppKit: a
+    /// gesture event (CGEvent type 29) of the HID type rotation (5) with its
+    /// degrees in the gesture's value field (113), which AppKit makes an
+    /// `NSEvent` of type `.rotate`, as from the fingers on a trackpad. Its
+    /// sign is AppKit's: degrees counterclockwise (Apple's "Handling
+    /// Trackpad Events": "the degrees of rotation, counterclockwise").
+    static func trackpadRotation(_ degrees: Double) throws -> NSEvent {
+        let cg = try XCTUnwrap(CGEvent(source: nil))
+        cg.type = try XCTUnwrap(CGEventType(rawValue: 29))
+        cg.setIntegerValueField(try XCTUnwrap(CGEventField(rawValue: 110)), value: 5)
+        cg.setDoubleValueField(try XCTUnwrap(CGEventField(rawValue: 113)), value: degrees)
+        let event = try XCTUnwrap(NSEvent(cgEvent: cg))
+        XCTAssertEqual(event.type, .rotate)
+        XCTAssertEqual(Double(event.rotation), degrees, accuracy: 1e-4)
+        return event
+    }
+
+    /// Two fingers turning on a trackpad turn the map with them, as in
+    /// Apple's Maps: turned clockwise, what lies north of the middle moves
+    /// clockwise on screen (to the right), and back the other way.
+    func testTwoFingersTurningTurnTheMapWithThem() throws {
+        guard MTLCreateSystemDefaultDevice() != nil else { throw XCTSkip("no Metal device: the flat map doesn't turn") }
+        let surface = GlobeSurfaceView(map: nil)
+        surface.frame = NSRect(x: 0, y: 0, width: 800, height: 500)
+        surface.camera = MapCamera(center: Coordinate(latitude: 40, longitude: 10), zoom: 2.5)
+        let size = CGSize(width: 800, height: 500)
+        let north = Coordinate(latitude: 55, longitude: 10)
+        /// The direction from the middle to the point north of it, in degrees clockwise on screen (y down)
+        func angle() -> Double {
+            let p = GlobeProjection(camera: surface.camera, size: size).point(for: north)
+            return atan2(p.y - 250, p.x - 400) * 180 / .pi
+        }
+        let before = angle()
+        XCTAssertEqual(before, -90, accuracy: 1, "north up at first")
+
+        surface.rotate(with: try Self.trackpadRotation(-20))  // the fingers clockwise
+        let clockwise = angle()
+        XCTAssertEqual(clockwise - before, 20, accuracy: 0.5, "north moved clockwise with the fingers, as far: \(before)° → \(clockwise)°")
+        XCTAssertGreaterThan(GlobeProjection(camera: surface.camera, size: size).point(for: north).x, 400, "to the right")
+
+        surface.rotate(with: try Self.trackpadRotation(40))  // the fingers counterclockwise
+        let counterclockwise = angle()
+        XCTAssertEqual(counterclockwise - clockwise, -40, accuracy: 0.5, "and back with them: \(clockwise)° → \(counterclockwise)°")
+        XCTAssertLessThan(GlobeProjection(camera: surface.camera, size: size).point(for: north).x, 400, "to the left")
+    }
+
     func testANewSizeKeepsTheOwnersCamera() {
         let surface = GlobeSurfaceView(map: nil)
         surface.frame = NSRect(x: 0, y: 0, width: 400, height: 300)

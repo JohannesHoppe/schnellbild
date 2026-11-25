@@ -1,3 +1,4 @@
+import CoreGraphics
 import XCTest
 
 /// The Atlas view (L after the list) on the Norway trip of `UITests/Fixtures` (norway-*:
@@ -305,6 +306,43 @@ final class AtlasUITests: SchnellbildUITestCase {
         XCTAssertLessThanOrEqual(mapState().zoom, 7.0001, "no closer than low orbit")
         app.buttons["Look straight down"].firstMatch.click()
         eventually("straight down") { self.mapState().pitch == 0 }
+    }
+
+    /// Two fingers turning on a trackpad, through the window server to the
+    /// app: XCUITest has no rotation, so the test posts the gesture event a
+    /// trackpad makes (CGEvent type 29, HID type rotation 5, the degrees in
+    /// field 113, counterclockwise positive as AppKit reads them) over the
+    /// globe. The fingers clockwise turn the view clockwise with them: the
+    /// heading falls by as much (`GlobeSurfaceTests.testTwoFingersTurningTurnTheMapWithThem`
+    /// shows north moving clockwise on screen with it).
+    func testTwoFingersOnTheTrackpadTurnTheGlobe() throws {
+        openAtlas()
+        XCTAssertTrue(globe.waitForExistence(timeout: 10))
+        zoomOutToTheGlobe()
+        let place = globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.5))
+        place.hover()
+        // The same place in the screen's coordinates (XCUITest's frames: points, origin top left, as CGEvent's)
+        let point = CGPoint(x: globe.frame.minX + globe.frame.width * 0.45, y: globe.frame.midY)
+        let before = mapState()
+        XCTAssertEqual(before.heading, 0, accuracy: 0.01, "north up: \(before)")
+
+        func turn(_ degrees: Double) throws {
+            let event = try XCTUnwrap(CGEvent(source: nil))
+            event.type = try XCTUnwrap(CGEventType(rawValue: 29))
+            event.setIntegerValueField(try XCTUnwrap(CGEventField(rawValue: 110)), value: 5)
+            event.setDoubleValueField(try XCTUnwrap(CGEventField(rawValue: 113)), value: degrees)
+            event.location = point
+            event.post(tap: .cghidEventTap)
+        }
+        // The fingers clockwise in four steps of 5°, as a trackpad reports a turn
+        for _ in 0..<4 { try turn(-5) }
+        eventually("turned clockwise with the fingers") { abs(Self.wrap(self.mapState().heading - before.heading) + 20) < 0.5 }
+        // And back counterclockwise
+        for _ in 0..<4 { try turn(5) }
+        eventually("turned back") { abs(Self.wrap(self.mapState().heading - before.heading)) < 0.5 }
+        let after = mapState()
+        XCTAssertEqual(after.zoom, before.zoom, accuracy: 1e-6, "turning doesn't zoom: \(before) → \(after)")
+        XCTAssertEqual(after.pitch, before.pitch, accuracy: 1e-6, "nor tilt")
     }
 
     func testWithReduceMotionNothingGlidesThrowsOrFades() throws {
