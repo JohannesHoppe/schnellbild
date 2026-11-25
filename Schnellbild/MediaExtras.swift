@@ -22,10 +22,10 @@ func detachedCancellable<T: Sendable>(priority: TaskPriority, _ work: @escaping 
 }
 
 /// Shared ImageIO helpers.
-/// A file's size as the Finder writes it ("237 KB").
+/// A file’s size as the Finder writes it, such as 237 KB.
 enum FileSize {
     /// The app's languages whose name of the byte in macOS's formats (CLDR's) is
-    /// the English word: Traditional Chinese "37 byte", where the Finder says 位元組
+    /// the English word: Traditional Chinese writes 37 byte, where the Finder says 位元組
     static let untranslatedByte: Set<String> = ["zh-Hant"]
 
     static func short(_ bytes: Int) -> String {
