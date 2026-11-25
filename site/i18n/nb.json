@@ -21,6 +21,7 @@
   "starLink": "Gi den en stjerne på GitHub",
   "shotAlt": "Schnellbild: mapper med forhåndsvisninger og miniatyrer av bilder",
   "viewsLabel": "De fire visningene",
+  "viewsIntro": "<kbd>L</kbd> bytter fra rutenettet til listen og videre til atlaset, som viser bildene dine der de ble tatt, på kartet eller globusen.",
   "views": [
     {
       "caption": "Rutenett",

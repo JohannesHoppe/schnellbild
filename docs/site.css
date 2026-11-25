@@ -245,9 +245,9 @@ a.github { display: inline-flex; align-items: center; gap: 6px; }
   will-change: transform;
 }
 
-/* The app's four views under the hero: four in a row, two by two on phones,
+/* The app's four views in their own section: four in a row, two by two on phones,
    each named below its picture; a click opens it large like every screenshot */
-.views { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.views { list-style: none; margin: 0; padding: 0; text-align: center; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .views figure { margin: 0; }
 .views img { width: 100%; height: auto; }
 /* the caption up into the window shadow's transparent margin (56 of the shot's 1072 px) */

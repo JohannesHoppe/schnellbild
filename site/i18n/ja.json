@@ -21,6 +21,7 @@
   "starLink": "GitHubでスターを付けてください",
   "shotAlt": "Schnellbild：プレビュー付きのフォルダと写真のサムネール",
   "viewsLabel": "4つの表示",
+  "viewsIntro": "<kbd>L</kbd> キーで、グリッドからリスト、そしてアトラスへ。アトラスは、写真を撮った場所を地図や地球儀の上に示します。",
   "views": [
     {
       "caption": "グリッド",

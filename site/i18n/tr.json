@@ -21,6 +21,7 @@
   "starLink": "GitHub’da bir yıldız verin",
   "shotAlt": "Schnellbild: önizlemeli klasörler ve fotoğraf küçük resimleri",
   "viewsLabel": "Dört görünüm",
+  "viewsIntro": "<kbd>L</kbd> ızgaradan listeye, ardından fotoğraflarınızı çekildikleri yerde, haritada veya kürede gösteren Atlas’a geçer.",
   "views": [
     {
       "caption": "Izgara",

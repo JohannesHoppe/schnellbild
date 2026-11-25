@@ -21,6 +21,7 @@
   "starLink": "Gib ihm einen Stern auf GitHub",
   "shotAlt": "Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos",
   "viewsLabel": "Die vier Ansichten",
+  "viewsIntro": "<kbd>L</kbd> wechselt vom Raster zur Liste, dann zum Atlas, der deine Fotos dort zeigt, wo sie entstanden sind: auf der Karte oder dem Globus.",
   "views": [
     {
       "caption": "Raster",

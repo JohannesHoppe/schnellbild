@@ -21,6 +21,7 @@
   "starLink": "Anna sille tähti GitHubissa",
   "shotAlt": "Schnellbild: kansiot esikatseluineen ja kuvien miniatyyrit",
   "viewsLabel": "Neljä näkymää",
+  "viewsIntro": "<kbd>L</kbd> vaihtaa ruudukosta luetteloon ja siitä kartastoon, joka näyttää kuvasi kartalla tai karttapallolla siellä, missä ne on otettu.",
   "views": [
     {
       "caption": "Ruudukko",

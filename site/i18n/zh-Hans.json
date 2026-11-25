@@ -21,6 +21,7 @@
   "starLink": "在 GitHub 上给它点个星",
   "shotAlt": "Schnellbild：带预览的文件夹和照片缩略图",
   "viewsLabel": "四种视图",
+  "viewsIntro": "按 <kbd>L</kbd>，从网格切换到列表，再到地图集：照片显示在拍摄地点，地图或地球仪任选。",
   "views": [
     {
       "caption": "网格",

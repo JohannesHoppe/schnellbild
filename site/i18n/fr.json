@@ -21,6 +21,7 @@
   "starLink": "Donnez-lui une étoile sur GitHub",
   "shotAlt": "Schnellbild : dossiers avec aperçus et vignettes de photos",
   "viewsLabel": "Les quatre vues",
+  "viewsIntro": "<kbd>L</kbd> passe de la grille à la liste, puis à l’atlas, qui montre vos photos là où vous les avez prises, sur la carte ou sur le globe.",
   "views": [
     {
       "caption": "Grille",

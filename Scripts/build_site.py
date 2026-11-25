@@ -56,7 +56,7 @@ FEATURE_SIZES = "(max-width: 820px) min(calc(100vw - 40px), 770px), (max-width: 
 # An alternatives page's hero: the screenshot in the right one of two columns (1fr and
 # 1.15fr, 48 px apart) of .wrap, the whole width up to 820 px (site.css .alt-hero).
 ALT_HERO_SIZES = "(max-width: 820px) calc(100vw - 40px), (max-width: 1080px) calc(53.5vw - 47px), 531px"
-# The four views under the hero: four in a row of .wrap (16 px apart), two on phones (12 px apart).
+# The four views in their section: four in a row of .wrap (16 px apart), two on phones (12 px apart).
 VIEW_SIZES = "(max-width: 700px) calc(50vw - 26px), (max-width: 1080px) calc(25vw - 22px), 248px"
 
 WHY_ICONS = [
@@ -430,7 +430,7 @@ def globe_band():
 
 
 def views(code, t):
-    """The app's four views side by side under the hero (VIEW_SHOTS), two by two
+    """The app's four views side by side in their own section (VIEW_SHOTS), two by two
     on phones, each named below its picture as the app names it: the captions in
     site/i18n are checked against the app's own translations (Grid, the list of
     "Next view (grid, list, Atlas)", the Atlas's Map and Globe)."""
@@ -445,7 +445,7 @@ def views(code, t):
         f'<li data-reveal style="--i:{i}"><figure>{shot(name, code, v["alt"], sizes=VIEW_SIZES)}'
         f'<figcaption>{esc(v["caption"])}</figcaption></figure></li>'
         for i, (name, v) in enumerate(zip(VIEW_SHOTS, t["views"])))
-    return f'<ul class="views" aria-label="{esc(t["viewsLabel"])}">{items}</ul>'
+    return f'<ul class="views">{items}</ul>'
 
 
 def home(code, t):
@@ -497,7 +497,6 @@ def home(code, t):
     <p class="fineprint">{fineprint(t['fineprint'])}</p>
   </div>
   <div class="wrap wide"><div class="shot">{shot(HERO_SHOT, code, t['shotAlt'])}</div></div>
-  <div class="wrap">{views(code, t)}</div>
 </div>
 
 <div class="wrap stats">{stats}</div>
@@ -506,6 +505,14 @@ def home(code, t):
   <div class="wrap">
     <h2 data-reveal>{esc(t['whyTitle'])}</h2>
     <div class="cards">{why}</div>
+  </div>
+</section>
+
+<section id="views">
+  <div class="wrap">
+    <h2 data-reveal>{esc(t['viewsLabel'])}</h2>
+    <p class="intro" data-reveal>{t['viewsIntro']}</p>
+    {views(code, t)}
   </div>
 </section>
 

@@ -21,6 +21,7 @@
   "starLink": "Dagli una stella su GitHub",
   "shotAlt": "Schnellbild: cartelle con anteprime e miniature delle foto",
   "viewsLabel": "Le quattro viste",
+  "viewsIntro": "<kbd>L</kbd> passa dalla griglia all’elenco e poi all’atlante, che mostra le tue foto dove le hai scattate, sulla mappa o sul globo.",
   "views": [
     {
       "caption": "Griglia",

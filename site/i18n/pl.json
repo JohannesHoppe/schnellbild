@@ -21,6 +21,7 @@
   "starLink": "Daj mu gwiazdkę na GitHubie",
   "shotAlt": "Schnellbild: foldery z podglądami i miniatury zdjęć",
   "viewsLabel": "Cztery widoki",
+  "viewsIntro": "<kbd>L</kbd> przełącza z siatki na listę, a potem na atlas, który pokazuje twoje zdjęcia tam, gdzie je zrobiono, na mapie albo na globusie.",
   "views": [
     {
       "caption": "Siatka",

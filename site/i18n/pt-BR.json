@@ -21,6 +21,7 @@
   "starLink": "Dê uma estrela no GitHub",
   "shotAlt": "Schnellbild: pastas com pré-visualizações e miniaturas de fotos",
   "viewsLabel": "As quatro visualizações",
+  "viewsIntro": "<kbd>L</kbd> passa da grade para a lista e depois para o atlas, que mostra suas fotos onde foram tiradas, no mapa ou no globo.",
   "views": [
     {
       "caption": "Grade",

@@ -21,6 +21,7 @@
   "starLink": "在 GitHub 上給它一顆星",
   "shotAlt": "Schnellbild：附預覽的檔案夾和照片縮圖",
   "viewsLabel": "四種顯示方式",
+  "viewsIntro": "按 <kbd>L</kbd>，從格狀切換到列表，再到地圖集：照片顯示在拍攝地點，地圖或地球儀任選。",
   "views": [
     {
       "caption": "格狀",

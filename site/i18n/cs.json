@@ -21,6 +21,7 @@
   "starLink": "Dejte mu hvězdičku na GitHubu",
   "shotAlt": "Schnellbild: složky s náhledy a miniatury fotek",
   "viewsLabel": "Čtyři zobrazení",
+  "viewsIntro": "<kbd>L</kbd> přepíná z mřížky na seznam a dál na atlas, který ukazuje vaše fotky tam, kde vznikly, na mapě nebo na glóbusu.",
   "views": [
     {
       "caption": "Mřížka",

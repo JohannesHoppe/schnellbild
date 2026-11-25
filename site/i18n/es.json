@@ -21,6 +21,7 @@
   "starLink": "Dale una estrella en GitHub",
   "shotAlt": "Schnellbild: carpetas con previsualizaciones y miniaturas de fotos",
   "viewsLabel": "Las cuatro vistas",
+  "viewsIntro": "<kbd>L</kbd> pasa de la cuadrícula a la lista y luego al atlas, que muestra tus fotos donde las tomaste, en el mapa o en el globo terráqueo.",
   "views": [
     {
       "caption": "Cuadrícula",

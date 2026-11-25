@@ -21,6 +21,7 @@
   "starLink": "Give it a star on GitHub",
   "shotAlt": "Schnellbild: folders with previews and photo thumbnails",
   "viewsLabel": "The four views",
+  "viewsIntro": "<kbd>L</kbd> goes from the grid to the list, then to the Atlas, which shows your photos where they were taken, on a map or a globe.",
   "views": [
     {
       "caption": "Grid",

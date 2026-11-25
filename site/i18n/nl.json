@@ -21,6 +21,7 @@
   "starLink": "Geef hem een ster op GitHub",
   "shotAlt": "Schnellbild: mappen met voorvertoningen en fotominiaturen",
   "viewsLabel": "De vier weergaven",
+  "viewsIntro": "<kbd>L</kbd> gaat van het raster naar de lijst en dan naar de atlas, die je foto’s laat zien waar je ze hebt gemaakt, op de kaart of de wereldbol.",
   "views": [
     {
       "caption": "Raster",

@@ -21,6 +21,7 @@
   "starLink": "GitHub에서 스타를 눌러 주세요",
   "shotAlt": "Schnellbild: 미리보기가 있는 폴더와 사진 썸네일",
   "viewsLabel": "네 가지 보기",
+  "viewsIntro": "<kbd>L</kbd> 키를 누르면 격자에서 목록으로, 다시 아틀라스로 넘어갑니다. 아틀라스는 사진을 찍은 곳을 지도나 지구본 위에 보여 줍니다.",
   "views": [
     {
       "caption": "격자",

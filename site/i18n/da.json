@@ -21,6 +21,7 @@
   "starLink": "Giv den en stjerne på GitHub",
   "shotAlt": "Schnellbild: mapper med eksempelbilleder og miniaturer af fotos",
   "viewsLabel": "De fire visninger",
+  "viewsIntro": "<kbd>L</kbd> skifter fra gitteret til listen og videre til atlasset, der viser dine billeder, hvor de blev taget, på kortet eller globussen.",
   "views": [
     {
       "caption": "Gitter",

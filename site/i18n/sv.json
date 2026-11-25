@@ -21,6 +21,7 @@
   "starLink": "Ge den en stjärna på GitHub",
   "shotAlt": "Schnellbild: mappar med förhandsvisningar och miniatyrer av bilder",
   "viewsLabel": "De fyra vyerna",
+  "viewsIntro": "<kbd>L</kbd> växlar från rutnätet till listan och vidare till atlasen, som visar dina bilder där de togs, på kartan eller jordgloben.",
   "views": [
     {
       "caption": "Rutnät",
