@@ -559,7 +559,7 @@ enum FileReport {
 
     /// "2.4 MB (2,412,345 bytes)".
     static func sizeText(_ bytes: Int) -> String {
-        let short = ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
+        let short = FileSize.short(bytes)
         let count = bytes.formatted()
         return short + " (" + String(localized: "\(count) bytes") + ")"
     }

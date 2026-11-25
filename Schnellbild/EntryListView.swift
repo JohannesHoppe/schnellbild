@@ -189,7 +189,7 @@ struct EntryListView: View {
             Text(verbatim: file.url.pathExtension.uppercased()).frame(width: Self.kindWidth, alignment: .leading)
             Text("").frame(width: Self.dateWidth)
             Text("").frame(width: Self.dateWidth)
-            Text(file.byteSize.map { ByteCountFormatter.string(fromByteCount: Int64($0), countStyle: .file) } ?? "")
+            Text(file.byteSize.map(FileSize.short) ?? "")
                 .monospacedDigit().frame(width: Self.sizeWidth, alignment: .trailing)
             if model.sortKey == .distance { Text("").frame(width: Self.distanceWidth) }
         }
@@ -246,7 +246,7 @@ struct EntryListView: View {
 
     private func size(of entry: GridEntry) -> String {
         guard entry.isMedia || entry.isArchive, let bytes = entry.byteSize else { return "" }
-        return ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
+        return FileSize.short(bytes)
     }
 
     static func format(_ date: Date) -> String { date.formatted(date: .abbreviated, time: .shortened) }

@@ -124,6 +124,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         let point = text(of: parsed)
         let deadline = Date().addingTimeInterval(10)
         while text(of: parsed) == point, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+        // The pointer off the field, where the menu item's click left it: on
+        // the sheet's text above it, which has no tooltip
+        originField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: -3)).hover()
         shoot("distance", settle: 3)
         app.typeKey(.escape, modifierFlags: [])
         eventually("the sheet closes") { !originField.exists }

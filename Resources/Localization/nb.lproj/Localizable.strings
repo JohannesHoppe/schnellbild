@@ -508,7 +508,7 @@
 "Only photos and videos with GPS data in their metadata have one." = "Bare bilder og videoer med GPS-data i metadataene har et.";
 "OK" = "OK";
 "Reading locations: %lld of %lld" = "Leser steder: %lld av %lld";
-"Distance from Coordinates or Map Link…" = "Avstand fra koordinater eller kartlenke …";
+"Distance from Coordinates or Map Link…" = "Avstand fra koordinater eller kartlenke…";
 "Sort by Distance" = "Sorter etter avstand";
 "Coordinates (48.137, 11.575 or 48°8′14″N 11°34′27″E) or a link from Apple Maps, Google Maps or OpenStreetMap:" = "Koordinater (48.137, 11.575 eller 48°8′14″N 11°34′27″E) eller en lenke fra Apple Kart, Google Maps eller OpenStreetMap:";
 "Coordinates or map link" = "Koordinater eller kartlenke";
@@ -535,7 +535,7 @@
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Bruk min plassering";
 "Asks macOS once for where this Mac is. The position stays on this Mac." = "Spør macOS én gang hvor denne Macen er. Posisjonen blir på denne Macen.";
-"Finding your location…" = "Finner plasseringen din …";
+"Finding your location…" = "Finner plasseringen din…";
 "Click the map to choose a place." = "Klikk på kartet for å velge et sted.";
 "Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild får ikke bruke plasseringen din. Tillat det i Systeminnstillinger → Personvern og sikkerhet → Stedstjenester.";
 "Location is restricted on this Mac." = "Plassering er begrenset på denne Macen.";

@@ -506,7 +506,7 @@ struct OtherFilesList: View {
                         .truncationMode(.middle)
                     Spacer(minLength: 12)
                     if let size = file.byteSize {
-                        Text(ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
+                        Text(FileSize.short(size))
                             .monospacedDigit()
                     }
                 }

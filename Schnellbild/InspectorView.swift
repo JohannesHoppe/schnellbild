@@ -26,6 +26,8 @@ struct InspectorView: View {
     @State private var downloadedSize: Int64?
 
     static let width: CGFloat = 320
+    /// The widest the labels' column gets, about two fifths of the rows' width
+    static let labelLimit: CGFloat = 125
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -123,14 +125,16 @@ struct InspectorView: View {
     }
 
     private func rows(_ rows: [InfoRow]) -> some View {
-        // The labels' column as wide as its longest label ("Änderungsdatum", "Profondeur de couleur")
+        // The labels' column as wide as its longest label ("Änderungsdatum", "Profondeur de couleur"),
+        // at most `labelLimit`: a longer one ("Exponeringskompensation") wraps, so the values keep
+        // room enough not to break a date over three lines
         Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 5) {
             ForEach(rows) { row in
                 // (the menus on the cells: a modifier on the GridRow would make it one cell)
                 GridRow {
                     Text(row.label)
                         .foregroundStyle(.secondary)
-                        .fixedSize()
+                        .cappedWidth(Self.labelLimit)
                         .contextMenu { Button("Copy") { Self.copy(row.value) } }
                         .toolTip(String(localized: "Right-click to copy"))
                     // A value longer than its column wraps, never cut off
@@ -496,4 +500,28 @@ protocol OfflineGeographyProvider: Sendable {
 enum OfflineGeography {
     /// The provider the Inspector asks; nil: no map, no place names.
     @MainActor static var provider: (any OfflineGeographyProvider)?
+}
+
+/// A view as wide as it wants to be up to `limit`, and as high as it is at that
+/// width: a text longer than the limit wraps and takes the lines it needs. A
+/// frame with a largest width would take that width whatever the text, and a
+/// fixed size over it would keep the height of one line.
+private struct CappedWidth: Layout {
+    let limit: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        guard let child = subviews.first else { return .zero }
+        let width = min(child.sizeThatFits(.unspecified).width, limit)
+        return CGSize(width: width, height: child.sizeThatFits(ProposedViewSize(width: width, height: nil)).height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        subviews.first?.place(at: bounds.origin, proposal: ProposedViewSize(width: bounds.width, height: nil))
+    }
+}
+
+private extension View {
+    func cappedWidth(_ limit: CGFloat) -> some View {
+        CappedWidth(limit: limit) { self }
+    }
 }

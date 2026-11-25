@@ -22,6 +22,20 @@ func detachedCancellable<T: Sendable>(priority: TaskPriority, _ work: @escaping 
 }
 
 /// Shared ImageIO helpers.
+/// A file's size as the Finder writes it ("237 KB").
+enum FileSize {
+    /// The app's languages whose name of the byte in macOS's formats (CLDR's) is
+    /// the English word: Traditional Chinese "37 byte", where the Finder says 位元組
+    static let untranslatedByte: Set<String> = ["zh-Hant"]
+
+    static func short(_ bytes: Int) -> String {
+        if bytes < 1000, let language = Bundle.main.preferredLocalizations.first, untranslatedByte.contains(language) {
+            return String(localized: "\(bytes.formatted()) bytes")
+        }
+        return ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
+    }
+}
+
 enum MediaInfo {
     /// Pixel dimensions as shown, from an already-open image source (no
     /// extra file open): EXIF orientations 5 to 8 (a camera held upright)
