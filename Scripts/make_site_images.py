@@ -80,6 +80,8 @@ VIEW_SHOTS = ["grid", "list", "atlas", "atlas-globe-near"]
 FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings-theme"]
 # The App Store's pictures (light), in their order there (by name)
 STORE_SHOTS = ["archive-inside", "atlas", "dualpane", "full", "grid", "inspector", "video"]
+# Pictures in German for the Schnellbild page of haushoppe-its.de, beyond those above
+PARTNER_SHOTS = {"de": ["zoom", "slideshow", "atlas-globe"]}
 OG_SIZE = (1200, 630)
 OG_LIMIT = 300_000
 PORT = 8917
@@ -190,7 +192,8 @@ def kept(name):
     motif, mode, language = re.fullmatch(r"(.+?)-(light|dark)(?:-(.+))?", name).groups()
     if motif.startswith("bartime-"):
         return False
-    return not language or motif in [HERO_SHOT, GLOBE_SHOT, *VIEW_SHOTS, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light")
+    return not language or motif in [HERO_SHOT, GLOBE_SHOT, *VIEW_SHOTS, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light") \
+        or motif in PARTNER_SHOTS.get(language, [])
 
 
 def import_shots(folders):
