@@ -67,6 +67,9 @@ struct SchnellbildApp: App {
         WindowGroup(id: "browser") {
             WindowRoot(first: first, defaults: defaults)
         }
+        // Files from the Finder open in the window in front (`OpenedFiles`),
+        // never in a window of their own
+        .handlesExternalEvents(matching: [])
         .defaultSize(width: 960, height: 640)
         .commands {
             CommandGroup(replacing: .appInfo) {
