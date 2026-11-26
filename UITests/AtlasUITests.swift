@@ -336,9 +336,12 @@ final class AtlasUITests: SchnellbildUITestCase {
         }
         // The fingers clockwise in four steps of 5°, as a trackpad reports a turn
         for _ in 0..<4 { try turn(-5) }
-        eventually("turned clockwise with the fingers") { abs(Self.wrap(self.mapState().heading - before.heading) + 20) < 0.5 }
+        let deadline = Date().addingTimeInterval(10)
+        while abs(Self.wrap(mapState().heading - before.heading) + 20) >= 0.5, Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+        }
         XCTAssertEqual(Self.wrap(mapState().heading - before.heading), -20, accuracy: 0.5,
-                       "may post events: \(CGPreflightPostEventAccess()), \(before) → \(mapState())")
+                       "turned clockwise with the fingers (may post events: \(CGPreflightPostEventAccess())): \(before) → \(mapState())")
         // And back counterclockwise
         for _ in 0..<4 { try turn(5) }
         eventually("turned back") { abs(Self.wrap(self.mapState().heading - before.heading)) < 0.5 }
