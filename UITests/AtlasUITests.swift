@@ -312,7 +312,7 @@ final class AtlasUITests: SchnellbildUITestCase {
     /// app: XCUITest has no rotation, and the test runner may not post
     /// events, so the CI workflow's shell posts the gesture event a trackpad
     /// makes over the globe (`Scripts/trackpad_turn.swift`, asked with
-    /// "turn:<id>:<x>,<y>:<degrees>" on the pasteboard). The fingers
+    /// "turn:<id>:<x>,<y>:<degrees>:<steps>" on the pasteboard). The fingers
     /// clockwise turn the view clockwise with them: the heading falls by as
     /// much (`GlobeSurfaceTests.testTwoFingersTurningTurnTheMapWithThem`
     /// shows north moving clockwise on screen with it).
@@ -334,7 +334,7 @@ final class AtlasUITests: SchnellbildUITestCase {
             let id = UUID().uuidString.prefix(8)
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
-            pasteboard.setString("turn:\(id):\(Int(point.x)),\(Int(point.y)):\(degrees)", forType: .string)
+            pasteboard.setString("turn:\(id):\(Int(point.x)),\(Int(point.y)):\(degrees):4", forType: .string)
             var result = ""
             eventually("the shell turned", timeout: 30) {
                 guard let text = pasteboard.string(forType: .string), text.hasPrefix("turn-done:\(id):") else { return false }
@@ -350,11 +350,11 @@ final class AtlasUITests: SchnellbildUITestCase {
             }
             return Self.wrap(mapState().heading - before.heading)
         }
-        // The fingers clockwise in four steps of 5°, as a trackpad reports a turn
-        for _ in 0..<4 { turn(-5) }
+        // The fingers clockwise by 20°, reported in four steps as a trackpad does
+        turn(-20)
         XCTAssertEqual(heading(near: -20), -20, accuracy: 0.5, "turned clockwise with the fingers: \(before) → \(mapState())")
         // And back counterclockwise
-        for _ in 0..<4 { turn(5) }
+        turn(20)
         XCTAssertEqual(heading(near: 0), 0, accuracy: 0.5, "turned back: \(before) → \(mapState())")
         let after = mapState()
         XCTAssertEqual(after.zoom, before.zoom, accuracy: 1e-6, "turning doesn't zoom: \(before) → \(after)")

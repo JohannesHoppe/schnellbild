@@ -319,7 +319,7 @@ jobs:
           # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
           # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>:<red>:<green>:<blue>" back;
           # "shot:<name>:<x>,<y>,<w>,<h>" keeps a picture of that region as measurements/<name>.png;
-          # "turn:<id>:<x>,<y>:<degrees>" turns two fingers on the trackpad there (the runner may not post events).
+          # "turn:<id>:<x>,<y>:<degrees>:<steps>" turns two fingers on the trackpad there (the runner may not post events).
           mkdir -p measurements
           source Scripts/pasteboard_requests.sh
           handle() {
@@ -346,14 +346,16 @@ jobs:
                 answer "shot-done:$name"
                 ;;
               turn:*)
-                # Two fingers turning on the trackpad (AtlasUITests): "turn:<id>:<x>,<y>:<degrees>"
+                # Two fingers turning on the trackpad (AtlasUITests): "turn:<id>:<x>,<y>:<degrees>:<steps>"
                 rest=${1#turn:}
                 id=${rest%%:*}
                 rest=${rest#*:}
                 point=${rest%%:*}
-                degrees=${rest#*:}
-                result=$(build/trackpad_turn "${point%,*}" "${point#*,}" "$degrees")
-                echo "== turn $id at $point by $degrees°: $result"
+                rest=${rest#*:}
+                degrees=${rest%%:*}
+                steps=${rest#*:}
+                result=$(build/trackpad_turn "${point%,*}" "${point#*,}" "$degrees" "$steps")
+                echo "== turn $id at $point by $degrees degrees in $steps steps: $result"
                 answer "turn-done:$id:$result"
                 ;;
               sample:*)
