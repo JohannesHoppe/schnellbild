@@ -82,14 +82,20 @@ private struct WindowView: View {
                 launched = true
                 if window.left.folderURL == nil {
                     if window.number == 1 {
-                        // The first launch: the Pictures folder, not an empty window
-                        if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder { BrowserModel.defaultFolder } }
+                        // The first launch: files the Finder opened with the
+                        // app, else the last folder (the Pictures folder at
+                        // first), not an empty window
+                        if !OpenedFiles.take(into: window.left), !window.left.openFromLaunchArguments() {
+                            window.left.restoreLastFolder { BrowserModel.defaultFolder }
+                        }
                     } else {
                         // A new window: its own last folder, else the one it was opened from
                         let start = window.startFolder
                         window.left.restoreLastFolder { start }
                     }
                 }
+                // Files the Finder opens from now on go to the window in front
+                OpenedFiles.started(window)
             }
             installKeyMonitor()
         }

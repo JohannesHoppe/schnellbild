@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import VLCFrames
 
 /// The grid. Lazy so only visible tiles are loaded. ".." and
 /// folders first, then images/videos.
@@ -106,15 +107,15 @@ struct ThumbnailGridView: View {
     func tile(for entry: GridEntry, side: CGFloat, cursor: Bool, marked: Bool) -> some View {
         switch entry.kind {
         case .parent:
-            FolderTile(folder: nil, side: side, isSelected: cursor, isMarked: marked, systemImage: "arrow.up.circle.fill")
+            FolderTile(folder: nil, side: side, isSelected: cursor, isMarked: marked, icon: .symbol("arrow.up.circle.fill"))
         case .folder:
             let archive = entry.isArchive
             if let drive = FolderTile.driveImage(entry.url) {
-                FolderTile(folder: entry.url, side: side, isSelected: cursor, isMarked: marked, systemImage: drive,
+                FolderTile(folder: entry.url, side: side, isSelected: cursor, isMarked: marked, icon: .symbol(drive),
                            kindLabel: "drive", previews: false)
             } else {
                 FolderTile(folder: entry.browseURL, side: side, isSelected: cursor, isMarked: marked,
-                           systemImage: archive ? "archivebox.fill" : "folder.fill",
+                           icon: archive ? .archive(entry.url) : .folder,
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder",
                            unfinished: entry.unfinishedNote)
             }
@@ -167,6 +168,47 @@ struct EntryAccessibility: ViewModifier {
     }
 }
 
+/// What a folder tile draws under its previews: the icons the Finder shows
+/// (macOS's folder, the icon of an archive's type), so a folder looks the
+/// same in Schnellbild as on the desktop, else a symbol (`..`, drives).
+enum FolderIcon: Equatable {
+    case folder
+    /// An archive, by its file's type.
+    case archive(URL)
+    case symbol(String)
+
+    /// macOS's own icon: the folder, or the archive's type's (the type of the
+    /// name a download will have; one macOS doesn't know, such as RAR
+    /// without an app that declares it, the generic archive's).
+    @MainActor var image: NSImage? {
+        switch self {
+        case .folder:
+            return Self.folderImage
+        case .archive(let url):
+            let ext = DownloadName.finalExtension(of: url)
+            if let known = Self.archiveImages[ext] { return known }
+            let type = UTType(filenameExtension: ext).flatMap { $0.isDynamic ? nil : $0 } ?? .archive
+            let image = Self.large(NSWorkspace.shared.icon(for: type))
+            Self.archiveImages[ext] = image
+            return image
+        case .symbol:
+            return nil
+        }
+    }
+
+    @MainActor private static let folderImage = large(NSWorkspace.shared.icon(for: .folder))
+    @MainActor private static var archiveImages: [String: NSImage] = [:]
+
+    /// The icon at the size of its largest pictures: SwiftUI draws an
+    /// `NSImage` from the representation that fits its own size (32 pt for
+    /// these), blurred when scaled up to a tile.
+    private static func large(_ icon: NSImage) -> NSImage {
+        let copy = icon.copy() as? NSImage ?? icon
+        copy.size = NSSize(width: 512, height: 512)
+        return copy
+    }
+}
+
 /// Tile for ".." or a subfolder. Subfolders show up to three thumbnails of
 /// their first media files fanned over the folder icon, like Finder. The list
 /// view's rows show it small.
@@ -178,7 +220,7 @@ struct FolderTile: View {
     let isSelected: Bool
     /// Marked: tinted, with a checkmark.
     var isMarked = false
-    var systemImage: String = "folder.fill"
+    var icon: FolderIcon = .folder
     /// Nothing below it is a photo or video: drawn greyed out.
     var isEmpty = false
     /// What the UI tests' state calls it ("folder", "archive", "drive").
@@ -208,13 +250,13 @@ struct FolderTile: View {
     @Environment(\.displayScale) private var scale
     @State private var previewImages: [NSImage]
 
-    init(folder: URL?, side: CGFloat, isSelected: Bool, isMarked: Bool = false, systemImage: String = "folder.fill",
+    init(folder: URL?, side: CGFloat, isSelected: Bool, isMarked: Bool = false, icon: FolderIcon = .folder,
          isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true, unfinished: String? = nil) {
         self.folder = folder
         self.side = side
         self.isSelected = isSelected
         self.isMarked = isMarked
-        self.systemImage = systemImage
+        self.icon = icon
         self.isEmpty = isEmpty
         self.kindLabel = kindLabel
         self.previews = previews
@@ -228,10 +270,20 @@ struct FolderTile: View {
 
     var body: some View {
         ZStack {
-            Image(systemName: systemImage)
-                .font(.system(size: side * (previewImages.isEmpty ? (small ? 0.6 : 0.36) : (small ? 0.75 : 0.5))))
-                .foregroundStyle(Color.accentColor)
-            if !previewImages.isEmpty { fan }
+            if let image = icon.image {
+                // macOS's icons have room around the shape: drawn larger
+                // than a symbol to look as large
+                let share = shownPreviews.isEmpty ? (small ? 0.85 : 0.6) : (small ? 1 : 0.7)
+                Image(nsImage: image)
+                    .resizable()
+                    .interpolation(.high)
+                    .frame(width: side * share, height: side * share)
+            } else if case .symbol(let name) = icon {
+                Image(systemName: name)
+                    .font(.system(size: side * (shownPreviews.isEmpty ? (small ? 0.6 : 0.36) : (small ? 0.75 : 0.5))))
+                    .foregroundStyle(Color.accentColor)
+            }
+            if !shownPreviews.isEmpty { fan }
         }
         .saturation(isEmpty ? 0 : 1)
         .opacity(isEmpty ? (contrast == .increased ? 0.7 : 0.4) : 1)
@@ -239,16 +291,20 @@ struct FolderTile: View {
         .accessibilityElement(children: .ignore)
         // The label ("name, kind") comes from the grid's cell; the UI tests
         // read the tile's state here
-        .accessibilityValue(test: "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
+        .accessibilityValue(test: "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(shownPreviews.count) previews"
                                 + (unfinished != nil ? ", unfinished" : ""),
                             spoken: TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone; and at a larger size or on a sharper
         // display, sharper previews.
-        .task(id: FolderKey(folder: folder, changes: folder.map(model.changes(of:)) ?? 0, side: side, scale: scale)) {
+        .task(id: FolderKey(folder: folder, changes: folder.map(model.changes(of:)) ?? 0, side: side, scale: scale,
+                            previews: model.folderPreviews)) {
             await loadPreviews()
         }
     }
+
+    /// The previews on screen: none while Settings turns them off.
+    private var shownPreviews: [NSImage] { model.folderPreviews ? previewImages : [] }
 
     /// A list row's preview: the thumbnails take more of it, or they would
     /// be specks
@@ -257,9 +313,9 @@ struct FolderTile: View {
     /// Thumbnails fanned out over the lower part of the folder body.
     private var fan: some View {
         let thumb = side * (small ? 0.5 : 0.34)
-        let angles: [Double] = previewImages.count == 1 ? [0] : previewImages.count == 2 ? [-7, 7] : [-10, 0, 10]
+        let angles: [Double] = shownPreviews.count == 1 ? [0] : shownPreviews.count == 2 ? [-7, 7] : [-10, 0, 10]
         return ZStack {
-            ForEach(Array(previewImages.enumerated()), id: \.offset) { i, image in
+            ForEach(Array(shownPreviews.enumerated()), id: \.offset) { i, image in
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -291,6 +347,8 @@ struct FolderTile: View {
         } else {
             model.noteFolder(folder, empty: false)
         }
+        // Turned off in Settings: whether it is empty, no thumbnails
+        guard model.folderPreviews else { return }
         await showPreviews(of: files)
     }
 
@@ -322,6 +380,7 @@ private struct FolderKey: Hashable {
     let changes: Int
     let side: CGFloat
     let scale: CGFloat
+    let previews: Bool
 }
 
 /// Which files each folder tile previews, remembered per folder: scrolling

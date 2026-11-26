@@ -132,6 +132,45 @@ final class SandboxUITests: SchnellbildUITestCase {
         waitForBadge(containing: "second.jpg")
     }
 
+    /// A photo opened with Schnellbild from the Finder (Open With, a drop
+    /// onto the Dock icon: macOS hands it to the running app, as
+    /// `NSWorkspace` does here): shown as a drop onto the window shows it,
+    /// in the window that is open (no second one), at once in the full view
+    /// with "Allow Access…" when its folder isn't open to the app; a photo
+    /// of a folder that is shows among its neighbours.
+    func testAPhotoOpenedWithSchnellbildFromTheFinder() throws {
+        guard let path = ProcessInfo.processInfo.environment["SCHNELLBILD_APP"], !path.isEmpty else {
+            throw XCTSkip("needs the app bundle build_app.sh made (SCHNELLBILD_APP)")
+        }
+        try put("nogeo.jpg", at: "Outside/photo.jpg")
+        try put("sample.jpg", at: "Outside/second.jpg")
+        launch(grants: .nothing)
+        XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
+        func openWithSchnellbild(_ file: URL) {
+            let configuration = NSWorkspace.OpenConfiguration()
+            configuration.activates = true
+            NSWorkspace.shared.open([file], withApplicationAt: URL(fileURLWithPath: path), configuration: configuration) { _, error in
+                if let error { print("open with Schnellbild: \(error)") }
+            }
+        }
+        openWithSchnellbild(tempDir.appendingPathComponent("Outside/photo.jpg"))
+        waitForBadge(containing: "photo.jpg")
+        XCTAssertTrue(text(of: badge).contains("1 / 1"), "only the file opened: \(text(of: badge))")
+        XCTAssertTrue(element("allowAccess").firstMatch.waitForExistence(timeout: 5), "the full view says how to see the folder")
+        XCTAssertEqual(app.windows.matching(NSPredicate(format: "identifier BEGINSWITH 'window.'")).count, 1, "no second window")
+
+        // A photo of a folder open to the app: among its neighbours
+        app.terminate()
+        try put("sample.jpg", at: "Granted/one.jpg")
+        try put("nogeo.jpg", at: "Granted/two.jpg")
+        launchOnTempDir(waitFor: "Granted")
+        openWithSchnellbild(tempDir.appendingPathComponent("Granted/two.jpg"))
+        waitForBadge(containing: "two.jpg")
+        XCTAssertTrue(text(of: badge).contains("2 / 2"), "in its folder: \(text(of: badge))")
+        app.typeKey(.leftArrow, modifierFlags: [])
+        waitForBadge(containing: "one.jpg")
+    }
+
     /// An archive split by bytes (`Trip.zip.001`, `.002`), its first part
     /// dropped alone: the second part has its name with another extension,
     /// so the sandbox opens it too (a related item), and the archive shows whole.

@@ -645,6 +645,8 @@
 "the clouds on the globe" = "mraky na glóbu";
 "Show Hidden Files" = "Zobrazit skryté soubory";
 "Show hidden files and folders" = "Zobrazovat skryté soubory a složky";
+"Show photos on folders" = "Zobrazovat fotky na složkách";
+"The first photos and videos of a folder on its icon, in every window" = "První fotky a videa složky na její ikoně, v každém okně";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Názvy začínající tečkou, to, co macOS skrývá, třeba složka Knihovna, a soubory, které si macOS vytváří pro sebe, třeba .DS_Store. Když je to zapnuté, objeví se všechno, i v archivech. Když je to vypnuté, nikde ve Schnellbildu se neobjeví.";
 "Show / hide hidden files and folders" = "Zobrazit / skrýt skryté soubory a složky";
 "Undo" = "Odvolat";

@@ -185,6 +185,16 @@ final class WindowModel: ObservableObject {
         }
     }
 
+    /// Folder tiles show their first photos and videos (Settings): app-wide,
+    /// every pane of every window follows (`BrowserModel.folderPreviews`).
+    var folderPreviews: Bool {
+        get { left.folderPreviews }
+        set {
+            objectWillChange.send()
+            left.folderPreviews = newValue
+        }
+    }
+
     /// A sheet is open in either pane: it keeps the keys and the menus.
     var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
 

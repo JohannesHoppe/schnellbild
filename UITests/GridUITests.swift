@@ -229,6 +229,23 @@ final class GridUITests: SchnellbildUITestCase {
         launchOnTempDir()
         eventually("album shows three previews", timeout: 20) { text(of: tile("album")).hasSuffix("3 previews") }
         XCTAssertTrue(text(of: tile("empty")).hasSuffix("0 previews"))
+
+        // Settings → General: off, folders show only their icon (still not
+        // greyed out when they hold photos); on again, the photos come back
+        func setPreviews(_ on: Bool) {
+            app.typeKey(",", modifierFlags: .command)
+            let toggle = element("settings.folderPreviews").firstMatch
+            XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+            toggle.click()
+            eventually(on ? "on in Settings" : "off in Settings") {
+                (toggle.value as? Int ?? (toggle.value as? NSNumber)?.intValue ?? -1) == (on ? 1 : 0)
+            }
+            app.typeKey("w", modifierFlags: .command)   // the Settings window
+        }
+        setPreviews(false)
+        eventually("album shows its icon alone") { text(of: tile("album")).hasSuffix(", folder, 0 previews") }
+        setPreviews(true)
+        eventually("album shows three previews again", timeout: 20) { text(of: tile("album")).hasSuffix("3 previews") }
     }
 
     func testFullScreenToggle() {

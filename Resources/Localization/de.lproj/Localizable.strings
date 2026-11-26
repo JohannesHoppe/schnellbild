@@ -645,6 +645,8 @@
 "the clouds on the globe" = "die Wolken auf dem Globus";
 "Show Hidden Files" = "Versteckte Dateien zeigen";
 "Show hidden files and folders" = "Versteckte Dateien und Ordner zeigen";
+"Show photos on folders" = "Fotos auf Ordnern zeigen";
+"The first photos and videos of a folder on its icon, in every window" = "Die ersten Fotos und Videos eines Ordners auf seinem Symbol, in jedem Fenster";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Namen, die mit einem Punkt beginnen, was macOS ausblendet, etwa der Ordner „Library“, und die Dateien, die macOS für sich selbst anlegt, etwa .DS_Store. Ist das an, erscheint alles, auch in Archiven. Ist das aus, erscheinen sie nirgends in Schnellbild.";
 "Show / hide hidden files and folders" = "Versteckte Dateien und Ordner ein- / ausblenden";
 "Undo" = "Widerrufen";

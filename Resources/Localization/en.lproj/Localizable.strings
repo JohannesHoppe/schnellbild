@@ -645,6 +645,8 @@
 "the clouds on the globe" = "the clouds on the globe";
 "Show Hidden Files" = "Show Hidden Files";
 "Show hidden files and folders" = "Show hidden files and folders";
+"Show photos on folders" = "Show photos on folders";
+"The first photos and videos of a folder on its icon, in every window" = "The first photos and videos of a folder on its icon, in every window";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild.";
 "Show / hide hidden files and folders" = "Show / hide hidden files and folders";
 "Undo" = "Undo";

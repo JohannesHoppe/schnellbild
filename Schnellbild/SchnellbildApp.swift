@@ -256,6 +256,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSWindow.allowsAutomaticWindowTabbing = false
     }
 
+    /// Files opened with Schnellbild from the Finder (Open With, a double
+    /// click where it is the default app, a drop onto the Dock icon).
+    func application(_ application: NSApplication, open urls: [URL]) {
+        MainActor.assumeIsolated { OpenedFiles.open(urls.filter(\.isFileURL)) }
+    }
+
     func applicationWillTerminate(_ notification: Notification) {
         BrowserModel.confirmRestore(in: BrowserModel.makeDefaults())
     }
@@ -285,6 +291,44 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
         BrowserModel.onTransfersDone = { NSApp.reply(toApplicationShouldTerminate: true) }
         return .terminateLater
+    }
+}
+
+/// Files the Finder opens with Schnellbild (`AppDelegate.application(_:open:)`):
+/// shown as a drop onto the window shows them (`BrowserModel.openDropped`:
+/// a picture or video in the full view, inside its folder, a folder or
+/// archive opened), in the window in front. Opened at launch, before a
+/// window has started, they wait for it and open instead of the last folder
+/// (`take`).
+@MainActor
+enum OpenedFiles {
+    /// A window has started (its folder or these files opened).
+    private static var launched = false
+    private static var waiting: [URL] = []
+
+    static func open(_ urls: [URL]) {
+        guard !urls.isEmpty else { return }
+        guard launched, let window = WindowModel.current else { waiting = urls; return }
+        NSApp.activate(ignoringOtherApps: true)
+        window.nsWindow?.makeKeyAndOrderFront(nil)
+        window.active.openDropped(urls)
+    }
+
+    /// At the first window's start: the files that came before it, opened
+    /// in `model`; false when none came.
+    static func take(into model: BrowserModel) -> Bool {
+        let urls = waiting
+        waiting = []
+        guard !urls.isEmpty else { return false }
+        model.openDropped(urls)
+        return true
+    }
+
+    /// A window has started: files from now on open at once, and any that
+    /// came meanwhile open in it.
+    static func started(_ window: WindowModel) {
+        launched = true
+        if !waiting.isEmpty { open(waiting) }
     }
 }
 

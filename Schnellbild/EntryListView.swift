@@ -221,11 +221,11 @@ struct EntryListView: View {
         case .folder:
             let archive = entry.isArchive
             if let drive = FolderTile.driveImage(entry.url) {
-                FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false, systemImage: drive,
+                FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false, icon: .symbol(drive),
                            kindLabel: "drive", previews: false)
             } else {
                 FolderTile(folder: entry.browseURL, side: Self.previewSide, isSelected: false,
-                           systemImage: archive ? "archivebox.fill" : "folder.fill",
+                           icon: archive ? .archive(entry.url) : .folder,
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
             }
         case .image, .video:

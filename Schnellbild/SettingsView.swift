@@ -52,6 +52,10 @@ struct GeneralSettingsView: View {
                 .toolTip(String(localized: "Light or dark, or as macOS is set"))
                 .accessibilityIdentifier("settings.appearance")
                 .onChange(of: appearance) { _, chosen in AppAppearance.choose(chosen) }
+                Toggle("Show photos on folders",
+                       isOn: Binding(get: { window.folderPreviews }, set: { window.folderPreviews = $0 }))
+                    .toolTip(String(localized: "The first photos and videos of a folder on its icon, in every window"))
+                    .accessibilityIdentifier("settings.folderPreviews")
             }
             Section {
                 Toggle("Show hidden files and folders",

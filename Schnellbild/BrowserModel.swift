@@ -2118,6 +2118,7 @@ final class BrowserModel: ObservableObject {
         if let delay = TestSwitches.milliseconds("--search-delay=") { searchDebounce = delay }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
         followAtlasSubfolders()
+        followFolderPreviews()
         followHiddenFiles()
         if let seconds = defaults.object(forKey: Self.slideshowSecondsKey) as? Int,
            Self.slideshowSecondsRange.contains(seconds) { slideshowInterval = .seconds(seconds) }
@@ -4231,6 +4232,37 @@ final class BrowserModel: ObservableObject {
     /// What a walk's batch (the subfolders', a search's) just added to
     /// `entries`, all that changed: what reacts to the list looks only at it.
     private var entriesAdded: [GridEntry]?
+
+    // MARK: Photos on folder tiles
+
+    static let folderPreviewsKey = "folderPreviews"
+    /// Folder tiles fan their first photos and videos over the folder
+    /// (app-wide, on unless turned off in Settings); off, a folder shows
+    /// only its icon, greyed out as ever when nothing below it is a photo
+    /// or video, and no thumbnails are made for it.
+    @Published var folderPreviews = true {
+        didSet {
+            guard folderPreviews != oldValue else { return }
+            defaults.set(folderPreviews, forKey: Self.folderPreviewsKey)
+            NotificationCenter.default.post(name: Self.folderPreviewsChanged, object: defaults)
+        }
+    }
+    /// Every pane follows a change of the preference (those of the same preferences).
+    static let folderPreviewsChanged = Notification.Name("SchnellbildFolderPreviewsChanged")
+    private var folderPreviewsObserver: NotificationToken?
+
+    func followFolderPreviews() {
+        folderPreviews = defaults.object(forKey: Self.folderPreviewsKey) as? Bool ?? true
+        guard folderPreviewsObserver == nil else { return }
+        let defaults = self.defaults
+        folderPreviewsObserver = NotificationToken(Self.folderPreviewsChanged, object: defaults) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                let value = self.defaults.object(forKey: Self.folderPreviewsKey) as? Bool ?? true
+                if self.folderPreviews != value { self.folderPreviews = value }
+            }
+        }
+    }
 
     // MARK: The Atlas with the subfolders
 
