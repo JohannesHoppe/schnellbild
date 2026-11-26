@@ -1,6 +1,6 @@
 #!/bin/bash
 # Answers a UI test's requests on the pasteboard, for what only the workflow's
-# shell may do (record or capture the screen: the test runner has no screen
+# shell may do (capture the screen, post events: the test runner has no screen
 # recording permission). Sourced by the workflows (ci.yml, screenshots.yml,
 # demo-video.yml), which define the handler:
 #   source Scripts/pasteboard_requests.sh

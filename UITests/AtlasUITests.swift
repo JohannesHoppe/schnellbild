@@ -1,4 +1,4 @@
-import CoreGraphics
+import AppKit
 import XCTest
 
 /// The Atlas view (L after the list) on the Norway trip of `UITests/Fixtures` (norway-*:
@@ -309,13 +309,17 @@ final class AtlasUITests: SchnellbildUITestCase {
     }
 
     /// Two fingers turning on a trackpad, through the window server to the
-    /// app: XCUITest has no rotation, so the test posts the gesture event a
-    /// trackpad makes (CGEvent type 29, HID type rotation 5, the degrees in
-    /// field 113, counterclockwise positive as AppKit reads them) over the
-    /// globe. The fingers clockwise turn the view clockwise with them: the
-    /// heading falls by as much (`GlobeSurfaceTests.testTwoFingersTurningTurnTheMapWithThem`
+    /// app: XCUITest has no rotation, and the test runner may not post
+    /// events, so the CI workflow's shell posts the gesture event a trackpad
+    /// makes over the globe (`Scripts/trackpad_turn.swift`, asked with
+    /// "turn:<id>:<x>,<y>:<degrees>" on the pasteboard). The fingers
+    /// clockwise turn the view clockwise with them: the heading falls by as
+    /// much (`GlobeSurfaceTests.testTwoFingersTurningTurnTheMapWithThem`
     /// shows north moving clockwise on screen with it).
     func testTwoFingersOnTheTrackpadTurnTheGlobe() throws {
+        guard ProcessInfo.processInfo.environment["SCREEN_MEASURE"] == "1" else {
+            throw XCTSkip("needs the CI workflow's shell, which may post events")
+        }
         openAtlas()
         XCTAssertTrue(globe.waitForExistence(timeout: 10))
         zoomOutToTheGlobe()
@@ -326,25 +330,32 @@ final class AtlasUITests: SchnellbildUITestCase {
         let before = mapState()
         XCTAssertEqual(before.heading, 0, accuracy: 0.01, "north up: \(before)")
 
-        func turn(_ degrees: Double) throws {
-            let event = try XCTUnwrap(CGEvent(source: nil))
-            event.type = try XCTUnwrap(CGEventType(rawValue: 29))
-            event.setIntegerValueField(try XCTUnwrap(CGEventField(rawValue: 110)), value: 5)
-            event.setDoubleValueField(try XCTUnwrap(CGEventField(rawValue: 113)), value: degrees)
-            event.location = point
-            event.post(tap: .cghidEventTap)
+        func turn(_ degrees: Int) {
+            let id = UUID().uuidString.prefix(8)
+            let pasteboard = NSPasteboard.general
+            pasteboard.clearContents()
+            pasteboard.setString("turn:\(id):\(Int(point.x)),\(Int(point.y)):\(degrees)", forType: .string)
+            var result = ""
+            eventually("the shell turned", timeout: 30) {
+                guard let text = pasteboard.string(forType: .string), text.hasPrefix("turn-done:\(id):") else { return false }
+                result = String(text.dropFirst("turn-done:\(id):".count))
+                return true
+            }
+            XCTAssertEqual(result, "turned", "the shell may post events")
+        }
+        func heading(near expected: Double) -> Double {
+            let deadline = Date().addingTimeInterval(10)
+            while abs(Self.wrap(mapState().heading - before.heading) - expected) >= 0.5, Date() < deadline {
+                RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+            }
+            return Self.wrap(mapState().heading - before.heading)
         }
         // The fingers clockwise in four steps of 5°, as a trackpad reports a turn
-        for _ in 0..<4 { try turn(-5) }
-        let deadline = Date().addingTimeInterval(10)
-        while abs(Self.wrap(mapState().heading - before.heading) + 20) >= 0.5, Date() < deadline {
-            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
-        }
-        XCTAssertEqual(Self.wrap(mapState().heading - before.heading), -20, accuracy: 0.5,
-                       "turned clockwise with the fingers (may post events: \(CGPreflightPostEventAccess())): \(before) → \(mapState())")
+        for _ in 0..<4 { turn(-5) }
+        XCTAssertEqual(heading(near: -20), -20, accuracy: 0.5, "turned clockwise with the fingers: \(before) → \(mapState())")
         // And back counterclockwise
-        for _ in 0..<4 { try turn(5) }
-        eventually("turned back") { abs(Self.wrap(self.mapState().heading - before.heading)) < 0.5 }
+        for _ in 0..<4 { turn(5) }
+        XCTAssertEqual(heading(near: 0), 0, accuracy: 0.5, "turned back: \(before) → \(mapState())")
         let after = mapState()
         XCTAssertEqual(after.zoom, before.zoom, accuracy: 1e-6, "turning doesn't zoom: \(before) → \(after)")
         XCTAssertEqual(after.pitch, before.pitch, accuracy: 1e-6, "nor tilt")

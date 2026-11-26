@@ -301,8 +301,11 @@ jobs:
           # The Dock covers the bottom of a tall window (Settings → Folder access)
           ./Scripts/hide_dock.sh
 
-      - name: Build the brightness meter
-        run: mkdir -p build && swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness
+      - name: Build the brightness meter and the trackpad
+        run: |
+          mkdir -p build
+          swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness
+          swiftc -O Scripts/trackpad_turn.swift -o build/trackpad_turn
 
       - name: Run XCUITests
         # About an hour; a hang the tests' own waits don't catch ends here,
@@ -315,7 +318,8 @@ jobs:
           # VisualUITests measure the screen through this shell, which may
           # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
           # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>:<red>:<green>:<blue>" back;
-          # "shot:<name>:<x>,<y>,<w>,<h>" keeps a picture of that region as measurements/<name>.png.
+          # "shot:<name>:<x>,<y>,<w>,<h>" keeps a picture of that region as measurements/<name>.png;
+          # "turn:<id>:<x>,<y>:<degrees>" turns two fingers on the trackpad there (the runner may not post events).
           mkdir -p measurements
           source Scripts/pasteboard_requests.sh
           handle() {
@@ -340,6 +344,17 @@ jobs:
                 echo "== shot $name $rect"
                 screencapture -x -R "$rect" "measurements/$name.png"
                 answer "shot-done:$name"
+                ;;
+              turn:*)
+                # Two fingers turning on the trackpad (AtlasUITests): "turn:<id>:<x>,<y>:<degrees>"
+                rest=${1#turn:}
+                id=${rest%%:*}
+                rest=${rest#*:}
+                point=${rest%%:*}
+                degrees=${rest#*:}
+                result=$(build/trackpad_turn "${point%,*}" "${point#*,}" "$degrees")
+                echo "== turn $id at $point by $degrees°: $result"
+                answer "turn-done:$id:$result"
                 ;;
               sample:*)
                 # A test found the app hanging: what its threads are doing
