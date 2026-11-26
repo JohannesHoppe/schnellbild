@@ -9,6 +9,11 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>xmp</string>
+				<string>srt</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>Sidecar</string>
 			<key>CFBundleTypeRole</key>
@@ -17,21 +22,8 @@
 			<string>None</string>
 			<key>NSIsRelatedItemType</key>
 			<true/>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>xmp</string>
-				<string>srt</string>
-			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Archive volume</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>None</string>
-			<key>NSIsRelatedItemType</key>
-			<true/>
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>r00</string>
@@ -532,6 +524,14 @@
 				<string>198</string>
 				<string>199</string>
 			</array>
+			<key>CFBundleTypeName</key>
+			<string>Archive volume</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>None</string>
+			<key>NSIsRelatedItemType</key>
+			<true/>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
@@ -570,9 +570,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.13.2</string>
+	<string>0.13.3</string>
 	<key>CFBundleVersion</key>
-	<string>19</string>
+	<string>20</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
@@ -581,12 +581,12 @@
 	<string>15.0</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Schnellbild uses your location only when you click Use My Location, to sort photos and videos by their distance from you. It stays on your Mac.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Schnellbild uses your location only when you click Use My Location, to sort photos and videos by their distance from you. It stays on your Mac.</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
