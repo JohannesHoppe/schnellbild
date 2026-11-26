@@ -1,7 +1,8 @@
 import XCTest
 @testable import Schnellbild
 
-/// Settings → General → Show photos on folders (`BrowserModel.folderPreviews`).
+/// Settings → General → Turn off previews for folders and archives
+/// (`BrowserModel.folderPreviews`, its inverse).
 @MainActor
 final class FolderPreviewsTests: XCTestCase {
     func testPhotosOnFoldersAreOnUnlessTurnedOffEverywhere() {

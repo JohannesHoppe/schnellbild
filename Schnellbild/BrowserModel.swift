@@ -4233,11 +4233,12 @@ final class BrowserModel: ObservableObject {
     /// `entries`, all that changed: what reacts to the list looks only at it.
     private var entriesAdded: [GridEntry]?
 
-    // MARK: Photos on folder tiles
+    // MARK: Previews on folder and archive tiles
 
     static let folderPreviewsKey = "folderPreviews"
-    /// Folder tiles fan their first photos and videos over the folder
-    /// (app-wide, on unless turned off in Settings); off, a folder shows
+    /// Folder and archive tiles fan their first photos and videos over
+    /// their icon (app-wide, on unless Settings turns previews off for
+    /// folders and archives); off, a folder or archive shows
     /// only its icon, greyed out as ever when nothing below it is a photo
     /// or video, and no thumbnails are made for it.
     @Published var folderPreviews = true {

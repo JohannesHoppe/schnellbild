@@ -645,8 +645,8 @@
 "the clouds on the globe" = "molnen på jordgloben";
 "Show Hidden Files" = "Visa dolda filer";
 "Show hidden files and folders" = "Visa dolda filer och mappar";
-"Show photos on folders" = "Visa bilder på mappar";
-"The first photos and videos of a folder on its icon, in every window" = "En mapps första bilder och videor på symbolen, i alla fönster";
+"Turn off previews for folders and archives" = "Stäng av förhandsvisning av mappar och arkiv";
+"Folders and archives show only their icon, in every window" = "Mappar och arkiv visar bara sin symbol, i alla fönster";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Namn som börjar med en punkt, det som macOS döljer, till exempel mappen Bibliotek, och filerna som macOS sparar för egen del, till exempel .DS_Store. Påslaget syns allt, även i arkiv. Avstängt syns de ingenstans i Schnellbild.";
 "Show / hide hidden files and folders" = "Visa / dölj dolda filer och mappar";
 "Undo" = "Ångra";

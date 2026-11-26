@@ -645,8 +645,8 @@
 "the clouds on the globe" = "pilvet karttapallolla";
 "Show Hidden Files" = "Näytä piilotiedostot";
 "Show hidden files and folders" = "Näytä piilotetut tiedostot ja kansiot";
-"Show photos on folders" = "Näytä kuvat kansioissa";
-"The first photos and videos of a folder on its icon, in every window" = "Kansion ensimmäiset kuvat ja videot sen kuvakkeen päällä, jokaisessa ikkunassa";
+"Turn off previews for folders and archives" = "Poista kansioiden ja arkistojen esikatselu käytöstä";
+"Folders and archives show only their icon, in every window" = "Kansiot ja arkistot näyttävät vain kuvakkeensa, jokaisessa ikkunassa";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Pisteellä alkavat nimet, se, minkä macOS piilottaa, kuten Kirjasto-kansio, ja tiedostot, jotka macOS pitää itseään varten, kuten .DS_Store. Kun tämä on päällä, kaikki näkyy, myös arkistojen sisällä. Kun tämä on pois päältä, ne eivät näy missään Schnellbildissä.";
 "Show / hide hidden files and folders" = "Näytä / piilota piilotetut tiedostot ja kansiot";
 "Undo" = "Kumoa";

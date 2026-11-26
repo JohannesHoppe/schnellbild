@@ -645,8 +645,8 @@
 "the clouds on the globe" = "地球仪上的云层";
 "Show Hidden Files" = "显示隐藏文件";
 "Show hidden files and folders" = "显示隐藏的文件和文件夹";
-"Show photos on folders" = "在文件夹上显示照片";
-"The first photos and videos of a folder on its icon, in every window" = "在所有窗口中，将文件夹里最先的照片和视频显示在其图标上";
+"Turn off previews for folders and archives" = "关闭文件夹和归档的预览";
+"Folders and archives show only their icon, in every window" = "在所有窗口中，文件夹和归档只显示其图标";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "以点开头的名称、macOS 隐藏的项目（例如“资源库”文件夹），以及 macOS 为自己保留的文件（例如 .DS_Store）。打开时，所有项目都会显示，压缩包里的也一样。关闭时，它们不会出现在 Schnellbild 的任何地方。";
 "Show / hide hidden files and folders" = "显示 / 隐藏隐藏的文件和文件夹";
 "Undo" = "撤销";

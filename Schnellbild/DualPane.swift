@@ -185,7 +185,7 @@ final class WindowModel: ObservableObject {
         }
     }
 
-    /// Folder tiles show their first photos and videos (Settings): app-wide,
+    /// Folder and archive tiles show previews (Settings turns them off): app-wide,
     /// every pane of every window follows (`BrowserModel.folderPreviews`).
     var folderPreviews: Bool {
         get { left.folderPreviews }

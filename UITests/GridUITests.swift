@@ -230,15 +230,16 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("album shows three previews", timeout: 20) { text(of: tile("album")).hasSuffix("3 previews") }
         XCTAssertTrue(text(of: tile("empty")).hasSuffix("0 previews"))
 
-        // Settings → General: off, folders show only their icon (still not
-        // greyed out when they hold photos); on again, the photos come back
+        // Settings → General → Turn off previews for folders and archives:
+        // folders show only their icon (still not greyed out when they hold
+        // photos); turned on again, the photos come back
         func setPreviews(_ on: Bool) {
             app.typeKey(",", modifierFlags: .command)
             let toggle = element("settings.folderPreviews").firstMatch
             XCTAssertTrue(toggle.waitForExistence(timeout: 10))
             toggle.click()
-            eventually(on ? "on in Settings" : "off in Settings") {
-                (toggle.value as? Int ?? (toggle.value as? NSNumber)?.intValue ?? -1) == (on ? 1 : 0)
+            eventually(on ? "previews on" : "previews off") {
+                (toggle.value as? Int ?? (toggle.value as? NSNumber)?.intValue ?? -1) == (on ? 0 : 1)
             }
             app.typeKey("w", modifierFlags: .command)   // the Settings window
         }

@@ -645,8 +645,8 @@
 "the clouds on the globe" = "de wolken op de wereldbol";
 "Show Hidden Files" = "Toon verborgen bestanden";
 "Show hidden files and folders" = "Toon verborgen bestanden en mappen";
-"Show photos on folders" = "Toon foto’s op mappen";
-"The first photos and videos of a folder on its icon, in every window" = "De eerste foto’s en video’s van een map op het mapsymbool, in elk venster";
+"Turn off previews for folders and archives" = "Voorvertoning van mappen en archieven uitschakelen";
+"Folders and archives show only their icon, in every window" = "Mappen en archieven tonen alleen hun symbool, in elk venster";
 "Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Namen die met een punt beginnen, wat macOS verbergt, zoals de map Bibliotheek, en de bestanden die macOS voor zichzelf bijhoudt, zoals .DS_Store. Ingeschakeld verschijnt alles, ook in archieven. Uitgeschakeld verschijnen ze nergens in Schnellbild.";
 "Show / hide hidden files and folders" = "Toon / verberg verborgen bestanden en mappen";
 "Undo" = "Herstel";
