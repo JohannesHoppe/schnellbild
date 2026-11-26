@@ -93,6 +93,15 @@ def esc(text):
     return html.escape(text, quote=True)
 
 
+def head_text(text):
+    """The title and the meta tags' texts with as few character references
+    as HTML allows: a link preview (Slack's) shows "&amp;" as it stands, so
+    "&" stays a plain "&" unless it would start a reference, and "'" stays
+    as it is (the attributes are in double quotes)."""
+    text = re.sub(r"&(?=[A-Za-z0-9#]+;)", "&amp;", text)
+    return text.replace('"', "&quot;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 def load(code, english):
     path = I18N / f"{code}.json"
     if not path.exists():
@@ -313,8 +322,8 @@ def head(code, t, title, description, path_of=None, share_title=None, keywords=N
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{esc(title)}</title>
-<meta name="description" content="{esc(description)}">{keywords}
+<title>{head_text(title)}</title>
+<meta name="description" content="{head_text(description)}">{keywords}
 <meta name="robots" content="{robots}">
 {links}<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -327,19 +336,19 @@ def head(code, t, title, description, path_of=None, share_title=None, keywords=N
 <meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Schnellbild">
-<meta property="og:title" content="{esc(share_title)}">
-<meta property="og:description" content="{esc(description)}">{og_url}
+<meta property="og:title" content="{head_text(share_title)}">
+<meta property="og:description" content="{head_text(description)}">{og_url}
 <meta property="og:locale" content="{OG_LOCALES[code]}">{alternates}
 <meta property="og:image" content="{SITE}/og/{code}.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="{esc(image_alt)}">
+<meta property="og:image:alt" content="{head_text(image_alt)}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{esc(share_title)}">
-<meta name="twitter:description" content="{esc(description)}">
+<meta name="twitter:title" content="{head_text(share_title)}">
+<meta name="twitter:description" content="{head_text(description)}">
 <meta name="twitter:image" content="{SITE}/og/{code}.jpg">
-<meta name="twitter:image:alt" content="{esc(image_alt)}">
+<meta name="twitter:image:alt" content="{head_text(image_alt)}">
 {data + chr(10) if data else ""}<script>try{{var theme=localStorage.getItem("theme");if(theme==="light"||theme==="dark")document.documentElement.dataset.theme=theme}}catch(e){{}}</script>
 <link rel="stylesheet" href="/site.css">
 <script src="/site.js" defer></script>
