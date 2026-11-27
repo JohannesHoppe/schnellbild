@@ -708,6 +708,24 @@ final class OpenFolderTests: XCTestCase {
         XCTAssertEqual(m.currentMediaNumber, 1)
     }
 
+    /// The pictures the full view decodes ahead: the next and the previous
+    /// picture, never a folder, a video or the one on screen.
+    func testThePictureNeighboursArePagingsNextAndPreviousPictures() async throws {
+        let tree = try TempTree(self)
+        try tree.folder("sub")
+        for n in ["a.jpg", "b.jpg", "c.jpg", "d.mp4"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.pictureNeighbours.map(\.name), [], "the grid: none")
+        m.selectEntry(named: "b.jpg")
+        m.mode = .detail
+        XCTAssertEqual(m.pictureNeighbours.map(\.name), ["c.jpg", "a.jpg"], "the next first")
+        m.selectEntry(named: "a.jpg")
+        XCTAssertEqual(m.pictureNeighbours.map(\.name), ["b.jpg"], "no folder before the first picture")
+        m.selectEntry(named: "c.jpg")
+        XCTAssertEqual(m.pictureNeighbours.map(\.name), ["b.jpg"], "no video")
+    }
+
     func testDroppingAFileOpensItInDetail() async throws {
         let tree = try TempTree(self)
         try tree.file("a.jpg")

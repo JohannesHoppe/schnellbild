@@ -3,9 +3,10 @@ import SwiftUI
 @testable import Schnellbild
 
 /// What a view draws in its first frame, before any of its tasks ran: a
-/// thumbnail in the cache shows at once (the Atlas shown again or after
-/// the tour, the full view opened), not a grey square or black first.
-/// `ImageRenderer` draws that first frame and runs no task.
+/// thumbnail in the cache shows at once in the Atlas (shown again or after
+/// the tour), not a grey square first; the full view stays black, its
+/// picture comes sharp, not the tile blurred first. `ImageRenderer` draws
+/// that first frame and runs no task.
 @MainActor
 final class FirstFrameTests: XCTestCase {
     /// A file (never read) whose cached thumbnail is a red square of `side` points.
@@ -42,10 +43,11 @@ final class FirstFrameTests: XCTestCase {
         }
     }
 
-    func testTheFullViewShowsTheTilesThumbnailUntilThePictureIsDecoded() throws {
+    func testTheFullViewDoesntShowTheTilesThumbnailFirst() throws {
         let url = cachedRed(side: 256)
         let model = BrowserModel(defaults: makeTestDefaults())
         let view = FullImageView(url: url).environmentObject(model)
-        assertRed(try middle(of: view, size: CGSize(width: 400, height: 300)), "the full view")
+        let color = try middle(of: view, size: CGSize(width: 400, height: 300))
+        XCTAssertLessThan(color.redComponent, 0.1, "black, not the tile: \(color)")
     }
 }

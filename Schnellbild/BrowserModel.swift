@@ -6402,6 +6402,26 @@ final class BrowserModel: ObservableObject {
         return mode == .detail ? selectedMediaEntry : nil
     }
 
+    /// The pictures paging goes to from the one on screen, the next first:
+    /// the full view's neighbours among the entries, or the slideshow's
+    /// (starting over at its ends). `picturesAhead` decodes them.
+    var pictureNeighbours: [GridEntry] {
+        var around: [GridEntry] = []
+        if let show = slideshow {
+            let count = show.items.count
+            guard count > 1, show.items.indices.contains(show.index) else { return [] }
+            around = [show.items[(show.index + 1) % count], show.items[(show.index - 1 + count) % count]]
+        } else if mode == .detail, let sel = selection, let first = firstMediaIndex {
+            around = [sel + 1, sel - 1].filter { $0 >= first && $0 < entries.count }.map { entries[$0] }
+        }
+        let shown = shownMediaEntry?.url
+        var seen = Set<URL>()
+        return around.filter { $0.kind == .image && $0.url != shown && seen.insert($0.url).inserted }
+    }
+
+    /// The full view's pictures decoded ahead (`FullImageView`).
+    let picturesAhead = PicturesAhead()
+
     /// One ←/→ step in a video: a tenth of its length.
     static let videoJump = 0.1
 

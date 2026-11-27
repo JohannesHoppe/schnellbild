@@ -49,19 +49,28 @@ struct FullImageView: View {
     /// The file and page whose picture is on screen (a PDF's page stays
     /// while the next one is drawn).
     @State private var drawn: Shown?
+    /// Within `fallbackDelay` of another file coming up, not decoded yet:
+    /// what was on screen stays (the previous picture, else black), so a
+    /// picture decoded in time shows sharp at once, never the tile first.
+    @State private var waiting = true
     @GestureState private var dragTranslation: CGSize = .zero
     @GestureState private var pinch: CGFloat = 1
     /// The pixels per point of the display this view's window is on (100 %
     /// is one picture pixel per pixel there, whichever window has the keys).
     @Environment(\.displayScale) private var displayScale
 
-    /// The tile's thumbnail from the cache shows, scaled up, from the view's
-    /// first frame until the picture is decoded (black only without one).
+    /// Black until the picture is decoded; the tile's thumbnail from the
+    /// cache, scaled up, only when that takes longer than `fallbackDelay`.
     init(url: URL, modified: Date? = nil) {
         self.url = url
         self.modified = modified
-        _image = State(initialValue: ThumbnailCache.shared.image(for: url))
     }
+
+    /// How long a picture may take to decode before the tile's thumbnail
+    /// stands in for it (a share, a large RAW): a picture from a local disk
+    /// is there before it, so it shows sharp at once, not blurred first and
+    /// sharp a moment later.
+    static let fallbackDelay: Duration = .milliseconds(150)
 
     var body: some View {
         GeometryReader { geo in
@@ -94,7 +103,7 @@ struct FullImageView: View {
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.white.opacity(0.85))
                     .padding(24)
-                } else {
+                } else if !waiting {
                     LoadingSpinner()
                 }
             }
@@ -106,18 +115,31 @@ struct FullImageView: View {
             // XCUITest gets no value from a group like this one
             .accessibilityLabel(test: accessibilityState, spoken: spokenLabel)
             .task(id: shown) {
-                // Never the previous file's picture: the cached tile, or nothing
-                // yet. Another page of the same PDF, the same file rewritten:
-                // what is shown stays until the new one is drawn.
-                if pdf?.url != url, drawn?.url != url { image = ThumbnailCache.shared.image(for: url) }
-                MainThreadWatch.log("full view \(url.lastPathComponent): \(image == nil ? "black" : "the tile") until decoded")
                 failed = false
                 failure = nil
                 decodedSide = 0
                 let maxPixel = max(Int(max(geo.size.width, geo.size.height) * displayScale), 1)
-                await load(maxPixel: maxPixel, sharper: false)
-                MainThreadWatch.log("full view \(url.lastPathComponent): decoded at \(decodedSide) px")
+                let ahead = model.picturesAhead
+                let anotherFile = pdf?.url != url && drawn?.url != url
+                if anotherFile, let ready = ahead.decoded(url, modified: modified, side: maxPixel) {
+                    // Decoded ahead (paged to from its neighbour): sharp at once
+                    show((ready.image, ready.native, ready.picture, ready.opened), page: 0, sharper: false)
+                    MainThreadWatch.log("full view \(url.lastPathComponent): decoded ahead at \(decodedSide) px")
+                } else if anotherFile {
+                    await loadAnotherFile(maxPixel: maxPixel)
+                    MainThreadWatch.log("full view \(url.lastPathComponent): decoded at \(decodedSide) px")
+                } else {
+                    // Another page of the same PDF, the same file rewritten:
+                    // what is shown stays until the new one is drawn
+                    waiting = false
+                    await load(maxPixel: maxPixel, sharper: false)
+                }
                 updateActualSizeFactor(in: geo.size)
+                // The pictures ← → go to next, decoded while this one is looked at
+                if !Task.isCancelled, let image, let picture, let nativeSize, drawn?.url == url, !PDFPages.isPDF(url) {
+                    ahead.prepare(current: (url, modified, (image, nativeSize, picture, opened)),
+                                  neighbours: model.pictureNeighbours, side: maxPixel)
+                }
             }
             .task(id: SharpnessJob(shown: shown, side: wantedSide(in: geo.size), ready: picture != nil)) {
                 // The view grew (full screen) or the user zoomed in: decoded
@@ -148,6 +170,7 @@ struct FullImageView: View {
                 await animate()
             }
         }
+        .onDisappear { model.picturesAhead.clear() }
         .onChange(of: model.zoom) { old, new in
             panOffset = BrowserModel.panOffset(panOffset, zoomedFrom: old, to: new)
         }
@@ -210,7 +233,7 @@ struct FullImageView: View {
     private var accessibilityState: String {
         "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°, "
             + (decodedSide > 0 ? "decoded \(decodedSide) px, " : "")
-            + (failed ? "failed" : image == nil ? "loading" : "loaded")
+            + (failed ? "failed" : image == nil || waiting ? "loading" : "loaded")
             + (shownLook != nil && enhanced?.look == shownLook ? (model.enhance ? ", enhanced" : ", adjusted") : "")
             + (frame.map { ", frame \($0.index + 1) of \($0.count)" } ?? "")
             + (pdf.flatMap { pdf in drawn.flatMap { $0.url == url ? ", page \($0.page + 1) of \(pdf.count)" : nil } } ?? "")
@@ -302,7 +325,34 @@ struct FullImageView: View {
             failure = reason
             return
         }
+        show(result, page: page, sharper: sharper)
+    }
+
+    /// Decodes a file other than the one on screen. What is on screen stays
+    /// for `fallbackDelay`; decoded by then, the picture replaces it at
+    /// once, else the tile's thumbnail stands in until it is (the spinner
+    /// without one). Never the previous file's picture longer than that.
+    private func loadAnotherFile(maxPixel: Int) async {
+        waiting = true
+        let url = self.url
+        let fallback = Task { @MainActor in
+            try? await Task.sleep(for: Self.fallbackDelay)
+            guard !Task.isCancelled else { return }
+            image = ThumbnailCache.shared.image(for: url)
+            waiting = false
+            MainThreadWatch.log("full view \(url.lastPathComponent): \(image == nil ? "the spinner" : "the tile") until decoded")
+        }
+        defer { fallback.cancel() }
+        await load(maxPixel: maxPixel, sharper: false)
+        guard !Task.isCancelled else { return }
+        fallback.cancel()
+        waiting = false
+    }
+
+    /// Puts a decoded picture on screen.
+    private func show(_ result: (NSImage, CGSize, CGImage, OpenedPicture?), page: Int, sharper: Bool) {
         image = result.0
+        waiting = false
         drawn = Shown(url: url, modified: modified, page: page)
         nativeSize = result.1
         decodedSide = max(result.2.width, result.2.height)
@@ -643,5 +693,62 @@ enum VectorPicture {
         image.draw(in: NSRect(x: 0, y: 0, width: context.width, height: context.height))
         NSGraphicsContext.restoreGraphicsState()
         return context.makeImage().map { ($0, image.size) }
+    }
+}
+
+/// Pictures decoded ahead at the full view's size, one set per pane
+/// (`BrowserModel.picturesAhead`): the items ← → and the slideshow go to
+/// next, so paging shows them sharp from their first frame, not the tile
+/// scaled up until the decode arrives. Holds the picture on screen and
+/// its neighbours, nothing else (at the view's size a few tens of MB each).
+@MainActor final class PicturesAhead {
+    typealias Decoded = (image: NSImage, native: CGSize, picture: CGImage, opened: OpenedPicture?)
+
+    private struct Key: Hashable {
+        let url: URL
+        let modified: Date?
+        let side: Int
+    }
+
+    private var kept: [Key: Decoded] = [:]
+    private var work: Task<Void, Never>?
+
+    /// The picture of `url` decoded ahead with `side` as its longest side
+    /// asked for, nil when it isn't (yet).
+    func decoded(_ url: URL, modified: Date?, side: Int) -> Decoded? {
+        kept[Key(url: url, modified: modified, side: side)]
+    }
+
+    /// Keeps the picture on screen (`current`) and decodes `neighbours`
+    /// one after the other, off the main thread; everything else goes. A
+    /// call before they are done stops the decodes still to come.
+    func prepare(current: (url: URL, modified: Date?, decoded: Decoded), neighbours: [GridEntry], side: Int) {
+        work?.cancel()
+        let shown = Key(url: current.url, modified: current.modified, side: side)
+        // (a PDF is drawn page by page through its open document)
+        let wanted = neighbours.filter { !PDFPages.isPDF($0.url) }
+            .map { Key(url: $0.url, modified: $0.previewDate, side: side) }
+        kept = kept.filter { wanted.contains($0.key) }
+        kept[shown] = current.decoded
+        let missing = wanted.filter { kept[$0] == nil }
+        guard !missing.isEmpty else { return }
+        work = Task { [weak self] in
+            for key in missing {
+                let outcome = await detachedCancellable(priority: .utility) {
+                    await FullImageView.decode(key.url, pages: nil, page: 0, maxPixel: key.side, kept: nil)
+                }
+                guard !Task.isCancelled, let self else { return }
+                if case .success(let loaded)? = outcome {
+                    self.kept[key] = (loaded.0, loaded.1, loaded.2, loaded.3)
+                }
+            }
+        }
+    }
+
+    /// The full view closed: nothing kept.
+    func clear() {
+        work?.cancel()
+        work = nil
+        kept = [:]
     }
 }
