@@ -217,7 +217,7 @@ struct EntryListView: View {
     private func preview(_ entry: GridEntry) -> some View {
         switch entry.kind {
         case .parent:
-            Image(systemName: "arrow.up.circle.fill").font(.title3).foregroundStyle(Color.accentColor)
+            FolderTile(folder: nil, side: Self.previewSide, isSelected: false, icon: .enclosingFolder)
         case .folder:
             let archive = entry.isArchive
             if let drive = FolderTile.driveImage(entry.url) {

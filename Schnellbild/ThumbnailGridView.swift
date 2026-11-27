@@ -107,7 +107,7 @@ struct ThumbnailGridView: View {
     func tile(for entry: GridEntry, side: CGFloat, cursor: Bool, marked: Bool) -> some View {
         switch entry.kind {
         case .parent:
-            FolderTile(folder: nil, side: side, isSelected: cursor, isMarked: marked, icon: .symbol("arrow.up.circle.fill"))
+            FolderTile(folder: nil, side: side, isSelected: cursor, isMarked: marked, icon: .enclosingFolder)
         case .folder:
             let archive = entry.isArchive
             if let drive = FolderTile.driveImage(entry.url) {
@@ -170,9 +170,12 @@ struct EntryAccessibility: ViewModifier {
 
 /// What a folder tile draws under its previews: the icons the Finder shows
 /// (macOS's folder, the icon of an archive's type), so a folder looks the
-/// same in Schnellbild as on the desktop, else a symbol (`..`, drives).
+/// same in Schnellbild as on the desktop, else a symbol (drives).
 enum FolderIcon: Equatable {
     case folder
+    /// `..`: macOS's folder with an arrow up pressed into it, as macOS draws
+    /// its own folders with a purpose (Downloads: an arrow down).
+    case enclosingFolder
     /// An archive, by its file's type.
     case archive(URL)
     case symbol(String)
@@ -182,7 +185,7 @@ enum FolderIcon: Equatable {
     /// without an app that declares it, the generic archive's).
     @MainActor var image: NSImage? {
         switch self {
-        case .folder:
+        case .folder, .enclosingFolder:
             return Self.folderImage
         case .archive(let url):
             let ext = DownloadName.finalExtension(of: url)
@@ -278,6 +281,17 @@ struct FolderTile: View {
                     .resizable()
                     .interpolation(.high)
                     .frame(width: side * share, height: side * share)
+                if icon == .enclosingFolder {
+                    // On the folder's front, the size of the Downloads arrow,
+                    // near white with a blue shadow: clear on the light blue
+                    // in either appearance (the folder icon is the same in both)
+                    Image(systemName: "arrow.up.circle")
+                        .font(.system(size: side * share * 0.3, weight: .semibold))
+                        .foregroundStyle(Color.white.opacity(0.92))
+                        .shadow(color: Color(red: 0.05, green: 0.3, blue: 0.55).opacity(0.35),
+                                radius: side * share * 0.008, y: side * share * 0.004)
+                        .offset(y: side * share * 0.066)
+                }
             } else if case .symbol(let name) = icon {
                 Image(systemName: name)
                     .font(.system(size: side * (shownPreviews.isEmpty ? (small ? 0.6 : 0.36) : (small ? 0.75 : 0.5))))
